@@ -192,7 +192,7 @@ class mainWindow(QtGui.QMainWindow) :
     self.addDockWidget(QtCore.Qt.LeftDockWidgetArea, optionsDock)
     
     
-    self.statusBar().showMessage('Ready')
+    self.statusBar().showMessage('I am a status bar')
     
     
     fileMenu = QtGui.QMenu('File')
