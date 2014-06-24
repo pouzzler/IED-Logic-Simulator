@@ -9,7 +9,7 @@ gates = ['And', 'Or', 'Nand', 'Nor', 'Not', 'Xor', 'Xnor']
 class circuit(QtGui.QGraphicsPathItem) :
   """Un circuit est représenté par un QGraphicsPathItem"""
   ioHeight = 25       # pixels par E/S
-  diameter = 5          # pour les négations et les pins
+  diameter = 5        # pour les négations et les pins
   bodyOffset = 5      # le corps dépasse des entrées extrêmes de 5 pixels
   iLeft = 5           # limite gauche des entrées
   iRight = 24         # limite droite des entrées
@@ -67,10 +67,7 @@ class circuit(QtGui.QGraphicsPathItem) :
 
   def shape(self) :
     """Renvoie le rectangle englobant le chemin plutôt que le chemin,
-    afin de pouvoir cliquer n'importe ou pour sélectionner.
-    On exclut cependant les pixels du bord, afin qu'un clic sur une
-    entrée/sortie ne sélectionne pas l'objet entier, mais permette
-    plutôt de relier des E/S."""
+    afin de pouvoir cliquer n'importe ou pour sélectionner."""
     path = QtGui.QPainterPath()
     rect = self.boundingRect()
     # TODO : on ne veut pas sélectionner notre objet mais cliquer une E/S
@@ -91,9 +88,25 @@ class circuit(QtGui.QGraphicsPathItem) :
       if path.contains(e.pos()) :
         print "out " + str(i)
         return 
-        
-  def keyPressEvent(self, e) :
-    print "capté"
+  
+class toolOptions(QtGui.QWidget) :
+  """Contient des widgets permettant de modifier les paramètres 
+  de l'objet sélectionné"""
+  def __init__(self) :
+    super(toolOptions, self).__init__()
+    
+    layout = QtGui.QVBoxLayout()
+    label = QtGui.QLabel(u"Inputs number")
+    layout.addWidget(label)
+    nInputs = QtGui.QLineEdit(self)
+    nInputs.setText('2')
+    layout.addWidget(nInputs)
+    self.setLayout(layout)
+   
+  
+  @staticmethod
+  def updateOptions() : 
+    print 'toto'
     
 class toolBox(QtGui.QListWidget) :
   """Une boîte à outils contenant les portes et circuits disponibles"""
@@ -109,7 +122,13 @@ class mainView(QtGui.QGraphicsView) :
     self.setAcceptDrops(True)
     scene = QtGui.QGraphicsScene(parent)
     self.setScene(scene)
-  
+    # On veut être prévenus des changements de sélection dans la vue
+    # principale afin de mettre à jour le widget des options.
+    self.scene().selectionChanged.connect(toolOptions.updateOptions)
+    
+  def updateOptions(self) : 
+    print 'toto'
+    
   def dragEnterEvent(self, e): 
     e.accept()
   
@@ -164,22 +183,11 @@ class mainView(QtGui.QGraphicsView) :
       for item in self.scene().selectedItems() :
         item.setPos(item.scenePos().x(), bottom)
  
-class toolOptions(QtGui.QWidget) :
-  """Contient des widgets permettant de modifier les paramètres 
-  de l'objet sélectionné"""
-  def __init__(self) :
-    super(toolOptions, self).__init__()
-    
-    layout = QtGui.QVBoxLayout()
-    label = QtGui.QLabel("Test")
-    layout.addWidget(label)
-    self.setLayout(layout)
- 
 class mainWindow(QtGui.QMainWindow) :
   """La fenêtre principale de notre application"""
   def __init__(self) :
     super(mainWindow, self).__init__()
-    self.setWindowTitle("MatSeb") 
+    self.setWindowTitle("IED Logic Simulator") 
     view = mainView(self)               # Une zone de travail
     self.setCentralWidget(view)         # principale.
     toolbox = toolBox(self)                # Une boîte à outils 
@@ -190,11 +198,7 @@ class mainWindow(QtGui.QMainWindow) :
     optionsDock = QtGui.QDockWidget('Tool options') # dans un dock.
     optionsDock.setWidget(tooloptions)
     self.addDockWidget(QtCore.Qt.LeftDockWidgetArea, optionsDock)
-    
-    
-    self.statusBar().showMessage('I am a status bar')
-    
-    
+
     fileMenu = QtGui.QMenu('File')
     fileMenu.addAction('Quit', self.close)
     self.menuBar().addMenu(fileMenu)
