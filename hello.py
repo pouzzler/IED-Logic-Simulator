@@ -192,6 +192,8 @@ class mainWindow(QtGui.QMainWindow) :
     self.addDockWidget(QtCore.Qt.LeftDockWidgetArea, optionsDock)
     
     
+    self.statusBar().showMessage('Ready')
+    
     
     fileMenu = QtGui.QMenu('File')
     fileMenu.addAction('Quit', self.close)
