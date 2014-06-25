@@ -2,8 +2,8 @@
 # coding=utf-8
 
 from PySide import QtGui, QtCore
-from toolBox import toolBox
-from toolOptions import toolOptions
+from toolbox import ToolBox
+from tooloptions import ToolOptions
 from circuit import Circuit
 
 

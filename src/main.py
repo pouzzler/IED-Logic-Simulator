@@ -3,10 +3,10 @@
 
 import sys
 from PySide.QtGui import QApplication
-from gui.mainWindow import mainWindow
+from gui.mainwindow import MainWindow
 
 
 # La boucle principale du programme
 app = QApplication(sys.argv)
-win = mainWindow()
+win = MainWindow()
 sys.exit(app.exec_())

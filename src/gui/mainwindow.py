@@ -2,24 +2,24 @@
 # coding=utf-8
 
 from PySide import QtGui, QtCore
-from mainView import MainView
-from toolBox import toolBox
-from toolOptions import toolOptions
+from mainview import MainView
+from toolbox import ToolBox
+from tooloptions import ToolOptions
 
 
-class mainWindow(QtGui.QMainWindow):
+class MainWindow(QtGui.QMainWindow):
     """La fenêtre principale de notre application"""
     def __init__(self):
-        super(mainWindow, self).__init__()
+        super(MainWindow, self).__init__()
         self.setWindowTitle("IED Logic Simulator")
         self.setFocusPolicy(QtCore.Qt.StrongFocus)
         view = MainView(self)                       # Une zone de travail
         self.setCentralWidget(view)                 # principale.
-        toolbox = toolBox()                         # Une boîte à outils
+        toolbox = ToolBox()                         # Une boîte à outils
         boxDock = QtGui.QDockWidget('Toolbox')      # dans un dock.
         boxDock.setWidget(toolbox)
         self.addDockWidget(QtCore.Qt.LeftDockWidgetArea, boxDock)
-        tooloptions = toolOptions()        # Options de l'outil sélectionné
+        tooloptions = ToolOptions()        # Options de l'outil sélectionné
         optionsDock = QtGui.QDockWidget('Tool options')  # dans un dock.
         optionsDock.setWidget(tooloptions)
         self.addDockWidget(QtCore.Qt.LeftDockWidgetArea, optionsDock)
@@ -32,8 +32,6 @@ class mainWindow(QtGui.QMainWindow):
         helpMenu.addAction('About', self.about)
         self.menuBar().addMenu(helpMenu)
 
-        # une status bar
-        self.status = self.statusBar()
         # connexion des signaux
         tooloptions.clicked.connect(self.setStatusMessage)
         view.newSelection.connect(self.setStatusMessage)
@@ -42,7 +40,7 @@ class mainWindow(QtGui.QMainWindow):
 
     def setStatusMessage(self, message):
         """Affiche un message dans la barre de status"""
-        self.status.showMessage(message)
+        self.statusBar().showMessage(message)
 
     def focusInEvent(self, event):
         self.setStatusMessage(u"Cette zone sert à quelque chose")
