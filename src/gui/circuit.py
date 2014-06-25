@@ -4,7 +4,8 @@
 from PySide import QtGui, QtCore
 
 
-class circuit(QtGui.QGraphicsPathItem):
+class Circuit(QtGui.QGraphicsPathItem):
+
     """Un circuit est représenté par un QGraphicsPathItem"""
     ioHeight = 25   # pixels par E/S
     diameter = 5    # pour les négations et les pins
@@ -19,7 +20,7 @@ class circuit(QtGui.QGraphicsPathItem):
     arcBox = 18     # la largeur du rectangle dans lequel l'arc s'inscrit
 
     def __init__(self, inputs, outputs, gate):
-        super(circuit, self).__init__()
+        super(Circuit, self).__init__()
         self.setFlag(QtGui.QGraphicsItem.ItemIsMovable)     # on peut déplacer
         self.setFlag(QtGui.QGraphicsItem.ItemIsSelectable)  # et sélectionner
         self.nInputs = inputs

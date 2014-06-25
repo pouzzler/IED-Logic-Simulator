@@ -4,19 +4,28 @@
 from PySide import QtGui, QtCore
 from toolBox import toolBox
 from toolOptions import toolOptions
-from circuit import circuit
+from circuit import Circuit
 
 
-class mainView(QtGui.QGraphicsView):
+class MainView(QtGui.QGraphicsView):
     """Une vue graphique correspondant à la scène principale"""
+    
+    newSelection = QtCore.Signal(str)
+    
     def __init__(self, parent):
-        super(mainView, self).__init__(parent)
+        super(MainView, self).__init__(parent)
         self.setAcceptDrops(True)
         scene = QtGui.QGraphicsScene(parent)
         self.setScene(scene)
         # On veut être prévenus des changements de sélection dans la vue
         # principale afin de mettre à jour le widget des options.
-        self.scene().selectionChanged.connect(toolOptions.updateOptions)
+        self.scene().selectionChanged.connect(self.on_selection_changed)
+
+    @QtCore.Slot()
+    def on_selection_changed(self):
+        # il faut trouver un moyen de passé le nom de l'item sélectionné
+        # à la place de "titi"
+        self.newSelection.emit("titi")
 
     def dragEnterEvent(self, e):
         e.accept()
@@ -31,7 +40,7 @@ class mainView(QtGui.QGraphicsView):
             QtCore.QModelIndex())
         item = model.item(0)
         text = item.text()
-        i = circuit(2, 1, text)
+        i = Circuit(2, 1, text)
         self.scene().addItem(i)
         i.setPos(e.pos())
 
