@@ -2,17 +2,17 @@
 # coding=utf-8
 
 from PySide import QtGui, QtCore
-#~ from mainWindow import mainWindow
 
 
 class toolOptions(QtGui.QWidget):
     """Contient des widgets permettant de modifier les paramètres
     de l'objet sélectionné"""
-
+    
     clicked = QtCore.Signal()
-
+    
     def __init__(self):
         super(toolOptions, self).__init__()
+
         layout = QtGui.QVBoxLayout()
         label = QtGui.QLabel(u"Inputs number")
         layout.addWidget(label)

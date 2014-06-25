@@ -6,17 +6,17 @@ from PySide import QtGui, QtCore
 
 class Circuit(QtGui.QGraphicsPathItem):
     """Un circuit est représenté par un QGraphicsPathItem"""
-    ioHeight = 25      # pixels par E/S
-    diameter = 5       # pour les négations et les pins
-    bodyOffset = 5     # le corps dépasse des entrées extrêmes de 5 pixels
-    iLeft = 5          # limite gauche des entrées
-    iRight = 24        # limite droite des entrées
-    oLeft = 50         # pareil pour les sorties
+    ioHeight = 25   # pixels par E/S
+    diameter = 5    # pour les négations et les pins
+    bodyOffset = 5  # le corps dépasse des entrées extrêmes de 5 pixels
+    iLeft = 5       # limite gauche des entrées
+    iRight = 24     # limite droite des entrées
+    oLeft = 50      # pareil pour les sorties
     oRight = 69
-    xorLeft = -3       # les index gauches des trois courbes possibles )) ) xor
-    orLeft = 2         # )    ) or
-    andLeft = 31       # |    ) and
-    arcBox = 18        # la largeur du rectangle dans lequel l'arc s'inscrit
+    xorLeft = -3    # les index gauches des trois courbes possibles )) ) xor
+    orLeft = 2      # )  ) or
+    andLeft = 31    # |  ) and
+    arcBox = 18     # la largeur du rectangle dans lequel l'arc s'inscrit
 
     def __init__(self, inputs, outputs, gate):
         super(Circuit, self).__init__()
@@ -27,55 +27,62 @@ class Circuit(QtGui.QGraphicsPathItem):
         offset = self.ioHeight * abs(self.nInputs - self.nOutputs) / 2.
         height = max(self.nInputs, self.nOutputs)
         if self.nInputs > self.nOutputs:
-            # + 5 pour que le corps de la porte
             self.oOffset = offset + self.bodyOffset
-            self.iOffset = self.bodyOffset   # dépasse un peu des E/S extrêmes
+            self.iOffset = self.bodyOffset
         else:
             self.oOffset = self.bodyOffset
             self.iOffset = offset + self.bodyOffset
         path = QtGui.QPainterPath()
-        for i in range(self.nInputs):       # les pins d'entrée
-            path.addEllipse(0, i * self.ioHeight + self.iOffset +
-                            self.bodyOffset, self.diameter, self.diameter)
-            path.moveTo(self.iLeft, i * self.ioHeight + self.iOffset +
-                        self.bodyOffset + self.diameter / 2.)
-            path.lineTo(self.iRight, i * self.ioHeight + self.iOffset +
-                        self.bodyOffset + self.diameter / 2.)
-
+        for i in range(self.nInputs):                # les pins d'entrée
+            path.addEllipse(
+                0, i * self.ioHeight + self.iOffset + self.bodyOffset,
+                self.diameter, self.diameter)
+            path.moveTo(
+                self.iLeft,
+                i * self.ioHeight + self.iOffset + self.bodyOffset +
+                self.diameter / 2.)
+            path.lineTo(
+                self.iRight, i * self.ioHeight + self.iOffset +
+                self.bodyOffset + self.diameter / 2.)
         # le cercle représentant la négation
         if gate in ['Nand', 'Not', 'Nor', 'Xnor']:
-            path.addEllipse(self.oLeft, height * self.ioHeight / 2. -
-                            self.diameter / 2., self.diameter, self.diameter)
+            path.addEllipse(
+                self.oLeft, height * self.ioHeight / 2. - self.diameter / 2.,
+                self.diameter, self.diameter)
 
-        for i in range(self.nOutputs):       # les pins de sortie
-            path.addEllipse(self.oRight + 1, i * self.ioHeight + self.oOffset +
-                            self.bodyOffset, self.diameter, self.diameter)
-            if gate in ['Nand', 'Not', 'Nor', 'Xnor']:
-                left = self.oLeft + self.diameter
-            else:
-                left = self.oLeft
-            path.moveTo(left, i * self.ioHeight + self.oOffset +
-                        self.bodyOffset + self.diameter / 2.)
-            path.lineTo(self.oRight, i * self.ioHeight + self.oOffset +
-                        self.bodyOffset + self.diameter / 2.)
+        for i in range(self.nOutputs):               # les pins de sortie
+            path.addEllipse(
+                self.oRight + 1, i * self.ioHeight + self.oOffset +
+                self.bodyOffset, self.diameter, self.diameter)
+            left = (
+                self.oLeft + self.diameter
+                if gate in ['Nand', 'Not', 'Nor', 'Xnor']
+                else self.oLeft)
+            path.moveTo(
+                left, i * self.ioHeight + self.oOffset +
+                self.bodyOffset + self.diameter / 2.)
+            path.lineTo(
+                self.oRight, i * self.ioHeight + self.oOffset +
+                self.bodyOffset + self.diameter / 2.)
 
-        if gate in ['Nand', 'Not', 'And']:   # la ligne verticale
+        if gate in ['Nand', 'Not', 'And']:           # la ligne verticale
             path.moveTo(self.iRight + 1, 0)
             path.lineTo(self.iRight + 1, height * self.ioHeight)
         if gate == 'Not':
             path.lineTo(self.oLeft - 1, height * self.ioHeight / 2)
         elif gate in ['Xor', 'Xnor']:
             path.moveTo(self.xorLeft + self.arcBox, 0)
-            path.arcTo(self.xorLeft, 0, self.arcBox, height *
-                       self.ioHeight, 90, -180)
+            path.arcTo(
+                self.xorLeft, 0, self.arcBox, height * self.ioHeight, 90, -180)
         if gate in ['Or', 'Nor', 'Xor', 'Xnor']:
             path.moveTo(self.orLeft + self.arcBox, 0)
-            path.arcTo(self.orLeft, 0, self.arcBox, height *
-                       self.ioHeight, 90, -180)
+            path.arcTo(
+                self.orLeft, 0, self.arcBox, height * self.ioHeight, 90, -180)
         if gate in ['And', 'Nand', 'Or', 'Nor', 'Xor', 'Xnor']:
-            path.lineTo(self.andLeft,    height * self.ioHeight)
-            path.arcTo(self.andLeft, 0, self.arcBox, height *
-                       self.ioHeight, -90, 180)
+            path.lineTo(self.andLeft,  height * self.ioHeight)
+            path.arcTo(
+                self.andLeft,  0, self.arcBox, height * self.ioHeight,
+                -90, 180)
         path.closeSubpath()
         self.setPath(path)
 
@@ -92,18 +99,19 @@ class Circuit(QtGui.QGraphicsPathItem):
         """Pour détecter les clics dans les entrées/sorties"""
         for i in range(self.nInputs):
             path = QtGui.QPainterPath()
-            path.addEllipse(- self.diameter, i * self.ioHeight +
-                            self.iOffset + self.bodyOffset - self.diameter,
-                            self.diameter * 3, self.diameter * 3)
+            path.addEllipse(
+                - self.diameter, i * self.ioHeight + self.iOffset +
+                self.bodyOffset - self.diameter, self.diameter * 3,
+                self.diameter * 3)
             if path.contains(e.pos()):
                 print "in " + str(i)
                 return
         for i in range(self.nOutputs):
             path = QtGui.QPainterPath()
-            path.addEllipse(self.oRight + 1 - self.diameter, i *
-                            self.ioHeight + self.oOffset + self.bodyOffset -
-                            self.diameter, self.diameter * 3,
-                            self.diameter * 3)
+            path.addEllipse(
+                self.oRight + 1 - self.diameter, i * self.ioHeight +
+                self.oOffset + self.bodyOffset - self.diameter,
+                self.diameter * 3, self.diameter * 3)
             if path.contains(e.pos()):
                 print "out " + str(i)
                 return

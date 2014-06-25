@@ -26,8 +26,9 @@ class MainView(QtGui.QGraphicsView):
 
     def dropEvent(self, e):
         model = QtGui.QStandardItemModel()
-        model.dropMimeData(e.mimeData(), QtCore.Qt.CopyAction, 0, 0,
-                           QtCore.QModelIndex())
+        model.dropMimeData(
+            e.mimeData(), QtCore.Qt.CopyAction, 0, 0,
+            QtCore.QModelIndex())
         item = model.item(0)
         text = item.text()
         i = Circuit(2, 1, text)
@@ -35,7 +36,7 @@ class MainView(QtGui.QGraphicsView):
         i.setPos(e.pos())
 
     def keyPressEvent(self, e):
-        """Gère les évènements clavier: suppression, rotation, alignement"""
+        """Gère les évènements clavier : suppression, rotation, alignement"""
         # Del, suppression
         if e.key() == QtCore.Qt.Key_Delete:
             for item in self.scene().selectedItems():
@@ -43,9 +44,6 @@ class MainView(QtGui.QGraphicsView):
         # <- , rotation inverse au sens des aiguilles
         elif e.key() == QtCore.Qt.Key_Left:
             group = self.scene().createItemGroup(self.scene().selectedItems())
-            #~ print group.boundingRect()
-            #~ group.setTransformOriginPoint(group.boundingRect().right() / 2,
-                                          #~ group.boundingRect().bottom() / 2)
             group.setRotation(group.rotation() - 90)
             self.scene().destroyItemGroup(group)
         # -> , rotation dans le sens des aiguilles
@@ -55,25 +53,25 @@ class MainView(QtGui.QGraphicsView):
             self.scene().destroyItemGroup(group)
         # L, aligner à gauche
         elif e.key() == QtCore.Qt.Key_L:
-            left = min([item.scenePos().x() for item in
-                       self.scene().selectedItems()])
+            left = min(
+                [item.scenePos().x() for item in self.scene().selectedItems()])
             for item in self.scene().selectedItems():
                 item.setPos(left, item.scenePos().y())
         # R, aligner à droite
         elif e.key() == QtCore.Qt.Key_R:
-            right = max([item.scenePos().x() for item in
-                        self.scene().selectedItems()])
+            right = max(
+                [item.scenePos().x() for item in self.scene().selectedItems()])
             for item in self.scene().selectedItems():
                 item.setPos(right, item.scenePos().y())
         # T, aligner en haut
         elif e.key() == QtCore.Qt.Key_T:
-            top = min([item.scenePos().y() for item in
-                      self.scene().selectedItems()])
+            top = min(
+                [item.scenePos().y() for item in self.scene().selectedItems()])
             for item in self.scene().selectedItems():
                 item.setPos(item.scenePos().x(), top)
         # B, aligner en bas
         elif e.key() == QtCore.Qt.Key_B:
-            bottom = max([item.scenePos().y() for item in
-                         self.scene().selectedItems()])
+            bottom = max(
+                [item.scenePos().y() for item in self.scene().selectedItems()])
             for item in self.scene().selectedItems():
                 item.setPos(item.scenePos().x(), bottom)
