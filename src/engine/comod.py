@@ -1,2 +1,2 @@
-_INPT_ = True	# actif
-_OUPT_ = False	# innactif
+_INPUT = 10   # actif
+_OUTPUT = 20  # innactif
