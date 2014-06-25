@@ -8,11 +8,10 @@ class toolOptions(QtGui.QWidget):
     """Contient des widgets permettant de modifier les paramètres
     de l'objet sélectionné"""
     
-    clicked = QtCore.Signal()
+    clicked = QtCore.Signal(str)
     
     def __init__(self):
         super(toolOptions, self).__init__()
-
         layout = QtGui.QVBoxLayout()
         label = QtGui.QLabel(u"Inputs number")
         layout.addWidget(label)
@@ -22,8 +21,10 @@ class toolOptions(QtGui.QWidget):
         self.setLayout(layout)
         self.setFocusPolicy(QtCore.Qt.StrongFocus)
 
+    @QtCore.Slot()
     def focusInEvent(self, event):
-        self.clicked.emit()
+        self.clicked.emit(u"Ce panneau permet de régler les options"
+		                  u" de l'objet sélectionné")
 
     @staticmethod
     def updateOptions():

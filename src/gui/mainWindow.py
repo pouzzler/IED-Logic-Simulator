@@ -33,16 +33,19 @@ class mainWindow(QtGui.QMainWindow):
         self.menuBar().addMenu(helpMenu)
         # une status bar
         self.status = self.statusBar()
-        self.status.showMessage('Bienvenu dans cette application!', 5000)
-        tooloptions.clicked.connect(self.toolOptionsFocus)
+        # connecxion des signaux
+        tooloptions.clicked.connect(self.setStatusMessage)
+        view.newSelection.connect(self.setStatusMessage)
         # et c'est tout
         self.show()
-
-    def toolOptionsFocus(self):
-        self.status.showMessage('hello')
+        
+    
+    def setStatusMessage(self, message):
+        """Affiche un message dans la barre de status"""
+        self.status.showMessage(message)
 
     def focusInEvent(self, event):
-        self.status.showMessage("Cette zone sert à quelque chose")
+        self.setStatusMessage(u"Cette zone sert à quelque chose")
 
     def about(self):
         """Affiche un dialogue d'informations sur le programme"""

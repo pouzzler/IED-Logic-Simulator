@@ -9,6 +9,9 @@ from circuit import Circuit
 
 class MainView(QtGui.QGraphicsView):
     """Une vue graphique correspondant à la scène principale"""
+    
+    newSelection = QtCore.Signal(str)
+    
     def __init__(self, parent):
         super(MainView, self).__init__(parent)
         self.setAcceptDrops(True)
@@ -16,8 +19,14 @@ class MainView(QtGui.QGraphicsView):
         self.setScene(scene)
         # On veut être prévenus des changements de sélection dans la vue
         # principale afin de mettre à jour le widget des options.
-        self.scene().selectionChanged.connect(toolOptions.updateOptions)
+        self.scene().selectionChanged.connect(self.on_selection_changed)
 
+    @QtCore.Slot()
+    def on_selection_changed(self):
+        # il faut trouver un moyen de passé le nom de l'item sélectionné
+        # à la place de "titi"
+        self.newSelection.emit("titi")
+        
     def dragEnterEvent(self, e):
         e.accept()
 
