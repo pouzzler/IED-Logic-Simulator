@@ -27,6 +27,6 @@ class ToolOptions(QtGui.QWidget):
             u"Ce panneau permet de régler les options"
             u" de l'objet sélectionné")
 
-    @staticmethod
+    @QtCore.Slot()
     def updateOptions():
         print('toto')
