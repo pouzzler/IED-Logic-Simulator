@@ -9,9 +9,9 @@ from circuit import Circuit
 
 class MainView(QtGui.QGraphicsView):
     """Une vue graphique correspondant à la scène principale"""
-    
+
     newSelection = QtCore.Signal(str)
-    
+
     def __init__(self, parent):
         super(MainView, self).__init__(parent)
         self.setAcceptDrops(True)

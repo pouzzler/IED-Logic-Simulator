@@ -23,8 +23,9 @@ class ToolOptions(QtGui.QWidget):
 
     @QtCore.Slot()
     def focusInEvent(self, event):
-        self.clicked.emit(u"Ce panneau permet de régler les options"
-		                  u" de l'objet sélectionné")
+        self.clicked.emit(
+            u"Ce panneau permet de régler les options"
+            u" de l'objet sélectionné")
 
     @staticmethod
     def updateOptions():
