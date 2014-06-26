@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # coding=utf-8
 
 from PySide import QtGui, QtCore
@@ -29,4 +29,4 @@ class ToolOptions(QtGui.QWidget):
 
     @staticmethod
     def updateOptions():
-        print 'toto'
+        print('toto')

@@ -1,10 +1,10 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # coding=utf-8
 
 from PySide import QtGui, QtCore
-from mainview import MainView
-from toolbox import ToolBox
-from tooloptions import ToolOptions
+from gui.mainview import MainView
+from gui.toolbox import ToolBox
+from gui.tooloptions import ToolOptions
 
 
 class MainWindow(QtGui.QMainWindow):

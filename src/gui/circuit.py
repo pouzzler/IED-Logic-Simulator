@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # coding=utf-8
 
 from PySide import QtGui, QtCore
@@ -105,7 +105,7 @@ class Circuit(QtGui.QGraphicsPathItem):
                 self.bodyOffset - self.diameter, self.diameter * 3,
                 self.diameter * 3)
             if path.contains(e.pos()):
-                print "in " + str(i)
+                print("in " + str(i))
                 return
         for i in range(self.nOutputs):
             path = QtGui.QPainterPath()
@@ -114,5 +114,5 @@ class Circuit(QtGui.QGraphicsPathItem):
                 self.oOffset + self.bodyOffset - self.diameter,
                 self.diameter * 3, self.diameter * 3)
             if path.contains(e.pos()):
-                print "out " + str(i)
+                print("out " + str(i))
                 return

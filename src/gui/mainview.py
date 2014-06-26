@@ -1,10 +1,11 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # coding=utf-8
 
 from PySide import QtGui, QtCore
-from toolbox import ToolBox
-from tooloptions import ToolOptions
-from circuit import Circuit
+from gui.toolbox import ToolBox
+from gui.tooloptions import ToolOptions
+from gui.circuit import Circuit
+#~ import engine.gates
 
 
 class MainView(QtGui.QGraphicsView):
