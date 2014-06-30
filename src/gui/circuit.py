@@ -5,33 +5,35 @@ from PySide import QtGui, QtCore
 
 
 class Plug():
-    def __init__(self, parent, isInput):
+    """I/Os are not drawn as separate entities, for simplicity's sake :
+    it is easier to drag one  gate than at least one input, one output,
+    and a gate body synchroneously.
+
+    They are still modeled separately, to adhere to the engine's model.
+    """
+
+    def __init__(self, parent, isinput):
         self.parent = parent
-        self.isInput = isInput
+        self.isinput = isinput
 
 
-class Circuit(QtGui.QGraphicsPathItem, QtCore.QObject):
-    """Un circuit est représenté par un QGraphicsPathItem.
-    TODO: en créant les E/S comme objets indépendants, et en faisant des
-    itemGroups()?"""
+class Circuit(QtGui.QGraphicsPathItem):
+    """We represent a circuit or logic gate as a graphic path."""
 
-    ioHeight = 25   # pixels par E/S
-    diameter = 5    # pour les négations et les pins
-    bodyOffset = 5  # le corps dépasse des entrées extrêmes de 5 pixels
-    iLeft = 5       # limite gauche des entrées
-    iRight = 24     # limite droite des entrées
-    oLeft = 50      # pareil pour les sorties
-    oRight = 69
-    xorLeft = -3    # les index gauches des trois courbes possibles )) ) xor
-    orLeft = 2      # )  ) or
-    andLeft = 31    # |  ) and
-    arcBox = 18     # la largeur du rectangle dans lequel l'arc s'inscrit
-
-    requestConnection = QtCore.Signal(list)
+    IO_HEIGHT = 25   # pixels par E/S
+    DIAMETER = 5    # pour les négations et les pins
+    BODY_OFFSET = 5  # le corps dépasse des entrées extrêmes de 5 pixels
+    I_LEFT = 5       # limite gauche des entrées
+    I_RIGHT = 24     # limite droite des entrées
+    O_LEFT = 50      # pareil pour les sorties
+    O_RIGHT = 69
+    XOR_LEFT = -3    # les index gauches des trois courbes possibles )) ) xor
+    OR_LEFT = 2      # )  ) or
+    AND_LEFT = 31    # |  ) and
+    ARC_BOX = 18     # la largeur du rectangle dans lequel l'arc s'inscrit
 
     def __init__(self, inputs, outputs, gate):
         super(Circuit, self).__init__()
-        QtCore.QObject.__init__(self)
         self.nInputs = inputs
         self.nOutputs = outputs
         self.inputList = []
@@ -39,126 +41,78 @@ class Circuit(QtGui.QGraphicsPathItem, QtCore.QObject):
 
         self.setFlag(QtGui.QGraphicsItem.ItemIsMovable)     # on peut déplacer
         self.setFlag(QtGui.QGraphicsItem.ItemIsSelectable)  # et sélectionner
-        offset = self.ioHeight * abs(self.nInputs - self.nOutputs) / 2.
+        offset = self.IO_HEIGHT * abs(self.nInputs - self.nOutputs) / 2.
         height = max(self.nInputs, self.nOutputs)
         if self.nInputs > self.nOutputs:
-            self.oOffset = offset + self.bodyOffset
-            self.iOffset = self.bodyOffset
+            self.oOffset = offset + self.BODY_OFFSET
+            self.iOffset = self.BODY_OFFSET
         else:
-            self.oOffset = self.bodyOffset
-            self.iOffset = offset + self.bodyOffset
+            self.oOffset = self.BODY_OFFSET
+            self.iOffset = offset + self.BODY_OFFSET
         path = QtGui.QPainterPath()
         # On crée les entrées, et on les représente
         for i in range(self.nInputs):
             self.inputList.append(Plug(self, True))
             path.addEllipse(
-                0, i * self.ioHeight + self.iOffset + self.bodyOffset,
-                self.diameter, self.diameter)
+                0, i * self.IO_HEIGHT + self.iOffset + self.BODY_OFFSET,
+                self.DIAMETER, self.DIAMETER)
             path.moveTo(
-                self.iLeft,
-                i * self.ioHeight + self.iOffset + self.bodyOffset +
-                self.diameter / 2.)
+                self.I_LEFT,
+                i * self.IO_HEIGHT + self.iOffset + self.BODY_OFFSET +
+                self.DIAMETER / 2.)
             path.lineTo(
-                self.iRight, i * self.ioHeight + self.iOffset +
-                self.bodyOffset + self.diameter / 2.)
+                self.I_RIGHT, i * self.IO_HEIGHT + self.iOffset +
+                self.BODY_OFFSET + self.DIAMETER / 2.)
         # le cercle représentant la négation
         if gate in ['Nand', 'Not', 'Nor', 'Xnor']:
             path.addEllipse(
-                self.oLeft, height * self.ioHeight / 2. - self.diameter / 2.,
-                self.diameter, self.diameter)
+                self.O_LEFT, height * self.IO_HEIGHT / 2. - self.DIAMETER / 2.,
+                self.DIAMETER, self.DIAMETER)
 
         for i in range(self.nOutputs):               # les pins de sortie
             self.outputList.append(Plug(self, False))
             path.addEllipse(
-                self.oRight + 1, i * self.ioHeight + self.oOffset +
-                self.bodyOffset, self.diameter, self.diameter)
-            left = (
-                self.oLeft + self.diameter
+                self.O_RIGHT + 1, i * self.IO_HEIGHT + self.oOffset +
+                self.BODY_OFFSET, self.DIAMETER, self.DIAMETER)
+            self.left = (
+                self.O_LEFT + self.DIAMETER
                 if gate in ['Nand', 'Not', 'Nor', 'Xnor']
-                else self.oLeft)
+                else self.O_LEFT)
             path.moveTo(
-                left, i * self.ioHeight + self.oOffset +
-                self.bodyOffset + self.diameter / 2.)
+                self.left, i * self.IO_HEIGHT + self.oOffset +
+                self.BODY_OFFSET + self.DIAMETER / 2.)
             path.lineTo(
-                self.oRight, i * self.ioHeight + self.oOffset +
-                self.bodyOffset + self.diameter / 2.)
+                self.O_RIGHT, i * self.IO_HEIGHT + self.oOffset +
+                self.BODY_OFFSET + self.DIAMETER / 2.)
 
         if gate in ['Nand', 'Not', 'And']:           # la ligne verticale
-            path.moveTo(self.iRight + 1, 0)
-            path.lineTo(self.iRight + 1, height * self.ioHeight)
+            path.moveTo(self.I_RIGHT + 1, 0)
+            path.lineTo(self.I_RIGHT + 1, height * self.IO_HEIGHT)
         if gate == 'Not':
-            path.lineTo(self.oLeft - 1, height * self.ioHeight / 2)
+            path.lineTo(self.O_LEFT - 1, height * self.IO_HEIGHT / 2)
         elif gate in ['Xor', 'Xnor']:
-            path.moveTo(self.xorLeft + self.arcBox, 0)
+            path.moveTo(self.XOR_LEFT + self.ARC_BOX, 0)
             path.arcTo(
-                self.xorLeft, 0, self.arcBox, height * self.ioHeight, 90, -180)
+                self.XOR_LEFT, 0, self.ARC_BOX, height * self.IO_HEIGHT,
+                90, -180)
         if gate in ['Or', 'Nor', 'Xor', 'Xnor']:
-            path.moveTo(self.orLeft + self.arcBox, 0)
+            path.moveTo(self.OR_LEFT + self.ARC_BOX, 0)
             path.arcTo(
-                self.orLeft, 0, self.arcBox, height * self.ioHeight, 90, -180)
+                self.OR_LEFT, 0, self.ARC_BOX, height * self.IO_HEIGHT,
+                90, -180)
         if gate in ['And', 'Nand', 'Or', 'Nor', 'Xor', 'Xnor']:
-            path.lineTo(self.andLeft,  height * self.ioHeight)
+            path.lineTo(self.AND_LEFT,  height * self.IO_HEIGHT)
             path.arcTo(
-                self.andLeft,  0, self.arcBox, height * self.ioHeight,
+                self.AND_LEFT,  0, self.ARC_BOX, height * self.IO_HEIGHT,
                 -90, 180)
         path.closeSubpath()
         self.setPath(path)
 
-    def shape(self):
-        """Renvoie le rectangle englobant le chemin plutôt que le chemin,
-        afin de pouvoir cliquer n'importe ou pour sélectionner.
-        """
-        path = QtGui.QPainterPath()
-        rect = self.boundingRect()
-        # TODO: on ne veut pas sélectionner notre objet mais cliquer une E/S
-        path.addRect(rect.left(), rect.top(), rect.width(), rect.height())
-        return path
-
-    #~ def mousePressEvent(self, e):
-        #~ """Pour détecter les clics dans les entrées/sorties"""
-        #~ self.setFlag(QtGui.QGraphicsItem.ItemIsMovable)
-        #~ for i in range(self.nInputs):
-            #~ path = QtGui.QPainterPath()
-            #~ path.addEllipse(
-                #~ - self.diameter, i * self.ioHeight + self.iOffset +
-                #~ self.bodyOffset - self.diameter, self.diameter * 3,
-                #~ self.diameter * 3)
-            #~ if path.contains(e.pos()):
-                #~ self.setFlag(QtGui.QGraphicsItem.ItemIsMovable, False)
-                #~ self.requestConnection.emit([self.inputList[i]])
-                #~ e.ignore()
-                #~ return
-        #~ for i in range(self.nOutputs):
-            #~ path = QtGui.QPainterPath()
-            #~ path.addEllipse(
-                #~ self.oRight + 1 - self.diameter, i * self.ioHeight +
-                #~ self.oOffset + self.bodyOffset - self.diameter,
-                #~ self.diameter * 3, self.diameter * 3)
-            #~ if path.contains(e.pos()):
-                #~ self.setFlag(QtGui.QGraphicsItem.ItemIsMovable, False)
-                #~ self.requestConnection.emit([self.outputList[i]])
-                #~ e.ignore()
-                #~ return
-#~ 
-    #~ def mouseReleaseEvent(self, e):
-        #~ """Exactement la même chose que mousePressEvent"""
-        #~ print("release")
-        #~ for i in range(self.nInputs):
-            #~ path = QtGui.QPainterPath()
-            #~ path.addEllipse(
-                #~ - self.diameter, i * self.ioHeight + self.iOffset +
-                #~ self.bodyOffset - self.diameter, self.diameter * 3,
-                #~ self.diameter * 3)
-            #~ if path.contains(e.pos()):
-                #~ self.requestConnection.emit([self.inputList[i]])
-                #~ return
-        #~ for i in range(self.nOutputs):
-            #~ path = QtGui.QPainterPath()
-            #~ path.addEllipse(
-                #~ self.oRight + 1 - self.diameter, i * self.ioHeight +
-                #~ self.oOffset + self.bodyOffset - self.diameter,
-                #~ self.diameter * 3, self.diameter * 3)
-            #~ if path.contains(e.pos()):
-                #~ self.requestConnection.emit([self.outputList[i]])
-                #~ return
-    
+    #~ def shape(self):
+        #~ """Renvoie le rectangle englobant le chemin plutôt que le chemin,
+        #~ afin de pouvoir cliquer n'importe ou pour sélectionner.
+        #~ """
+        #~ path = QtGui.QPainterPath()
+        #~ rect = self.boundingRect()
+        #~ path.addRect(rect.left(), rect.top(), rect.width(), rect.height())
+        #~ return path

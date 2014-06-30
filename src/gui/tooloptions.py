@@ -5,8 +5,9 @@ from PySide import QtGui, QtCore
 
 
 class ToolOptions(QtGui.QWidget):
-    """Contient des widgets permettant de modifier les paramètres
-    de l'objet sélectionné"""
+    """A widget containing widgets for changing the properties of the
+    selected circuit or gate.
+    """
 
     clicked = QtCore.Signal(str)
 

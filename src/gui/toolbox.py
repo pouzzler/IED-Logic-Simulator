@@ -5,7 +5,9 @@ from PySide import QtGui, QtCore
 
 
 class ToolBox(QtGui.QListWidget):
-    """Une boîte à outils contenant les portes et circuits disponibles"""
+    """A toolbox that contains logic gates and user circuits, for use
+    in the main designer window.
+    """
 
     clicked = QtCore.Signal(str)
 
