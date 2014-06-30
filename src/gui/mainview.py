@@ -103,6 +103,7 @@ class MainView(QtGui.QGraphicsView):
                 if path.contains(pos):
                     print("Je veux connecter  ", item, item.outputList[i])
                     return
+        super(MainView, self).mousePressEvent(e)
 
     def mouseReleaseEvent(self, e):
         item = self.itemAt(e.pos())
@@ -126,3 +127,4 @@ class MainView(QtGui.QGraphicsView):
                 if path.contains(pos):
                     print("à  ", item, item.outputList[i])
                     return
+        super(MainView, self).mouseReleaseEvent(e)
