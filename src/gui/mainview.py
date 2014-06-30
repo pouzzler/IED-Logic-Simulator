@@ -92,7 +92,7 @@ class MainView(QtGui.QGraphicsView):
                     item.bodyOffset - item.diameter, item.diameter * 3,
                     item.diameter * 3)
                 if path.contains(pos):
-                    print("in ", i)
+                    print("Je veux connecter ", item, item.inputList[i])
                     return
             for i in range(item.nOutputs):
                 path = QtGui.QPainterPath()
@@ -101,8 +101,28 @@ class MainView(QtGui.QGraphicsView):
                     item.oOffset + item.bodyOffset - item.diameter,
                     item.diameter * 3, item.diameter * 3)
                 if path.contains(pos):
-                    print("out ", i)
+                    print("Je veux connecter  ", item, item.outputList[i])
                     return
 
     def mouseReleaseEvent(self, e):
-        self.mousePressEvent(e)
+        item = self.itemAt(e.pos())
+        if item:
+            pos = item.mapFromScene(self.mapToScene(e.pos()))
+            for i in range(item.nInputs):
+                path = QtGui.QPainterPath()
+                path.addEllipse(
+                    - item.diameter, i * item.ioHeight + item.iOffset +
+                    item.bodyOffset - item.diameter, item.diameter * 3,
+                    item.diameter * 3)
+                if path.contains(pos):
+                    print("à ", item, item.inputList[i])
+                    return
+            for i in range(item.nOutputs):
+                path = QtGui.QPainterPath()
+                path.addEllipse(
+                    item.oRight + 1 - item.diameter, i * item.ioHeight +
+                    item.oOffset + item.bodyOffset - item.diameter,
+                    item.diameter * 3, item.diameter * 3)
+                if path.contains(pos):
+                    print("à  ", item, item.outputList[i])
+                    return
