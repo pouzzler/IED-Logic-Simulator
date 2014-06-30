@@ -10,49 +10,41 @@ from comod import _OUTPUT
 from simulator import *
 
 
-# porte NOT: O = NON A
+# porte NOT
 class NotGate(Circuit):
-    def __init__(self, name, owner=None):
-        Circuit.__init__(self, name, owner)
-        self.A = Input('A', self, False)    # i: bitA
-        self.O = Output('O', self, False)   # o: NOT bitA
+    def __init__(self, name=None):
+        Circuit.__init__(self, name)
+        self.A = Input('I', self, False)
+        self.add_output('O', False)
 
     def evalfun(self):
-        self.O.set(not self.A.value)
+        self.outputList[0].set(not self.A.value)
 
 
-# porte AND: O = A ET B
+# porte AND
 class AndGate(Circuit):
-    def __init__(self, name, owner=None, inputs=['A', 'B']):
-        if 'O' in inputs:
-            return   # O est déjà utilisé
-        Circuit.__init__(self, name, owner)
-        self.inputList = []        # liste des entrées
-        for inp in inputs:         # génère les entrée et ajoute-les à la liste
-            exec("self.%s = Input('%s', self)" % (inp, inp,))
-            exec('self.inputList.append(self.%s)' % (inp,))
-        self.O = Output('O', self, False)
+    def __init__(self, name=None, inputs=2):
+        Circuit.__init__(self, name)
+        for inp in range(inputs):         # ajoute les entrées à la liste
+            self.add_input('I' + str(inp), False)
+        self.add_output('O', False)
 
-    def evalfun(self):             # ET logique de toutes les entrées
+    def evalfun(self):                    # ET logique de toutes les entrées
         out = True
         for inp in self.inputList:
             if inp.value is False:
                 out = False
                 break
-        self.O.set(out)
+        self.outputList[0].set(out)
 
 
-# porte OR: O = A OU B
+# porte OR
 class OrGate(Circuit):
-    def __init__(self, name, owner=None, inputs=['A', 'B']):
-        if 'O' in inputs:
-            return   # O est déjà utilisé
-        Circuit.__init__(self, name, owner)
-        self.inputList = []        # liste des entrées
-        for inp in inputs:         # génère les entrée et ajoute-les à la liste
-            exec("self.%s = Input('%s', self)" % (inp, inp,))
-            exec('self.inputList.append(self.%s)' % (inp,))
-        self.O = Output('O', self, False)
+    def __init__(self, name=None, inputs=2):
+        Circuit.__init__(self, name)
+        for inp in range(inputs):
+            self.add_input('I' + str(inp), False)
+        self.add_output('O', False)
 
     def evalfun(self):
         out = False
@@ -60,40 +52,32 @@ class OrGate(Circuit):
             if inp.value is True:
                 out = True
                 break
-        self.O.set(out)
+        self.outputList[0].set(out)
 
 
-# porte XOR: O = A OU-EXCLUSIF B
+# porte XOR
 class XorGate(Circuit):
-    def __init__(self, name, owner=None, inputs=['A', 'B']):
-        if 'O' in inputs:
-            return   # O est déjà utilisé
-        Circuit.__init__(self, name, owner)
-        self.inputList = []        # liste des entrées
-        for inp in inputs:         # génère les entrée et ajoute-les à la liste
-            exec("self.%s = Input('%s', self)" % (inp, inp,))
-            exec('self.inputList.append(self.%s)' % (inp,))
-        self.O = Output('O', self, False)
+    def __init__(self, name, inputs=2):
+        Circuit.__init__(self, name)
+        for inp in range(inputs):
+            self.add_input('I' + str(inp), False)
+        self.add_output('O', False)
 
     def evalfun(self):
         c = 0
         for inp in self.inputList:
             if inp.value is True:
                 c += 1
-        self.O.set(c % 2)
+        self.outputList[0].set(c % 2)
 
 
-# porte NAND: O = NON (A ET B)
+# porte NAND
 class NandGate(Circuit):
-    def __init__(self, name, owner=None, inputs=['A', 'B']):
-        if 'O' in inputs:
-            return   # O est déjà utilisé
-        Circuit.__init__(self, name, owner)
-        self.inputList = []        # liste des entrées
-        for inp in inputs:         # génère les entrée et ajoute-les à la liste
-            exec("self.%s = Input('%s', self)" % (inp, inp,))
-            exec('self.inputList.append(self.%s)' % (inp,))
-        self.O = Output('O', self, False)
+    def __init__(self, name, inputs=2):
+        Circuit.__init__(self, name)
+        for inp in range(inputs):
+            self.add_input('I' + str(inp), False)
+        self.add_output('O', False)
 
     def evalfun(self):
         out = False
@@ -101,4 +85,4 @@ class NandGate(Circuit):
             if inp.value is False:
                 out = True
                 break
-        self.O.set(out)
+        self.outputList[0].set(out)

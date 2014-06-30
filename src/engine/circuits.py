@@ -11,50 +11,54 @@ from gates import *
 
 # demi-additionneur: calcule la somme S avec retenue C de A et B
 class HalfAdder(Circuit):
-    def __init__(self, name, owner=None):
-        Circuit.__init__(self, name, owner)
-        self.A = Input('A', self, False)   # i: bitA
-        self.B = Input('B', self, False)   # i: bitB
-        self.S = Input('S', self, False)   # o: bitA + bitB
-        self.O = Output('O', self, False)  # o: retenue
+    def __init__(self, name):
+        Circuit.__init__(self, name)
+        # entrées du circuit
+        self.A = self.add_input('A', False)    # inputList[0]
+        self.B = self.add_input('B', False)    # inputList[1]
+        # sorties du circuit
+        self.S = self.add_output('S', False)   # outputList[0]
+        self.O = self.add_output('O', False)   # outputList[1]
         # composantes du circuit
-        self.X1 = XorGate('X1', self)
-        self.A1 = AndGate('A1', self)
+        self.XOR1 = self.add_circuit(XorGate('X1'))
+        self.AND1 = self.add_circuit(AndGate('A1'))
         # connexions des composantes du circuit
-        self.A.connect([self.X1.A, self.A1.A])
-        self.B.connect([self.X1.B, self.A1.B])
-        self.X1.O.connect([self.S])
-        self.A1.O.connect([self.O])
+        self.A.connect([self.XOR1.inputList[0], self.AND1.inputList[0]])
+        self.B.connect([self.XOR1.inputList[1], self.AND1.inputList[1]])
+        self.XOR1.outputList[0].connect(self.outputList[0])
+        self.AND1.outputList[0].connect(self.outputList[1])
 
 
 # additionneur complet: calcule la somme S et retenue Cout de A et B et Cin
 class FullAdder(Circuit):
-    def __init__(self, name, owner=None):
-        Circuit.__init__(self, name, owner)
-        self.A = Input('A', self, True)         # i: wordA
-        self.B = Input('B', self, True)         # i: wordB
-        self.Cin = Input('Cin', self, True)     # i: retenue
-        self.S = Output('S', self, True)        # o: wordA + wordB
-        self.Cout = Output('Cout', self, True)  # o: retenue
+    def __init__(self, name):
+        Circuit.__init__(self, name)
+        # entrées du circuit
+        self.A = self.add_input('A')
+        self.B = self.add_input('B')
+        self.Cin = self.add_input('Cin')
+        # sorties du circuit
+        self.S = self.add_output('S')
+        self.Cout = self.add_output('Cout')
         # composantes du circuit
-        self.HA1 = HalfAdder('HA1', self)
-        self.HA2 = HalfAdder('HA2', self)
-        self.OR1 = OrGate('OR1', self)
+        self.HA1 = HalfAdder('HA1')
+        self.HA2 = HalfAdder('HA2')
+        self.OR1 = OrGate('OR1')
         # connexions des composantes du circuit
-        self.A.connect([self.HA1.A])
-        self.B.connect([self.HA1.B])
-        self.Cin.connect([self.HA2.A])
-        self.HA1.S.connect([self.HA2.B])
-        self.HA1.O.connect([self.OR1.B])
-        self.HA2.O.connect([self.OR1.A])
-        self.HA2.S.connect([self.S])
-        self.OR1.O.connect([self.Cout])
+        self.A.connect([self.HA1.inputList[0]])
+        self.B.connect([self.HA1.inputList[1]])
+        self.Cin.connect([self.HA2.inputList[0]])
+        self.HA1.outputList[0].connect([self.HA2.inputList[1]])
+        self.HA1.outputList[1].connect([self.OR1.inputList[1]])
+        self.HA2.outputList[1].connect([self.OR1.inputList[0]])
+        self.HA2.outputList[0].connect([self.outputList[0]])
+        self.OR1.outputList[0].connect([self.outputList[1]])
 
 
 # bascule RS: permet de positionner la sortie Q à 1 (Set) ou à 0 (Reset)
 class RSFlipflop(Circuit):
-    def __init__(self, name, owner=None):
-        Circuit.__init__(self, name, owner)
+    def __init__(self, name):
+        Circuit.__init__(self, name)
         self.S = Input('S', self, False)  # i: bitS
         self.R = Input('R', self, False)  # i: bitQ
         self.Q = Output('Q', self, True)  # o: 1 si ~S OU 0 si ~R
@@ -70,8 +74,8 @@ class RSFlipflop(Circuit):
 
 # bascule D: permet de mémoriser l'entrée D à chaque tic d'horloge C
 class DFlipFlop(Circuit):
-    def __init__(self, name, owner=None):
-        Circuit.__init__(self, name, owner)
+    def __init__(self, name):
+        Circuit.__init__(self, name)
         self.D = Input('D', self, False)   # i: bitD
         self.C = Input('C', self, False)   # i: Clock
         self.Q = Output('Q', self, False)  # o: bit mémorisé
@@ -108,8 +112,8 @@ class DFlipFlopMasterSlave(Circuit):
 
 
 class TwoTwoMemory(Circuit):
-    def __init__(self, name, owner=None):
-        Circuit.__init__(self, name, owner)
+    def __init__(self, name):
+        Circuit.__init__(self, name)
         self.S = Input('A', self, False)     # i: sélecteur
         self.RW = Input('RW', self, False)   # i: 0: read, 1: write
         self.D0 = Input('D0', self, False)   # i: bitD0
@@ -157,8 +161,8 @@ class TwoTwoMemory(Circuit):
 
 
 class FourOneMux(Circuit):
-    def __init__(self, name, owner=None):
-        Circuit.__init__(self, name, owner)
+    def __init__(self, name):
+        Circuit.__init__(self, name)
         self.I0 = Input('I0', self, False)
         self.I1 = Input('I1', self, False)
         self.I2 = Input('I2', self, False)
