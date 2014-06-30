@@ -3,10 +3,16 @@
 
 from PySide import QtGui, QtCore
 
+class Plug():
+    def __init__(self, parent, isInput):
+        self.parent = parent
+        self.isInput = isInput
 
-class Circuit(QtGui.QGraphicsPathItem):
-
-    """Un circuit est représenté par un QGraphicsPathItem"""
+class Circuit(QtGui.QGraphicsPathItem, QtCore.QObject):
+    """Un circuit est représenté par un QGraphicsPathItem. 
+    TODO: en créant les E/S comme objets indépendants, et en faisant des
+    itemGroups()?"""
+    
     ioHeight = 25   # pixels par E/S
     diameter = 5    # pour les négations et les pins
     bodyOffset = 5  # le corps dépasse des entrées extrêmes de 5 pixels
@@ -19,12 +25,18 @@ class Circuit(QtGui.QGraphicsPathItem):
     andLeft = 31    # |  ) and
     arcBox = 18     # la largeur du rectangle dans lequel l'arc s'inscrit
 
+    requestConnection = QtCore.Signal(list)
+    
     def __init__(self, inputs, outputs, gate):
         super(Circuit, self).__init__()
-        self.setFlag(QtGui.QGraphicsItem.ItemIsMovable)     # on peut déplacer
-        self.setFlag(QtGui.QGraphicsItem.ItemIsSelectable)  # et sélectionner
+        QtCore.QObject.__init__(self)
         self.nInputs = inputs
         self.nOutputs = outputs
+        self.inputList = []
+        self.outputList = []
+        
+        self.setFlag(QtGui.QGraphicsItem.ItemIsMovable)     # on peut déplacer
+        self.setFlag(QtGui.QGraphicsItem.ItemIsSelectable)  # et sélectionner
         offset = self.ioHeight * abs(self.nInputs - self.nOutputs) / 2.
         height = max(self.nInputs, self.nOutputs)
         if self.nInputs > self.nOutputs:
@@ -34,7 +46,9 @@ class Circuit(QtGui.QGraphicsPathItem):
             self.oOffset = self.bodyOffset
             self.iOffset = offset + self.bodyOffset
         path = QtGui.QPainterPath()
-        for i in range(self.nInputs):                # les pins d'entrée
+        # On crée les entrées, et on les représente
+        for i in range(self.nInputs):     
+            self.inputList.append(Plug(self, True))          
             path.addEllipse(
                 0, i * self.ioHeight + self.iOffset + self.bodyOffset,
                 self.diameter, self.diameter)
@@ -52,6 +66,7 @@ class Circuit(QtGui.QGraphicsPathItem):
                 self.diameter, self.diameter)
 
         for i in range(self.nOutputs):               # les pins de sortie
+            self.outputList.append(Plug(self, False))    
             path.addEllipse(
                 self.oRight + 1, i * self.ioHeight + self.oOffset +
                 self.bodyOffset, self.diameter, self.diameter)
@@ -105,7 +120,7 @@ class Circuit(QtGui.QGraphicsPathItem):
                 self.bodyOffset - self.diameter, self.diameter * 3,
                 self.diameter * 3)
             if path.contains(e.pos()):
-                print("in " + str(i))
+                self.requestConnection.emit([self.inputList[i]])
                 return
         for i in range(self.nOutputs):
             path = QtGui.QPainterPath()
@@ -114,5 +129,5 @@ class Circuit(QtGui.QGraphicsPathItem):
                 self.oOffset + self.bodyOffset - self.diameter,
                 self.diameter * 3, self.diameter * 3)
             if path.contains(e.pos()):
-                print("out " + str(i))
+                self.requestConnection.emit([self.outputList[i]])
                 return

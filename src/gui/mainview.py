@@ -18,8 +18,12 @@ class MainView(QtGui.QGraphicsView):
         self.setScene(scene)
         # On veut être prévenus des changements de sélection dans la vue
         # principale afin de mettre à jour le widget des options.
-        self.scene().selectionChanged.connect(ToolOptions.updateOptions)
-
+        #~ self.scene().selectionChanged.connect(ToolOptions.updateOptions)
+        
+    @QtCore.Slot()
+    def getConnectionRequest(self, pluglist):
+        print pluglist
+                
     def dragEnterEvent(self, e):
         e.accept()
 
@@ -36,6 +40,7 @@ class MainView(QtGui.QGraphicsView):
         i = Circuit(2, 1, text)
         self.scene().addItem(i)
         i.setPos(e.pos())
+        i.requestConnection.connect(self.getConnectionRequest)
 
     def keyPressEvent(self, e):
         """Gère les évènements clavier : suppression, rotation, alignement"""

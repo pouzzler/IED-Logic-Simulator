@@ -34,8 +34,7 @@ class MainWindow(QtGui.QMainWindow):
 
         # connexion des signaux
         tooloptions.clicked.connect(self.setStatusMessage)
-        view.newSelection.connect(self.setStatusMessage)
-        # et c'est tout
+
         self.show()
 
     def setStatusMessage(self, message):
