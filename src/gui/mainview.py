@@ -2,14 +2,15 @@
 # coding=utf-8
 
 from PySide import QtGui, QtCore
-from gui.toolbox import ToolBox
-from gui.tooloptions import ToolOptions
-from gui.circuit import Circuit
-#~ import engine.gates
+from .toolbox import ToolBox
+from .tooloptions import ToolOptions
+from .circuit import Circuit
 
 
 class MainView(QtGui.QGraphicsView):
-    """Une vue graphique correspondant à la scène principale"""
+    """Une vue graphique représentant le schéma d'un circuit, construit
+    par l'utilisateur.
+    """
 
     def __init__(self, parent):
         super(MainView, self).__init__(parent)
@@ -19,11 +20,11 @@ class MainView(QtGui.QGraphicsView):
         # On veut être prévenus des changements de sélection dans la vue
         # principale afin de mettre à jour le widget des options.
         #~ self.scene().selectionChanged.connect(ToolOptions.updateOptions)
-        
+
     @QtCore.Slot()
     def getConnectionRequest(self, pluglist):
-        print pluglist
-                
+        print(pluglist)
+
     def dragEnterEvent(self, e):
         e.accept()
 

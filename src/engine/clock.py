@@ -2,7 +2,7 @@
 # thread pour l'horloge permetant de simuler l'horloge dans un thread séparé #
 ##############################################################################
 
-from circuits import *
+from .circuits import *
 from threading import Thread
 import time
 

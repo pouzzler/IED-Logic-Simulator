@@ -3,10 +3,10 @@
 ##     de portes logiques et d'autres circuits     ##
 #####################################################
 
-from comod import _INPUT
-from comod import _OUTPUT
-from simulator import *
-from gates import *
+from .comod import _INPUT
+from .comod import _OUTPUT
+from .simulator import *
+from .gates import *
 
 
 # demi-additionneur: calcule la somme S avec retenue C de A et B

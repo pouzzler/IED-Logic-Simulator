@@ -5,9 +5,9 @@
 ## tente de simuler les portes et circuits logiques en python, sans GUI ##
 ##########################################################################
 
-from comod import _INPUT
-from comod import _OUTPUT
-from comod import _CIRCUIT
+from .comod import _INPUT
+from .comod import _OUTPUT
+from .comod import _CIRCUIT
 
 
 #============================ MOTEUR DU SIMULATEUR ===========================#
