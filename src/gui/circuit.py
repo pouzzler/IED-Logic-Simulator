@@ -114,23 +114,51 @@ class Circuit(QtGui.QGraphicsPathItem, QtCore.QObject):
         path.addRect(rect.left(), rect.top(), rect.width(), rect.height())
         return path
 
-    def mousePressEvent(self, e):
-        """Pour détecter les clics dans les entrées/sorties"""
-        for i in range(self.nInputs):
-            path = QtGui.QPainterPath()
-            path.addEllipse(
-                - self.diameter, i * self.ioHeight + self.iOffset +
-                self.bodyOffset - self.diameter, self.diameter * 3,
-                self.diameter * 3)
-            if path.contains(e.pos()):
-                self.requestConnection.emit([self.inputList[i]])
-                return
-        for i in range(self.nOutputs):
-            path = QtGui.QPainterPath()
-            path.addEllipse(
-                self.oRight + 1 - self.diameter, i * self.ioHeight +
-                self.oOffset + self.bodyOffset - self.diameter,
-                self.diameter * 3, self.diameter * 3)
-            if path.contains(e.pos()):
-                self.requestConnection.emit([self.outputList[i]])
-                return
+    #~ def mousePressEvent(self, e):
+        #~ """Pour détecter les clics dans les entrées/sorties"""
+        #~ self.setFlag(QtGui.QGraphicsItem.ItemIsMovable)
+        #~ for i in range(self.nInputs):
+            #~ path = QtGui.QPainterPath()
+            #~ path.addEllipse(
+                #~ - self.diameter, i * self.ioHeight + self.iOffset +
+                #~ self.bodyOffset - self.diameter, self.diameter * 3,
+                #~ self.diameter * 3)
+            #~ if path.contains(e.pos()):
+                #~ self.setFlag(QtGui.QGraphicsItem.ItemIsMovable, False)
+                #~ self.requestConnection.emit([self.inputList[i]])
+                #~ e.ignore()
+                #~ return
+        #~ for i in range(self.nOutputs):
+            #~ path = QtGui.QPainterPath()
+            #~ path.addEllipse(
+                #~ self.oRight + 1 - self.diameter, i * self.ioHeight +
+                #~ self.oOffset + self.bodyOffset - self.diameter,
+                #~ self.diameter * 3, self.diameter * 3)
+            #~ if path.contains(e.pos()):
+                #~ self.setFlag(QtGui.QGraphicsItem.ItemIsMovable, False)
+                #~ self.requestConnection.emit([self.outputList[i]])
+                #~ e.ignore()
+                #~ return
+#~ 
+    #~ def mouseReleaseEvent(self, e):
+        #~ """Exactement la même chose que mousePressEvent"""
+        #~ print("release")
+        #~ for i in range(self.nInputs):
+            #~ path = QtGui.QPainterPath()
+            #~ path.addEllipse(
+                #~ - self.diameter, i * self.ioHeight + self.iOffset +
+                #~ self.bodyOffset - self.diameter, self.diameter * 3,
+                #~ self.diameter * 3)
+            #~ if path.contains(e.pos()):
+                #~ self.requestConnection.emit([self.inputList[i]])
+                #~ return
+        #~ for i in range(self.nOutputs):
+            #~ path = QtGui.QPainterPath()
+            #~ path.addEllipse(
+                #~ self.oRight + 1 - self.diameter, i * self.ioHeight +
+                #~ self.oOffset + self.bodyOffset - self.diameter,
+                #~ self.diameter * 3, self.diameter * 3)
+            #~ if path.contains(e.pos()):
+                #~ self.requestConnection.emit([self.outputList[i]])
+                #~ return
+    

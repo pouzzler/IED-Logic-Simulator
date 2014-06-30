@@ -17,9 +17,6 @@ class MainView(QtGui.QGraphicsView):
         self.setAcceptDrops(True)
         scene = QtGui.QGraphicsScene(parent)
         self.setScene(scene)
-        # On veut être prévenus des changements de sélection dans la vue
-        # principale afin de mettre à jour le widget des options.
-        #~ self.scene().selectionChanged.connect(ToolOptions.updateOptions)
 
     @QtCore.Slot()
     def getConnectionRequest(self, pluglist):
@@ -83,3 +80,29 @@ class MainView(QtGui.QGraphicsView):
                 [item.scenePos().y() for item in self.scene().selectedItems()])
             for item in self.scene().selectedItems():
                 item.setPos(item.scenePos().x(), bottom)
+
+    def mousePressEvent(self, e):
+        item = self.itemAt(e.pos())
+        if item:
+            pos = item.mapFromScene(self.mapToScene(e.pos()))
+            for i in range(item.nInputs):
+                path = QtGui.QPainterPath()
+                path.addEllipse(
+                    - item.diameter, i * item.ioHeight + item.iOffset +
+                    item.bodyOffset - item.diameter, item.diameter * 3,
+                    item.diameter * 3)
+                if path.contains(pos):
+                    print("in ", i)
+                    return
+            for i in range(item.nOutputs):
+                path = QtGui.QPainterPath()
+                path.addEllipse(
+                    item.oRight + 1 - item.diameter, i * item.ioHeight +
+                    item.oOffset + item.bodyOffset - item.diameter,
+                    item.diameter * 3, item.diameter * 3)
+                if path.contains(pos):
+                    print("out ", i)
+                    return
+
+    def mouseReleaseEvent(self, e):
+        self.mousePressEvent(e)
