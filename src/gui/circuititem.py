@@ -6,19 +6,6 @@ from engine.simulator import Circuit
 import engine
 
 
-class Plug():
-    """I/Os are not drawn as separate entities, for simplicity's sake :
-    it is easier to drag one  gate than at least one input, one output,
-    and a gate body synchroneously.
-
-    They are still modeled separately, to adhere to the engine's model.
-    """
-
-    def __init__(self, parent, isinput):
-        self.parent = parent
-        self.isinput = isinput
-
-
 class CircuitItem(QtGui.QGraphicsPathItem):
     """We represent a circuit or logic gate as a graphic path."""
 
@@ -38,18 +25,18 @@ class CircuitItem(QtGui.QGraphicsPathItem):
         super(CircuitItem, self).__init__()
         # Creating a circuit from our engine, with dynamic class lookup.
         self.circuit = getattr(engine.gates, gate + "Gate")(None)
-
-        self.nInputs = self.circuit.nb_inputs()
-        self.nOutputs = self.circuit.nb_outputs()
-        self.inputList = []
-        self.outputList = []
+        # Getting some model values useful for the drawing.
+        nInputs = self.circuit.nb_inputs()
+        nOutputs = self.circuit.nb_outputs()
+        #~ self.inputList = []
+        #~ self.outputList = []
         
 
         self.setFlag(QtGui.QGraphicsItem.ItemIsMovable)     # on peut déplacer
         self.setFlag(QtGui.QGraphicsItem.ItemIsSelectable)  # et sélectionner
-        offset = self.IO_HEIGHT * abs(self.nInputs - self.nOutputs) / 2.
-        height = max(self.nInputs, self.nOutputs)
-        if self.nInputs > self.nOutputs:
+        offset = self.IO_HEIGHT * abs(nInputs - nOutputs) / 2.
+        height = max(nInputs, nOutputs)
+        if nInputs > nOutputs:
             self.oOffset = offset + self.BODY_OFFSET
             self.iOffset = self.BODY_OFFSET
         else:
@@ -57,8 +44,8 @@ class CircuitItem(QtGui.QGraphicsPathItem):
             self.iOffset = offset + self.BODY_OFFSET
         path = QtGui.QPainterPath()
         # On crée les entrées, et on les représente
-        for i in range(self.nInputs):
-            self.inputList.append(Plug(self, True))
+        for i in range(nInputs):
+            #~ self.inputList.append(Plug(self, True))
             path.addEllipse(
                 0, i * self.IO_HEIGHT + self.iOffset + self.BODY_OFFSET,
                 self.DIAMETER, self.DIAMETER)
@@ -75,8 +62,8 @@ class CircuitItem(QtGui.QGraphicsPathItem):
                 self.O_LEFT, height * self.IO_HEIGHT / 2. - self.DIAMETER / 2.,
                 self.DIAMETER, self.DIAMETER)
 
-        for i in range(self.nOutputs):               # les pins de sortie
-            self.outputList.append(Plug(self, False))
+        for i in range(nOutputs):               # les pins de sortie
+            #~ self.outputList.append(Plug(self, False))
             path.addEllipse(
                 self.O_RIGHT + 1, i * self.IO_HEIGHT + self.oOffset +
                 self.BODY_OFFSET, self.DIAMETER, self.DIAMETER)
