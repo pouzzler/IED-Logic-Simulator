@@ -2,7 +2,7 @@
 # coding=utf-8
 
 from PySide import QtGui, QtCore
-
+from engine.simulator import Circuit
 
 class Plug():
     """I/Os are not drawn as separate entities, for simplicity's sake :
@@ -17,7 +17,7 @@ class Plug():
         self.isinput = isinput
 
 
-class Circuit(QtGui.QGraphicsPathItem):
+class CircuitItem(QtGui.QGraphicsPathItem):
     """We represent a circuit or logic gate as a graphic path."""
 
     IO_HEIGHT = 25   # pixels par E/S
@@ -32,12 +32,13 @@ class Circuit(QtGui.QGraphicsPathItem):
     AND_LEFT = 31    # |  ) and
     ARC_BOX = 18     # la largeur du rectangle dans lequel l'arc s'inscrit
 
-    def __init__(self, inputs, outputs, gate):
-        super(Circuit, self).__init__()
-        self.nInputs = inputs
-        self.nOutputs = outputs
+    def __init__(self, gate):
+        super(CircuitItem, self).__init__()
+        self.nInputs = 1
+        self.nOutputs = 1
         self.inputList = []
         self.outputList = []
+        
 
         self.setFlag(QtGui.QGraphicsItem.ItemIsMovable)     # on peut déplacer
         self.setFlag(QtGui.QGraphicsItem.ItemIsSelectable)  # et sélectionner

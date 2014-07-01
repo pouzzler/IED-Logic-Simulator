@@ -4,7 +4,7 @@
 from PySide import QtGui, QtCore
 from .toolbox import ToolBox
 from .tooloptions import ToolOptions
-from .circuit import Circuit
+from .circuititem import CircuitItem
 
 
 class MainView(QtGui.QGraphicsView):
@@ -46,58 +46,60 @@ class MainView(QtGui.QGraphicsView):
             e.mimeData(), QtCore.Qt.CopyAction, 0, 0,
             QtCore.QModelIndex())
         item = model.item(0)
-        text = item.text()
-        i = Circuit(2, 1, text)
-        self.scene().addItem(i)
-        i.setPos(e.pos())
+        name = item.text()
+        c = CircuitItem(name)
+        self.scene().addItem(c)
+        c.setPos(e.pos())
 
     def keyPressEvent(self, e):
-        """Gère les évènements clavier : suppression, rotation,
-        alignement.
+        """Manages keyboard events, in particular item rotation,
+        translation, removal and alignment.
         """
 
+        scene = self.scene()
+        selection = scene.selectedItems()
         # Del, suppression
         if e.key() == QtCore.Qt.Key_Delete:
-            for item in self.scene().selectedItems():
-                self.scene().removeItem(item)
+            for item in selection:
+                scene.removeItem(item)
         # <- , rotation inverse au sens des aiguilles
         elif e.key() == QtCore.Qt.Key_Left:
-            group = self.scene().createItemGroup(self.scene().selectedItems())
+            group = scene.createItemGroup(selection)
             group.setRotation(group.rotation() - 90)
-            self.scene().destroyItemGroup(group)
+            scene.destroyItemGroup(group)
         # -> , rotation dans le sens des aiguilles
         elif e.key() == QtCore.Qt.Key_Right:
-            group = self.scene().createItemGroup(self.scene().selectedItems())
+            group = scene.createItemGroup(selection)
             group.setRotation(group.rotation() + 90)
-            self.scene().destroyItemGroup(group)
+            scene.destroyItemGroup(group)
         # L, aligner à gauche
         elif e.key() == QtCore.Qt.Key_L:
             left = min(
-                [item.scenePos().x() for item in self.scene().selectedItems()])
-            for item in self.scene().selectedItems():
+                [item.scenePos().x() for item in selection])
+            for item in selection:
                 item.setPos(left, item.scenePos().y())
         # R, aligner à droite
         elif e.key() == QtCore.Qt.Key_R:
             right = max(
-                [item.scenePos().x() for item in self.scene().selectedItems()])
-            for item in self.scene().selectedItems():
+                [item.scenePos().x() for item in selection])
+            for item in selection:
                 item.setPos(right, item.scenePos().y())
         # T, aligner en haut
         elif e.key() == QtCore.Qt.Key_T:
             top = min(
-                [item.scenePos().y() for item in self.scene().selectedItems()])
-            for item in self.scene().selectedItems():
+                [item.scenePos().y() for item in selection])
+            for item in selection:
                 item.setPos(item.scenePos().x(), top)
         # B, aligner en bas
         elif e.key() == QtCore.Qt.Key_B:
             bottom = max(
-                [item.scenePos().y() for item in self.scene().selectedItems()])
-            for item in self.scene().selectedItems():
+                [item.scenePos().y() for item in selection])
+            for item in selection:
                 item.setPos(item.scenePos().x(), bottom)
 
     def mousePressEvent(self, e):
-        """When a I/O is clicked, fills the field connectionData with
-        that I/O's info.
+        """When the mouse is pressed over an I/O, fills the field
+        connectionData with that I/O's info.
         """
 
         item = self.itemAt(e.pos())
@@ -189,7 +191,7 @@ class MainView(QtGui.QGraphicsView):
         super(MainView, self).mouseReleaseEvent(e)
 
     def toast(self, message):
-        """Affiche un toast"""
+        """Displays a short-lived informative message."""
         scene = self.scene()
         toast = scene.addText(message)
-        QtCore.QTimer.singleShot(1000, lambda: scene.removeItem(toast))
+        QtCore.QTimer.singleShot(1500, lambda: scene.removeItem(toast))
