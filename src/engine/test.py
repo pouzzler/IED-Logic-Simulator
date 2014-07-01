@@ -6,10 +6,10 @@
 ##                sera remplacé par la GUI                 ##
 #############################################################
 
-from simulator import _TC  # le circuit du "top-level"
-from gates import *        # portes logiques de base
-from circuits import *     # circuits logiques avancés
-from clock import *        # horloge
+from .simulator import _TC  # le circuit du "top-level"
+from .gates import *        # portes logiques de base
+from .circuits import *     # circuits logiques avancés
+from .clock import *        # horloge
 
 
 # un simple nand

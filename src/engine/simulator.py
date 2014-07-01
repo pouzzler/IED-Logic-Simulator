@@ -12,11 +12,10 @@ from .comod import _INPUT, _OUTPUT, _CIRCUIT
 #        -+------------------------ CLASSES ------------------------+-        #
 # plug class, a plug is an input or an output
 class Plug:
-    def __init__(self, ptype, name, owner, printval):
+    def __init__(self, ptype, name, owner):
         self.owner = owner        # circuit or door featuring this I/O
         self.name = name          # its name
         self.ptype = ptype        # specifies whether to evaluate the values
-        self.printval = printval  # specifies whether to print its value
         self.value = False        # at first, no electricity
         self.nbEval = 0           # number of evaluations
         self.connections = []     # connected plugs list
@@ -30,8 +29,6 @@ class Plug:
             self.nbEval += 1
         if self.ptype is _INPUT:            # input? evaluate the circuit
             self.owner.evalfun()
-        if self.printval:                   # print plug value ?
-            print('%s.%s: %i' % (self.owner.name, self.name, int(self.value)))
         for connection in self.connections:
             connection.set(value)           # set value of the connected plugs
 
@@ -66,14 +63,14 @@ class Circuit:
         print('    + plug %s add to %s.xxxputList' % (plug.name, self.name,))
 
     # add an input to the inputList of the circuit
-    def add_input(self, name=None, printval=False):
-        self.inputList.append(Plug(_INPUT, name, self, printval))
+    def add_input(self, name=None):
+        self.inputList.append(Plug(_INPUT, name, self))
         print("    + plug '%s' add to %s.inputList" % (name, self.name,))
         return self.inputList[-1]
 
     # add an output to the outputList of the circuit
-    def add_output(self, name=None, printval=False):
-        self.outputList.append(Plug(_OUTPUT, name, self, printval))
+    def add_output(self, name=None):
+        self.outputList.append(Plug(_OUTPUT, name, self))
         print("    + plug '%s' add to %s.outputList" % (name, self.name,))
         return self.outputList[-1]
 
@@ -158,13 +155,13 @@ def add_plug(plug):
 
 
 # Add an input to the list of inputs of the "top-level" circuit
-def add_input(name=None, printval=False):
-    return _TC.add_input(name, printval)
+def add_input(name=None):
+    return _TC.add_input(name)
 
 
 # Add an output to the list of outputs of the "top-level" circuit
-def add_output(name=None, printval=False):
-    return _TC.add_output(name, printval)
+def add_output(name=None):
+    return _TC.add_output(name)
 
 
 # Add a circuit to the list of circuits of the "top-level" circuit

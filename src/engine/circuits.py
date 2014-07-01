@@ -12,11 +12,11 @@ class HalfAdder(Circuit):
     def __init__(self, name):
         Circuit.__init__(self, name)
         # circuit's inputs
-        self.A = self.add_input('A', False)    # inputList[0]
-        self.B = self.add_input('B', False)    # inputList[1]
+        self.A = self.add_input('A')    # inputList[0]
+        self.B = self.add_input('B')    # inputList[1]
         # circuit's outputs
-        self.S = self.add_output('S', False)   # outputList[0]
-        self.O = self.add_output('O', False)   # outputList[1]
+        self.S = self.add_output('S')   # outputList[0]
+        self.O = self.add_output('O')   # outputList[1]
         # circuit's components
         self.XOR1 = self.add_circuit(XorGate('X1'))
         self.AND1 = self.add_circuit(AndGate('A1'))
@@ -58,8 +58,8 @@ class RSFlipflop(Circuit):
     def __init__(self, name):
         Circuit.__init__(self, name)
         # circuit's inputs
-        self.S = Input('S', self, False)  # i: bitS
-        self.R = Input('R', self, False)  # i: bitQ
+        self.S = Input('S', self)  # i: bitS
+        self.R = Input('R', self)  # i: bitQ
         # circuit's outputs
         self.Q = Output('Q', self, True)  # o: 1 if ~S OR 0 if ~R
         # circuit's components
@@ -77,10 +77,10 @@ class DFlipFlop(Circuit):
     def __init__(self, name):
         Circuit.__init__(self, name)
         # circuit's inputs
-        self.D = Input('D', self, False)   # i: bitD
-        self.C = Input('C', self, False)   # i: Clock
+        self.D = Input('D', self)   # i: bitD
+        self.C = Input('C', self)   # i: Clock
         # circuit's outputs
-        self.Q = Output('Q', self, False)  # o: bit to memorize
+        self.Q = Output('Q', self)  # o: bit to memorize
         # circuit's components
         self.NA0 = NandGate('NA0', self)
         self.NA1 = NandGate('NA1', self)
@@ -99,10 +99,10 @@ class DFlipFlopMasterSlave(Circuit):
     def __init__(self, name):
         Circuit.__init__(self, name)
         # circuit's inputs
-        self.D = Input('D', self, False)   # i: bitD
-        self.C = Input('C', self, False)   # i: Clock
+        self.D = Input('D', self)   # i: bitD
+        self.C = Input('C', self)   # i: Clock
         # circuit's outputs
-        self.Q = Output('Q', self, False)  # o: bit to memorize
+        self.Q = Output('Q', self)  # o: bit to memorize
         # circuit's components
         self.DFF0 = DFlipFlop('DFF0', self)
         self.DFF1 = DFlipFlop('DFF1', self)
@@ -119,13 +119,13 @@ class TwoTwoMemory(Circuit):
     def __init__(self, name):
         Circuit.__init__(self, name)
         # circuit's inputs
-        self.S = Input('A', self, False)     # i: selector
-        self.RW = Input('RW', self, False)   # i: 0: read, 1: write
-        self.D0 = Input('D0', self, False)   # i: bitD0
-        self.D1 = Input('D1', self, False)   # i: bitD1
+        self.S = Input('A', self)     # i: selector
+        self.RW = Input('RW', self)   # i: 0: read, 1: write
+        self.D0 = Input('D0', self)   # i: bitD0
+        self.D1 = Input('D1', self)   # i: bitD1
         # circuit's outputs
-        self.O0 = Output('O0', self, False)  # o: output register0
-        self.O1 = Output('O1', self, False)  # o: output register1
+        self.O0 = Output('O0', self)  # o: output register0
+        self.O1 = Output('O1', self)  # o: output register1
         # circuit's components
         self.AN0 = AndGate('AN0', self)
         self.AN1 = AndGate('AN1', self)
@@ -170,14 +170,14 @@ class FourOneMux(Circuit):
     def __init__(self, name):
         Circuit.__init__(self, name)
         # circuit's inputs
-        self.I0 = Input('I0', self, False)
-        self.I1 = Input('I1', self, False)
-        self.I2 = Input('I2', self, False)
-        self.I3 = Input('I3', self, False)
-        self.S0 = Input('S0', self, False)
-        self.S1 = Input('S1', self, False)
+        self.I0 = Input('I0', self)
+        self.I1 = Input('I1', self)
+        self.I2 = Input('I2', self)
+        self.I3 = Input('I3', self)
+        self.S0 = Input('S0', self)
+        self.S1 = Input('S1', self)
         # circuit's outputs
-        self.O0 = Output('O0', self, False)
+        self.O0 = Output('O0', self)
         # circuit's components
         self.AN30 = AndGateThree(self, 'AN30')
         self.AN31 = AndGateThree(self, 'AN31')

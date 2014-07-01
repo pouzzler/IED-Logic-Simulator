@@ -13,11 +13,11 @@ from .simulator import *
 class NotGate(Circuit):
     def __init__(self, name=None):
         Circuit.__init__(self, name)
-        self.A = Input('I', self, False)
-        self.add_output('O', False)
+        self.add_input('I')
+        self.add_output('O')
 
     def evalfun(self):
-        self.outputList[0].set(not self.A.value)
+        self.outputList[0].set(not self.inputList[0].value)
 
 
 # AND gate
@@ -25,8 +25,8 @@ class AndGate(Circuit):
     def __init__(self, name=None, inputs=2):
         Circuit.__init__(self, name)
         for inp in range(inputs):
-            self.add_input('I' + str(inp), False)
-        self.add_output('O', False)
+            self.add_input('I' + str(inp))
+        self.add_output('O')
 
     def evalfun(self):
         out = True
@@ -42,8 +42,8 @@ class OrGate(Circuit):
     def __init__(self, name=None, inputs=2):
         Circuit.__init__(self, name)
         for inp in range(inputs):
-            self.add_input('I' + str(inp), False)
-        self.add_output('O', False)
+            self.add_input('I' + str(inp))
+        self.add_output('O')
 
     def evalfun(self):
         out = False
@@ -59,8 +59,8 @@ class XorGate(Circuit):
     def __init__(self, name, inputs=2):
         Circuit.__init__(self, name)
         for inp in range(inputs):
-            self.add_input('I' + str(inp), False)
-        self.add_output('O', False)
+            self.add_input('I' + str(inp))
+        self.add_output('O')
 
     def evalfun(self):
         c = 0
@@ -75,8 +75,8 @@ class NandGate(Circuit):
     def __init__(self, name, inputs=2):
         Circuit.__init__(self, name)
         for inp in range(inputs):
-            self.add_input('I' + str(inp), False)
-        self.add_output('O', False)
+            self.add_input('I' + str(inp))
+        self.add_output('O')
 
     def evalfun(self):
         out = False
