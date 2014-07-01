@@ -141,20 +141,21 @@ class MainView(QtGui.QGraphicsView):
                     item.DIAMETER * 3)
                 if path.contains(pos):
                     if self.connectionData[1].isinput:
-                        print(u"Connect an input to an output.")
+                        self.toast(u"Connect an input to an output.")
                     else:
                         print(
                             u"Connecting ", self.connectionData,
                             [item, item.inputList[i], i])
                         origin = item.mapToScene(
-                            item.I_LEFT, i * item.IO_HEIGHT  + item.iOffset 
+                            item.I_LEFT, i * item.IO_HEIGHT + item.iOffset
                             + item.BODY_OFFSET + item.DIAMETER / 2.)
                         end = self.connectionData[0].mapToScene(
-                            self.connectionData[0].left, self.connectionData[2] * 
-                            self.connectionData[0].IO_HEIGHT 
-                            + self.connectionData[0].oOffset 
-                            + self.connectionData[0].BODY_OFFSET 
-                            + self.connectionData[0].DIAMETER / 2.)   
+                            self.connectionData[0].left,
+                            self.connectionData[2] *
+                            self.connectionData[0].IO_HEIGHT
+                            + self.connectionData[0].oOffset
+                            + self.connectionData[0].BODY_OFFSET
+                            + self.connectionData[0].DIAMETER / 2.)
                         line = QtCore.QLineF(origin, end)
                         self.scene().addLine(line)
                     return
@@ -166,22 +167,29 @@ class MainView(QtGui.QGraphicsView):
                     item.DIAMETER * 3, item.DIAMETER * 3)
                 if path.contains(pos):
                     if not self.connectionData[1].isinput:
-                        print(u"Connect an input to an output.")
+                        self.toast(u"Connect an input to an output.")
                     else:
                         print(
                             u"Connecting ", self.connectionData,
                             [item, item.inputList[i], i])
                         origin = self.connectionData[0].mapToScene(
                             self.connectionData[0].I_LEFT,
-                            self.connectionData[2] * self.connectionData[0].IO_HEIGHT 
-                            + self.connectionData[0].iOffset 
+                            self.connectionData[2] *
+                            self.connectionData[0].IO_HEIGHT
+                            + self.connectionData[0].iOffset
                             + self.connectionData[0].BODY_OFFSET +
                             self.connectionData[0].DIAMETER / 2.)
                         end = item.mapToScene(
                             item.left, i * item.IO_HEIGHT + item.oOffset +
-                            item.BODY_OFFSET + item.DIAMETER / 2.)   
+                            item.BODY_OFFSET + item.DIAMETER / 2.)
                         line = QtCore.QLineF(origin, end)
                         self.scene().addLine(line)
                     return
         self.connectionData = None
         super(MainView, self).mouseReleaseEvent(e)
+
+    def toast(self, message):
+        """Affiche un toast"""
+        scene = self.scene()
+        toast = scene.addText(message)
+        QtCore.QTimer.singleShot(1000, lambda: scene.removeItem(toast))
