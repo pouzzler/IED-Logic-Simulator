@@ -23,17 +23,14 @@ class CircuitItem(QtGui.QGraphicsPathItem):
 
     def __init__(self, gate):
         super(CircuitItem, self).__init__()
-        # Creating a circuit from our engine, with dynamic class lookup.
+        self.setFlag(QtGui.QGraphicsItem.ItemIsMovable)
+        self.setFlag(QtGui.QGraphicsItem.ItemIsSelectable)
+        # Creating a circuit from our engine, using dynamic class lookup.
         self.circuit = getattr(engine.gates, gate + "Gate")(None)
         # Getting some model values useful for the drawing.
         nInputs = self.circuit.nb_inputs()
         nOutputs = self.circuit.nb_outputs()
-        #~ self.inputList = []
-        #~ self.outputList = []
-        
-
-        self.setFlag(QtGui.QGraphicsItem.ItemIsMovable)     # on peut déplacer
-        self.setFlag(QtGui.QGraphicsItem.ItemIsSelectable)  # et sélectionner
+        # Some graphical values and offsets useful for the drawing.
         offset = self.IO_HEIGHT * abs(nInputs - nOutputs) / 2.
         height = max(nInputs, nOutputs)
         if nInputs > nOutputs:
@@ -43,9 +40,8 @@ class CircuitItem(QtGui.QGraphicsPathItem):
             self.oOffset = self.BODY_OFFSET
             self.iOffset = offset + self.BODY_OFFSET
         path = QtGui.QPainterPath()
-        # On crée les entrées, et on les représente
+        # Drawing inputs.
         for i in range(nInputs):
-            #~ self.inputList.append(Plug(self, True))
             path.addEllipse(
                 0, i * self.IO_HEIGHT + self.iOffset + self.BODY_OFFSET,
                 self.DIAMETER, self.DIAMETER)
@@ -56,14 +52,13 @@ class CircuitItem(QtGui.QGraphicsPathItem):
             path.lineTo(
                 self.I_RIGHT, i * self.IO_HEIGHT + self.iOffset +
                 self.BODY_OFFSET + self.DIAMETER / 2.)
-        # le cercle représentant la négation
+        # Drawing the little circle implying negation.
         if gate in ['Nand', 'Not', 'Nor', 'Xnor']:
             path.addEllipse(
                 self.O_LEFT, height * self.IO_HEIGHT / 2. - self.DIAMETER / 2.,
                 self.DIAMETER, self.DIAMETER)
-
-        for i in range(nOutputs):               # les pins de sortie
-            #~ self.outputList.append(Plug(self, False))
+        #Drawing outputs.
+        for i in range(nOutputs):
             path.addEllipse(
                 self.O_RIGHT + 1, i * self.IO_HEIGHT + self.oOffset +
                 self.BODY_OFFSET, self.DIAMETER, self.DIAMETER)
@@ -77,8 +72,8 @@ class CircuitItem(QtGui.QGraphicsPathItem):
             path.lineTo(
                 self.O_RIGHT, i * self.IO_HEIGHT + self.oOffset +
                 self.BODY_OFFSET + self.DIAMETER / 2.)
-
-        if gate in ['Nand', 'Not', 'And']:           # la ligne verticale
+        # Vertical line for these gates.
+        if gate in ['Nand', 'Not', 'And']:
             path.moveTo(self.I_RIGHT + 1, 0)
             path.lineTo(self.I_RIGHT + 1, height * self.IO_HEIGHT)
         if gate == 'Not':
@@ -100,12 +95,3 @@ class CircuitItem(QtGui.QGraphicsPathItem):
                 -90, 180)
         path.closeSubpath()
         self.setPath(path)
-
-    #~ def shape(self):
-        #~ """Renvoie le rectangle englobant le chemin plutôt que le chemin,
-        #~ afin de pouvoir cliquer n'importe ou pour sélectionner.
-        #~ """
-        #~ path = QtGui.QPainterPath()
-        #~ rect = self.boundingRect()
-        #~ path.addRect(rect.left(), rect.top(), rect.width(), rect.height())
-        #~ return path

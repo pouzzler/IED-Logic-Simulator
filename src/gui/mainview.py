@@ -7,6 +7,7 @@ from .tooloptions import ToolOptions
 from .circuititem import CircuitItem
 from engine.comod import _INPUT, _OUTPUT
 
+
 class MainView(QtGui.QGraphicsView):
     """A graphic view representing a circuit schematic, as created by
     the user. This view manages most user interaction :
@@ -157,7 +158,8 @@ class MainView(QtGui.QGraphicsView):
                             + self.connectionData[0].DIAMETER / 2.)
                         line = QtCore.QLineF(origin, end)
                         self.scene().addLine(line)
-                        item.circuit.inputList[i].connect(self.connectionData[1])
+                        item.circuit.inputList[i].connect(
+                            self.connectionData[1])
                     return
             for i in range(item.circuit.nb_outputs()):
                 path = QtGui.QPainterPath()
@@ -181,7 +183,8 @@ class MainView(QtGui.QGraphicsView):
                             item.BODY_OFFSET + item.DIAMETER / 2.)
                         line = QtCore.QLineF(origin, end)
                         self.scene().addLine(line)
-                        item.circuit.inputList[i].connect(self.connectionData[1])
+                        item.circuit.inputList[i].connect(
+                            self.connectionData[1])
                     return
         self.connectionData = None
         super(MainView, self).mouseReleaseEvent(e)
