@@ -104,3 +104,7 @@ if __name__ == '__main__':
     print("nb total d'entrées:   " + str(total_nb_inputs()))
     print("nb total de sorties:  " + str(total_nb_outputs()))
     print("nb total d'E/S:       " + str(total_nb_plugs()))
+    
+    toto = AndGate()
+    print(toto.nb_inputs())
+    print(toto.class_name())

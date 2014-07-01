@@ -1,50 +1,49 @@
-#####################################################
-## circuits avancés prédéfinies construit à partir ##
-##     de portes logiques et d'autres circuits     ##
-#####################################################
+############################################################################
+## advanced predefined circuits built from logic gates and other circuits ##
+############################################################################
 
-from .comod import _INPUT
-from .comod import _OUTPUT
-from .simulator import *
-from .gates import *
+from comod import _INPUT
+from comod import _OUTPUT
+from simulator import *
+from gates import *
 
 
-# demi-additionneur: calcule la somme S avec retenue C de A et B
+# half-adder: calculates the sum S and the carry C of A + B
 class HalfAdder(Circuit):
     def __init__(self, name):
         Circuit.__init__(self, name)
-        # entrées du circuit
+        # circuit's inputs
         self.A = self.add_input('A', False)    # inputList[0]
         self.B = self.add_input('B', False)    # inputList[1]
-        # sorties du circuit
+        # circuit's outputs
         self.S = self.add_output('S', False)   # outputList[0]
         self.O = self.add_output('O', False)   # outputList[1]
-        # composantes du circuit
+        # circuit's components
         self.XOR1 = self.add_circuit(XorGate('X1'))
         self.AND1 = self.add_circuit(AndGate('A1'))
-        # connexions des composantes du circuit
+        # connections between circuit's components
         self.A.connect([self.XOR1.inputList[0], self.AND1.inputList[0]])
         self.B.connect([self.XOR1.inputList[1], self.AND1.inputList[1]])
         self.XOR1.outputList[0].connect(self.outputList[0])
         self.AND1.outputList[0].connect(self.outputList[1])
 
 
-# additionneur complet: calcule la somme S et retenue Cout de A et B et Cin
+# full-adder: calculates the sum S and the carry Cout of A + B + Cin
 class FullAdder(Circuit):
     def __init__(self, name):
         Circuit.__init__(self, name)
-        # entrées du circuit
+        # circuit's inputs
         self.A = self.add_input('A')
         self.B = self.add_input('B')
         self.Cin = self.add_input('Cin')
-        # sorties du circuit
+        # circuit's outputs
         self.S = self.add_output('S')
         self.Cout = self.add_output('Cout')
-        # composantes du circuit
+        # circuit's components
         self.HA1 = HalfAdder('HA1')
         self.HA2 = HalfAdder('HA2')
         self.OR1 = OrGate('OR1')
-        # connexions des composantes du circuit
+        # connections between circuit's components
         self.A.connect([self.HA1.inputList[0]])
         self.B.connect([self.HA1.inputList[1]])
         self.Cin.connect([self.HA2.inputList[0]])
@@ -55,36 +54,40 @@ class FullAdder(Circuit):
         self.OR1.outputList[0].connect([self.outputList[1]])
 
 
-# bascule RS: permet de positionner la sortie Q à 1 (Set) ou à 0 (Reset)
+# RS flip-flop: sets the output Q to 1 (set) or 0 (Reset)
 class RSFlipflop(Circuit):
     def __init__(self, name):
         Circuit.__init__(self, name)
+        # circuit's inputs
         self.S = Input('S', self, False)  # i: bitS
         self.R = Input('R', self, False)  # i: bitQ
-        self.Q = Output('Q', self, True)  # o: 1 si ~S OU 0 si ~R
-        # composantes du circuit
+        # circuit's outputs
+        self.Q = Output('Q', self, True)  # o: 1 if ~S OR 0 if ~R
+        # circuit's components
         self.N1 = NandGate('N1', self)
         self.N2 = NandGate('N2', self)
-        # connexions des composantes du circuit
+        # connections between circuit's components
         self.S.connect([self.N1.A])
         self.R.connect([self.N2.B])
         self.N1.O.connect([self.N2.A, self.Q])
         self.N2.O.connect([self.N1.B])
 
 
-# bascule D: permet de mémoriser l'entrée D à chaque tic d'horloge C
+# D flip-flop: stores the input D at each clock tick C
 class DFlipFlop(Circuit):
     def __init__(self, name):
         Circuit.__init__(self, name)
+        # circuit's inputs
         self.D = Input('D', self, False)   # i: bitD
         self.C = Input('C', self, False)   # i: Clock
-        self.Q = Output('Q', self, False)  # o: bit mémorisé
-        # composantes du circuit
+        # circuit's outputs
+        self.Q = Output('Q', self, False)  # o: bit to memorize
+        # circuit's components
         self.NA0 = NandGate('NA0', self)
         self.NA1 = NandGate('NA1', self)
         self.NA2 = NandGate('NA2', self)
         self.NA3 = NandGate('NA3', self)
-        # connexions des composantes du circuit
+        # connections between circuit's components
         self.D.connect([self.NA0.A])
         self.C.connect([self.NA1.B, self.NA0.B])
         self.NA0.O.connect([self.NA1.A, self.NA2.A])
@@ -96,14 +99,16 @@ class DFlipFlop(Circuit):
 class DFlipFlopMasterSlave(Circuit):
     def __init__(self, name):
         Circuit.__init__(self, name)
+        # circuit's inputs
         self.D = Input('D', self, False)   # i: bitD
         self.C = Input('C', self, False)   # i: Clock
-        self.Q = Output('Q', self, False)  # o: bit à mémoriser
-        # composantes du circuit
+        # circuit's outputs
+        self.Q = Output('Q', self, False)  # o: bit to memorize
+        # circuit's components
         self.DFF0 = DFlipFlop('DFF0', self)
         self.DFF1 = DFlipFlop('DFF1', self)
         self.NOT0 = NotGate('NOT0', self)
-        # connexions des composantes du circuit
+        # connections between circuit's components
         self.D.connect([self.DFF0.D])
         self.C.connect([self.DFF0.C, self.NOT0.A])
         self.NOT0.O.connect([self.DFF1.C])
@@ -114,13 +119,15 @@ class DFlipFlopMasterSlave(Circuit):
 class TwoTwoMemory(Circuit):
     def __init__(self, name):
         Circuit.__init__(self, name)
-        self.S = Input('A', self, False)     # i: sélecteur
+        # circuit's inputs
+        self.S = Input('A', self, False)     # i: selector
         self.RW = Input('RW', self, False)   # i: 0: read, 1: write
         self.D0 = Input('D0', self, False)   # i: bitD0
         self.D1 = Input('D1', self, False)   # i: bitD1
-        self.O0 = Output('O0', self, False)  # o: sortie registre0
-        self.O1 = Output('O1', self, False)  # o: sortie registre1
-        # composantes du circuit
+        # circuit's outputs
+        self.O0 = Output('O0', self, False)  # o: output register0
+        self.O1 = Output('O1', self, False)  # o: output register1
+        # circuit's components
         self.AN0 = AndGate('AN0', self)
         self.AN1 = AndGate('AN1', self)
         self.AN2 = AndGate('AN2', self)
@@ -137,7 +144,7 @@ class TwoTwoMemory(Circuit):
         self.DFF1 = DFlipFlop('DFF1', self)
         self.DFF2 = DFlipFlop('DFF2', self)
         self.DFF3 = DFlipFlop('DFF3', self)
-        # connexions des composantes du circuit
+        # connections between circuit's components
         self.S.connect([self.NO0.A, self.AN1.A, self.AN2.A, self.AN3.A])
         self.RW.connect([self.AN0.B, self.NO1.A, self.AN1.B])
         self.D0.connect([self.DFF0.D, self.DFF2.D])
@@ -163,14 +170,16 @@ class TwoTwoMemory(Circuit):
 class FourOneMux(Circuit):
     def __init__(self, name):
         Circuit.__init__(self, name)
+        # circuit's inputs
         self.I0 = Input('I0', self, False)
         self.I1 = Input('I1', self, False)
         self.I2 = Input('I2', self, False)
         self.I3 = Input('I3', self, False)
         self.S0 = Input('S0', self, False)
         self.S1 = Input('S1', self, False)
+        # circuit's outputs
         self.O0 = Output('O0', self, False)
-        # composantes du circuit
+        # circuit's components
         self.AN30 = AndGateThree(self, 'AN30')
         self.AN31 = AndGateThree(self, 'AN31')
         self.AN32 = AndGateThree(self, 'AN32')
@@ -178,7 +187,7 @@ class FourOneMux(Circuit):
         self.NOT0 = NotGate('NOT0', self)
         self.NOT1 = NotGate(self, 'NOT1')
         self.OR40 = OrGateFour(self, 'OR40')
-        # connexions des composantes du circuit
+        # connections between circuit's components
         self.I0.connect([self.AN30.A])
         self.I1.connect([self.AN31.A])
         self.I2.connect([self.AN32.A])

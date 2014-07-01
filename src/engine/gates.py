@@ -1,16 +1,16 @@
-####################################################################
-##              portes logiques de base: NON, OU, ET              ##
-## ces portes permettent de sontruire des circuits plus complexes ##
-##             circuits.py contient quelques exemples             ##
-##      user_circuits contient ceux définis par l'utilisateur     ##
-####################################################################
+############################################################
+##                  basic logic gates                     ##
+##  these gates allow you to build more complex circuits  ##
+##           circuits.py contains some examples           ##
+##   user_circuits contains those defined by the user     ##
+############################################################
 
-from .comod import _INPUT
-from .comod import _OUTPUT
-from .simulator import *
+from comod import _INPUT
+from comod import _OUTPUT
+from simulator import *
 
 
-# porte NOT
+# NOT gate
 class NotGate(Circuit):
     def __init__(self, name=None):
         Circuit.__init__(self, name)
@@ -21,15 +21,15 @@ class NotGate(Circuit):
         self.outputList[0].set(not self.A.value)
 
 
-# porte AND
+# AND gate
 class AndGate(Circuit):
     def __init__(self, name=None, inputs=2):
         Circuit.__init__(self, name)
-        for inp in range(inputs):         # ajoute les entrées à la liste
+        for inp in range(inputs):
             self.add_input('I' + str(inp), False)
         self.add_output('O', False)
 
-    def evalfun(self):                    # ET logique de toutes les entrées
+    def evalfun(self):
         out = True
         for inp in self.inputList:
             if inp.value is False:
@@ -38,7 +38,7 @@ class AndGate(Circuit):
         self.outputList[0].set(out)
 
 
-# porte OR
+# OR gate
 class OrGate(Circuit):
     def __init__(self, name=None, inputs=2):
         Circuit.__init__(self, name)
@@ -55,7 +55,7 @@ class OrGate(Circuit):
         self.outputList[0].set(out)
 
 
-# porte XOR
+# XOR gate
 class XorGate(Circuit):
     def __init__(self, name, inputs=2):
         Circuit.__init__(self, name)
@@ -71,7 +71,7 @@ class XorGate(Circuit):
         self.outputList[0].set(c % 2)
 
 
-# porte NAND
+# NAND gate
 class NandGate(Circuit):
     def __init__(self, name, inputs=2):
         Circuit.__init__(self, name)
