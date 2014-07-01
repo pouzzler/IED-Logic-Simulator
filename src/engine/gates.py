@@ -5,9 +5,8 @@
 ##   user_circuits contains those defined by the user     ##
 ############################################################
 
-from comod import _INPUT
-from comod import _OUTPUT
-from simulator import *
+from .comod import _INPUT, _OUTPUT
+from .simulator import *
 
 
 # NOT gate

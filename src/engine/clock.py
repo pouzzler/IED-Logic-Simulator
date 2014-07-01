@@ -2,7 +2,7 @@
 ##  thread dedicated to clock simulation  ##
 ############################################
 
-from circuits import *
+from .circuits import *
 from threading import Thread
 import time
 

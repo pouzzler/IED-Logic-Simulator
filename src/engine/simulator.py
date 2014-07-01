@@ -5,9 +5,7 @@
 ## tries to simulate circuits and logic gates using python ##
 #############################################################
 
-from comod import _INPUT
-from comod import _OUTPUT
-from comod import _CIRCUIT
+from .comod import _INPUT, _OUTPUT, _CIRCUIT
 
 
 #============================== SIMULATOR ENGINE =============================#

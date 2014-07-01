@@ -2,10 +2,9 @@
 ## advanced predefined circuits built from logic gates and other circuits ##
 ############################################################################
 
-from comod import _INPUT
-from comod import _OUTPUT
-from simulator import *
-from gates import *
+from .comod import _INPUT, _OUTPUT
+from .simulator import *
+from .gates import *
 
 
 # half-adder: calculates the sum S and the carry C of A + B
