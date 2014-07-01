@@ -102,7 +102,8 @@ class MainView(QtGui.QGraphicsView):
         """When the mouse is pressed over an I/O, fills the field
         connectionData with that I/O's info.
         """
-
+        
+        self.connectionData = []
         item = self.itemAt(e.pos())
         if item:
             pos = item.mapFromScene(self.mapToScene(e.pos()))
