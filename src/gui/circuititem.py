@@ -3,6 +3,8 @@
 
 from PySide import QtGui, QtCore
 from engine.simulator import Circuit
+import engine
+
 
 class Plug():
     """I/Os are not drawn as separate entities, for simplicity's sake :
@@ -34,8 +36,11 @@ class CircuitItem(QtGui.QGraphicsPathItem):
 
     def __init__(self, gate):
         super(CircuitItem, self).__init__()
-        self.nInputs = 1
-        self.nOutputs = 1
+        # Creating a circuit from our engine, with dynamic class lookup.
+        self.circuit = getattr(engine.gates, gate + "Gate")(None)
+
+        self.nInputs = self.circuit.nb_inputs()
+        self.nOutputs = self.circuit.nb_outputs()
         self.inputList = []
         self.outputList = []
         
