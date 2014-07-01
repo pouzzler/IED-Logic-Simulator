@@ -1,8 +1,8 @@
-#############################################################################
-## quelques pseudo macros pour les types Plug (input et output) et Circuit ##
-#############################################################################
+#########################################################################
+## some pseudo macros for the Plug type (input and output) and Circuit ##
+#########################################################################
 
-# type = nb impair
-_INPUT = 1              # réévaluer le circuit si une entrée change
-_OUTPUT = 3             # si la sortie change, pas besoin de réévaluer
-_CIRCUIT = 5            # sert pour la fonction count_items()
+# type = odd number
+_INPUT = 1              # evaluate the circuit if an input has changed
+_OUTPUT = 3             # if an output has changed there's no need to evaluate
+_CIRCUIT = 5            # used by count_items()
