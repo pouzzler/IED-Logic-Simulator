@@ -31,9 +31,7 @@ class MainWindow(QtGui.QMainWindow):
         fileMenu.addAction(u'Quit', self.close)
         self.menuBar().addMenu(fileMenu)
         optionsMenu = QtGui.QMenu('Options')
-        self.verbose = QtGui.QAction(u'Verbose', optionsMenu, checkable=True, checked=True)
-        optionsMenu.addAction(self.verbose)
-        #~ self.verbose.triggered.connect(lambda: self.verbose.setChecked(self.verbose.isChecked()))
+        optionsMenu.addAction(u'Show logs', self.showLogs)
         self.menuBar().addMenu(optionsMenu)
         helpMenu = QtGui.QMenu('Help')
         helpMenu.addAction('Documentation')
@@ -56,3 +54,8 @@ class MainWindow(QtGui.QMainWindow):
         msgBox = QtGui.QMessageBox()
         msgBox.setText(u'v0.1\nPar Mathieu Fourcroy & Sébastien Magnien.')
         msgBox.exec_()
+
+    def showLogs(self):
+        logDock = QtGui.QDockWidget('Logs')  # dans un dock.
+        logDock.setWidget(QtGui.QTextEdit())
+        self.addDockWidget(QtCore.Qt.BottomDockWidgetArea, logDock)
