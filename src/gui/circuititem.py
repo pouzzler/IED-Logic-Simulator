@@ -4,26 +4,32 @@
 from PySide import QtGui, QtCore
 from engine.simulator import Circuit
 import engine
+from engine.simulator import _TC
 
-class IO(QtGui.QGraphicsPathItem):
+
+class IOItem(QtGui.QGraphicsPathItem):
     """We represent an I pin as a graphic square path,
     and a O pin as a circle.
     """
-    
-    DIAMETER = 25
-    
+
+    LARGE_DIAMETER = 25
+    SMALL_DIAMETER = 5 
+
     def __init__(self, isInput):
-        super(IO, self).__init__()
+        super(IOItem, self).__init__()
         self.setFlag(QtGui.QGraphicsItem.ItemIsMovable)
         self.setFlag(QtGui.QGraphicsItem.ItemIsSelectable)
-        # Creating a engine.simulator.Plug
-        
         path = QtGui.QPainterPath()
         if isInput:
-            path.addEllipse(0, 0, self.DIAMETER, self.DIAMETER)
+            _TC.add_input()
+            path.addEllipse(0, 0, self.LARGE_DIAMETER, self.LARGE_DIAMETER)
+            path.addEllipse(self.LARGE_DIAMETER + 1, (self.LARGE_DIAMETER - self.SMALL_DIAMETER) / 2, self.SMALL_DIAMETER, self.SMALL_DIAMETER)
         else:
-            path.addRect(0,0, self.DIAMETER, self.DIAMETER)
-        self.setPath(path)
+            _TC.add_output()
+            path.addRect(0, 0, self.LARGE_DIAMETER, self.LARGE_DIAMETER)
+            path.addEllipse(self.LARGE_DIAMETER + 1, (self.LARGE_DIAMETER - self.SMALL_DIAMETER) / 2, self.SMALL_DIAMETER, self.SMALL_DIAMETER)
+        self.setPath(path)        
+
 
 class CircuitItem(QtGui.QGraphicsPathItem):
     """We represent a circuit or logic gate as a graphic path."""
@@ -45,7 +51,8 @@ class CircuitItem(QtGui.QGraphicsPathItem):
         self.setFlag(QtGui.QGraphicsItem.ItemIsMovable)
         self.setFlag(QtGui.QGraphicsItem.ItemIsSelectable)
         # Creating a circuit from our engine, using dynamic class lookup.
-        self.circuit = getattr(engine.gates, gate + "Gate")(None)
+        self.circuit = _TC.add_circuit(
+            getattr(engine.gates, gate + "Gate")(None))
         # Getting some model values useful for the drawing.
         nInputs = self.circuit.nb_inputs()
         nOutputs = self.circuit.nb_outputs()

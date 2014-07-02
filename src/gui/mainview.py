@@ -4,7 +4,7 @@
 from PySide import QtGui, QtCore
 from .toolbox import ToolBox
 from .tooloptions import ToolOptions
-from .circuititem import CircuitItem, IO
+from .circuititem import CircuitItem, IOItem
 
 
 class MainView(QtGui.QGraphicsView):
@@ -51,7 +51,7 @@ class MainView(QtGui.QGraphicsView):
             c = CircuitItem(name)
             self.scene().addItem(c)
         elif name in ['Input Pin', 'Output Pin']:
-                io = IO('Input' in name)
+                io = IOItem('Input' in name)
                 self.scene().addItem(io)
                 io.setPos(e.pos())
 
@@ -105,28 +105,40 @@ class MainView(QtGui.QGraphicsView):
         """When the mouse is pressed over an I/O, fills the field
         connectionData with that I/O's info.
         """
-        
-        self.connectionData = []
+
+        self.connectionData = None
         item = self.itemAt(e.pos())
         if item:
             pos = item.mapFromScene(self.mapToScene(e.pos()))
-            for i in range(item.circuit.nb_inputs()):
+            if isinstance(item, CircuitItem):
+                for i in range(item.circuit.nb_inputs()):
+                    path = QtGui.QPainterPath()
+                    path.addEllipse(
+                        - item.DIAMETER, i * item.IO_HEIGHT + item.iOffset +
+                        item.BODY_OFFSET - item.DIAMETER, item.DIAMETER * 3,
+                        item.DIAMETER * 3)
+                    if path.contains(pos):
+                        self.connectionData = [
+                            item, item.circuit.inputList[i], i]
+                        return
+                for i in range(item.circuit.nb_outputs()):
+                    path = QtGui.QPainterPath()
+                    path.addEllipse(
+                        item.O_RIGHT + 1 - item.DIAMETER, i * item.IO_HEIGHT +
+                        item.oOffset + item.BODY_OFFSET - item.DIAMETER,
+                        item.DIAMETER * 3, item.DIAMETER * 3)
+                    if path.contains(pos):
+                        self.connectionData = [[
+                            item, item.circuit.outputList[i], i]]
+                        return
+            elif isinstance(item, IOItem):
                 path = QtGui.QPainterPath()
                 path.addEllipse(
-                    - item.DIAMETER, i * item.IO_HEIGHT + item.iOffset +
-                    item.BODY_OFFSET - item.DIAMETER, item.DIAMETER * 3,
-                    item.DIAMETER * 3)
+                    item.LARGE_DIAMETER - item.SMALL_DIAMETER,
+                    item.LARGE_DIAMETER / 2 - item.SMALL_DIAMETER,
+                    item.SMALL_DIAMETER * 2, item.SMALL_DIAMETER * 2)
                 if path.contains(pos):
-                    self.connectionData = [item, item.circuit.inputList[i], i]
-                    return
-            for i in range(item.circuit.nb_outputs()):
-                path = QtGui.QPainterPath()
-                path.addEllipse(
-                    item.O_RIGHT + 1 - item.DIAMETER, i * item.IO_HEIGHT +
-                    item.oOffset + item.BODY_OFFSET - item.DIAMETER,
-                    item.DIAMETER * 3, item.DIAMETER * 3)
-                if path.contains(pos):
-                    self.connectionData = [item, item.circuit.outputList[i], i]
+                    self.connectionData = [item]
                     return
         super(MainView, self).mousePressEvent(e)
 
@@ -136,61 +148,68 @@ class MainView(QtGui.QGraphicsView):
         output, a connection will be created between the two of them.
         """
 
-        item = self.itemAt(e.pos())
-        #TODO item is not good enough (it must be a Circuit)
-        if self.connectionData and item:    # We need two items to proceed
-            pos = item.mapFromScene(self.mapToScene(e.pos()))
-            for i in range(item.circuit.nb_inputs()):
-                path = QtGui.QPainterPath()
-                path.addEllipse(
-                    - item.DIAMETER, i * item.IO_HEIGHT + item.iOffset +
-                    item.BODY_OFFSET - item.DIAMETER, item.DIAMETER * 3,
-                    item.DIAMETER * 3)
-                if path.contains(pos):
-                    if self.connectionData[1].isInput:
-                        self.toast(u"Connect an input to an output.")
-                    else:
-                        origin = item.mapToScene(
-                            item.I_LEFT, i * item.IO_HEIGHT + item.iOffset
-                            + item.BODY_OFFSET + item.DIAMETER / 2.)
-                        end = self.connectionData[0].mapToScene(
-                            self.connectionData[0].left,
-                            self.connectionData[2] *
-                            self.connectionData[0].IO_HEIGHT
-                            + self.connectionData[0].oOffset
-                            + self.connectionData[0].BODY_OFFSET
-                            + self.connectionData[0].DIAMETER / 2.)
-                        line = QtCore.QLineF(origin, end)
-                        self.scene().addLine(line)
-                        item.circuit.inputList[i].connect(
-                            self.connectionData[1])
-                    return
-            for i in range(item.circuit.nb_outputs()):
-                path = QtGui.QPainterPath()
-                path.addEllipse(
-                    item.O_RIGHT + 1 - item.DIAMETER, i * item.IO_HEIGHT +
-                    item.oOffset + item.BODY_OFFSET - item.DIAMETER,
-                    item.DIAMETER * 3, item.DIAMETER * 3)
-                if path.contains(pos):
-                    if not self.connectionData[1].isInput:
-                        self.toast(u"Connect an input to an output.")
-                    else:
-                        origin = self.connectionData[0].mapToScene(
-                            self.connectionData[0].I_LEFT,
-                            self.connectionData[2] *
-                            self.connectionData[0].IO_HEIGHT
-                            + self.connectionData[0].iOffset
-                            + self.connectionData[0].BODY_OFFSET +
-                            self.connectionData[0].DIAMETER / 2.)
-                        end = item.mapToScene(
-                            item.left, i * item.IO_HEIGHT + item.oOffset +
-                            item.BODY_OFFSET + item.DIAMETER / 2.)
-                        line = QtCore.QLineF(origin, end)
-                        self.scene().addLine(line)
-                        item.circuit.inputList[i].connect(
-                            self.connectionData[1])
-                    return
-        self.connectionData = None
+        if self.connectionData:
+            item = self.itemAt(e.pos())
+            if item:
+                pos = item.mapFromScene(self.mapToScene(e.pos()))
+                if isinstance(item, CircuitItem):
+                    for i in range(item.circuit.nb_inputs()):
+                        path = QtGui.QPainterPath()
+                        path.addEllipse(
+                            - item.DIAMETER, i * item.IO_HEIGHT + item.iOffset +
+                            item.BODY_OFFSET - item.DIAMETER, item.DIAMETER * 3,
+                            item.DIAMETER * 3)
+                        if path.contains(pos):
+                            self.connectionData.append(
+                                [item, item.circuit.inputList[i], i])
+                            #~ origin = item.mapToScene(
+                                #~ item.I_LEFT, i * item.IO_HEIGHT + item.iOffset
+                                #~ + item.BODY_OFFSET + item.DIAMETER / 2.)
+                            #~ end = self.connectionData[0].mapToScene(
+                                #~ self.connectionData[0].left,
+                                #~ self.connectionData[2] *
+                                #~ self.connectionData[0].IO_HEIGHT
+                                #~ + self.connectionData[0].oOffset
+                                #~ + self.connectionData[0].BODY_OFFSET
+                                #~ + self.connectionData[0].DIAMETER / 2.)
+                            #~ line = QtCore.QLineF(origin, end)
+                            #~ self.scene().addLine(line)
+                            #~ item.circuit.inputList[i].connect(
+                                #~ self.connectionData[1])
+                            #~ return
+                    for i in range(item.circuit.nb_outputs()):
+                        path = QtGui.QPainterPath()
+                        path.addEllipse(
+                            item.O_RIGHT + 1 - item.DIAMETER, i * item.IO_HEIGHT +
+                            item.oOffset + item.BODY_OFFSET - item.DIAMETER,
+                            item.DIAMETER * 3, item.DIAMETER * 3)
+                        if path.contains(pos):
+                            self.connectionData.append(
+                                [item, item.circuit.outputList[i], i])
+                            #~ origin = self.connectionData[0].mapToScene(
+                                #~ self.connectionData[0].I_LEFT,
+                                #~ self.connectionData[2] *
+                                #~ self.connectionData[0].IO_HEIGHT
+                                #~ + self.connectionData[0].iOffset
+                                #~ + self.connectionData[0].BODY_OFFSET +
+                                #~ self.connectionData[0].DIAMETER / 2.)
+                            #~ end = item.mapToScene(
+                                #~ item.left, i * item.IO_HEIGHT + item.oOffset +
+                                #~ item.BODY_OFFSET + item.DIAMETER / 2.)
+                            #~ line = QtCore.QLineF(origin, end)
+                            #~ self.scene().addLine(line)
+                            #~ item.circuit.inputList[i].connect(
+                                #~ self.connectionData[1])
+                            #~ return
+                elif isinstance(item, IOItem):
+                    path = QtGui.QPainterPath()
+                    path.addEllipse(
+                        item.LARGE_DIAMETER - item.SMALL_DIAMETER,
+                        item.LARGE_DIAMETER / 2 - item.SMALL_DIAMETER,
+                        item.SMALL_DIAMETER * 2, item.SMALL_DIAMETER * 2)
+                    if path.contains(pos):
+                        self.connectionData.append(item)
+        
         super(MainView, self).mouseReleaseEvent(e)
 
     def toast(self, message):
