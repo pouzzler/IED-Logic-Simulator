@@ -25,7 +25,7 @@ class ToolBox(QtGui.QTreeWidget):
             for name in ['And', 'Or', 'Nand', 'Nor', 'Not', 'Xor', 'Xnor']]
         for gate in gates:
             gate.setIcon(2, icon)
-        ioheader = QtGui.QTreeWidgetItem(self, [u'Inputs & Outputs'])
+        ioheader = QtGui.QTreeWidgetItem(self, [u'I/O'])
         io = [
             QtGui.QTreeWidgetItem(ioheader, [name]) 
             for name in ['Input Pin', 'Output Pin']]
