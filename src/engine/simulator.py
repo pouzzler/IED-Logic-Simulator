@@ -38,8 +38,8 @@ class Plug:
             self.connections.append(plug)   # add each connection of the lists
             if verbose:
                 print(
-                    '    ~ Plug %s connected to Plug %s'
-                    % (plug.name, self.name,))
+                    '    ~ Plug %s.%s connected to Plug %s.%s'
+                    % (plug.owner.name, plug.name, self.owner.name, self.name))
 
 
 # class for the logic circuits and gates
@@ -49,15 +49,20 @@ class Circuit:
         self.inputList = []     # circuit's inputs list
         self.outputList = []    # circuit's outputs list
         self.circuitList = []   # circuit's circuits list
-        print('> %s has been created' % (self.name))
+        print("> %s '%s' has been created" % (self.class_name(), self.name,))
 
     # add a plug (input or output) in the appropriate list of the circuit
     def add_plug(self, plug):
         if plug.isInput:
             self.inputList.append(plug)
+            print(
+                "    + plug '%s' add to %s.inputList"
+                % (plug.name, self.name,))
         else:
             self.outputList.append(plug)
-        print('    + plug %s add to %s.xxxputList' % (plug.name, self.name,))
+            print(
+                "    + plug '%s' add to %s.outputList"
+                % (plug.name, self.name,))
 
     # add an input to the inputList of the circuit
     def add_input(self, name=None):

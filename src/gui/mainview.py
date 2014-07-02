@@ -5,7 +5,6 @@ from PySide import QtGui, QtCore
 from .toolbox import ToolBox
 from .tooloptions import ToolOptions
 from .circuititem import CircuitItem
-from engine.comod import _INPUT, _OUTPUT
 
 
 class MainView(QtGui.QGraphicsView):
@@ -144,7 +143,7 @@ class MainView(QtGui.QGraphicsView):
                     item.BODY_OFFSET - item.DIAMETER, item.DIAMETER * 3,
                     item.DIAMETER * 3)
                 if path.contains(pos):
-                    if self.connectionData[1].ptype is _INPUT:
+                    if self.connectionData[1].isInput:
                         self.toast(u"Connect an input to an output.")
                     else:
                         origin = item.mapToScene(
@@ -169,7 +168,7 @@ class MainView(QtGui.QGraphicsView):
                     item.oOffset + item.BODY_OFFSET - item.DIAMETER,
                     item.DIAMETER * 3, item.DIAMETER * 3)
                 if path.contains(pos):
-                    if self.connectionData[1].ptype is _OUTPUT:
+                    if not self.connectionData[1].isInput:
                         self.toast(u"Connect an input to an output.")
                     else:
                         origin = self.connectionData[0].mapToScene(
