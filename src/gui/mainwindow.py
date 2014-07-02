@@ -31,6 +31,8 @@ class MainWindow(QtGui.QMainWindow):
 
     def __init__(self):
         super(MainWindow, self).__init__()
+        pixmap = QtGui.QPixmap('/home/seb/Documents/IED-Logic-Simulator/src/gui/icons/AND_mini.png')
+        self.setWindowIcon(QtGui.QIcon(pixmap))
         self.setWindowTitle("IED Logic Simulator")
         self.setFocusPolicy(QtCore.Qt.StrongFocus)
         view = MainView(self)                       # Une zone de travail
@@ -69,8 +71,15 @@ class MainWindow(QtGui.QMainWindow):
         self.addDockWidget(QtCore.Qt.BottomDockWidgetArea, self.logDock)
         # connexion des signaux
         tooloptions.clicked.connect(self.setStatusMessage)
+<<<<<<< HEAD
         myLog.newLogMessage.connect(self.printLogMessage)
+=======
+<<<<<<< HEAD
+=======
+        view.newLogMessage.connect(self.printLogMessage)
+>>>>>>> branch 'master' of https://github.com/pouzzler/IED-Logic-Simulator.git
 
+>>>>>>> 8258d2c3f42eb8c6fa7109b61ead7f6f73de99e4
         self.show()
 
     def setStatusMessage(self, message):
