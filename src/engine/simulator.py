@@ -5,6 +5,11 @@
 ## tries to simulate circuits and logic gates using python ##
 #############################################################
 
+from log.log import *
+
+
+myLog = Log('terminal')
+
 
 #============================== SIMULATOR ENGINE =============================#
 #        -+------------------------ CLASSES ------------------------+-        #
@@ -37,7 +42,7 @@ class Plug:
         for plug in plugList:
             self.connections.append(plug)   # add each connection of the lists
             if verbose:
-                print(
+                myLog.print_message(
                     '    ~ Plug %s.%s connected to Plug %s.%s'
                     % (plug.owner.name, plug.name, self.owner.name, self.name))
 
@@ -49,38 +54,45 @@ class Circuit:
         self.inputList = []     # circuit's inputs list
         self.outputList = []    # circuit's outputs list
         self.circuitList = []   # circuit's circuits list
-        print("> %s '%s' has been created" % (self.class_name(), self.name,))
+        myLog.print_message(
+            "> %s '%s' has been created"
+            % (self.class_name(), self.name,))
 
     # add a plug (input or output) in the appropriate list of the circuit
     def add_plug(self, plug):
         if plug.isInput:
             self.inputList.append(plug)
-            print(
+            myLog.print_message(
                 "    + plug '%s' add to %s.inputList"
                 % (plug.name, self.name,))
         else:
             self.outputList.append(plug)
-            print(
+            myLog.print_message(
                 "    + plug '%s' add to %s.outputList"
                 % (plug.name, self.name,))
 
     # add an input to the inputList of the circuit
     def add_input(self, name=None):
         self.inputList.append(Plug(True, name, self))
-        print("    + plug '%s' add to %s.inputList" % (name, self.name,))
+        myLog.print_message(
+            "    + plug '%s' add to %s.inputList"
+            % (name, self.name,))
         return self.inputList[-1]
 
     # add an output to the outputList of the circuit
     def add_output(self, name=None):
         self.outputList.append(Plug(False, name, self))
-        print("    + plug '%s' add to %s.outputList" % (name, self.name,))
+        myLog.print_message(
+            "    + plug '%s' add to %s.outputList"
+            % (name, self.name,))
         return self.outputList[-1]
 
     # add an circuit to the circuitList of the circuit
     def add_circuit(self, circuit):
         self.circuitList.append(circuit)
-        print("  + circuit %s '%s' add to %s.circuitsList" %
-              (circuit.class_name(), circuit.name, self.name,))
+        myLog.print_message(
+            "  + circuit %s '%s' add to %s.circuitsList"
+            % (circuit.class_name(), circuit.name, self.name,))
         return self.circuitList[-1]
 
     # return the original clas name of the circuit instance

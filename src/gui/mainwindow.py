@@ -7,6 +7,11 @@ from .toolbox import ToolBox
 from .tooloptions import ToolOptions
 
 from engine.gates import *        # portes logiques de base
+from engine.simulator import myLog
+
+# passe le gestionnaire de log en mode GUI:
+# imprime dans la GUI plutôt que dans le terminal
+myLog.mode = 'gui'
 
 
 # for the log widget
@@ -38,22 +43,33 @@ class MainWindow(QtGui.QMainWindow):
         optionsDock = QtGui.QDockWidget('Tool options')  # dans un dock.
         optionsDock.setWidget(tooloptions)
         self.addDockWidget(QtCore.Qt.LeftDockWidgetArea, optionsDock)
-        # un menu
+        # a menu bar
+        # the File menu
         fileMenu = QtGui.QMenu(u'File')
         fileMenu.addAction(u'Quit', self.close)
         self.menuBar().addMenu(fileMenu)
+        # the Options menu
         optionsMenu = QtGui.QMenu('Options')
-        optionsMenu.addAction(u'Show logs', self.showLogs)
+        self.logAct = QtGui.QAction(
+            "&Show logs", self, checkable=True,
+            shortcut="Ctrl+L", statusTip="Shows the log",
+            triggered=self.showLogs)
+        optionsMenu.addAction(self.logAct)
         self.menuBar().addMenu(optionsMenu)
+        self.logAct.setChecked(True)
+        # the Help menu
         helpMenu = QtGui.QMenu('Help')
         helpMenu.addAction('Documentation')
         helpMenu.addAction('About', self.about)
         self.menuBar().addMenu(helpMenu)
         # a window for the logs
         self.logWindow = BlackTextBox()
+        self.logDock = QtGui.QDockWidget('Logs')
+        self.logDock.setWidget(self.logWindow)
+        self.addDockWidget(QtCore.Qt.BottomDockWidgetArea, self.logDock)
         # connexion des signaux
         tooloptions.clicked.connect(self.setStatusMessage)
-        view.newLogMessage.connect(self.printLogMessage)
+        myLog.newLogMessage.connect(self.printLogMessage)
 
         self.show()
 
@@ -71,11 +87,10 @@ class MainWindow(QtGui.QMainWindow):
         msgBox.exec_()
 
     def showLogs(self):
-        # ajouter test: pas ouvrir le dock s'il l'est déjà
-        logDock = QtGui.QDockWidget('Logs')  # dans un dock.
-        logDock.setWidget(self.logWindow)
-        self.logWindow.append("hello")
-        self.addDockWidget(QtCore.Qt.BottomDockWidgetArea, logDock)
+        if self.logAct.isChecked():  # if the action is checked: show the log
+            self.logDock.show()      # else: hide it
+        else:
+            self.logDock.hide()
 
     def printLogMessage(self, message):
         self.logWindow.append(message)
