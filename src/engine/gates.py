@@ -5,7 +5,6 @@
 ##   user_circuits contains those defined by the user     ##
 ############################################################
 
-from .comod import _INPUT, _OUTPUT
 from .simulator import *
 
 

@@ -2,7 +2,6 @@
 ## advanced predefined circuits built from logic gates and other circuits ##
 ############################################################################
 
-from .comod import _INPUT, _OUTPUT
 from .simulator import *
 from .gates import *
 
