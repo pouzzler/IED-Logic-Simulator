@@ -5,6 +5,25 @@ from PySide import QtGui, QtCore
 from engine.simulator import Circuit
 import engine
 
+class IO(QtGui.QGraphicsPathItem):
+    """We represent an I pin as a graphic square path,
+    and a O pin as a circle.
+    """
+    
+    DIAMETER = 25
+    
+    def __init__(self, isInput):
+        super(IO, self).__init__()
+        self.setFlag(QtGui.QGraphicsItem.ItemIsMovable)
+        self.setFlag(QtGui.QGraphicsItem.ItemIsSelectable)
+        # Creating a engine.simulator.Plug
+        
+        path = QtGui.QPainterPath()
+        if isInput:
+            path.addEllipse(0, 0, self.DIAMETER, self.DIAMETER)
+        else:
+            path.addRect(0,0, self.DIAMETER, self.DIAMETER)
+        self.setPath(path)
 
 class CircuitItem(QtGui.QGraphicsPathItem):
     """We represent a circuit or logic gate as a graphic path."""

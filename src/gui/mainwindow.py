@@ -55,11 +55,6 @@ class MainWindow(QtGui.QMainWindow):
         self.logWindow = BlackTextBox()
         # connexion des signaux
         tooloptions.clicked.connect(self.setStatusMessage)
-<<<<<<< HEAD
-=======
-        view.newLogMessage.connect(self.printLogMessage)
-
->>>>>>> 8258d2c3f42eb8c6fa7109b61ead7f6f73de99e4
         self.show()
 
     def setStatusMessage(self, message):

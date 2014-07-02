@@ -4,7 +4,7 @@
 from PySide import QtGui, QtCore
 from .toolbox import ToolBox
 from .tooloptions import ToolOptions
-from .circuititem import CircuitItem
+from .circuititem import CircuitItem, IO
 from time import gmtime, strftime
 
 
@@ -54,12 +54,20 @@ class MainView(QtGui.QGraphicsView):
             QtCore.QModelIndex())
         item = model.item(0)
         name = item.text()
-        c = CircuitItem(name)
-        self.scene().addItem(c)
-        c.setPos(e.pos())
-        self.newLogMessage.emit(
-			time() + "%s '%s' has been created"
-			% (c.circuit.class_name(), c.circuit.name,))
+        try:
+            c = CircuitItem(name)
+            self.scene().addItem(c)
+            c.setPos(e.pos())
+            self.newLogMessage.emit(
+                time() + "%s '%s' has been created"
+                % (c.circuit.class_name(), c.circuit.name,))
+        except:
+            try:
+                io = IO('Input Pin' in name)
+                self.scene().addItem(io)
+                io.setPos(e.pos())
+            except:
+                print("fail")
 
     def keyPressEvent(self, e):
         """Manages keyboard events, in particular item rotation,
