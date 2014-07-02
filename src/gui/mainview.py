@@ -63,6 +63,10 @@ class MainView(QtGui.QGraphicsView):
 
         scene = self.scene()
         selection = scene.selectedItems()
+        # ESC, unselect all items
+        if e.key() == QtCore.Qt.Key_Escape:
+            for item in selection:
+                item.setSelected(False)
         # Del, suppression
         if e.key() == QtCore.Qt.Key_Delete:
             for item in selection:
@@ -169,7 +173,6 @@ class MainView(QtGui.QGraphicsView):
                 #~ item.circuit.inputList[i].connect(
                     #~ self.connectionData[1])
                 #~ return
-        print(self.connStart, self.connEnd)
         if not self.connStart or not self.connEnd:
             return
         if (
@@ -186,6 +189,18 @@ class MainView(QtGui.QGraphicsView):
                     "Don't connect two circuit " +
                     ("inputs" if self.connStart.isInput else "outputs"))
                 return
+        elif ((
+            (self.connStart.owner != _TC and self.connEnd.owner == _TC)
+            or (self.connStart.owner == _TC and self.connEnd.owner != _TC))
+            and self.connStart.isInput != self.connEnd.isInput):
+                a = "local " if self.connStart.owner != _TC else "global "
+                b = "input" if self.connStart.isInput else "output"
+                c = "global " if a == "local " else "local "
+                d = "output" if b == "inputs" else "input"
+                self.toast("Don't connect a " + a + b + " with a " + c + d)
+                return
+        else:
+            self.connStart.connect(self.connEnd)
         super(MainView, self).mouseReleaseEvent(e)
 
     def toast(self, message):
