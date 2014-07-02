@@ -13,7 +13,7 @@ class IOItem(QtGui.QGraphicsPathItem):
     """
 
     LARGE_DIAMETER = 25
-    SMALL_DIAMETER = 5 
+    SMALL_DIAMETER = 5
 
     def __init__(self, isInput):
         super(IOItem, self).__init__()
@@ -21,14 +21,31 @@ class IOItem(QtGui.QGraphicsPathItem):
         self.setFlag(QtGui.QGraphicsItem.ItemIsSelectable)
         path = QtGui.QPainterPath()
         if isInput:
-            _TC.add_input()
+            self.plug = _TC.add_input()
             path.addEllipse(0, 0, self.LARGE_DIAMETER, self.LARGE_DIAMETER)
-            path.addEllipse(self.LARGE_DIAMETER + 1, (self.LARGE_DIAMETER - self.SMALL_DIAMETER) / 2, self.SMALL_DIAMETER, self.SMALL_DIAMETER)
+            path.addEllipse(
+                self.LARGE_DIAMETER + 1,
+                (self.LARGE_DIAMETER - self.SMALL_DIAMETER) / 2,
+                self.SMALL_DIAMETER,
+                self.SMALL_DIAMETER)
         else:
-            _TC.add_output()
+            self.plug = _TC.add_output()
             path.addRect(0, 0, self.LARGE_DIAMETER, self.LARGE_DIAMETER)
-            path.addEllipse(self.LARGE_DIAMETER + 1, (self.LARGE_DIAMETER - self.SMALL_DIAMETER) / 2, self.SMALL_DIAMETER, self.SMALL_DIAMETER)
-        self.setPath(path)        
+            path.addEllipse(
+                self.LARGE_DIAMETER + 1,
+                (self.LARGE_DIAMETER - self.SMALL_DIAMETER) / 2,
+                self.SMALL_DIAMETER,
+                self.SMALL_DIAMETER)
+        self.setPath(path)
+
+    def IOAtPos(self, pos):
+        path = QtGui.QPainterPath()
+        path.addEllipse(
+            self.LARGE_DIAMETER - self.SMALL_DIAMETER,
+            self.LARGE_DIAMETER / 2 - self.SMALL_DIAMETER,
+            self.SMALL_DIAMETER * 2, self.SMALL_DIAMETER * 2)
+        if path.contains(pos):
+            return self.plug
 
 
 class CircuitItem(QtGui.QGraphicsPathItem):
@@ -121,3 +138,21 @@ class CircuitItem(QtGui.QGraphicsPathItem):
                 -90, 180)
         path.closeSubpath()
         self.setPath(path)
+
+    def IOAtPos(self, pos):
+        for i in range(self.circuit.nb_inputs()):
+            path = QtGui.QPainterPath()
+            path.addEllipse(
+                - self.DIAMETER, i * self.IO_HEIGHT + self.iOffset +
+                self.BODY_OFFSET - self.DIAMETER, self.DIAMETER * 3,
+                self.DIAMETER * 3)
+            if path.contains(pos):
+                return self.circuit.inputList[i]
+        for i in range(self.circuit.nb_outputs()):
+            path = QtGui.QPainterPath()
+            path.addEllipse(
+                self.O_RIGHT + 1 - self.DIAMETER, i * self.IO_HEIGHT +
+                self.oOffset + self.BODY_OFFSET - self.DIAMETER,
+                self.DIAMETER * 3, self.DIAMETER * 3)
+            if path.contains(pos):
+                return self.circuit.outputList[i]
