@@ -6,10 +6,7 @@ from .mainview import MainView
 from .toolbox import ToolBox
 from .tooloptions import ToolOptions
 
-from engine.simulator import _TC  # le circuit du "top-level"
 from engine.gates import *        # portes logiques de base
-from engine.circuits import *     # circuits logiques avancés
-from engine.clock import *        # horloge
 
 
 class MainWindow(QtGui.QMainWindow):
@@ -34,10 +31,9 @@ class MainWindow(QtGui.QMainWindow):
         fileMenu.addAction(u'Quit', self.close)
         self.menuBar().addMenu(fileMenu)
         optionsMenu = QtGui.QMenu('Options')
-        verbose = QtGui.QAction(u'Verbose', None)
-        verbose.setCheckable(True)
-        optionsMenu.addAction(verbose)
-        verbose.triggered.connect(lambda: verbose.setChecked(not verbose.isChecked()))
+        self.verbose = QtGui.QAction(u'Verbose', optionsMenu, checkable=True, checked=True)
+        optionsMenu.addAction(self.verbose)
+        #~ self.verbose.triggered.connect(lambda: self.verbose.setChecked(self.verbose.isChecked()))
         self.menuBar().addMenu(optionsMenu)
         helpMenu = QtGui.QMenu('Help')
         helpMenu.addAction('Documentation')
