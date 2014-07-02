@@ -5,6 +5,11 @@ from PySide import QtGui, QtCore
 from .toolbox import ToolBox
 from .tooloptions import ToolOptions
 from .circuititem import CircuitItem
+from time import gmtime, strftime
+
+
+def time():
+	return str('[' + strftime("%H:%M:%S", gmtime()) + '] ')
 
 
 class MainView(QtGui.QGraphicsView):
@@ -14,6 +19,8 @@ class MainView(QtGui.QGraphicsView):
     * Linking outputs and inputs
     * Translating and rotating elements around
     """
+    
+    newLogMessage = QtCore.Signal(str)
 
     def __init__(self, parent):
         super(MainView, self).__init__(parent)
@@ -50,6 +57,9 @@ class MainView(QtGui.QGraphicsView):
         c = CircuitItem(name)
         self.scene().addItem(c)
         c.setPos(e.pos())
+        self.newLogMessage.emit(
+			time() + "%s '%s' has been created"
+			% (c.circuit.class_name(), c.circuit.name,))
 
     def keyPressEvent(self, e):
         """Manages keyboard events, in particular item rotation,
