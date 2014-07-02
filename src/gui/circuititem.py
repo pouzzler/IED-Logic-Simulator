@@ -10,7 +10,7 @@ class CircuitItem(QtGui.QGraphicsPathItem):
     """We represent a circuit or logic gate as a graphic path."""
 
     IO_HEIGHT = 25   # pixels par E/S
-    DIAMETER = 5    # pour les négations et les pins
+    DIAMETER = 5     # pour les négations et les pins
     BODY_OFFSET = 5  # le corps dépasse des entrées extrêmes de 5 pixels
     I_LEFT = 5       # limite gauche des entrées
     I_RIGHT = 24     # limite droite des entrées

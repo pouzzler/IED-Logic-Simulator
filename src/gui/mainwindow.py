@@ -9,6 +9,18 @@ from .tooloptions import ToolOptions
 from engine.gates import *        # portes logiques de base
 
 
+# for the log widget
+class BlackTextBox(QtGui.QTextEdit):
+    def __init__(self):
+        QtGui.QTextEdit.__init__(self)
+        pal = QtGui.QPalette()
+        bgc = QtGui.QColor(0, 0, 0)
+        pal.setColor(QtGui.QPalette.Base, bgc)
+        textc = QtGui.QColor(255, 255, 255)
+        pal.setColor(QtGui.QPalette.Text, textc)
+        self.setPalette(pal)
+
+
 class MainWindow(QtGui.QMainWindow):
     """Our application's main window."""
 
@@ -37,8 +49,11 @@ class MainWindow(QtGui.QMainWindow):
         helpMenu.addAction('Documentation')
         helpMenu.addAction('About', self.about)
         self.menuBar().addMenu(helpMenu)
+        # a window for the logs
+        self.logWindow = BlackTextBox()
         # connexion des signaux
         tooloptions.clicked.connect(self.setStatusMessage)
+        view.newLogMessage.connect(self.printLogMessage)
 
         self.show()
 
@@ -56,6 +71,11 @@ class MainWindow(QtGui.QMainWindow):
         msgBox.exec_()
 
     def showLogs(self):
+        # ajouter test: pas ouvrir le dock s'il l'est déjà
         logDock = QtGui.QDockWidget('Logs')  # dans un dock.
-        logDock.setWidget(QtGui.QTextEdit())
+        logDock.setWidget(self.logWindow)
+        self.logWindow.append("hello")
         self.addDockWidget(QtCore.Qt.BottomDockWidgetArea, logDock)
+
+    def printLogMessage(self, message):
+        self.logWindow.append(message)
