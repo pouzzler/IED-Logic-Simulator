@@ -12,10 +12,10 @@ from .comod import _INPUT, _OUTPUT, _CIRCUIT
 #        -+------------------------ CLASSES ------------------------+-        #
 # plug class, a plug is an input or an output
 class Plug:
-    def __init__(self, ptype, name, owner):
+    def __init__(self, isInput, name, owner):
         self.owner = owner        # circuit or door featuring this I/O
         self.name = name          # its name
-        self.ptype = ptype        # specifies whether to evaluate the values
+        self.isInput = isInput    # specifies whether to evaluate the values
         self.value = False        # at first, no electricity
         self.nbEval = 0           # number of evaluations
         self.connections = []     # connected plugs list
@@ -27,7 +27,7 @@ class Plug:
         else:                               # else, set the new value
             self.value = bool(value)
             self.nbEval += 1
-        if self.ptype is _INPUT:            # input? evaluate the circuit
+        if self.isInput:                    # input? evaluate the circuit
             self.owner.evalfun()
         for connection in self.connections:
             connection.set(value)           # set value of the connected plugs
@@ -39,7 +39,8 @@ class Plug:
         for plug in plugList:
             self.connections.append(plug)   # add each connection of the lists
             if verbose:
-                print('    ~ Plug %s connected to Plug %s'
+                print(
+                    '    ~ Plug %s connected to Plug %s'
                     % (plug.name, self.name,))
 
 
@@ -54,23 +55,21 @@ class Circuit:
 
     # add a plug (input or output) in the appropriate list of the circuit
     def add_plug(self, plug):
-        if plug.ptype is _INPUT:
+        if plug.isInput:
             self.inputList.append(plug)
-        elif plug.ptype is _OUTPUT:
-            self.outputList.append(plug)
         else:
-            exit('add_plug: wrong plug type')
+            self.outputList.append(plug)
         print('    + plug %s add to %s.xxxputList' % (plug.name, self.name,))
 
     # add an input to the inputList of the circuit
     def add_input(self, name=None):
-        self.inputList.append(Plug(_INPUT, name, self))
+        self.inputList.append(Plug(True, name, self))
         print("    + plug '%s' add to %s.inputList" % (name, self.name,))
         return self.inputList[-1]
 
     # add an output to the outputList of the circuit
     def add_output(self, name=None):
-        self.outputList.append(Plug(_OUTPUT, name, self))
+        self.outputList.append(Plug(False, name, self))
         print("    + plug '%s' add to %s.outputList" % (name, self.name,))
         return self.outputList[-1]
 
@@ -188,43 +187,34 @@ def circuit(circuitName):
 
 #        -+--------------- TOP-LEVEL OBJECTS COUNTER ---------------+-        #
 # calculates the number of inputs, outputs or circuits in a list of circuits
-def count_items(circList, items_type):
+def count_items(circList, method):
     if not isinstance(circList, list):
         circList = [circList]
     c = 0
     for circuit in circList:
-        if items_type is _INPUT:
-            c += circuit.nb_inputs()
-        elif items_type is _OUTPUT:
-            c += circuit.nb_outputs()
-        elif items_type is _INPUT + _OUTPUT:
-            c += circuit.nb_plugs()
-        elif items_type is _CIRCUIT:
-            c += 1
-        else:
-            exit("count_items: wrong items_type")
-        c += count_items(circuit.circuitList, items_type)
+        c += eval('circuit.%s()' % (method,))\
+            + count_items(circuit.circuitList, method)
     return c
 
 
 # total number of inputs used
 def total_nb_inputs():
-    return count_items([_TC], _INPUT)
+    return count_items(_TC, 'nb_inputs')
 
 
 # total number of outputs used
 def total_nb_outputs():
-    return count_items([_TC], _OUTPUT)
+    return count_items(_TC, 'nb_outputs')
 
 
 # total number of I/O used
 def total_nb_plugs():
-    return count_items([_TC], _INPUT + _OUTPUT)
+    return count_items(_TC, 'nb_plugs')
 
 
 # total number of circuits used (including sub-circuits)
 def total_nb_circuits():
-    return count_items([_TC], _CIRCUIT)
+    return count_items(_TC, 'nb_circuits') + 1  # add the top-level circuit
 
 
 #============================== GLOBAL VARIABLES =============================#
