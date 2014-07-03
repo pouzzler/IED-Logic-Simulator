@@ -1,6 +1,21 @@
+#!/usr/bin/env python3
+# coding: utf-8
+
+"""
 ############################################################################
 ## advanced predefined circuits built from logic gates and other circuits ##
 ############################################################################
+
+This module contains some examples of circuits built from basic logic gates
+(cf. gates.py).
+These sequential circuits are classes so they can be easily instantiated.
+
+To create a sequential circuit one must define its inputs, its outputs,
+instantiate its components and connect the circuit and gates I/O together
+(note that the circuit's components are classes that inherit from
+the Circuit class, which means that it can be logical gates or other
+sequentials circuits).
+"""
 
 from .simulator import *
 from .gates import *

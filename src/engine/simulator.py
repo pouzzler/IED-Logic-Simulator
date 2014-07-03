@@ -1,20 +1,38 @@
 #!/usr/bin/env python3
 # coding: utf-8
 
+"""
 #############################################################
 ## tries to simulate circuits and logic gates using python ##
 #############################################################
 
+A circuit (circuit class) includes a set of connectors (Plug class) that
+can be inputs or outputs and a set of sub-circuits (Circuit class). 
+Inputs, outputs and sub-circuits of a circuit are stored in inInputList,
+outputlist and circuitList lists, respectively. 
+Plugs and Circuits can have a name but it's optional. 
+
+There are two ways to access a component (Plug or Circuit) of a circuit: 
+* Using its index in the list: circuit.inputList ([1])
+* Using its name (if any): circuit.input ('B') 
+
+When the value (Boolean) of an input is modified (with .set()), the entire
+circuit is evaluated: all outputs are recalculated based on the values ​​of
+its inputs and connections between components.
+"""
+
 from log.log import *
 
 
-myLog = Log('terminal')
+myLog = Log('simulator.log', logging.DEBUG, logfile=True, terminal=True)
 
 
 #============================== SIMULATOR ENGINE =============================#
 #        -+------------------------ CLASSES ------------------------+-        #
-# plug class, a plug is an input or an output
 class Plug:
+    """The Plug class: a plug is an input or an output.
+    """
+    
     def __init__(self, isInput, name, owner):
         self.owner = owner        # circuit or door featuring this I/O
         self.name = name          # its name
@@ -23,8 +41,11 @@ class Plug:
         self.nbEval = 0           # number of evaluations
         self.connections = []     # connected plugs list
 
-    # usage: plug.set([0/1])
     def set(self, value):
+        """Set the value of a plug
+        usage: plug.set([0/1])
+        """
+        
         if self.value == value and self.nbEval != 0:  # unchanged value, stop!
             return
         else:                               # else, set the new value
@@ -35,8 +56,11 @@ class Plug:
         for connection in self.connections:
             connection.set(value)           # set value of the connected plugs
 
-    # usage: plugE.connect([plugA, plugB, ..., plugN]) / plugE.connect(plugA)
     def connect(self, plugList, verbose=True):
+        """Add one or multiple connexions between a single object and others
+        usage: plugE.connect([plugA, plugB, ..., plugN]) / plugE.connect(plugA)
+        """
+        
         if not isinstance(plugList, list):
             plugList = [plugList]           # create a list
         for plug in plugList:
@@ -47,8 +71,10 @@ class Plug:
                     % (plug.owner.name, plug.name, self.owner.name, self.name))
 
 
-# class for the logic circuits and gates
 class Circuit:
+    """ The Circuit class for the logic circuits and gates.
+    """
+    
     def __init__(self, name):
         self.name = name        # name (optional)
         self.inputList = []     # circuit's inputs list
@@ -58,8 +84,10 @@ class Circuit:
             "> %s '%s' has been created"
             % (self.class_name(), self.name,))
 
-    # add a plug (input or output) in the appropriate list of the circuit
     def add_plug(self, plug):
+        """Add a plug (input or output) in the appropriate list of the circuit.
+        """
+        
         if plug.isInput:
             self.inputList.append(plug)
             myLog.print_message(
@@ -70,77 +98,103 @@ class Circuit:
             myLog.print_message(
                 "    + plug '%s' add to %s.outputList"
                 % (plug.name, self.name,))
-
-    # add an input to the inputList of the circuit
+    
     def add_input(self, name=None):
+        """Add an input to the inputList of the circuit.
+        """
+        
         self.inputList.append(Plug(True, name, self))
         myLog.print_message(
             "    + plug '%s' add to %s.inputList"
             % (name, self.name,))
         return self.inputList[-1]
 
-    # add an output to the outputList of the circuit
     def add_output(self, name=None):
+        """Add an output to the outputList of the circuit.
+        """
+        
         self.outputList.append(Plug(False, name, self))
         myLog.print_message(
             "    + plug '%s' add to %s.outputList"
             % (name, self.name,))
         return self.outputList[-1]
 
-    # add an circuit to the circuitList of the circuit
     def add_circuit(self, circuit):
+        """Add an circuit to the circuitList of the circuit.
+        """
+        
         self.circuitList.append(circuit)
         myLog.print_message(
             "  + circuit %s '%s' add to %s.circuitsList"
             % (circuit.class_name(), circuit.name, self.name,))
         return self.circuitList[-1]
 
-    # return the original clas name of the circuit instance
     def class_name(self):
+        """Return the original clas name of the circuit instance.
+        """
+        
         return self.__class__.__name__
 
-    # returns the input of the circuit whose name is inputName
     def input(self, inputName):
+        """Returns the input of the circuit whose name is inputName.
+        """
+        
         for input in self.inputList:
             if input.name == inputName:
                 return input
 
-    # returns the output of the circuit whose name is outputName
     def output(self, outputName):
+        """Returns the output of the circuit whose name is outputName.
+        """
+        
         for output in self.outputList:
             if output.name == outputName:
                 return output
 
-    # returns the circuit of the circuit whose name is circuitName
     def circuit(self, circuitName):
+        """Returns the circuit of the circuit whose name is circuitName.
+        """
+        
         for cicuit in self.circuitList:
             if cicuit.name == circuitName:
                 return cicuit
 
-    # returns the number of inputs of the circuit
     def nb_inputs(self):
+        """Returns the number of inputs of the circuit.
+        """
+        
         return len(self.inputList)
 
-    # returns the number of outputs of the circuit
     def nb_outputs(self):
+        """Returns the number of outputs of the circuit.
+        """
+        
         return len(self.outputList)
 
-    # returns the number of I/O of the circuit
     def nb_plugs(self):
+        """Returns the number of I/O of the circuit.
+        """
+        
         return self.nb_inputs() + self.nb_outputs()
 
-    # returns the number of sub-circuits of the circuit
     def nb_circuits(self):
+        """Returns the number of sub-circuits of the circuit.
+        """
+        
         return len(self.circuitList)
 
-    # only child classes can have an evalfun
     def evalfun(self):
+        """Only child classes can have an evalfun.
+        """
+        
         return
 
 
 #        -+----------------------- UTILITIES -----------------------+-        #
-# print the plugs of a circuit and its sub-circuitss
 def print_components(circuit, verbose=True, indent=''):
+    """Print the plugs of a circuit and its sub-circuitss.
+    """
+    
     if not circuit.name:
         print(indent + '[None]')
     else:
@@ -163,46 +217,65 @@ def print_components(circuit, verbose=True, indent=''):
 
 #================================= TOP LEVEL =================================#
 #        -+--------------- ADD OBJETCS TO TOP-LEVEL ----------------+-        #
-# Add an I/O to the list of I/O of the "top-level" circuit
 def add_plug(plug):
+    """Add an I/O to the list of I/O of the "top-level" circuit.
+    """
+    
     return _TC.add_plug(plug)
 
 
-# Add an input to the list of inputs of the "top-level" circuit
 def add_input(name=None):
+    """Add an input to the list of inputs of the "top-level" circuit.
+    """
+    
     return _TC.add_input(name)
 
 
-# Add an output to the list of outputs of the "top-level" circuit
 def add_output(name=None):
+    """Add an output to the list of outputs of the "top-level" circuit.
+    """
+    
     return _TC.add_output(name)
 
 
-# Add a circuit to the list of circuits of the "top-level" circuit
 def add_circuit(name=None):
+    """Add a circuit to the list of circuits of the "top-level" circuit.
+    """
+    
     return _TC.add_circuit(name)
 
 
 #        -+-------- ACCESS TOP-LEVEL OBJECTS BY THEIR NAME ---------+-        #
-# returns the input of the "top-level" circuit whose name is inputName
-# /!\ override la fonction input de python 3
 def input(inputName):
+    """Returns the input of the "top-level" circuit whose name is inputName.
+        /!\ Override la fonction input de python 3.
+    """
+    
     return _TC.input(inputName)
 
 
-# returns the output of the "top-level" circuit whose name is outputName
 def output(outputName):
+    """Returns the output of the "top-level"
+    circuit whose name is outputName.
+    """
+    
     return _TC.input(outputName)
 
 
-# returns the circuit of the "top-level" circuit whose name is circuitName
 def circuit(circuitName):
+    """Returns the circuit of the "top-level"
+    circuit whose name is circuitName.
+    """
+    
     return _TC.input(circuitName)
 
 
 #        -+--------------- TOP-LEVEL OBJECTS COUNTER ---------------+-        #
-# calculates the number of inputs, outputs or circuits in a list of circuits
 def count_items(circList, method):
+    """Calculates the number of inputs,
+    outputs or circuits in a list of circuits.
+    """
+    
     if not isinstance(circList, list):
         circList = [circList]
     c = 0
@@ -212,23 +285,31 @@ def count_items(circList, method):
     return c
 
 
-# total number of inputs used
 def total_nb_inputs():
+    """Total number of inputs used.
+    """
+    
     return count_items(_TC, 'nb_inputs')
 
 
-# total number of outputs used
 def total_nb_outputs():
+    """Total number of outputs used.
+    """
+    
     return count_items(_TC, 'nb_outputs')
 
 
-# total number of I/O used
 def total_nb_plugs():
+    """Total number of I/O used.
+    """
+    
     return count_items(_TC, 'nb_plugs')
 
 
-# total number of circuits used (including sub-circuits)
 def total_nb_circuits():
+    """Total number of circuits used (including sub-circuits).
+    """
+    
     return count_items(_TC, 'nb_circuits') + 1  # add the top-level circuit
 
 

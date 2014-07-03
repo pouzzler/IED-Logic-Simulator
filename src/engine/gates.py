@@ -1,9 +1,22 @@
+#!/usr/bin/env python3
+# coding: utf-8
+
+"""
 ############################################################
 ##                  basic logic gates                     ##
 ##  these gates allow you to build more complex circuits  ##
 ##           circuits.py contains some examples           ##
 ##   user_circuits contains those defined by the user     ##
 ############################################################
+
+These classes represent the basic logic gates. 
+Unlike sequential circits they have an evalfun() function
+which allows to calculate their output based on their inputs. 
+The names of these classes are the name of the door + 'Gate',
+according to the naming convention of pep8. 
+
+Note: Only NOT, AND and OR gates can't be created as sequential circuits.
+"""
 
 from .simulator import *
 
