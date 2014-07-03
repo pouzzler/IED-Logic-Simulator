@@ -19,6 +19,7 @@ class MainView(QtGui.QGraphicsView):
     def __init__(self, parent):
         super(MainView, self).__init__(parent)
         self.setAcceptDrops(True)
+        self.setMouseTracking(True)
         scene = QtGui.QGraphicsScene(parent)
         self.setScene(scene)
         self.connectionData = None
@@ -52,9 +53,9 @@ class MainView(QtGui.QGraphicsView):
             c = CircuitItem(name)
             self.scene().addItem(c)
         elif name in ['Input Pin', 'Output Pin']:
-                io = IOItem('Input' in name)
-                self.scene().addItem(io)
-                io.setPos(e.pos())
+            io = IOItem('Input' in name)
+            self.scene().addItem(io)
+            io.setPos(e.pos())
 
     def keyPressEvent(self, e):
         """Manages keyboard events, in particular item rotation,
@@ -111,7 +112,7 @@ class MainView(QtGui.QGraphicsView):
         that represents an engine.simulator.Plug, that Plug is appended
         to self.connectionData.
         """
-
+        
         self.connStart = None
         self.connEnd = None
         item = self.itemAt(e.pos())
@@ -120,9 +121,12 @@ class MainView(QtGui.QGraphicsView):
             if isinstance(item, CircuitItem) or isinstance(item, IOItem):
                 ioatpos = item.IOAtPos(pos)
                 if ioatpos:
-                    self.connStart = ioatpos
-                    # No super() processing, therefore no dragging
-                    return
+                    if e.buttons() == QtCore.Qt.LeftButton:
+                        self.connStart = ioatpos
+                        # No super() processing, therefore no dragging
+                        return
+                    elif e.buttons() == QtCore.Qt.RightButton:
+                        ioatpos.set(not ioatpos.value)
         # If we didn't click an I/O, we probably wanted to drag the
         # circuit.
         super(MainView, self).mousePressEvent(e)
@@ -175,33 +179,50 @@ class MainView(QtGui.QGraphicsView):
                 #~ return
         if not self.connStart or not self.connEnd:
             return
-        if (
-            self.connStart.owner == _TC and self.connEnd.owner == _TC
-            and self.connStart.isInput == self.connEnd.isInput):
-                self.toast(
-                    "Don't connect two global " +
-                    ("inputs" if self.connStart.isInput else "outputs"))
-                return
+        elif self.connStart == self.connEnd:
+            return
         elif (
-            self.connStart.owner != _TC and self.connEnd.owner != _TC
-            and self.connStart.isInput == self.connEnd.isInput):
-                self.toast(
-                    "Don't connect two circuit " +
-                    ("inputs" if self.connStart.isInput else "outputs"))
-                return
+                self.connStart.owner == _TC and self.connEnd.owner == _TC
+                and self.connStart.isInput == self.connEnd.isInput):
+            self.toast(
+                "Don't connect two global " +
+                ("inputs" if self.connStart.isInput else "outputs"))
+            return
+        elif (
+                self.connStart.owner != _TC and self.connEnd.owner != _TC
+                and self.connStart.isInput == self.connEnd.isInput):
+            self.toast(
+                "Don't connect two circuit " +
+                ("inputs" if self.connStart.isInput else "outputs"))
+            return
         elif ((
-            (self.connStart.owner != _TC and self.connEnd.owner == _TC)
-            or (self.connStart.owner == _TC and self.connEnd.owner != _TC))
-            and self.connStart.isInput != self.connEnd.isInput):
-                a = "local " if self.connStart.owner != _TC else "global "
-                b = "input" if self.connStart.isInput else "output"
-                c = "global " if a == "local " else "local "
-                d = "output" if b == "inputs" else "input"
-                self.toast("Don't connect a " + a + b + " with a " + c + d)
-                return
+                (self.connStart.owner != _TC and self.connEnd.owner == _TC)
+                or (self.connStart.owner == _TC and self.connEnd.owner != _TC))
+                and self.connStart.isInput != self.connEnd.isInput):
+            a = "local " if self.connStart.owner != _TC else "global "
+            b = "input" if self.connStart.isInput else "output"
+            c = "global " if a == "local " else "local "
+            d = "output" if b == "inputs" else "input"
+            self.toast("Don't connect a " + a + b + " with a " + c + d)
+            return
         else:
             self.connStart.connect(self.connEnd)
         super(MainView, self).mouseReleaseEvent(e)
+
+    def mouseMoveEvent(self, e):
+        """Changes the cursor shape when the mouse hovers over an
+        input or output pin.
+        """
+        item = self.itemAt(e.pos())
+        if item:
+            pos = item.mapFromScene(self.mapToScene(e.pos()))
+            if isinstance(item, CircuitItem) or isinstance(item, IOItem):
+                ioatpos = item.IOAtPos(pos)
+                if ioatpos:
+                    self.setCursor(QtCore.Qt.CursorShape.UpArrowCursor)
+                    return
+        self.setCursor(QtCore.Qt.CursorShape.ArrowCursor)
+        super(MainView, self).mouseMoveEvent(e)
 
     def toast(self, message):
         """Displays a short-lived informative message."""

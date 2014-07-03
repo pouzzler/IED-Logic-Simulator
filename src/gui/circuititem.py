@@ -23,28 +23,24 @@ class IOItem(QtGui.QGraphicsPathItem):
         if isInput:
             self.plug = _TC.add_input()
             path.addEllipse(0, 0, self.LARGE_DIAMETER, self.LARGE_DIAMETER)
-            path.addEllipse(
-                self.LARGE_DIAMETER + 1,
-                (self.LARGE_DIAMETER - self.SMALL_DIAMETER) / 2,
-                self.SMALL_DIAMETER,
-                self.SMALL_DIAMETER)
         else:
             self.plug = _TC.add_output()
             path.addRect(0, 0, self.LARGE_DIAMETER, self.LARGE_DIAMETER)
-            path.addEllipse(
-                self.LARGE_DIAMETER + 1,
-                (self.LARGE_DIAMETER - self.SMALL_DIAMETER) / 2,
-                self.SMALL_DIAMETER,
-                self.SMALL_DIAMETER)
+        path.addEllipse(
+            self.LARGE_DIAMETER + 1,
+            (self.LARGE_DIAMETER - self.SMALL_DIAMETER) / 2,
+            self.SMALL_DIAMETER,
+            self.SMALL_DIAMETER)
         self.setPath(path)
 
-    def IOAtPos(self, pos):
-        path = QtGui.QPainterPath()
-        path.addEllipse(
+        self.collisionPath = QtGui.QPainterPath()
+        self.collisionPath.addEllipse(
             self.LARGE_DIAMETER - self.SMALL_DIAMETER,
             self.LARGE_DIAMETER / 2 - self.SMALL_DIAMETER,
             self.SMALL_DIAMETER * 2, self.SMALL_DIAMETER * 2)
-        if path.contains(pos):
+
+    def IOAtPos(self, pos):
+        if self.collisionPath.contains(pos):
             return self.plug
 
 

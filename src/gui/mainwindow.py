@@ -14,18 +14,16 @@ from engine.simulator import myLog      # log manager
 
 #================================= UTILITIES =================================#
 def date():
-    """Return the current date.
-    """
-    
+    """Return the current date."""
+
     return str(strftime("%m:%d:%Y", gmtime()))
 
 
 #================================== CLASSES ==================================#
 # for the log widget
 class BlackTextBox(QtGui.QTextEdit):
-    """A QTextEdit with black background and white foreground.
-    """
-    
+    """A QTextEdit with black background and white foreground."""
+
     def __init__(self):
         QtGui.QTextEdit.__init__(self)
         pal = QtGui.QPalette()
@@ -37,8 +35,7 @@ class BlackTextBox(QtGui.QTextEdit):
 
 
 class MainWindow(QtGui.QMainWindow):
-    """Our application's main window.
-    """
+    """Our application's main window."""
 
     def __init__(self):
         super(MainWindow, self).__init__()
@@ -84,38 +81,32 @@ class MainWindow(QtGui.QMainWindow):
         myLog.newLogMessage.connect(self.printLogMessage)
         # print a message on the logs
         myLog.print_message("New session started on %s" % (date(),))
-        
-        
         self.show()
 
     def setStatusMessage(self, message):
-        """Print a message in the statusbar
-        """
-        
+        """Print a message in the statusbar."""
+
         self.statusBar().showMessage(message)
 
     def focusInEvent(self, event):
         self.setStatusMessage(u"Cette zone sert à quelque chose")
 
     def about(self):
-        """Print a dialog about the application
-        """
-        
+        """Print a dialog about the application."""
+
         msgBox = QtGui.QMessageBox()
         msgBox.setText(u'v0.1\nPar Mathieu Fourcroy & Sébastien Magnien.')
         msgBox.exec_()
 
     def showLogs(self):
-        """Hide or show the log window
-        """
-        
+        """Hide or show the log window."""
+
         if self.logAct.isChecked():  # if the action is checked: show the log
             self.logDock.show()      # else: hide it
         else:
             self.logDock.hide()
 
     def printLogMessage(self, message):
-        """Append a message on the next line of the log field
-        """
-        
+        """Append a message on the next line of the log field."""
+
         self.logWindow.append(message)
