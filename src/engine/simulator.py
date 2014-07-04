@@ -25,6 +25,10 @@ import logging
 from log.log import Log
 
 
+# create the log
+log = Log('simulator.log', logging.DEBUG, logfile=True, terminal=True)
+
+
 #============================== SIMULATOR ENGINE =============================#
 #        -+------------------------ CLASSES ------------------------+-        #
 class Plug:
@@ -48,7 +52,7 @@ class Plug:
             self.nbEval += 1
         if self.isInput:                    # input? evaluate the circuit
             self.owner.evalfun()
-        TopLevel.log.print_message(
+        log.print_message(
             '    # %s.%s set to %i'
             % (self.owner.name, self.name, int(self.value)))
         for connection in self.connections:
@@ -63,7 +67,7 @@ class Plug:
         for plug in plugList:
             self.connections.append(plug)   # add each connection of the lists
             if verbose:
-                TopLevel.log.print_message(
+                log.print_message(
                     '    ~ Plug %s.%s connected to Plug %s.%s'
                     % (plug.owner.name, plug.name, self.owner.name, self.name))
 
@@ -75,7 +79,7 @@ class Circuit:
         self.inputList = []     # circuit's inputs list
         self.outputList = []    # circuit's outputs list
         self.circuitList = []   # circuit's circuits list
-        TopLevel.log.print_message(
+        log.print_message(
             "> %s '%s' has been created"
             % (self.class_name(), self.name,))
 
@@ -84,19 +88,19 @@ class Circuit:
         """
         if plug.isInput:
             self.inputList.append(plug)
-            TopLevel.log.print_message(
+            log.print_message(
                 "    + plug '%s' add to %s.inputList"
                 % (plug.name, self.name,))
         else:
             self.outputList.append(plug)
-            TopLevel.log.print_message(
+            log.print_message(
                 "    + plug '%s' add to %s.outputList"
                 % (plug.name, self.name,))
 
     def add_input(self, name=None):
         """Add an input to the inputList of the circuit."""
         self.inputList.append(Plug(True, name, self))
-        TopLevel.log.print_message(
+        log.print_message(
             "    + plug '%s' add to %s.inputList"
             % (name, self.name,))
         return self.inputList[-1]
@@ -104,7 +108,7 @@ class Circuit:
     def add_output(self, name=None):
         """Add an output to the outputList of the circuit."""
         self.outputList.append(Plug(False, name, self))
-        TopLevel.log.print_message(
+        log.print_message(
             "    + plug '%s' add to %s.outputList"
             % (name, self.name,))
         return self.outputList[-1]
@@ -112,7 +116,7 @@ class Circuit:
     def add_circuit(self, circuit):
         """Add an circuit to the circuitList of the circuit."""
         self.circuitList.append(circuit)
-        TopLevel.log.print_message(
+        log.print_message(
             "  + circuit %s '%s' add to %s.circuitsList"
             % (circuit.class_name(), circuit.name, self.name,))
         return self.circuitList[-1]

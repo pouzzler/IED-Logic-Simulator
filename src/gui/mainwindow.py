@@ -9,7 +9,7 @@ from .toolbox import ToolBox
 from .tooloptions import ToolOptions
 
 from engine.gates import *                   # basic logic gates
-from engine.simulator import TopLevel        # Top-level circuit & log manager
+from engine.simulator import log             # Top-level circuit & log manager
 from log.log import Log, date, BlackTextBox  # to print the log inside the gui
 
 
@@ -55,8 +55,6 @@ class MainWindow(QtGui.QMainWindow):
         self.logDock = QtGui.QDockWidget('Logs')
         self.logDock.setWidget(self.logWindow)
         self.addDockWidget(QtCore.Qt.BottomDockWidgetArea, self.logDock)
-        # create the log
-        log = Log('simulator.log', logging.DEBUG, logfile=True, terminal=True)
         # set the log to emit a signal with mess
         log.toggle_gui_signal(True)
         # signals connexions
