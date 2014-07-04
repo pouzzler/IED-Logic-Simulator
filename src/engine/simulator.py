@@ -50,6 +50,9 @@ class Plug:
             self.nbEval += 1
         if self.isInput:                    # input? evaluate the circuit
             self.owner.evalfun()
+        myLog.print_message(
+            '    # %s.%s set to %i'
+            % (self.owner.name, self.name, int(self.value)))
         for connection in self.connections:
             connection.set(value)           # set value of the connected plugs
 
@@ -266,3 +269,7 @@ def total_nb_circuits():
 # this area contains I/O and circuits (especially logic gates)
 # so we can consider itself as a standalone circuit
 _TC = Circuit('TOP_CIRCUIT_0')
+
+def init_TC(name):
+    global _TC
+    return Circuit(name)

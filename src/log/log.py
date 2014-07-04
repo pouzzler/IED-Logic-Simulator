@@ -1,9 +1,13 @@
 #!/usr/bin/env python3
 # coding: utf-8
 
+"""
 ##############################################################################
 ## manage the log file, the input on the terminal and on the GUI log Widget ##
 ##############################################################################
+
+Manages the logs.
+"""
 
 from PySide import QtGui, QtCore
 import sys
@@ -45,14 +49,14 @@ class Log(QtCore.QObject):
     """
     newLogMessage = QtCore.Signal(str)
 
-    def __init__(self, logfilename, logLevel=logging.DEBUG, **kwargs):
+    def __init__(self, logFileName, logLevel=logging.DEBUG, **kwargs):
         QtCore.QObject.__init__(self)
         self.logfile = kwargs.pop('logfile', True)
         self.terminal = kwargs.pop('terminal', False)
         self.gui = kwargs.pop('gui', False)
         # we must specify the log file
         logging.basicConfig(
-            filename=logfilename,
+            filename=logFileName,
             format='%(asctime)s %(levelname)s: %(message)s',
             datefmt='[%H:%M:%S]',
             level=logLevel)
