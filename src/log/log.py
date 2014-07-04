@@ -11,11 +11,28 @@ import logging
 from time import gmtime, strftime
 
 
+#================================= UTILITIES =================================#
+def date():
+    """Return the current date."""
+    return str(strftime("%m:%d:%Y", gmtime()))
+
+
 def time():
-    """Return the current time
-    """
-    
+    """Return the current time."""
     return str(strftime("[%H:%M:%S] ", gmtime()))
+
+
+#====================== CLASS FOR A SPECIAL LOG WIDGET =======================#
+class BlackTextBox(QtGui.QTextEdit):
+    """A QTextEdit with black background and white foreground."""
+    def __init__(self):
+        QtGui.QTextEdit.__init__(self)
+        pal = QtGui.QPalette()
+        bgc = QtGui.QColor(0, 0, 0)
+        pal.setColor(QtGui.QPalette.Base, bgc)
+        textc = QtGui.QColor(255, 255, 255)
+        pal.setColor(QtGui.QPalette.Text, textc)
+        self.setPalette(pal)
 
 
 #============================= CLASS FOR LOGGING =============================#
@@ -26,7 +43,6 @@ class Log(QtCore.QObject):
     * emiting a newLogMessage Qt signal carrying the message string
     Depending on the state of self.logfile, self.terminal and self.gui.
     """
-    
     newLogMessage = QtCore.Signal(str)
 
     def __init__(self, logfilename, logLevel=logging.DEBUG, **kwargs):

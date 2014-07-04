@@ -30,9 +30,7 @@ myLog = Log('simulator.log', logging.DEBUG, logfile=True, terminal=True)
 #============================== SIMULATOR ENGINE =============================#
 #        -+------------------------ CLASSES ------------------------+-        #
 class Plug:
-    """The Plug class: a plug is an input or an output.
-    """
-
+    """The Plug class: a plug is an input or an output."""
     def __init__(self, isInput, name, owner):
         self.owner = owner        # circuit or door featuring this I/O
         self.name = name          # its name
@@ -45,7 +43,6 @@ class Plug:
         """Set the value of a plug
         usage: plug.set([0/1])
         """
-
         if self.value == value and self.nbEval != 0:  # unchanged value, stop!
             return
         else:                               # else, set the new value
@@ -60,7 +57,6 @@ class Plug:
         """Add one or multiple connexions between a single object and others
         usage: plugE.connect([plugA, plugB, ..., plugN]) / plugE.connect(plugA)
         """
-
         if not isinstance(plugList, list):
             plugList = [plugList]           # create a list
         for plug in plugList:
@@ -72,9 +68,7 @@ class Plug:
 
 
 class Circuit:
-    """ The Circuit class for the logic circuits and gates.
-    """
-
+    """ The Circuit class for the logic circuits and gates."""
     def __init__(self, name):
         self.name = name        # name (optional)
         self.inputList = []     # circuit's inputs list
@@ -87,7 +81,6 @@ class Circuit:
     def add_plug(self, plug):
         """Add a plug (input or output) in the appropriate list of the circuit.
         """
-
         if plug.isInput:
             self.inputList.append(plug)
             myLog.print_message(
@@ -100,9 +93,7 @@ class Circuit:
                 % (plug.name, self.name,))
 
     def add_input(self, name=None):
-        """Add an input to the inputList of the circuit.
-        """
-
+        """Add an input to the inputList of the circuit."""
         self.inputList.append(Plug(True, name, self))
         myLog.print_message(
             "    + plug '%s' add to %s.inputList"
@@ -110,9 +101,7 @@ class Circuit:
         return self.inputList[-1]
 
     def add_output(self, name=None):
-        """Add an output to the outputList of the circuit.
-        """
-
+        """Add an output to the outputList of the circuit."""
         self.outputList.append(Plug(False, name, self))
         myLog.print_message(
             "    + plug '%s' add to %s.outputList"
@@ -120,9 +109,7 @@ class Circuit:
         return self.outputList[-1]
 
     def add_circuit(self, circuit):
-        """Add an circuit to the circuitList of the circuit.
-        """
-
+        """Add an circuit to the circuitList of the circuit."""
         self.circuitList.append(circuit)
         myLog.print_message(
             "  + circuit %s '%s' add to %s.circuitsList"
@@ -130,71 +117,51 @@ class Circuit:
         return self.circuitList[-1]
 
     def class_name(self):
-        """Return the original clas name of the circuit instance.
-        """
-
+        """Return the original clas name of the circuit instance."""
         return self.__class__.__name__
 
     def input(self, inputName):
-        """Returns the input of the circuit whose name is inputName.
-        """
-
+        """Returns the input of the circuit whose name is inputName."""
         for input in self.inputList:
             if input.name == inputName:
                 return input
 
     def output(self, outputName):
-        """Returns the output of the circuit whose name is outputName.
-        """
-
+        """Returns the output of the circuit whose name is outputName."""
         for output in self.outputList:
             if output.name == outputName:
                 return output
 
     def circuit(self, circuitName):
-        """Returns the circuit of the circuit whose name is circuitName.
-        """
-
+        """Returns the circuit of the circuit whose name is circuitName."""
         for cicuit in self.circuitList:
             if cicuit.name == circuitName:
                 return cicuit
 
     def nb_inputs(self):
-        """Returns the number of inputs of the circuit.
-        """
-
+        """Returns the number of inputs of the circuit."""
         return len(self.inputList)
 
     def nb_outputs(self):
-        """Returns the number of outputs of the circuit.
-        """
-
+        """Returns the number of outputs of the circuit."""
         return len(self.outputList)
 
     def nb_plugs(self):
-        """Returns the number of I/O of the circuit.
-        """
-
+        """Returns the number of I/O of the circuit."""
         return self.nb_inputs() + self.nb_outputs()
 
     def nb_circuits(self):
-        """Returns the number of sub-circuits of the circuit.
-        """
-
+        """Returns the number of sub-circuits of the circuit."""
         return len(self.circuitList)
 
     def evalfun(self):
-        """Only child classes can have an evalfun.
-        """
-
+        """Only child classes can have an evalfun."""
         return
 
 
 #        -+----------------------- UTILITIES -----------------------+-        #
 def print_components(circuit, verbose=True, indent=''):
-    """Print the plugs of a circuit and its sub-circuitss.
-    """
-
+    """Print the plugs of a circuit and its sub-circuitss."""
     if not circuit.name:
         print(indent + '[None]')
     else:
@@ -218,30 +185,22 @@ def print_components(circuit, verbose=True, indent=''):
 #================================= TOP LEVEL =================================#
 #        -+--------------- ADD OBJETCS TO TOP-LEVEL ----------------+-        #
 def add_plug(plug):
-    """Add an I/O to the list of I/O of the "top-level" circuit.
-    """
-
+    """Add an I/O to the list of I/O of the "top-level" circuit."""
     return _TC.add_plug(plug)
 
 
 def add_input(name=None):
-    """Add an input to the list of inputs of the "top-level" circuit.
-    """
-
+    """Add an input to the list of inputs of the "top-level" circuit."""
     return _TC.add_input(name)
 
 
 def add_output(name=None):
-    """Add an output to the list of outputs of the "top-level" circuit.
-    """
-
+    """Add an output to the list of outputs of the "top-level" circuit."""
     return _TC.add_output(name)
 
 
 def add_circuit(name=None):
-    """Add a circuit to the list of circuits of the "top-level" circuit.
-    """
-
+    """Add a circuit to the list of circuits of the "top-level" circuit."""
     return _TC.add_circuit(name)
 
 
@@ -250,7 +209,6 @@ def input(inputName):
     """Returns the input of the "top-level" circuit whose name is inputName.
         /!\ Override la fonction input de python 3.
     """
-
     return _TC.input(inputName)
 
 
@@ -258,7 +216,6 @@ def output(outputName):
     """Returns the output of the "top-level"
     circuit whose name is outputName.
     """
-
     return _TC.input(outputName)
 
 
@@ -266,7 +223,6 @@ def circuit(circuitName):
     """Returns the circuit of the "top-level"
     circuit whose name is circuitName.
     """
-
     return _TC.input(circuitName)
 
 
@@ -275,7 +231,6 @@ def count_items(circList, method):
     """Calculates the number of inputs,
     outputs or circuits in a list of circuits.
     """
-
     if not isinstance(circList, list):
         circList = [circList]
     c = 0
@@ -286,30 +241,22 @@ def count_items(circList, method):
 
 
 def total_nb_inputs():
-    """Total number of inputs used.
-    """
-
+    """Total number of inputs used."""
     return count_items(_TC, 'nb_inputs')
 
 
 def total_nb_outputs():
-    """Total number of outputs used.
-    """
-
+    """Total number of outputs used."""
     return count_items(_TC, 'nb_outputs')
 
 
 def total_nb_plugs():
-    """Total number of I/O used.
-    """
-
+    """Total number of I/O used."""
     return count_items(_TC, 'nb_plugs')
 
 
 def total_nb_circuits():
-    """Total number of circuits used (including sub-circuits).
-    """
-
+    """Total number of circuits used (including sub-circuits)."""
     return count_items(_TC, 'nb_circuits') + 1  # add the top-level circuit
 
 

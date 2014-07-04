@@ -9,31 +9,10 @@ from .toolbox import ToolBox
 from .tooloptions import ToolOptions
 
 from engine.gates import *              # basic logic gates
-from engine.simulator import myLog      # log manager
-
-
-#================================= UTILITIES =================================#
-def date():
-    """Return the current date."""
-
-    return str(strftime("%m:%d:%Y", gmtime()))
+from engine.simulator import myLog, date      # log manager
 
 
 #================================== CLASSES ==================================#
-# for the log widget
-class BlackTextBox(QtGui.QTextEdit):
-    """A QTextEdit with black background and white foreground."""
-
-    def __init__(self):
-        QtGui.QTextEdit.__init__(self)
-        pal = QtGui.QPalette()
-        bgc = QtGui.QColor(0, 0, 0)
-        pal.setColor(QtGui.QPalette.Base, bgc)
-        textc = QtGui.QColor(255, 255, 255)
-        pal.setColor(QtGui.QPalette.Text, textc)
-        self.setPalette(pal)
-
-
 class MainWindow(QtGui.QMainWindow):
     """Our application's main window."""
 

@@ -21,7 +21,6 @@ class ClockThread(Thread):
     """Launch this thread to simulate the clock.
     Use .connect([Plugs]) to connect the clock to other Plugs.
     """
-
     def __init__(self, clockPlug):
         Thread.__init__(self)
         self.clock = clockPlug     # clock plug
@@ -34,7 +33,6 @@ class ClockThread(Thread):
         """Simulate the job of the clock.
         Allowing you to pause, unpause it and change its speed.
         """
-
         while self.alive:
             while self.paused:
                 time.sleep(0.5)
@@ -44,25 +42,17 @@ class ClockThread(Thread):
             time.sleep(self.spd)
 
     def pause(self):
-        """Pause the clock.
-        """
-
+        """Pause the clock."""
         self.paused = True
 
     def unpause(self):
-        """Unpause the clock.
-        """
-
+        """Unpause the clock."""
         self.paused = False
 
     def stop(self):
-        """Stop the clock.
-        """
-
+        """Stop the clock."""
         self.alive = False
 
     def speed(self, sec):
-        """"Set the clock speed (sec).
-        """"
-
+        """"Set the clock speed (sec).""""
         self.spd = sec
