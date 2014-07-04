@@ -5,10 +5,11 @@ from PySide import QtGui, QtCore
 from .toolbox import ToolBox
 from .tooloptions import ToolOptions
 from .graphicitem import CircuitItem, IOItem
-from engine.simulator import TopLevel
+from engine.simulator import Circuit
 
+mainCircuit = Circuit("Main Circuit")
 
-class MainView(QtGui.QGraphicsView, TopLevel):
+class MainView(QtGui.QGraphicsView):
     """A graphic view representing a circuit schematic, as created by
     the user. This view manages most user interaction, in particular:
     * Adding logic gates & circuits
@@ -35,16 +36,18 @@ class MainView(QtGui.QGraphicsView, TopLevel):
     def contextMenuEvent(self, e):
         """Pops a contextual menu up on right-clicks"""
         item = self.itemAt(e.pos())
-        if item:
+        if isinstance(item, CircuitItem) or isinstance(item, IOItem):
             pos = item.mapFromScene(self.mapToScene(e.pos()))
             ioatpos = item.IOAtPos(pos)
             if ioatpos:
                 item = ioatpos
-            else:
+            elif isinstance(item, CircuitItem):
                 item = item.circuit
+            elif isinstance(item, IOItem):
+                item = item.plug
             menu = QtGui.QMenu(self)
             menu.addAction("Set name", lambda: self.setName(item))
-            if ioatpos and ioatpos.owner == _TC and ioatpos.isInput:
+            if ioatpos and ioatpos.owner == mainCircuit and ioatpos.isInput:
                 menu.addAction(str(item.value), lambda: self.toggleValue(item))
             menu.popup(e.globalPos())
             
@@ -75,11 +78,11 @@ class MainView(QtGui.QGraphicsView, TopLevel):
         name = model.item(0).text()
         item = None
         if name in ['And', 'Or', 'Nand', 'Nor', 'Not', 'Xor', 'Xnor']:
-            item = CircuitItem(name)
+            item = CircuitItem(name, mainCircuit)
         elif name == 'Input Pin':
-            item = IOItem(True)
+            item = IOItem(True, mainCircuit)
         elif name == 'Output Pin':
-            item = IOItem(False)
+            item = IOItem(False, mainCircuit)
         if item:
             self.scene().addItem(item)
             item.setPos(e.pos())
@@ -134,6 +137,9 @@ class MainView(QtGui.QGraphicsView, TopLevel):
         that represents an engine.simulator.Plug, that Plug is appended
         to self.connectionData.
         """
+        if e.buttons() == QtCore.Qt.RightButton:
+            super(MainView, self).mousePressEvent(e)
+            return
         self.connStart = None
         self.connEnd = None
         item = self.itemAt(e.pos())
@@ -142,15 +148,9 @@ class MainView(QtGui.QGraphicsView, TopLevel):
             if isinstance(item, CircuitItem) or isinstance(item, IOItem):
                 ioatpos = item.IOAtPos(pos)
                 if ioatpos:
-                    if e.buttons() == QtCore.Qt.LeftButton:
-                        self.connStart = ioatpos
-                        # No super() processing, therefore no dragging
-                        return
-                    elif (
-                            e.buttons() == QtCore.Qt.RightButton and
-                            ioatpos.owner == TopLevel.TC and
-                            ioatpos.isInput):
-                        ioatpos.set(not ioatpos.value)
+                    self.connStart = ioatpos
+                    # No super() processing, therefore no dragging
+                    return
         # If we didn't click an I/O, we probably wanted to drag the
         # circuit.
         super(MainView, self).mousePressEvent(e)
@@ -160,6 +160,9 @@ class MainView(QtGui.QGraphicsView, TopLevel):
         pressed over another I/O, if one is an input, and the other an
         output, a connection will be created between the two of them.
         """
+        if e.buttons() == QtCore.Qt.RightButton:
+            super(MainView, self).mousePressEvent(e)
+            return
         if self.connStart:
             item = self.itemAt(e.pos())
             if item:

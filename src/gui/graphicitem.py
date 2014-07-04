@@ -2,11 +2,11 @@
 # coding=utf-8
 
 from PySide import QtGui, QtCore
-from engine.simulator import Circuit, TopLevel
+from engine.simulator import Circuit
 import engine
 
 
-class IOItem(QtGui.QGraphicsPathItem, TopLevel):
+class IOItem(QtGui.QGraphicsPathItem):
     """We represent an I pin as a graphic square path,
     and a O pin as a circle.
     """
@@ -14,16 +14,16 @@ class IOItem(QtGui.QGraphicsPathItem, TopLevel):
     LARGE_DIAMETER = 25
     SMALL_DIAMETER = 5
 
-    def __init__(self, isInput):
+    def __init__(self, isInput, parent):
         super(IOItem, self).__init__()
         self.setFlag(QtGui.QGraphicsItem.ItemIsMovable)
         self.setFlag(QtGui.QGraphicsItem.ItemIsSelectable)
         path = QtGui.QPainterPath()
         if isInput:
-            self.plug = TopLevel.TC.add_input()
+            self.plug = parent.add_input()
             path.addEllipse(0, 0, self.LARGE_DIAMETER, self.LARGE_DIAMETER)
         else:
-            self.plug = TopLevel.TC.add_output()
+            self.plug = parent.add_output()
             path.addRect(0, 0, self.LARGE_DIAMETER, self.LARGE_DIAMETER)
         path.addEllipse(
             self.LARGE_DIAMETER + 1,
@@ -44,7 +44,7 @@ class IOItem(QtGui.QGraphicsPathItem, TopLevel):
         return self.plug if self.pinPath.contains(pos) else None
 
 
-class CircuitItem(QtGui.QGraphicsPathItem, TopLevel):
+class CircuitItem(QtGui.QGraphicsPathItem):
     """We represent a circuit or logic gate as a graphic path."""
 
     IO_HEIGHT = 25   # pixels par E/S
@@ -59,12 +59,12 @@ class CircuitItem(QtGui.QGraphicsPathItem, TopLevel):
     AND_LEFT = 31    # |  ) and
     ARC_BOX = 18     # la largeur du rectangle dans lequel l'arc s'inscrit
 
-    def __init__(self, gate):
+    def __init__(self, gate, parent):
         super(CircuitItem, self).__init__()
         self.setFlag(QtGui.QGraphicsItem.ItemIsMovable)
         self.setFlag(QtGui.QGraphicsItem.ItemIsSelectable)
         # Creating a circuit from our engine, using dynamic class lookup.
-        self.circuit = TopLevel.TC.add_circuit(
+        self.circuit = parent.add_circuit(
             getattr(engine.gates, gate + "Gate")(None))
         # Getting some model values useful for the drawing.
         nInputs = self.circuit.nb_inputs()
