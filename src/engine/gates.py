@@ -29,6 +29,7 @@ class NotGate(Circuit):
         self.add_output('O')
 
     def evalfun(self):
+        print("ok")
         self.outputList[0].set(not self.inputList[0].value)
 
 
