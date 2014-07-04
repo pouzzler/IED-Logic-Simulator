@@ -17,6 +17,20 @@ class MainView(QtGui.QGraphicsView):
     * Setting input values
     """
 
+    def setName(self, item):
+        item.name = QtGui.QInputDialog.getText(self,  u'Set name', u'Enter a name for this item:')
+        
+    def contextMenuEvent(self, e):
+        """Pops a contextual menu up on right-clicks"""
+        item = self.itemAt(e.pos())
+        if item:
+            pos = item.mapFromScene(self.mapToScene(e.pos()))
+            ioatpos = item.IOAtPos(pos)
+            if ioatpos and ioatpos.owner == _TC and ioatpos.isInput:
+                menu = QtGui.QMenu(self)
+                menu.addAction("Set name", self.setName)
+                menu.popup(e.globalPos())
+        
     def __init__(self, parent):
         super(MainView, self).__init__(parent)
         # Accept dragged items from the toolbox to the main view.
@@ -109,8 +123,8 @@ class MainView(QtGui.QGraphicsView):
 
     def mousePressEvent(self, e):
         """When the mouse is pressed over a portion of a graphic item
-        that represents an engine.simulator.Plug, that Plug is appended
-        to self.connectionData.
+        that represents an engine.simulator.Plug, that Plug is saved in
+        self.connStart.
         """
         self.connStart = None
         self.connEnd = None
@@ -124,11 +138,6 @@ class MainView(QtGui.QGraphicsView):
                         self.connStart = ioatpos
                         # No super() processing, therefore no dragging
                         return
-                    elif (
-                            e.buttons() == QtCore.Qt.RightButton and
-                            ioatpos.owner == _TC and
-                            ioatpos.isInput):
-                        ioatpos.set(not ioatpos.value)
         # If we didn't click an I/O, we probably wanted to drag the
         # circuit.
         super(MainView, self).mousePressEvent(e)
