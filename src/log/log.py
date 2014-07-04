@@ -5,7 +5,7 @@
 ## manage the log file, the input on the terminal and on the GUI log Widget ##
 ##############################################################################
 
-from PySide import QtCore
+from PySide import QtGui, QtCore
 import sys
 import logging
 from time import gmtime, strftime
