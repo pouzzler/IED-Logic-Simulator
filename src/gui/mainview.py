@@ -7,7 +7,7 @@ from .tooloptions import ToolOptions
 from .graphicitem import CircuitItem, IOItem
 from engine.simulator import Circuit
 
-mainCircuit = Circuit("Main Circuit")
+mainCircuit = Circuit("Main_Circuit")
 
 class MainView(QtGui.QGraphicsView):
     """A graphic view representing a circuit schematic, as created by
@@ -28,7 +28,10 @@ class MainView(QtGui.QGraphicsView):
         self.setScene(scene)
 
     def setName(self, item):
-        item.name = QtGui.QInputDialog.getText(self,  u'Set name', u'Enter a name for this item:')
+        # ret = tuple string, bool (false when the dialog is dismissed)
+        ret = QtGui.QInputDialog.getText(self,  u'Set name', u'Enter a name for this item:')
+        if ret[1] and len(ret[0]):
+            item.name = ret[0]
 
     def toggleValue(self, item):
         item.value = not item.value
@@ -210,28 +213,28 @@ class MainView(QtGui.QGraphicsView):
             super(MainView, self).mouseReleaseEvent(e)
             return
         elif (
-                self.connStart.owner == TopLevel.TC
-                and self.connEnd.owner == TopLevel.TC
+                self.connStart.owner == mainCircuit
+                and self.connEnd.owner == mainCircuit
                 and self.connStart.isInput == self.connEnd.isInput):
             self.toast(
                 "Don't connect two global " +
                 ("inputs" if self.connStart.isInput else "outputs"))
             return
         elif (
-                self.connStart.owner != TopLevel.TC
-                and self.connEnd.owner != TopLevel.TC
+                self.connStart.owner != mainCircuit
+                and self.connEnd.owner != mainCircuit
                 and self.connStart.isInput == self.connEnd.isInput):
             self.toast(
                 "Don't connect two circuit " +
                 ("inputs" if self.connStart.isInput else "outputs"))
             return
         elif ((
-                (self.connStart.owner != TopLevel.TC
-                    and self.connEnd.owner == TopLevel.TC)
-                or (self.connStart.owner == TopLevel.TC
-                    and self.connEnd.owner != TopLevel.TC))
+                (self.connStart.owner != mainCircuit
+                    and self.connEnd.owner == mainCircuit)
+                or (self.connStart.owner == mainCircuit
+                    and self.connEnd.owner != mainCircuit))
                 and self.connStart.isInput != self.connEnd.isInput):
-            a = "local " if self.connStart.owner != TopLevel.TC else "global "
+            a = "local " if self.connStart.owner != mainCircuit else "global "
             b = "input" if self.connStart.isInput else "output"
             c = "global " if a == "local " else "local "
             d = "output" if b == "inputs" else "input"
