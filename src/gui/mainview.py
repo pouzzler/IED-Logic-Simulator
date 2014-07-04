@@ -19,6 +19,9 @@ class MainView(QtGui.QGraphicsView):
 
     def setName(self, item):
         item.name = QtGui.QInputDialog.getText(self,  u'Set name', u'Enter a name for this item:')
+
+    def toggleValue(self, item):
+        item.value = not item.value
         
     def contextMenuEvent(self, e):
         """Pops a contextual menu up on right-clicks"""
@@ -26,10 +29,15 @@ class MainView(QtGui.QGraphicsView):
         if item:
             pos = item.mapFromScene(self.mapToScene(e.pos()))
             ioatpos = item.IOAtPos(pos)
+            if ioatpos:
+                item = ioatpos
+            else:
+                item = item.circuit
+            menu = QtGui.QMenu(self)
+            menu.addAction("Set name", lambda: self.setName(item))
             if ioatpos and ioatpos.owner == _TC and ioatpos.isInput:
-                menu = QtGui.QMenu(self)
-                menu.addAction("Set name", self.setName)
-                menu.popup(e.globalPos())
+                menu.addAction(str(item.value), lambda: self.toggleValue(item))
+            menu.popup(e.globalPos())
         
     def __init__(self, parent):
         super(MainView, self).__init__(parent)
