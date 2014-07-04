@@ -5,10 +5,10 @@ from PySide import QtGui, QtCore
 from .toolbox import ToolBox
 from .tooloptions import ToolOptions
 from .graphicitem import CircuitItem, IOItem
-from engine.simulator import _TC
+from engine.simulator import TopLevel
 
 
-class MainView(QtGui.QGraphicsView):
+class MainView(QtGui.QGraphicsView, TopLevel):
     """A graphic view representing a circuit schematic, as created by
     the user. This view manages most user interaction, in particular:
     * Adding logic gates & circuits
@@ -126,7 +126,7 @@ class MainView(QtGui.QGraphicsView):
                         return
                     elif (
                             e.buttons() == QtCore.Qt.RightButton and
-                            ioatpos.owner == _TC and
+                            ioatpos.owner == TopLevel.TC and
                             ioatpos.isInput):
                         ioatpos.set(not ioatpos.value)
         # If we didn't click an I/O, we probably wanted to drag the
@@ -185,26 +185,28 @@ class MainView(QtGui.QGraphicsView):
             super(MainView, self).mouseReleaseEvent(e)
             return
         elif (
-                self.connStart.owner == _TC
-                and self.connEnd.owner == _TC
+                self.connStart.owner == TopLevel.TC
+                and self.connEnd.owner == TopLevel.TC
                 and self.connStart.isInput == self.connEnd.isInput):
             self.toast(
                 "Don't connect two global " +
                 ("inputs" if self.connStart.isInput else "outputs"))
             return
         elif (
-                self.connStart.owner != _TC
-                and self.connEnd.owner != _TC
+                self.connStart.owner != TopLevel.TC
+                and self.connEnd.owner != TopLevel.TC
                 and self.connStart.isInput == self.connEnd.isInput):
             self.toast(
                 "Don't connect two circuit " +
                 ("inputs" if self.connStart.isInput else "outputs"))
             return
         elif ((
-                (self.connStart.owner != _TC and self.connEnd.owner == _TC)
-                or (self.connStart.owner == _TC and self.connEnd.owner != _TC))
+                (self.connStart.owner != TopLevel.TC
+                    and self.connEnd.owner == TopLevel.TC)
+                or (self.connStart.owner == TopLevel.TC
+                    and self.connEnd.owner != TopLevel.TC))
                 and self.connStart.isInput != self.connEnd.isInput):
-            a = "local " if self.connStart.owner != _TC else "global "
+            a = "local " if self.connStart.owner != TopLevel.TC else "global "
             b = "input" if self.connStart.isInput else "output"
             c = "global " if a == "local " else "local "
             d = "output" if b == "inputs" else "input"

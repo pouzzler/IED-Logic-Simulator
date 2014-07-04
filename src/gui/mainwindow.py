@@ -8,8 +8,9 @@ from .mainview import MainView
 from .toolbox import ToolBox
 from .tooloptions import ToolOptions
 
-from engine.gates import *              # basic logic gates
-from engine.simulator import myLog, date      # log manager
+from engine.gates import *                # basic logic gates
+from engine.simulator import TopLevel     # Top-level circuit & log manager
+from log.log import date, BlackTextBox    # for printing the log inside the gui
 
 
 #================================== CLASSES ==================================#
@@ -54,16 +55,20 @@ class MainWindow(QtGui.QMainWindow):
         self.logDock = QtGui.QDockWidget('Logs')
         self.logDock.setWidget(self.logWindow)
         self.addDockWidget(QtCore.Qt.BottomDockWidgetArea, self.logDock)
-        myLog.toggle_gui_signal(True)  # set the log to emit a signal with mess
+        # set the log to emit a signal with mess
+        TopLevel.log.toggle_gui_signal(True)
         # signals connexions
         tooloptions.clicked.connect(self.setStatusMessage)
-        myLog.newLogMessage.connect(self.printLogMessage)
+        TopLevel.log.newLogMessage.connect(self.printLogMessage)
         # print a message on the logs
-        myLog.print_message("New session started on %s" % (date(),))
+        TopLevel.log.print_message("New session started on %s" % (date(),))
+        # le TC
+        TC = TopLevel('TOP_CIRCUIT_0')
         self.show()
 
     def setStatusMessage(self, message):
-        """Prints a message in the statusbar."""
+        """Print a message in the statusbar."""
+
         self.statusBar().showMessage(message)
 
     def focusInEvent(self, event):
@@ -71,12 +76,14 @@ class MainWindow(QtGui.QMainWindow):
 
     def about(self):
         """Print a dialog about the application."""
+
         msgBox = QtGui.QMessageBox()
         msgBox.setText(u'v0.1\nPar Mathieu Fourcroy & Sébastien Magnien.')
         msgBox.exec_()
 
     def showLogs(self):
         """Hide or show the log window."""
+
         if self.logAct.isChecked():  # if the action is checked: show the log
             self.logDock.show()      # else: hide it
         else:

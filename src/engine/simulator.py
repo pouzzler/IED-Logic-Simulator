@@ -21,10 +21,8 @@ circuit is evaluated: all outputs are recalculated based on the values ​​of
 its inputs and connections between components.
 """
 
-from log.log import *
-
-
-myLog = Log('simulator.log', logging.DEBUG, logfile=True, terminal=True)
+import logging
+from log.log import Log
 
 
 #============================== SIMULATOR ENGINE =============================#
@@ -50,7 +48,7 @@ class Plug:
             self.nbEval += 1
         if self.isInput:                    # input? evaluate the circuit
             self.owner.evalfun()
-        myLog.print_message(
+        TopLevel.log.print_message(
             '    # %s.%s set to %i'
             % (self.owner.name, self.name, int(self.value)))
         for connection in self.connections:
@@ -65,7 +63,7 @@ class Plug:
         for plug in plugList:
             self.connections.append(plug)   # add each connection of the lists
             if verbose:
-                myLog.print_message(
+                TopLevel.log.print_message(
                     '    ~ Plug %s.%s connected to Plug %s.%s'
                     % (plug.owner.name, plug.name, self.owner.name, self.name))
 
@@ -77,7 +75,7 @@ class Circuit:
         self.inputList = []     # circuit's inputs list
         self.outputList = []    # circuit's outputs list
         self.circuitList = []   # circuit's circuits list
-        myLog.print_message(
+        TopLevel.log.print_message(
             "> %s '%s' has been created"
             % (self.class_name(), self.name,))
 
@@ -86,19 +84,19 @@ class Circuit:
         """
         if plug.isInput:
             self.inputList.append(plug)
-            myLog.print_message(
+            TopLevel.log.print_message(
                 "    + plug '%s' add to %s.inputList"
                 % (plug.name, self.name,))
         else:
             self.outputList.append(plug)
-            myLog.print_message(
+            TopLevel.log.print_message(
                 "    + plug '%s' add to %s.outputList"
                 % (plug.name, self.name,))
 
     def add_input(self, name=None):
         """Add an input to the inputList of the circuit."""
         self.inputList.append(Plug(True, name, self))
-        myLog.print_message(
+        TopLevel.log.print_message(
             "    + plug '%s' add to %s.inputList"
             % (name, self.name,))
         return self.inputList[-1]
@@ -106,7 +104,7 @@ class Circuit:
     def add_output(self, name=None):
         """Add an output to the outputList of the circuit."""
         self.outputList.append(Plug(False, name, self))
-        myLog.print_message(
+        TopLevel.log.print_message(
             "    + plug '%s' add to %s.outputList"
             % (name, self.name,))
         return self.outputList[-1]
@@ -114,7 +112,7 @@ class Circuit:
     def add_circuit(self, circuit):
         """Add an circuit to the circuitList of the circuit."""
         self.circuitList.append(circuit)
-        myLog.print_message(
+        TopLevel.log.print_message(
             "  + circuit %s '%s' add to %s.circuitsList"
             % (circuit.class_name(), circuit.name, self.name,))
         return self.circuitList[-1]
@@ -186,25 +184,43 @@ def print_components(circuit, verbose=True, indent=''):
 
 
 #================================= TOP LEVEL =================================#
+#        -+-------------------- TOP-LEVEL CLASS --------------------+-        #
+class TopLevel:
+    """This is a top-level circuit which will contain I/O and sub-circuits.
+    it correspond to the drawing area of the gui which contains I/O and
+    circuits (especially logic gates) so we can consider itself as a
+    standalone circuit.
+    """
+    # at first the top-level circuit dosen't exist
+    # it is a class variable so each instance of this class will inherit it
+    TC = None
+    # automaticaly create a log manager
+    log = Log('simulator.log', logging.DEBUG, logfile=True, terminal=True)
+
+    # the circuit is initialized when the class is instantiated for first time
+    def __init__(self, name):
+        TopLevel.TC = Circuit(name)
+
+
 #        -+--------------- ADD OBJETCS TO TOP-LEVEL ----------------+-        #
 def add_plug(plug):
     """Add an I/O to the list of I/O of the "top-level" circuit."""
-    return _TC.add_plug(plug)
+    return TopLevel.TC.add_plug(plug)
 
 
 def add_input(name=None):
     """Add an input to the list of inputs of the "top-level" circuit."""
-    return _TC.add_input(name)
+    return TopLevel.TC.add_input(name)
 
 
 def add_output(name=None):
     """Add an output to the list of outputs of the "top-level" circuit."""
-    return _TC.add_output(name)
+    return TopLevel.TC.add_output(name)
 
 
 def add_circuit(name=None):
     """Add a circuit to the list of circuits of the "top-level" circuit."""
-    return _TC.add_circuit(name)
+    return TopLevel.TC.add_circuit(name)
 
 
 #        -+-------- ACCESS TOP-LEVEL OBJECTS BY THEIR NAME ---------+-        #
@@ -212,21 +228,21 @@ def input(inputName):
     """Returns the input of the "top-level" circuit whose name is inputName.
         /!\ Override la fonction input de python 3.
     """
-    return _TC.input(inputName)
+    return TopLevel.TC.input(inputName)
 
 
 def output(outputName):
     """Returns the output of the "top-level"
     circuit whose name is outputName.
     """
-    return _TC.input(outputName)
+    return TopLevel.TC.input(outputName)
 
 
 def circuit(circuitName):
     """Returns the circuit of the "top-level"
     circuit whose name is circuitName.
     """
-    return _TC.input(circuitName)
+    return TopLevel.TC.input(circuitName)
 
 
 #        -+--------------- TOP-LEVEL OBJECTS COUNTER ---------------+-        #
@@ -245,31 +261,19 @@ def count_items(circList, method):
 
 def total_nb_inputs():
     """Total number of inputs used."""
-    return count_items(_TC, 'nb_inputs')
+    return count_items(TopLevel.TC, 'nb_inputs')
 
 
 def total_nb_outputs():
     """Total number of outputs used."""
-    return count_items(_TC, 'nb_outputs')
+    return count_items(TopLevel.TC, 'nb_outputs')
 
 
 def total_nb_plugs():
     """Total number of I/O used."""
-    return count_items(_TC, 'nb_plugs')
+    return count_items(TopLevel.TC, 'nb_plugs')
 
 
 def total_nb_circuits():
     """Total number of circuits used (including sub-circuits)."""
-    return count_items(_TC, 'nb_circuits') + 1  # add the top-level circuit
-
-
-#============================== GLOBAL VARIABLES =============================#
-# we create a circuit named _TC which will contain I/O and sub-circuits
-# it's the top-level circuit wich correspond to the drawing area of the gui
-# this area contains I/O and circuits (especially logic gates)
-# so we can consider itself as a standalone circuit
-_TC = Circuit('TOP_CIRCUIT_0')
-
-def init_TC(name):
-    global _TC
-    return Circuit(name)
+    return count_items(TopLevel.TC, 'nb_circuits') + 1  # + top-level circuit

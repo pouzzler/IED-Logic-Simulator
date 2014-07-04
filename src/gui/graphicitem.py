@@ -2,12 +2,11 @@
 # coding=utf-8
 
 from PySide import QtGui, QtCore
-from engine.simulator import Circuit
+from engine.simulator import Circuit, TopLevel
 import engine
-from engine.simulator import _TC
 
 
-class IOItem(QtGui.QGraphicsPathItem):
+class IOItem(QtGui.QGraphicsPathItem, TopLevel):
     """We represent an I pin as a graphic square path,
     and a O pin as a circle.
     """
@@ -21,10 +20,10 @@ class IOItem(QtGui.QGraphicsPathItem):
         self.setFlag(QtGui.QGraphicsItem.ItemIsSelectable)
         path = QtGui.QPainterPath()
         if isInput:
-            self.plug = _TC.add_input()
+            self.plug = TopLevel.TC.add_input()
             path.addEllipse(0, 0, self.LARGE_DIAMETER, self.LARGE_DIAMETER)
         else:
-            self.plug = _TC.add_output()
+            self.plug = TopLevel.TC.add_output()
             path.addRect(0, 0, self.LARGE_DIAMETER, self.LARGE_DIAMETER)
         path.addEllipse(
             self.LARGE_DIAMETER + 1,
@@ -45,7 +44,7 @@ class IOItem(QtGui.QGraphicsPathItem):
         return self.plug if self.pinPath.contains(pos) else None
 
 
-class CircuitItem(QtGui.QGraphicsPathItem):
+class CircuitItem(QtGui.QGraphicsPathItem, TopLevel):
     """We represent a circuit or logic gate as a graphic path."""
 
     IO_HEIGHT = 25   # pixels par E/S
@@ -65,7 +64,7 @@ class CircuitItem(QtGui.QGraphicsPathItem):
         self.setFlag(QtGui.QGraphicsItem.ItemIsMovable)
         self.setFlag(QtGui.QGraphicsItem.ItemIsSelectable)
         # Creating a circuit from our engine, using dynamic class lookup.
-        self.circuit = _TC.add_circuit(
+        self.circuit = TopLevel.TC.add_circuit(
             getattr(engine.gates, gate + "Gate")(None))
         # Getting some model values useful for the drawing.
         nInputs = self.circuit.nb_inputs()
