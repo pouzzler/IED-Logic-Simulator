@@ -4,7 +4,7 @@
 from PySide import QtGui, QtCore
 from .toolbox import ToolBox
 from .tooloptions import ToolOptions
-from .circuititem import CircuitItem, IOItem
+from .graphicitem import CircuitItem, IOItem
 from engine.simulator import _TC
 
 
@@ -112,7 +112,7 @@ class MainView(QtGui.QGraphicsView):
         that represents an engine.simulator.Plug, that Plug is appended
         to self.connectionData.
         """
-        
+
         self.connStart = None
         self.connEnd = None
         item = self.itemAt(e.pos())
@@ -125,7 +125,10 @@ class MainView(QtGui.QGraphicsView):
                         self.connStart = ioatpos
                         # No super() processing, therefore no dragging
                         return
-                    elif e.buttons() == QtCore.Qt.RightButton:
+                    elif (
+                            e.buttons() == QtCore.Qt.RightButton and
+                            ioatpos.owner == _TC and
+                            ioatpos.isInput):
                         ioatpos.set(not ioatpos.value)
         # If we didn't click an I/O, we probably wanted to drag the
         # circuit.

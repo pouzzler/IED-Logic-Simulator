@@ -32,16 +32,17 @@ class IOItem(QtGui.QGraphicsPathItem):
             self.SMALL_DIAMETER,
             self.SMALL_DIAMETER)
         self.setPath(path)
-
-        self.collisionPath = QtGui.QPainterPath()
-        self.collisionPath.addEllipse(
+        # This path is needed at each mouse over event, to check if
+        # the mouse is over a pin. We save it as an instance field,
+        # rather than recreate it at each event.
+        self.pinPath = QtGui.QPainterPath()
+        self.pinPath.addEllipse(
             self.LARGE_DIAMETER - self.SMALL_DIAMETER,
             self.LARGE_DIAMETER / 2 - self.SMALL_DIAMETER,
             self.SMALL_DIAMETER * 2, self.SMALL_DIAMETER * 2)
 
     def IOAtPos(self, pos):
-        if self.collisionPath.contains(pos):
-            return self.plug
+        return self.plug if self.pinPath.contains(pos) else None
 
 
 class CircuitItem(QtGui.QGraphicsPathItem):
@@ -134,21 +135,30 @@ class CircuitItem(QtGui.QGraphicsPathItem):
                 -90, 180)
         path.closeSubpath()
         self.setPath(path)
-
-    def IOAtPos(self, pos):
+        # These paths are needed at each mouse over event, to check if
+        # the mouse is over a pin. We save them as an instance field,
+        # rather than recreate them at each event.
+        self.inputPaths= []
+        self.outputPaths= []
         for i in range(self.circuit.nb_inputs()):
             path = QtGui.QPainterPath()
             path.addEllipse(
                 - self.DIAMETER, i * self.IO_HEIGHT + self.iOffset +
                 self.BODY_OFFSET - self.DIAMETER, self.DIAMETER * 3,
                 self.DIAMETER * 3)
-            if path.contains(pos):
-                return self.circuit.inputList[i]
+            self.inputPaths.append(path)
         for i in range(self.circuit.nb_outputs()):
             path = QtGui.QPainterPath()
             path.addEllipse(
                 self.O_RIGHT + 1 - self.DIAMETER, i * self.IO_HEIGHT +
                 self.oOffset + self.BODY_OFFSET - self.DIAMETER,
                 self.DIAMETER * 3, self.DIAMETER * 3)
-            if path.contains(pos):
+            self.outputPaths.append(path)
+
+    def IOAtPos(self, pos):
+        for i in range(self.circuit.nb_inputs()):
+            if self.inputPaths[i].contains(pos):
+                return self.circuit.inputList[i]
+        for i in range(self.circuit.nb_outputs()):
+            if self.outputPaths[i].contains(pos):
                 return self.circuit.outputList[i]
