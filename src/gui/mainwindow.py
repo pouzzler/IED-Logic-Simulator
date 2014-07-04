@@ -8,9 +8,9 @@ from .mainview import MainView
 from .toolbox import ToolBox
 from .tooloptions import ToolOptions
 
-from engine.gates import *                # basic logic gates
-from engine.simulator import TopLevel     # Top-level circuit & log manager
-from log.log import date, BlackTextBox    # for printing the log inside the gui
+from engine.gates import *                   # basic logic gates
+from engine.simulator import TopLevel        # Top-level circuit & log manager
+from log.log import Log, date, BlackTextBox  # to print the log inside the gui
 
 
 #================================== CLASSES ==================================#
@@ -55,15 +55,16 @@ class MainWindow(QtGui.QMainWindow):
         self.logDock = QtGui.QDockWidget('Logs')
         self.logDock.setWidget(self.logWindow)
         self.addDockWidget(QtCore.Qt.BottomDockWidgetArea, self.logDock)
+        # create the log
+        log = Log('simulator.log', logging.DEBUG, logfile=True, terminal=True)
         # set the log to emit a signal with mess
-        TopLevel.log.toggle_gui_signal(True)
+        log.toggle_gui_signal(True)
         # signals connexions
         tooloptions.clicked.connect(self.setStatusMessage)
-        TopLevel.log.newLogMessage.connect(self.printLogMessage)
+        log.newLogMessage.connect(self.printLogMessage)
         # print a message on the logs
-        TopLevel.log.print_message("New session started on %s" % (date(),))
-        # le TC
-        TC = TopLevel('TOP_CIRCUIT_0')
+        log.print_message("New session started on %s" % (date(),))
+        
         self.show()
 
     def setStatusMessage(self, message):
