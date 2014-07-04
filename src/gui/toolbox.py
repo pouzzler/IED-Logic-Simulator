@@ -14,7 +14,6 @@ class ToolBox(QtGui.QTreeWidget):
 
     def __init__(self):
         super(ToolBox, self).__init__()
-        self.setAcceptDrops(True)
         icon = QtGui.QIcon(
             '/home/seb/Documents/IED-Logic-Simulator/src/gui/icons/AND.png')
         self.setDragEnabled(True)
@@ -34,5 +33,5 @@ class ToolBox(QtGui.QTreeWidget):
         self.insertTopLevelItems(0, [gatesheader, ioheader, userheader])
 
     def focusInEvent(self, event):
-        self.clicked.emit(u'Ce panneau contient les objets que vous pouvez '
-                          u'déposer dans la zone de dessin')
+        self.clicked.emit(
+            u'This panel contains items draggable to the main area.')

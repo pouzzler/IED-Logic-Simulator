@@ -138,8 +138,8 @@ class CircuitItem(QtGui.QGraphicsPathItem):
         # These paths are needed at each mouse over event, to check if
         # the mouse is over a pin. We save them as an instance field,
         # rather than recreate them at each event.
-        self.inputPaths= []
-        self.outputPaths= []
+        self.inputPaths = []
+        self.outputPaths = []
         for i in range(self.circuit.nb_inputs()):
             path = QtGui.QPainterPath()
             path.addEllipse(

@@ -63,8 +63,7 @@ class MainWindow(QtGui.QMainWindow):
         self.show()
 
     def setStatusMessage(self, message):
-        """Print a message in the statusbar."""
-
+        """Prints a message in the statusbar."""
         self.statusBar().showMessage(message)
 
     def focusInEvent(self, event):
@@ -72,14 +71,12 @@ class MainWindow(QtGui.QMainWindow):
 
     def about(self):
         """Print a dialog about the application."""
-
         msgBox = QtGui.QMessageBox()
         msgBox.setText(u'v0.1\nPar Mathieu Fourcroy & Sébastien Magnien.')
         msgBox.exec_()
 
     def showLogs(self):
         """Hide or show the log window."""
-
         if self.logAct.isChecked():  # if the action is checked: show the log
             self.logDock.show()      # else: hide it
         else:

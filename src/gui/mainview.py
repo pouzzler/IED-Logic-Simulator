@@ -10,58 +10,62 @@ from engine.simulator import _TC
 
 class MainView(QtGui.QGraphicsView):
     """A graphic view representing a circuit schematic, as created by
-    the user. This view manages most user interaction :
+    the user. This view manages most user interaction, in particular:
     * Adding logic gates & circuits
     * Linking outputs and inputs
     * Translating and rotating elements around
+    * Setting input values
     """
 
     def __init__(self, parent):
         super(MainView, self).__init__(parent)
+        # Accept dragged items from the toolbox to the main view.
         self.setAcceptDrops(True)
+        # Allow mouseover effects (self.mouseMoveEvent)
         self.setMouseTracking(True)
         scene = QtGui.QGraphicsScene(parent)
         self.setScene(scene)
-        self.connectionData = None
 
     def dragEnterEvent(self, e):
-        """For receiving items from the toolbox panel,
-        QT demands overloading this function.
-        """
-
-        e.accept()
+        """Accept drag events coming from ToolBox."""
+        if isinstance(e.source(), ToolBox):
+            e.accept()
+        # Refuse drags from anything but our ToolBox
+        else:
+            e.ignore()
 
     def dragMoveEvent(self, e):
-        """For receiving items from the toolbox panel,
-        QT demands overloading this function.
-        """
-
+        """Accept drag move events."""
         e.accept()
 
     def dropEvent(self, e):
-        """For receiving items from the toolbox panel,
-        QT demands overloading this function.
-        """
-
+        """Accept drop events."""
+        # TODO: Found on the web, maybe a cleaner way exists.
+        # it would be better to receive the correct item directly,
+        # rather than test some text string.
         model = QtGui.QStandardItemModel()
         model.dropMimeData(
-            e.mimeData(), QtCore.Qt.CopyAction, 0, 0,
+            e.mimeData(),
+            QtCore.Qt.CopyAction,
+            0,
+            0,
             QtCore.QModelIndex())
-        item = model.item(0)
-        name = item.text()
+        name = model.item(0).text()
+        item = None
         if name in ['And', 'Or', 'Nand', 'Nor', 'Not', 'Xor', 'Xnor']:
-            c = CircuitItem(name)
-            self.scene().addItem(c)
-        elif name in ['Input Pin', 'Output Pin']:
-            io = IOItem('Input' in name)
-            self.scene().addItem(io)
-            io.setPos(e.pos())
+            item = CircuitItem(name)
+        elif name == 'Input Pin':
+            item = IOItem(True)
+        elif name == 'Output Pin':
+            item = IOItem(False)
+        if item:
+            self.scene().addItem(item)
+            item.setPos(e.pos())
 
     def keyPressEvent(self, e):
         """Manages keyboard events, in particular item rotation,
         translation, removal and alignment.
         """
-
         scene = self.scene()
         selection = scene.selectedItems()
         # ESC, unselect all items
@@ -72,38 +76,34 @@ class MainView(QtGui.QGraphicsView):
         if e.key() == QtCore.Qt.Key_Delete:
             for item in selection:
                 scene.removeItem(item)
-        # <- , rotation inverse au sens des aiguilles
+        # <- , anti-clockwise rotation
         elif e.key() == QtCore.Qt.Key_Left:
             group = scene.createItemGroup(selection)
             group.setRotation(group.rotation() - 90)
             scene.destroyItemGroup(group)
-        # -> , rotation dans le sens des aiguilles
+        # -> , clockwise rotation
         elif e.key() == QtCore.Qt.Key_Right:
             group = scene.createItemGroup(selection)
             group.setRotation(group.rotation() + 90)
             scene.destroyItemGroup(group)
-        # L, aligner à gauche
+        # L, left align
         elif e.key() == QtCore.Qt.Key_L:
-            left = min(
-                [item.scenePos().x() for item in selection])
+            left = min([item.scenePos().x() for item in selection])
             for item in selection:
                 item.setPos(left, item.scenePos().y())
-        # R, aligner à droite
+        # R, right align
         elif e.key() == QtCore.Qt.Key_R:
-            right = max(
-                [item.scenePos().x() for item in selection])
+            right = max([item.scenePos().x() for item in selection])
             for item in selection:
                 item.setPos(right, item.scenePos().y())
-        # T, aligner en haut
+        # T, top align
         elif e.key() == QtCore.Qt.Key_T:
-            top = min(
-                [item.scenePos().y() for item in selection])
+            top = min([item.scenePos().y() for item in selection])
             for item in selection:
                 item.setPos(item.scenePos().x(), top)
-        # B, aligner en bas
+        # B, bottom align
         elif e.key() == QtCore.Qt.Key_B:
-            bottom = max(
-                [item.scenePos().y() for item in selection])
+            bottom = max([item.scenePos().y() for item in selection])
             for item in selection:
                 item.setPos(item.scenePos().x(), bottom)
 
@@ -112,7 +112,6 @@ class MainView(QtGui.QGraphicsView):
         that represents an engine.simulator.Plug, that Plug is appended
         to self.connectionData.
         """
-
         self.connStart = None
         self.connEnd = None
         item = self.itemAt(e.pos())
@@ -139,7 +138,6 @@ class MainView(QtGui.QGraphicsView):
         pressed over another I/O, if one is an input, and the other an
         output, a connection will be created between the two of them.
         """
-
         if self.connStart:
             item = self.itemAt(e.pos())
             if item:
@@ -180,19 +178,23 @@ class MainView(QtGui.QGraphicsView):
                 #~ item.circuit.inputList[i].connect(
                     #~ self.connectionData[1])
                 #~ return
-        if not self.connStart or not self.connEnd:
-            return
-        elif self.connStart == self.connEnd:
+        if (
+                not self.connStart
+                or not self.connEnd
+                or self.connStart == self.connEnd):
+            super(MainView, self).mouseReleaseEvent(e)
             return
         elif (
-                self.connStart.owner == _TC and self.connEnd.owner == _TC
+                self.connStart.owner == _TC
+                and self.connEnd.owner == _TC
                 and self.connStart.isInput == self.connEnd.isInput):
             self.toast(
                 "Don't connect two global " +
                 ("inputs" if self.connStart.isInput else "outputs"))
             return
         elif (
-                self.connStart.owner != _TC and self.connEnd.owner != _TC
+                self.connStart.owner != _TC
+                and self.connEnd.owner != _TC
                 and self.connStart.isInput == self.connEnd.isInput):
             self.toast(
                 "Don't connect two circuit " +
