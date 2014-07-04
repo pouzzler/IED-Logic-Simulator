@@ -34,7 +34,7 @@ class MainView(QtGui.QGraphicsView):
             item.name = ret[0]
 
     def toggleValue(self, item):
-        item.value = not item.value
+        item.set(not item.value)
         
     def contextMenuEvent(self, e):
         """Pops a contextual menu up on right-clicks"""
