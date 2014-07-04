@@ -2,11 +2,11 @@
 # coding=utf-8
 
 from PySide import QtGui, QtCore
-from engine.simulator import Circuit
+from engine.simulator import Circuit, Plug
 import engine
 
 
-class IOItem(QtGui.QGraphicsPathItem):
+class IOItem(QtGui.QGraphicsPathItem, Plug):
     """We represent an I pin as a graphic square path,
     and a O pin as a circle.
     """
@@ -16,14 +16,13 @@ class IOItem(QtGui.QGraphicsPathItem):
 
     def __init__(self, isInput, parent):
         super(IOItem, self).__init__()
+        Plug.__init__(self, isInput, None, parent)
         self.setFlag(QtGui.QGraphicsItem.ItemIsMovable)
         self.setFlag(QtGui.QGraphicsItem.ItemIsSelectable)
         path = QtGui.QPainterPath()
         if isInput:
-            self.plug = parent.add_input()
             path.addEllipse(0, 0, self.LARGE_DIAMETER, self.LARGE_DIAMETER)
         else:
-            self.plug = parent.add_output()
             path.addRect(0, 0, self.LARGE_DIAMETER, self.LARGE_DIAMETER)
         path.addEllipse(
             self.LARGE_DIAMETER + 1,
@@ -42,7 +41,7 @@ class IOItem(QtGui.QGraphicsPathItem):
             self.SMALL_DIAMETER * 2)
 
     def IOAtPos(self, pos):
-        return self.plug if self.pinPath.contains(pos) else None
+        return self if self.pinPath.contains(pos) else None
 
 
 class CircuitItem(QtGui.QGraphicsPathItem):

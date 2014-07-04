@@ -50,8 +50,6 @@ class MainView(QtGui.QGraphicsView):
                 item = ioatpos
             elif isinstance(item, CircuitItem):
                 item = item.circuit
-            elif isinstance(item, IOItem):
-                item = item.plug
             menu = QtGui.QMenu(self)
             menu.addAction("Set name", lambda: self.setName(item))
             if ioatpos and ioatpos.owner == mainCircuit and ioatpos.isInput:
