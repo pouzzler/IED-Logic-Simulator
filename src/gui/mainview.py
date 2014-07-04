@@ -9,6 +9,7 @@ from engine.simulator import Circuit
 
 mainCircuit = Circuit("Main_Circuit")
 
+
 class MainView(QtGui.QGraphicsView):
     """A graphic view representing a circuit schematic, as created by
     the user. This view manages most user interaction, in particular:
@@ -29,13 +30,16 @@ class MainView(QtGui.QGraphicsView):
 
     def setName(self, item):
         # ret = tuple string, bool (false when the dialog is dismissed)
-        ret = QtGui.QInputDialog.getText(self,  u'Set name', u'Enter a name for this item:')
+        ret = QtGui.QInputDialog.getText(
+            self,
+            u'Set name',
+            u'Enter a name for this item:')
         if ret[1] and len(ret[0]):
             item.name = ret[0]
 
     def toggleValue(self, item):
         item.set(not item.value)
-        
+
     def contextMenuEvent(self, e):
         """Pops a contextual menu up on right-clicks"""
         item = self.itemAt(e.pos())
@@ -53,7 +57,7 @@ class MainView(QtGui.QGraphicsView):
             if ioatpos and ioatpos.owner == mainCircuit and ioatpos.isInput:
                 menu.addAction(str(item.value), lambda: self.toggleValue(item))
             menu.popup(e.globalPos())
-            
+
     def dragEnterEvent(self, e):
         """Accept drag events coming from ToolBox."""
         if isinstance(e.source(), ToolBox):
@@ -103,6 +107,7 @@ class MainView(QtGui.QGraphicsView):
         # Del, suppression
         if e.key() == QtCore.Qt.Key_Delete:
             for item in selection:
+                # TODO: remove item from engine
                 scene.removeItem(item)
         # <- , anti-clockwise rotation
         elif e.key() == QtCore.Qt.Key_Left:

@@ -39,8 +39,11 @@ class MainWindow(QtGui.QMainWindow):
         # the Options menu
         optionsMenu = QtGui.QMenu('Options')
         self.logAct = QtGui.QAction(
-            "&Show logs", self, checkable=True,
-            shortcut="Ctrl+L", statusTip="Shows the log",
+            "&Show logs",
+            self,
+            checkable=True,
+            shortcut="Ctrl+L",
+            statusTip="Shows the log",
             triggered=self.showLogs)
         optionsMenu.addAction(self.logAct)
         self.menuBar().addMenu(optionsMenu)
@@ -62,7 +65,6 @@ class MainWindow(QtGui.QMainWindow):
         log.newLogMessage.connect(self.printLogMessage)
         # print a message on the logs
         log.print_message("New session started on %s" % (date(),))
-        
         self.show()
 
     def setStatusMessage(self, message):

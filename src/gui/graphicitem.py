@@ -38,7 +38,8 @@ class IOItem(QtGui.QGraphicsPathItem):
         self.pinPath.addEllipse(
             self.LARGE_DIAMETER - self.SMALL_DIAMETER,
             self.LARGE_DIAMETER / 2 - self.SMALL_DIAMETER,
-            self.SMALL_DIAMETER * 2, self.SMALL_DIAMETER * 2)
+            self.SMALL_DIAMETER * 2,
+            self.SMALL_DIAMETER * 2)
 
     def IOAtPos(self, pos):
         return self.plug if self.pinPath.contains(pos) else None
