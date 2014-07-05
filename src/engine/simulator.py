@@ -2,15 +2,15 @@
 # coding: utf-8
 
 """
-#############################################################
-## tries to simulate circuits and logic gates using python ##
-#############################################################
+########################################
+## Simulates circuits and logic gates ##
+########################################
 
 A circuit (circuit class) includes a set of connectors (Plug class) that
 can be inputs or outputs and a set of sub-circuits (Circuit class).
 Inputs, outputs and sub-circuits of a circuit are stored in inInputList,
 outputlist and circuitList lists, respectively.
-Plugs and Circuits can have a name but it's optional.
+Plugs and Circuits may have an optional name.
 
 There are two ways to access a component (Plug or Circuit) of a circuit:
 * Using its index in the list: circuit.inputList ([1])
@@ -23,11 +23,13 @@ its inputs and connections between components.
 
 import logging
 
-log = logging.getLogger('src.engine.simulator')
+log = logging.getLogger(__name__)
+log.setLevel(logging.DEBUG)
 
 
 class Plug:
     """Represents an input or output."""
+
     def __init__(self, isInput, name, owner):
         self.owner = owner        # circuit or door featuring this I/O
         self.name = name          # its name
@@ -36,16 +38,14 @@ class Plug:
         self.nbEval = 0           # number of evaluations
         self.connections = []     # connected plugs list
         log.info(
-                "%s '%s' added to %s" %
-                (
-                    'input' if self.isInput else 'output',
-                    self.name,
-                    self.owner.name,))
-        
+            "%s '%s' added to %s" %
+            (
+                'input' if self.isInput else 'output',
+                self.name,
+                self.owner.name,))
+
     def set(self, value):
-        """Set the value of a plug
-        usage: plug.set([0/1])
-        """
+        """Sets the boolean value of a Plug."""
         if self.value == value and self.nbEval != 0:  # unchanged value, stop!
             return
         else:                               # else, set the new value
@@ -60,9 +60,7 @@ class Plug:
             connection.set(value)           # set value of the connected plugs
 
     def connect(self, plugList, verbose=True):
-        """Add one or multiple connexions between a single object and others
-        usage: plugE.connect([plugA, plugB, ..., plugN]) / plugE.connect(plugA)
-        """
+        """Connects a Plug to a list of Plugs."""
         if not isinstance(plugList, list):
             plugList = [plugList]           # create a list
         for plug in plugList:
@@ -79,7 +77,8 @@ class Plug:
 
 
 class Circuit:
-    """ The Circuit class for the logic circuits and gates."""
+    """Represents a logic circuit."""
+    
     def __init__(self, name):
         self.name = name        # name (optional)
         self.inputList = []     # circuit's inputs list
@@ -113,7 +112,7 @@ class Circuit:
         """Add an circuit to the circuitList of the circuit."""
         self.circuitList.append(circuit)
         log.info(
-            "circuit %s '%s' added to %s.circuitsList"
+            "circuit %s '%s' added to %s"
             % (circuit.class_name(), circuit.name, self.name,))
         return self.circuitList[-1]
 
