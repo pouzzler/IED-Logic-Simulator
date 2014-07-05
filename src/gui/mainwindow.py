@@ -17,6 +17,12 @@ class LoggerTextEdit(QtGui.QTextEdit):
 
     def __init__(self):
         super(LoggerTextEdit, self).__init__()
+        pal = QtGui.QPalette()
+        bgc = QtGui.QColor(0, 0, 0)
+        pal.setColor(QtGui.QPalette.Base, bgc)
+        textc = QtGui.QColor(255, 255, 255)
+        pal.setColor(QtGui.QPalette.Text, textc)
+        self.setPalette(pal)
 
     def write(self, text):
         """Our strategy is to create a log object, associated with a
