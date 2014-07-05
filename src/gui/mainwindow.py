@@ -9,7 +9,7 @@ from .toolbox import ToolBox
 from .tooloptions import ToolOptions
 
 from engine.gates import *                   # basic logic gates
-from engine.simulator import log             # Top-level circuit & log manager
+from engine.simulator import log             # Log manager
 
 
 class LoggerTextEdit(QtGui.QTextEdit):
@@ -67,8 +67,9 @@ class MainWindow(QtGui.QMainWindow):
         self.menuBar().addMenu(helpMenu)
         # a window for the logs
         self.logWindow = LoggerTextEdit()
-        log = logging.getLogger('src.engine.simulator')
-        log.addHandler(logging.StreamHandler(self.logWindow))
+        handler = logging.StreamHandler(self.logWindow)
+        handler.setLevel(logging.DEBUG)
+        log.addHandler(handler)
         log.info("New session started on %s" % (time.strftime("%d/%m/%Y"),))
         self.logDock = QtGui.QDockWidget('Logs')
         self.logDock.setWidget(self.logWindow)
