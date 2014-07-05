@@ -29,7 +29,7 @@ class LoggerTextEdit(QtGui.QTextEdit):
         stream handler forwarding mesages to LoggerTextEdit, even though
         it is not a stream, which works because of the write() method.
         """
-        self.append(text)
+        self.insertPlainText(text)
 
 
 class MainWindow(QtGui.QMainWindow):

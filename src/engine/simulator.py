@@ -37,12 +37,6 @@ class Plug:
         self.value = False        # at first, no electricity
         self.nbEval = 0           # number of evaluations
         self.connections = []     # connected plugs list
-        log.info(
-            "%s '%s' added to %s" %
-            (
-                'input' if self.isInput else 'output',
-                self.name,
-                self.owner.name,))
 
     def set(self, value):
         """Sets the boolean value of a Plug."""
