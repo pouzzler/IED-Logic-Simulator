@@ -15,7 +15,7 @@ class ToolBox(QtGui.QTreeWidget):
     def __init__(self):
         super(ToolBox, self).__init__()
         icon = QtGui.QIcon(
-            '/home/seb/Documents/IED-Logic-Simulator/src/gui/icons/AND.png')
+            '/home/seb/Documents/IED-Logic-Simulator/src/gui/icons/AND_mini.png')
         self.setDragEnabled(True)
         self.setColumnCount(2)
         self.header().setVisible(False)

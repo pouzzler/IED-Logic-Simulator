@@ -25,10 +25,7 @@ class LoggerTextEdit(QtGui.QTextEdit):
         self.setPalette(pal)
 
     def write(self, text):
-        """Our strategy is to create a log object, associated with a
-        stream handler forwarding mesages to LoggerTextEdit, even though
-        it is not a stream, which works because of the write() method.
-        """
+        """Log handlers call a write() method."""
         self.insertPlainText(text)
 
 

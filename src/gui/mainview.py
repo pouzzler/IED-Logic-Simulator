@@ -108,15 +108,32 @@ class MainView(QtGui.QGraphicsView):
                 # TODO: remove item from engine
                 scene.removeItem(item)
         # <- , anti-clockwise rotation
+        # TODO: serious problem with Qt: it is impossible to rotate
+        # a QGraphicsItemGroup around its gravity center like the 
+        # current code does for individual items even though the
+        # group class inherits from the graphicsitem class.
+        # EDIT: group.boundingRect() is apparently in scene coordinates
         elif e.key() == QtCore.Qt.Key_Left:
-            group = scene.createItemGroup(selection)
-            group.setRotation(group.rotation() - 90)
-            scene.destroyItemGroup(group)
+            #~ group = scene.createItemGroup(selection)
+            #~ print(selection[0].boundingRect(), group.boundingRect())
+            #~ x = group.boundingRect().width() / 2
+            #~ y = group.boundingRect().height() / 2
+            #~ group.setTransformOriginPoint(x, y)
+            #~ group.setRotation(group.rotation() - 90)
+            #~ group.setTransform(QtGui.QTransform().translate(x, y).rotate(-90).translate(y, x))
+            #~ scene.destroyItemGroup(group)
+            for item in selection:
+                x = item.boundingRect().width() / 2
+                y = item.boundingRect().height() / 2
+                item.setTransformOriginPoint(x, y)
+                item.setRotation(item.rotation() - 90)
         # -> , clockwise rotation
         elif e.key() == QtCore.Qt.Key_Right:
-            group = scene.createItemGroup(selection)
-            group.setRotation(group.rotation() + 90)
-            scene.destroyItemGroup(group)
+            for item in selection:
+                x = item.boundingRect().width() / 2
+                y = item.boundingRect().height() / 2
+                item.setTransformOriginPoint(x, y)
+                item.setRotation(item.rotation() + 90)
         # L, left align
         elif e.key() == QtCore.Qt.Key_L:
             left = min([item.scenePos().x() for item in selection])
@@ -143,6 +160,7 @@ class MainView(QtGui.QGraphicsView):
         that represents an engine.simulator.Plug, that Plug is appended
         to self.connectionData.
         """
+        # Reserve right-clicks for contextual menus.
         if e.buttons() == QtCore.Qt.RightButton:
             super(MainView, self).mousePressEvent(e)
             return
@@ -155,10 +173,9 @@ class MainView(QtGui.QGraphicsView):
                 ioatpos = item.IOAtPos(pos)
                 if ioatpos:
                     self.connStart = ioatpos
-                    # No super() processing, therefore no dragging
+                    # No super() processing, thus no dragging/selecting.
                     return
-        # If we didn't click an I/O, we probably wanted to drag the
-        # circuit.
+        # Didn't click an I/O? We wanted to drag or select the circuit.
         super(MainView, self).mousePressEvent(e)
 
     def mouseReleaseEvent(self, e):
@@ -166,6 +183,7 @@ class MainView(QtGui.QGraphicsView):
         pressed over another I/O, if one is an input, and the other an
         output, a connection will be created between the two of them.
         """
+        # Ignore right-clicks.
         if e.buttons() == QtCore.Qt.RightButton:
             super(MainView, self).mousePressEvent(e)
             return
