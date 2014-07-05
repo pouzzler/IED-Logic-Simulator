@@ -1,19 +1,31 @@
 #!/usr/bin/env python3
 # coding=utf-8
 
-from time import gmtime, strftime
-
+import time
 from PySide import QtGui, QtCore
+
 from .mainview import MainView
 from .toolbox import ToolBox
 from .tooloptions import ToolOptions
 
 from engine.gates import *                   # basic logic gates
 from engine.simulator import log             # Top-level circuit & log manager
-from log.log import Log, date, BlackTextBox  # to print the log inside the gui
 
 
-#================================== CLASSES ==================================#
+class LoggerTextEdit(QtGui.QTextEdit):
+    """A multiline text field that receives log messages."""
+
+    def __init__(self):
+        super(LoggerTextEdit, self).__init__()
+
+    def write(self, text):
+        """Our strategy is to create a log object, associated with a
+        stream handler forwarding mesages to LoggerTextEdit, even though
+        it is not a stream, which works because of the write() method.
+        """
+        self.append(text)
+
+
 class MainWindow(QtGui.QMainWindow):
     """Our application's main window."""
 
@@ -54,22 +66,19 @@ class MainWindow(QtGui.QMainWindow):
         helpMenu.addAction('About', self.about)
         self.menuBar().addMenu(helpMenu)
         # a window for the logs
-        self.logWindow = BlackTextBox()
+        self.logWindow = LoggerTextEdit()
+        log = logging.getLogger('src.engine.simulator')
+        log.addHandler(logging.StreamHandler(self.logWindow))
+        log.info("New session started on %s" % (time.strftime("%d/%m/%Y"),))
         self.logDock = QtGui.QDockWidget('Logs')
         self.logDock.setWidget(self.logWindow)
         self.addDockWidget(QtCore.Qt.BottomDockWidgetArea, self.logDock)
-        # set the log to emit a signal with mess
-        log.toggle_gui_signal(True)
         # signals connexions
         tooloptions.clicked.connect(self.setStatusMessage)
-        log.newLogMessage.connect(self.printLogMessage)
-        # print a message on the logs
-        log.print_message("New session started on %s" % (date(),))
         self.show()
 
     def setStatusMessage(self, message):
         """Print a message in the statusbar."""
-
         self.statusBar().showMessage(message)
 
     def focusInEvent(self, event):
@@ -77,20 +86,13 @@ class MainWindow(QtGui.QMainWindow):
 
     def about(self):
         """Print a dialog about the application."""
-
         msgBox = QtGui.QMessageBox()
         msgBox.setText(u'v0.1\nPar Mathieu Fourcroy & Sébastien Magnien.')
         msgBox.exec_()
 
     def showLogs(self):
         """Hide or show the log window."""
-
         if self.logAct.isChecked():  # if the action is checked: show the log
             self.logDock.show()      # else: hide it
         else:
             self.logDock.hide()
-
-    def printLogMessage(self, message):
-        """Append a message on the next line of the log field."""
-
-        self.logWindow.append(message)

@@ -22,18 +22,10 @@ its inputs and connections between components.
 """
 
 import logging
-from log.log import Log
-import logging
 
-# create the log
-log = Log('simulator.log', logging.DEBUG, logfile=True, terminal=True)
+log = logging.getLogger('src.engine.simulator')
 
-log_2 = logging.getLogger('src.engine.simulator')
-# va dans stderr, juste pour tester
-# pour le vrai prog, il faudra des vrais StreamHandlers
-log_2.addHandler(logging.StreamHandler())
-#============================== SIMULATOR ENGINE =============================#
-#        -+------------------------ CLASSES ------------------------+-        #
+
 class Plug:
     """Represents an input or output."""
     def __init__(self, isInput, name, owner):
@@ -43,9 +35,12 @@ class Plug:
         self.value = False        # at first, no electricity
         self.nbEval = 0           # number of evaluations
         self.connections = []     # connected plugs list
-        log_2.info(
+        log.info(
                 "%s '%s' added to %s" %
-                ('input' if self.isInput else 'output', self.name, self.owner.name,))
+                (
+                    'input' if self.isInput else 'output',
+                    self.name,
+                    self.owner.name,))
         
     def set(self, value):
         """Set the value of a plug
@@ -56,12 +51,9 @@ class Plug:
         else:                               # else, set the new value
             self.value = bool(value)
             self.nbEval += 1
-        log.print_message(
-            '    # %s.%s set to %i'
-            % (self.owner.name, self.name, int(self.value)))
-        log_2.info(
+        log.info(
             '%s.%s set to %i'
-            % (self.owner.name, self.name, int(self.value)))
+            % (self.owner.name, self.name, int(self.value),))
         if self.isInput:                    # input? evaluate the circuit
             self.owner.evalfun()
         for connection in self.connections:
@@ -76,17 +68,14 @@ class Plug:
         for plug in plugList:
             self.connections.append(plug)   # add each connection of the lists
             if verbose:
-                log.print_message(
-                    '    ~ Plug %s.%s connected to Plug %s.%s'
-                    % (plug.owner.name, plug.name, self.owner.name, self.name))
-                log_2.info(
+                log.info(
                     '%s %s.%s connected to %s %s.%s'
                     % (
                         'input' if plug.isInput else 'output',
                         plug.owner.name,
                         plug.name,
                         'input' if self.isInput else 'output',
-                        self.owner.name, self.name))
+                        self.owner.name, self.name,))
 
 
 class Circuit:
@@ -96,47 +85,35 @@ class Circuit:
         self.inputList = []     # circuit's inputs list
         self.outputList = []    # circuit's outputs list
         self.circuitList = []   # circuit's circuits list
-        log.print_message(
-            "> %s '%s' has been created"
-            % (self.class_name(), self.name,))
-        log_2.info("%s '%s' has been created" % (self.class_name(), self.name))
+        log.info("%s '%s' has been created" % (self.class_name(), self.name,))
 
     def add_plug(self, plug):
         """Add a plug (input or output) in the appropriate list of the circuit.
         """
         if plug.isInput:
             self.inputList.append(plug)
-            log.print_message(
-                "    + plug '%s' add to %s.inputList"
-                % (plug.name, self.name,))
-            log_2.info("input '%s' added to %s" % (plug.name, self.name))
+            log.info("input '%s' added to %s" % (plug.name, self.name,))
         else:
             self.outputList.append(plug)
-            log.print_message(
-                "    + plug '%s' add to %s.outputList"
-                % (plug.name, self.name,))
+            log.info("output '%s' added to %s" % (plug.name, self.name,))
 
     def add_input(self, name=None):
         """Add an input to the inputList of the circuit."""
         self.inputList.append(Plug(True, name, self))
-        log.print_message(
-            "    + plug '%s' add to %s.inputList"
-            % (name, self.name,))
+        log.info("input '%s' added to %s" % (name, self.name,))
         return self.inputList[-1]
 
     def add_output(self, name=None):
         """Add an output to the outputList of the circuit."""
         self.outputList.append(Plug(False, name, self))
-        log.print_message(
-            "    + plug '%s' add to %s.outputList"
-            % (name, self.name,))
+        log.info("output '%s' added to %s" % (name, self.name,))
         return self.outputList[-1]
 
     def add_circuit(self, circuit):
         """Add an circuit to the circuitList of the circuit."""
         self.circuitList.append(circuit)
-        log.print_message(
-            "  + circuit %s '%s' add to %s.circuitsList"
+        log.info(
+            "circuit %s '%s' added to %s.circuitsList"
             % (circuit.class_name(), circuit.name, self.name,))
         return self.circuitList[-1]
 
