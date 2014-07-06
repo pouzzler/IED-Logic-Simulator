@@ -5,11 +5,18 @@
     <filterSection>
         <toc>
             <section title="IED Logic Simulator Manual" ref="index.html">
-                <section title="Chapter 1" ref="test1.html"/>
-                <section title="Chapter 2" ref="test2.html"/>
+                <section ref="index.html" title="Introduction"/>
+                <section ref="basicgates.html" title="Basic gates"/>
+                <section ref="contextmenu.html" title="Contextual menu"/>
+                <section ref="log.html" title="Log Window"/>
+                <section ref="mainview.html" title="Main Area"/>
+                <section ref="menu.html" title="Menu Bar"/>
+                <section ref="toolbox.html" title="Toolbox"/>
+                <section ref="tooloptions.html" title="Tool Options"/>
             </section>
         </toc>
         <files>
+            <file>style.css</file>
             <file>*.html</file>
         </files>
     </filterSection>
