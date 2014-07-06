@@ -14,17 +14,13 @@ class ToolBox(QtGui.QTreeWidget):
 
     def __init__(self):
         super(ToolBox, self).__init__()
-        icon = QtGui.QIcon(
-            '/home/seb/Documents/IED-Logic-Simulator/src/gui/icons/AND_mini.png')
         self.setDragEnabled(True)
-        self.setColumnCount(2)
+        self.setColumnCount(1)
         self.header().setVisible(False)
         gatesheader = QtGui.QTreeWidgetItem(self, [u'Basic Gates'])
         gates = [
             QtGui.QTreeWidgetItem(gatesheader, [name])
             for name in ['And', 'Or', 'Nand', 'Nor', 'Not', 'Xor', 'Xnor']]
-        for gate in gates:
-            gate.setIcon(2, icon)
         ioheader = QtGui.QTreeWidgetItem(self, [u'I/O'])
         io = [
             QtGui.QTreeWidgetItem(ioheader, [name])

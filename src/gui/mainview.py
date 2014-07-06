@@ -109,7 +109,7 @@ class MainView(QtGui.QGraphicsView):
                 scene.removeItem(item)
         # <- , anti-clockwise rotation
         # TODO: serious problem with Qt: it is impossible to rotate
-        # a QGraphicsItemGroup around its gravity center like the 
+        # a QGraphicsItemGroup around its gravity center like the
         # current code does for individual items even though the
         # group class inherits from the graphicsitem class.
         # EDIT: group.boundingRect() is apparently in scene coordinates

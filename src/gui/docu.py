@@ -12,7 +12,7 @@ class HelpTextBrowser(QtGui.QTextBrowser):
     def __init__(self, helpEngine):
         super(HelpTextBrowser, self).__init__()
         self.helpEngine = helpEngine
-        
+
     def loadResource(self, type, url):
         if url.scheme() == "qthelp":
             return self.helpEngine.fileData(url)
@@ -37,4 +37,3 @@ class HelpDockWidget(QtGui.QDockWidget):
         helpPanel.insertWidget(1, helpBrowser)
         helpPanel.setStretchFactor(1, 1)
         self.setWidget(helpPanel)
-

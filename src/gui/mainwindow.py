@@ -79,7 +79,8 @@ class MainWindow(QtGui.QMainWindow):
         self.logDock.setWidget(self.logWindow)
         self.addDockWidget(QtCore.Qt.BottomDockWidgetArea, self.logDock)
         # TODO: finish the help system
-        self.addDockWidget(QtCore.Qt.RightDockWidgetArea, HelpDockWidget('Help'))
+        self.addDockWidget(
+            QtCore.Qt.RightDockWidgetArea, HelpDockWidget('Help'))
         # signals connexions
         tooloptions.clicked.connect(self.setStatusMessage)
         self.show()
