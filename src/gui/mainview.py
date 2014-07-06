@@ -34,8 +34,7 @@ class MainView(QtGui.QGraphicsView):
             self,
             u'Set name',
             u'Enter a name for this item:')
-        if ret[1] and len(ret[0]):
-            item.name = ret[0]
+        item.setName(ret[0])
 
     def toggleValue(self, item):
         item.set(not item.value)

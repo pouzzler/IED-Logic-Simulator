@@ -69,6 +69,19 @@ class Plug:
                         'input' if self.isInput else 'output',
                         self.owner.name, self.name,))
 
+    def setName(self, name, verbose=True):
+        """Sets a Plug's name."""
+        if isinstance(name, str) and len(name):
+            if verbose:
+                log.info(
+                    "%s's %s %s changes name to %s"
+                    % (
+                        self.owner.name,
+                        'input' if self.isInput else 'output',
+                        self.name,
+                        name,))
+            self.name = name
+            
 
 class Circuit:
     """Represents a logic circuit."""
@@ -151,6 +164,14 @@ class Circuit:
     def evalfun(self):
         """Only child classes can have an evalfun."""
         return
+
+    def setName(self, name, verbose=True):
+        """Sets a Circuit's name."""
+        if isinstance(name, str) and len(name):
+            if verbose:
+                log.info(
+                    'Circuit %s changes name to %s' % (self.name, name,))
+            self.name = name
 
 
 #        -+----------------------- UTILITIES -----------------------+-        #
