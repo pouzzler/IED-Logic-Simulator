@@ -3,5 +3,5 @@ all:
 	cd help;	\
 	qhelpgenerator doc.qhp -o doc.qch;	\
 	qcollectiongenerator collection.qhcp -o collection.qhc
-	mv help/collection.qhc src
-	mv help/doc.qch src
+	mv help/collection.qhc .
+	mv help/doc.qch .
