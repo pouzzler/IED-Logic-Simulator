@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<QtHelpProject version="1.0">
+    <namespace>ied.logic.simulator.1.0</namespace>
+    <virtualFolder>doc</virtualFolder>
+    <filterSection>
+        <toc>
+            <section title="IED Logic Simulator Manual" ref="index.html">
+                <section title="Chapter 1" ref="test1.html"/>
+                <section title="Chapter 2" ref="test2.html"/>
+            </section>
+        </toc>
+        <files>
+            <file>*.html</file>
+        </files>
+    </filterSection>
+</QtHelpProject>
