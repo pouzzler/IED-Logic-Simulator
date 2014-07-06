@@ -39,14 +39,8 @@ class MainWindow(QtGui.QMainWindow):
         self.setFocusPolicy(QtCore.Qt.StrongFocus)
         view = MainView(self)                       # Une zone de travail
         self.setCentralWidget(view)                 # principale.
-        toolbox = ToolBox()                         # Une boîte à outils
-        boxDock = QtGui.QDockWidget('Toolbox')      # dans un dock.
-        boxDock.setWidget(toolbox)
-        self.addDockWidget(QtCore.Qt.LeftDockWidgetArea, boxDock)
-        tooloptions = ToolOptions()        # Options de l'outil sélectionné
-        optionsDock = QtGui.QDockWidget('Tool options')  # dans un dock.
-        optionsDock.setWidget(tooloptions)
-        self.addDockWidget(QtCore.Qt.LeftDockWidgetArea, optionsDock)
+        self.showToolBox()
+        #~ self.showToolOptions()       #pas implémenté
         # a menu bar
         # the File menu
         fileMenu = QtGui.QMenu(u'File')
@@ -54,6 +48,8 @@ class MainWindow(QtGui.QMainWindow):
         self.menuBar().addMenu(fileMenu)
         # the Options menu
         optionsMenu = QtGui.QMenu('Options')
+        optionsMenu.addAction('Toolbox', self.showToolBox)
+        optionsMenu.addAction('Tool options', self.showToolOptions)
         self.logAct = QtGui.QAction(
             "&Show logs",
             self,
@@ -66,7 +62,7 @@ class MainWindow(QtGui.QMainWindow):
         self.logAct.setChecked(True)
         # the Help menu
         helpMenu = QtGui.QMenu('Help')
-        helpMenu.addAction('Documentation')
+        helpMenu.addAction('Documentation', self.showDocumentation)
         helpMenu.addAction('About', self.about)
         self.menuBar().addMenu(helpMenu)
         # a window for the logs
@@ -78,11 +74,6 @@ class MainWindow(QtGui.QMainWindow):
         self.logDock = QtGui.QDockWidget('Logs')
         self.logDock.setWidget(self.logWindow)
         self.addDockWidget(QtCore.Qt.BottomDockWidgetArea, self.logDock)
-        # TODO: finish the help system
-        self.addDockWidget(
-            QtCore.Qt.RightDockWidgetArea, HelpDockWidget('Help'))
-        # signals connexions
-        tooloptions.clicked.connect(self.setStatusMessage)
         self.show()
 
     def setStatusMessage(self, message):
@@ -98,9 +89,28 @@ class MainWindow(QtGui.QMainWindow):
         msgBox.setText(u'v0.1\nPar Mathieu Fourcroy & Sébastien Magnien.')
         msgBox.exec_()
 
+    def showToolBox(self):
+        toolbox = ToolBox()                         # Une boîte à outils
+        boxDock = QtGui.QDockWidget('Toolbox')      # dans un dock.
+        boxDock.setWidget(toolbox)
+        self.addDockWidget(QtCore.Qt.LeftDockWidgetArea, boxDock)
+
+    def showToolOptions(self):
+        tooloptions = ToolOptions()        # Options de l'outil sélectionné
+        optionsDock = QtGui.QDockWidget('Tool options')  # dans un dock.
+        optionsDock.setWidget(tooloptions)
+        self.addDockWidget(QtCore.Qt.LeftDockWidgetArea, optionsDock)
+        tooloptions.clicked.connect(self.setStatusMessage)
+        
     def showLogs(self):
         """Hide or show the log window."""
         if self.logAct.isChecked():  # if the action is checked: show the log
             self.logDock.show()      # else: hide it
         else:
             self.logDock.hide()
+            
+    def showDocumentation(self):
+        """Shows the help dock widget."""
+        self.addDockWidget(
+            QtCore.Qt.RightDockWidgetArea, HelpDockWidget('Help'))
+        
