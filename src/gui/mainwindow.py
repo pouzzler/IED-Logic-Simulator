@@ -7,6 +7,7 @@ from PySide import QtGui, QtCore
 from .mainview import MainView
 from .toolbox import ToolBox
 from .tooloptions import ToolOptions
+from .docu import HelpDockWidget
 
 from engine.gates import *                   # basic logic gates
 from engine.simulator import log             # Log manager
@@ -77,6 +78,8 @@ class MainWindow(QtGui.QMainWindow):
         self.logDock = QtGui.QDockWidget('Logs')
         self.logDock.setWidget(self.logWindow)
         self.addDockWidget(QtCore.Qt.BottomDockWidgetArea, self.logDock)
+        # TODO: finish the help system
+        self.addDockWidget(QtCore.Qt.RightDockWidgetArea, HelpDockWidget('Help'))
         # signals connexions
         tooloptions.clicked.connect(self.setStatusMessage)
         self.show()

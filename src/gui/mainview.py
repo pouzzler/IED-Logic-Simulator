@@ -160,8 +160,8 @@ class MainView(QtGui.QGraphicsView):
         that represents an engine.simulator.Plug, that Plug is appended
         to self.connectionData.
         """
-        # Reserve right-clicks for contextual menus.
-        if e.buttons() == QtCore.Qt.RightButton:
+        # Reserve all buttons but left for other purposes.
+        if e.buttons() != QtCore.Qt.LeftButton:
             super(MainView, self).mousePressEvent(e)
             return
         self.connStart = None
@@ -183,8 +183,8 @@ class MainView(QtGui.QGraphicsView):
         pressed over another I/O, if one is an input, and the other an
         output, a connection will be created between the two of them.
         """
-        # Ignore right-clicks.
-        if e.buttons() == QtCore.Qt.RightButton:
+        # Reserve all buttons but left for other purposes.
+        if e.buttons() != QtCore.Qt.LeftButton:
             super(MainView, self).mousePressEvent(e)
             return
         if self.connStart:
