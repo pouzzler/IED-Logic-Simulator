@@ -8,16 +8,19 @@
                 <section ref="index.html" title="Introduction"/>
                 <section ref="basicgates.html" title="Basic gates"/>
                 <section ref="contextmenu.html" title="Contextual menu"/>
-                <section ref="log.html" title="Log Window"/>
-                <section ref="mainview.html" title="Main Area"/>
-                <section ref="menu.html" title="Menu Bar"/>
+                <section ref="io.html" title="Inputs and outputs"/>
+                <section ref="log.html" title="Log window"/>
+                <section ref="mainview.html" title="Main area"/>
+                <section ref="menu.html" title="Menu bar"/>
                 <section ref="toolbox.html" title="Toolbox"/>
-                <section ref="tooloptions.html" title="Tool Options"/>
+                <section ref="tooloptions.html" title="Tool options"/>
+                <section ref="usercircuits.html" title="User circuits"/>
             </section>
         </toc>
         <files>
             <file>style.css</file>
             <file>*.html</file>
+            <file>images/*.png</file>
         </files>
     </filterSection>
 </QtHelpProject>

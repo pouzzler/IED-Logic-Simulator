@@ -44,15 +44,13 @@ class MainView(QtGui.QGraphicsView):
         """Pops a contextual menu up on right-clicks"""
         item = self.itemAt(e.pos())
         if isinstance(item, CircuitItem) or isinstance(item, IOItem):
-            pos = item.mapFromScene(self.mapToScene(e.pos()))
-            ioatpos = item.IOAtPos(pos)
-            if ioatpos:
-                item = ioatpos
-            elif isinstance(item, CircuitItem):
-                item = item.circuit
             menu = QtGui.QMenu(self)
             menu.addAction("Set name", lambda: self.setName(item))
-            if ioatpos and ioatpos.owner == mainCircuit and ioatpos.isInput:
+            if isinstance(item, CircuitItem):
+                pos = item.mapFromScene(self.mapToScene(e.pos()))
+                ioatpos = item.IOAtPos(pos)
+                item = ioatpos if ioatpos else item.circuit
+            elif item.isInput:
                 menu.addAction(str(item.value), lambda: self.toggleValue(item))
             menu.popup(e.globalPos())
 
