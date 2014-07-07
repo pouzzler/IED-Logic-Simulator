@@ -29,7 +29,7 @@ class HelpDockWidget(QtGui.QDockWidget):
         super(HelpDockWidget, self).__init__(title)
         # http://doc.qt.digia.com/qq/qq28-qthelp.html
         helpEngine = QtHelp.QHelpEngine('collection.qhc')
-        print(helpEngine.setupData())
+        helpEngine.setupData()
         helpPanel = QtGui.QSplitter(QtCore.Qt.Vertical)
         helpBrowser = HelpTextBrowser(helpEngine)
         helpEngine.contentWidget().linkActivated.connect(helpBrowser.setSource)
