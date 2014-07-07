@@ -54,5 +54,5 @@ class ClockThread(Thread):
         self.alive = False
 
     def speed(self, sec):
-        """"Set the clock speed (sec).""""
+        """Set the clock speed (sec)."""
         self.spd = sec

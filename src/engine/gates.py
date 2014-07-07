@@ -41,12 +41,7 @@ class AndGate(Circuit):
         self.add_output('O')
 
     def evalfun(self):
-        out = True
-        for inp in self.inputList:
-            if inp.value is False:
-                out = False
-                break
-        self.outputList[0].set(out)
+        self.outputList[0].set(all([inp.value for inp in self.inputList]))
 
 
 # OR gate
@@ -58,12 +53,19 @@ class OrGate(Circuit):
         self.add_output('O')
 
     def evalfun(self):
-        out = False
-        for inp in self.inputList:
-            if inp.value is True:
-                out = True
-                break
-        self.outputList[0].set(out)
+        self.outputList[0].set(any([inp.value for inp in self.inputList]))
+
+
+# NOR gate
+class NorGate(Circuit):
+    def __init__(self, name=None, inputs=2):
+        Circuit.__init__(self, name)
+        for inp in range(inputs):
+            self.add_input('I' + str(inp))
+        self.add_output('O')
+
+    def evalfun(self):
+        self.outputList[0].set(not any([inp.value for inp in self.inputList]))
 
 
 # XOR gate
@@ -80,6 +82,19 @@ class XorGate(Circuit):
             if inp.value is True:
                 c += 1
         self.outputList[0].set(c % 2)
+
+
+# XNOR gate
+class XnorGate(Circuit):
+    def __init__(self, name, inputs=2):
+        Circuit.__init__(self, name)
+        for inp in range(inputs):
+            self.add_input('I' + str(inp))
+        self.add_output('O')
+
+    def evalfun(self):
+        valuesList = [inp.value for inp in self.inputList]
+        self.outputList[0].set(all(valuesList) or not any(valuesList))
 
 
 # NAND gate
