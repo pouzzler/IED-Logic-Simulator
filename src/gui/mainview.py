@@ -105,7 +105,7 @@ class MainView(QtGui.QGraphicsView):
         # Del, suppression
         if e.key() == QtCore.Qt.Key_Delete:
             for item in selection:
-                # TODO: remove item from engine
+                mainCircuit.remove(item.circuit)
                 scene.removeItem(item)
         # <- , anti-clockwise rotation
         # TODO: serious problem with Qt: it is impossible to rotate

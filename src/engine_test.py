@@ -78,7 +78,7 @@ if __name__ == '__main__':
 
     print('_____________________________________________________\n')
     # on ajoute 2 entrées et 1 sortie au circuit du "top-level"
-    TC.add_input('A')
+    A = TC.add_input('A')
     TC.add_input('B')
     TC.add_output('C')
     # on connecte les entrées et la sortie de TC à celles du circuit AndGate
@@ -105,6 +105,10 @@ if __name__ == '__main__':
     print('nb total de circuits: ' + str(total_nb_circuits(TC)))
     print("nb total d'entrées:   " + str(total_nb_inputs(TC)))
     print("nb total de sorties:  " + str(total_nb_outputs(TC)))
+    print("nb total d'E/S:       " + str(total_nb_plugs(TC)))
+    
+    print('_____________________________________________________\n')
+    TC.remove(A)
     print("nb total d'E/S:       " + str(total_nb_plugs(TC)))
     
     toto = AndGate()
