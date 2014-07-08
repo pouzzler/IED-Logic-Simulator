@@ -17,6 +17,8 @@ class IOItem(QtGui.QGraphicsPathItem, Plug):
     def __init__(self, isInput, parent):
         super(IOItem, self).__init__()
         Plug.__init__(self, isInput, None, parent)
+        # Creating a plug from our engine
+        parent.add_plug(self)
         self.setFlag(QtGui.QGraphicsItem.ItemIsMovable)
         self.setFlag(QtGui.QGraphicsItem.ItemIsSelectable)
         path = QtGui.QPainterPath()

@@ -1,6 +1,11 @@
 #!/usr/bin/env python3
 # coding=utf-8
 
+"""Ne pas oublié d'ajouter style=GTK+ dans le paragraphe [Qt] de
+~/.config/Trolltech.conf pour utiliser le style GTK+.
+Puis installer le paquet gtk2-engines-pixbuf.
+"""
+
 import time
 from PySide import QtGui, QtCore
 
@@ -9,7 +14,7 @@ from .toolbox import ToolBox
 from .tooloptions import ToolOptions
 
 from engine.gates import *                   # basic logic gates
-from engine.simulator import log             # Log manager
+from engine.simulator import log, formatter  # Log manager and log formatter
 
 
 class LoggerTextEdit(QtGui.QTextEdit):
@@ -34,52 +39,79 @@ class MainWindow(QtGui.QMainWindow):
 
     def __init__(self):
         super(MainWindow, self).__init__()
+        # -+++++++----------------- the main window -----------------+++++++- #
         self.setWindowTitle("IED Logic Simulator")
+        self.centerAndResize()
         self.setFocusPolicy(QtCore.Qt.StrongFocus)
-        view = MainView(self)                       # Une zone de travail
-        self.setCentralWidget(view)                 # principale.
-        toolbox = ToolBox()                         # Une boîte à outils
-        boxDock = QtGui.QDockWidget('Toolbox')      # dans un dock.
-        boxDock.setWidget(toolbox)
-        self.addDockWidget(QtCore.Qt.LeftDockWidgetArea, boxDock)
-        tooloptions = ToolOptions()        # Options de l'outil sélectionné
-        optionsDock = QtGui.QDockWidget('Tool options')  # dans un dock.
-        optionsDock.setWidget(tooloptions)
-        self.addDockWidget(QtCore.Qt.LeftDockWidgetArea, optionsDock)
-        # a menu bar
-        # the File menu
-        fileMenu = QtGui.QMenu(u'File')
-        fileMenu.addAction(u'Quit', self.close)
-        self.menuBar().addMenu(fileMenu)
-        # the Options menu
-        optionsMenu = QtGui.QMenu('Options')
-        self.logAct = QtGui.QAction(
-            "&Show logs",
-            self,
-            checkable=True,
-            shortcut="Ctrl+L",
-            statusTip="Shows the log",
-            triggered=self.showLogs)
-        optionsMenu.addAction(self.logAct)
-        self.menuBar().addMenu(optionsMenu)
-        self.logAct.setChecked(True)
-        # the Help menu
-        helpMenu = QtGui.QMenu('Help')
-        helpMenu.addAction('Documentation')
-        helpMenu.addAction('About', self.about)
-        self.menuBar().addMenu(helpMenu)
-        # a window for the logs
+        # -+++++++----- the view chere we can create the circuit ----+++++++- #
+        view = MainView(self)
+        self.setCentralWidget(view)                  # as central widget
+        # -+++++++-------- a dock we can drag the gates from --------+++++++- #
+        toolbox = ToolBox()
+        self.boxDock = QtGui.QDockWidget('Tool box')  # in a dock
+        self.boxDock.setWidget(toolbox)
+        self.addDockWidget(QtCore.Qt.LeftDockWidgetArea, self.boxDock)
+        # -+++++++--------- a dock for gates and I/O options --------+++++++- #
+        tooloptions = ToolOptions()
+        self.optionsDock = QtGui.QDockWidget('Tool options')  # in a dock
+        self.optionsDock.setWidget(tooloptions)
+        self.optionsDock.setMaximumSize(QtCore.QSize(524287, 161))
+        self.addDockWidget(QtCore.Qt.LeftDockWidgetArea, self.optionsDock)
+        # -+++++++----------- a dock for the logs messages ----------+++++++- #
         self.logWindow = LoggerTextEdit()
         handler = logging.StreamHandler(self.logWindow)
         handler.setLevel(logging.DEBUG)
         log.addHandler(handler)
+        handler.setFormatter(formatter)
         log.info("New session started on %s" % (time.strftime("%d/%m/%Y"),))
         self.logDock = QtGui.QDockWidget('Logs')
         self.logDock.setWidget(self.logWindow)
         self.addDockWidget(QtCore.Qt.BottomDockWidgetArea, self.logDock)
-        # signals connexions
+        # -+++++++------------------ the menu bar -------------------+++++++- #
+        #         -+++++++---------- the file menu ----------+++++++-         #
+        fileMenu = QtGui.QMenu(u'File')
+        fileMenu.addAction(u'Quit', self.close)
+        #         -+++++++--------- the windows menu --------+++++++-         #
+        #                 -+---- toggle toolBox action ----+-                 #
+        self.toolBoxAct = self.boxDock.toggleViewAction()
+        self.toolBoxAct.setShortcut("Ctrl+Shift+T")
+        self.toolBoxAct.setStatusTip("Shows the tool box")
+        self.toolBoxAct.setChecked(True)
+        #                 -+-- toggle toolOptions action --+-                 #
+        self.toolOptionsAct = self.optionsDock.toggleViewAction()
+        self.toolOptionsAct.setShortcut("Ctrl+Shift+O")
+        self.toolOptionsAct.setStatusTip("Shows the item options")
+        self.toolOptionsAct.setChecked(True)
+        #                 -+------ toggle logs action -----+-                 #
+        self.logAct = self.logDock.toggleViewAction()
+        self.logAct.setShortcut("Ctrl+Shift+L")
+        self.logAct.setStatusTip("Shows the logs messages dock")
+        self.logAct.setChecked(True)
+        #                 -+------- the menu itself -------+-                 #
+        windowsMenu = QtGui.QMenu('Windows')
+        windowsMenu.addAction(self.toolBoxAct)
+        windowsMenu.addAction(self.toolOptionsAct)
+        windowsMenu.addAction(self.logAct)
+        #         -+++++++---------- the help menu ----------+++++++-         #
+        helpMenu = QtGui.QMenu('Help')
+        helpMenu.addAction('Documentation')
+        helpMenu.addAction('About', self.about)
+        #                 -+--------- the menu bar --------+-                 #
+        self.menuBar().addMenu(fileMenu)
+        self.menuBar().addMenu(windowsMenu)
+        self.menuBar().addMenu(helpMenu)
+        # -+++++++--------------- signals connections ---------------+++++++- #
         tooloptions.clicked.connect(self.setStatusMessage)
+        ###########
         self.show()
+
+    def centerAndResize(self):
+        screen = QtGui.QDesktopWidget().screenGeometry()
+        self.resize(screen.width() / 1.2, screen.height() / 1.2)
+        size = self.geometry()
+        self.move(
+            (screen.width() - size.width()) / 2,
+            (screen.height() - size.height()) / 2)
 
     def setStatusMessage(self, message):
         """Print a message in the statusbar."""
@@ -93,10 +125,3 @@ class MainWindow(QtGui.QMainWindow):
         msgBox = QtGui.QMessageBox()
         msgBox.setText(u'v0.1\nPar Mathieu Fourcroy & Sébastien Magnien.')
         msgBox.exec_()
-
-    def showLogs(self):
-        """Hide or show the log window."""
-        if self.logAct.isChecked():  # if the action is checked: show the log
-            self.logDock.show()      # else: hide it
-        else:
-            self.logDock.hide()

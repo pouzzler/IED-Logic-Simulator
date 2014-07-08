@@ -26,6 +26,7 @@ class MainView(QtGui.QGraphicsView):
         # Allow mouseover effects (self.mouseMoveEvent)
         self.setMouseTracking(True)
         scene = QtGui.QGraphicsScene(parent)
+        scene.setBackgroundBrush(QtGui.QColor(150, 150, 150))
         self.setScene(scene)
 
     def setName(self, item):
@@ -105,11 +106,13 @@ class MainView(QtGui.QGraphicsView):
         # Del, suppression
         if e.key() == QtCore.Qt.Key_Delete:
             for item in selection:
-                mainCircuit.remove(item.circuit)
+                if isinstance(item, CircuitItem):
+                    mainCircuit.remove(item.circuit)
+                    item.circuit = None
                 scene.removeItem(item)
         # <- , anti-clockwise rotation
         # TODO: serious problem with Qt: it is impossible to rotate
-        # a QGraphicsItemGroup around its gravity center like the 
+        # a QGraphicsItemGroup around its gravity center like the
         # current code does for individual items even though the
         # group class inherits from the graphicsitem class.
         # EDIT: group.boundingRect() is apparently in scene coordinates
@@ -120,7 +123,8 @@ class MainView(QtGui.QGraphicsView):
             #~ y = group.boundingRect().height() / 2
             #~ group.setTransformOriginPoint(x, y)
             #~ group.setRotation(group.rotation() - 90)
-            #~ group.setTransform(QtGui.QTransform().translate(x, y).rotate(-90).translate(y, x))
+            #~ group.setTransform(
+                #~ QtGui.QTransform().translate(x, y).rotate(-90).translate(y, x))
             #~ scene.destroyItemGroup(group)
             for item in selection:
                 x = item.boundingRect().width() / 2

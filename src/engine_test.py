@@ -61,56 +61,96 @@ from time import sleep
 if __name__ == '__main__':
     TC = Circuit("Main_Circuit")
     
-    clk = TC.add_output('CLOCK')       # l'horloge est une simple sortie du TL
-    bgClockThread = ClockThread(clk)   # mais elle est simulée dans un thread
-    bgClockThread.start()              # on démarre l'horloge (1 tic par sec)
-    AND = TC.add_circuit(AndGate())    # puis on créé une porte AND
-    AND.input('I0').set(1)             # on positionne son entrée I0 à 1
-    clk.connect(AND.input('I1'))       # on connecte l'horloge à son entrée I1
-    sleep(bgClockThread.spd)           # on attends un tic d'horloge
-    print(AND.output('O').value)       # on imprime la sortie de la porte AND
-    time.sleep(1)                      # on attends un second tic d'horloge
-    print(AND.output('O').value)       # le tic à modifié la sortie du AND
-    time.sleep(1)                      # on attends encore un troisième tic
-    print(AND.output('O').value)       # la sortie vaut la valeur de l'horloge
-                                       # logique car 1 ET 0 = 0 / 1 ET 1 = 1
-    bgClockThread.stop()               # enfin on quite le thread de l'horloge
+    #~ clk = TC.add_output('CLOCK')       # l'horloge est une simple sortie du TL
+    #~ bgClockThread = ClockThread(clk)   # mais elle est simulée dans un thread
+    #~ bgClockThread.start()              # on démarre l'horloge (1 tic par sec)
+    #~ AND = TC.add_circuit(AndGate())    # puis on créé une porte AND
+    #~ AND.input('I0').set(1)             # on positionne son entrée I0 à 1
+    #~ clk.connect(AND.input('I1'))       # on connecte l'horloge à son entrée I1
+    #~ sleep(bgClockThread.spd)           # on attends un tic d'horloge
+    #~ print(AND.output('O').value)       # on imprime la sortie de la porte AND
+    #~ time.sleep(1)                      # on attends un second tic d'horloge
+    #~ print(AND.output('O').value)       # le tic à modifié la sortie du AND
+    #~ time.sleep(1)                      # on attends encore un troisième tic
+    #~ print(AND.output('O').value)       # la sortie vaut la valeur de l'horloge
+                                       #~ # logique car 1 ET 0 = 0 / 1 ET 1 = 1
+    #~ bgClockThread.stop()               # enfin on quite le thread de l'horloge
+#~ 
+    #~ print('_____________________________________________________\n')
+    #~ # on ajoute 2 entrées et 1 sortie au circuit du "top-level"
+    #~ A = TC.add_input('A')
+    #~ B = TC.add_input('B')
+    #~ C = TC.add_output('C')
+    #~ # on connecte les entrées et la sortie de TC à celles du circuit AndGate
+    #~ TC.inputList[0].connect(TC.circuitList[0].inputList[0])
+    #~ TC.inputList[1].connect(TC.circuitList[0].inputList[1])
+    #~ TC.circuitList[0].outputList[0].connect(TC.outputList[0])
+    #~ # on affiche les valeurs de la sortie de la porte AND et de celle de TC
+    #~ print(TC.circuitList[0].outputList[0].value)    # => False
+    #~ print(TC.outputList[0].value)                   # => False
+    #~ # on positionne les entrées de TC à 1
+    #~ TC.inputList[0].set(1)
+    #~ TC.inputList[1].set(1)
+    #~ # on réaffiche les valeurs de la sortie de TC et de celle du AndGate
+    #~ print(TC.circuitList[0].outputList[0].value)   # => True
+    #~ print(TC.outputList[0].value)                  # => True
+    #~ # on a utilisé l'accès par index mais on aurait pu utiliser l'accès par nom
+    #~ print(TC.inputList[0])                         # équivalent à...
+    #~ print(TC.input('A'))
+#~ 
+    #~ print('_____________________________________________________\n')
+    #~ adder_2x4('1011', '0010', TC)
+#~ 
+    #~ print('_____________________________________________________\n')
+    #~ print('nb total de circuits: ' + str(total_nb_circuits(TC)))
+    #~ print("nb total d'entrées:   " + str(total_nb_inputs(TC)))
+    #~ print("nb total de sorties:  " + str(total_nb_outputs(TC)))
+    #~ print("nb total d'E/S:       " + str(total_nb_plugs(TC)))
+
+    NOT = TC.add_circuit(NotGate('NOT'))
+    GIN = TC.add_input('GIN')
+    GOUT = TC.add_output('GOUT')
+    I = NOT.inputList[0]
+    O = NOT.outputList[0]
+    I.connect(GIN)
+    GOUT.connect(O)
 
     print('_____________________________________________________\n')
-    # on ajoute 2 entrées et 1 sortie au circuit du "top-level"
-    A = TC.add_input('A')
-    TC.add_input('B')
-    TC.add_output('C')
-    # on connecte les entrées et la sortie de TC à celles du circuit AndGate
-    TC.inputList[0].connect(TC.circuitList[0].inputList[0])
-    TC.inputList[1].connect(TC.circuitList[0].inputList[1])
-    TC.circuitList[0].outputList[0].connect(TC.outputList[0])
-    # on affiche les valeurs de la sortie de la porte AND et de celle de TC
-    print(TC.circuitList[0].outputList[0].value)    # => False
-    print(TC.outputList[0].value)                   # => False
-    # on positionne les entrées de TC à 1
-    TC.inputList[0].set(1)
-    TC.inputList[1].set(1)
-    # on réaffiche les valeurs de la sortie de TC et de celle du AndGate
-    print(TC.circuitList[0].outputList[0].value)   # => True
-    print(TC.outputList[0].value)                  # => True
-    # on a utilisé l'accès par index mais on aurait pu utiliser l'accès par nom
-    print(TC.inputList[0])                         # équivalent à...
-    print(TC.input('A'))
-
-    print('_____________________________________________________\n')
-    adder_2x4('1011', '0010', TC)
-
-    print('_____________________________________________________\n')
-    print('nb total de circuits: ' + str(total_nb_circuits(TC)))
-    print("nb total d'entrées:   " + str(total_nb_inputs(TC)))
-    print("nb total de sorties:  " + str(total_nb_outputs(TC)))
-    print("nb total d'E/S:       " + str(total_nb_plugs(TC)))
+    print(GIN); print(GOUT); print(I); print(O)
+    print("GIN:")
+    print(GIN.connections)
+    print(GIN.connectedTo)
+    print("GOUT")
+    print(GOUT.connections)
+    print(GOUT.connectedTo)
+    print("I:")
+    print(I.connections)
+    print(I.connectedTo)
+    print("nb total d'E/S: " + str(total_nb_plugs(TC)))
     
     print('_____________________________________________________\n')
-    TC.remove(A)
-    print("nb total d'E/S:       " + str(total_nb_plugs(TC)))
+    TC.remove(GIN)
+    print("GIN:")
+    print(GIN.connections)
+    print(GIN.connectedTo)
+    print("GOUT")
+    print(GOUT.connections)
+    print(GOUT.connectedTo)
+    print("I:")
+    print(I.connections)
+    print(I.connectedTo)
+    print("nb total d'E/S: " + str(total_nb_plugs(TC)))
     
-    toto = AndGate()
-    print(toto.nb_inputs())
-    print(toto.class_name())
+    print('_____________________________________________________\n')
+    TC.remove(NOT)
+    print("GIN:")
+    print(GIN.connections)
+    print(GIN.connectedTo)
+    print("GOUT")
+    print(GOUT.connections)
+    print(GOUT.connectedTo)
+    print("I:")
+    print(I.connections)
+    print(I.connectedTo)
+    print("nb total d'E/S: " + str(total_nb_plugs(TC)))
+

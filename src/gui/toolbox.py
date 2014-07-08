@@ -32,6 +32,7 @@ class ToolBox(QtGui.QTreeWidget):
         userheader = QtGui.QTreeWidgetItem(self, [u'User Circuits'])
         self.insertTopLevelItems(0, [gatesheader, ioheader, userheader])
 
+    @QtCore.Slot()
     def focusInEvent(self, event):
         self.clicked.emit(
-            u'This panel contains items draggable to the main area.')
+            u'This panel contains draggable items.')

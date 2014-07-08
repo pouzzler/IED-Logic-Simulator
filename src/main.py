@@ -8,5 +8,6 @@ from gui.mainwindow import MainWindow
 
 # La boucle principale du programme
 app = QApplication(sys.argv)
+#~ app.setStyle("plastique")
 win = MainWindow()
 sys.exit(app.exec_())
