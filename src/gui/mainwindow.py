@@ -12,6 +12,7 @@ from PySide import QtGui, QtCore
 from .mainview import MainView
 from .toolbox import ToolBox
 from .tooloptions import ToolOptions
+from .settings import SettingsWidget
 
 from engine.gates import *                   # basic logic gates
 from engine.simulator import log, formatter  # Log manager and log formatter
@@ -71,6 +72,13 @@ class MainWindow(QtGui.QMainWindow):
         #         -+++++++---------- the file menu ----------+++++++-         #
         fileMenu = QtGui.QMenu(u'File')
         fileMenu.addAction(u'Quit', self.close)
+        #         -+++++++---------- the edit menu ----------+++++++-         #
+        editMenu = QtGui.QMenu(u'Edit')
+        self.settingAct = QtGui.QAction('&Settings...', self)
+        self.settingAct.setStatusTip('Open the settings window.')
+        self.settingAct.triggered.connect(self.openSettings)
+        editMenu.addAction(self.settingAct)
+        self.w = None
         #         -+++++++--------- the windows menu --------+++++++-         #
         #                 -+---- toggle toolBox action ----+-                 #
         self.toolBoxAct = self.boxDock.toggleViewAction()
@@ -98,12 +106,18 @@ class MainWindow(QtGui.QMainWindow):
         helpMenu.addAction('About', self.about)
         #                 -+--------- the menu bar --------+-                 #
         self.menuBar().addMenu(fileMenu)
+        self.menuBar().addMenu(editMenu)
         self.menuBar().addMenu(windowsMenu)
         self.menuBar().addMenu(helpMenu)
         # -+++++++--------------- signals connections ---------------+++++++- #
         tooloptions.clicked.connect(self.setStatusMessage)
         ###########
         self.show()
+
+    def openSettings(self):
+        self.w = SettingsWidget()
+        self.w.setGeometry(100, 100, 600, 500)
+        self.w.show()
 
     def centerAndResize(self):
         screen = QtGui.QDesktopWidget().screenGeometry()

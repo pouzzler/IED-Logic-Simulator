@@ -10,18 +10,7 @@ class ToolOptions(QtGui.QWidget):
     """
 
     clicked = QtCore.Signal(str)
-    
-    def oldinit(self):
-        super(ToolOptions, self).__init__()
-        layout = QtGui.QVBoxLayout()
-        label = QtGui.QLabel(u"Inputs number")
-        layout.addWidget(label)
-        nInputs = QtGui.QLineEdit(self)
-        nInputs.setText('2')
-        layout.addWidget(nInputs)
-        self.setLayout(layout)
-        self.setFocusPolicy(QtCore.Qt.StrongFocus)
-    
+
     def __init__(self):
         super(ToolOptions, self).__init__()
         self.initUI()
