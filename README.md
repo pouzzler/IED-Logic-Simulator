@@ -31,10 +31,6 @@ Le contenu principal est lui dans le sous-dossier /src :
   sous forme d'objet graphique dans la zone de travail tout en assurant
   le lien avec le moteur de simulation.
   
-Le sous-répertoire /help contient quand à lui les fichiers html et les
-images qui constituent l'aide en ligne de cette application. Il n'est 
-pas forcément utile de les détailler un par un.
-  
 
 
 
