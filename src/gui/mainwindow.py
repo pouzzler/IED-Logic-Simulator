@@ -18,9 +18,6 @@ from engine.gates import *                   # basic logic gates
 from engine.simulator import log, formatter  # Log manager and log formatter
 
 
-configFile = "../settings/settings.cfg"
-
-
 class LoggerTextEdit(QtGui.QTextEdit):
     """A multiline text field that receives log messages."""
 
@@ -118,7 +115,7 @@ class MainWindow(QtGui.QMainWindow):
         self.show()
 
     def openSettings(self):
-        self.w = SettingsWidget(configFile)
+        self.w = SettingsWidget()
         self.w.setGeometry(100, 100, 600, 500)
         self.w.show()
 
