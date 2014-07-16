@@ -8,11 +8,138 @@
 
 This widget is called when clicking on Edit -> Settings....
 The window contains some log, appearance and clock management options.
+All options must be retrieved from and stored in a config file.
+The config file location is defined in mainwindow.py and passed
+as parameter to SettingsWidget.
 """
+
+# TODO: subclass each settings group
+# TODO: import log outputs, clock and appearance settings from config file
+# TODO: add error message before return in slot functions
+# TODO: move handleItemStateChanged in TreeWidgetItem
+# TODO: in ColorSelectorButton, add a pix of the color instead of changing
+#       button background color.
 
 from PySide import QtCore, QtGui
 import sys
 import configparser
+
+
+class ColorSelectorButton(QtGui.QPushButton):
+    def __init__(self, parent, config, option, text, name=None):
+        """Get the config dictionary <config> from the parent class
+        because handleStateChanged need to modify it.
+        Also define the config section and option used by the class
+        and a QColorDialog, a QColor and a QPalette for selecting a
+        color, storing it and applying it to the button background.
+        """
+        QtGui.QPushButton.__init__(self, parent)
+        self.config = config
+        self.section = 'Appearance'
+        self.option = option
+        self.color = QtGui.QColor(0, 0, 0)
+        self.palette = QtGui.QPalette()
+        self.colorDialog = QtGui.QColorDialog()
+        self.initToolButton(text, name)
+        ## SIGNALS CONNECTIONS ##
+        self.clicked.connect(self.choose_color)
+        self.colorDialog.currentColorChanged.connect(self.handleColorChanged)
+
+    def initToolButton(self, text, name):
+        """Set object properties and define the colorDialog and palette
+        then set the value retrieved from the config dictionary.
+        """
+        if name:
+            self.setObjectName(name)
+        self.setText(text)
+        self.color.setNamedColor(self.config.get(self.section, self.option))
+        self.colorDialog.setCurrentColor(self.color)
+        self.palette.setColor(QtGui.QPalette.Button, self.color)
+        self.setPalette(self.palette)
+        self.setAutoFillBackground(True)
+
+    def choose_color(self):
+        """Open the color chooser dialog for selecting a color and
+        set the button color via the palette.
+        """
+        origColor = self.color      # save the current color
+        self.color = self.colorDialog.getColor(origColor)
+        if not self.color.isValid():
+            self.color = origColor  # revert back to prev color if user cancel
+        self.colorDialog.setCurrentColor(self.color)
+        self.palette.setColor(QtGui.QPalette.Button, self.color)
+        self.setPalette(self.palette)
+
+    @QtCore.Slot()
+    def handleColorChanged(self, color):
+        if not self.section or not self.option or not color.isValid():
+            return
+        """Change the color option when the value of the color change."""
+        self.config.set(self.section, self.option, color.name())
+
+
+class logOutputCheckBox(QtGui.QCheckBox):
+    def __init__(self, parent, config, option, text, name=None):
+        """Get the config dictionary <config> from the parent class
+        because handleStateChanged need to modify it.
+        Also define the config section and option used by the class.
+        """
+        QtGui.QCheckBox.__init__(self, parent)
+        self.config = config
+        self.section = 'LogOutputs'
+        self.option = option
+        self.initCheckBox(text, name)
+        ## SIGNALS CONNECTIONS ##
+        self.stateChanged.connect(self.handleStateChanged)
+
+    def initCheckBox(self, text, name):
+        """Set object properties then set the value retrieved from the
+        config dictionary.
+        """
+        if name:
+            self.setObjectName(name)
+        self.setText(text)
+        value = self.config.getboolean(self.section, self.option)
+        self.setCheckState(QtCore.Qt.Checked if value else QtCore.Qt.Unchecked)
+
+    @QtCore.Slot()
+    def handleStateChanged(self):
+        if not self.section or not self.option:
+            return
+        """Set the option value according to the item checkState"""
+        v = 'True' if self.checkState() == QtCore.Qt.Checked else 'False'
+        self.config.set(self.section, self.option, v)
+
+
+class ClockSpeedSpinBox(QtGui.QDoubleSpinBox):
+    def __init__(self, parent, config):
+        """Get the config dictionary <config> from the parent class
+        because handleSpeedValueChanged need to modify it.
+        Also define the config section used by the class.
+        """
+        QtGui.QDoubleSpinBox.__init__(self, parent)
+        self.config = config
+        self.section = 'Clock'
+        self.initDoubleSpinBox()
+        ## SIGNALS CONNECTIONS ##
+        self.valueChanged.connect(self.handleSpeedValueChanged)
+
+    def initDoubleSpinBox(self):
+        """Set object properties then set the value retrieved from the
+        config dictionary.
+        """
+        self.setObjectName("clockDoubleSpinBox")
+        self.setRange(0, 99.99)
+        self.setSingleStep(0.5)
+        self.setSuffix(' s.')
+        self.setValue(self.config.getfloat('Clock', 'speed'))
+
+    @QtCore.Slot()
+    def handleSpeedValueChanged(self):
+        if not self.section:
+            return
+        """Change the speed option when the value of the spin box change."""
+        self.config.set(self.section, 'speed', str(self.value()))
 
 
 class TreeWidgetItem(QtGui.QTreeWidgetItem):
@@ -26,7 +153,7 @@ class TreeWidgetItem(QtGui.QTreeWidgetItem):
         if role == QtCore.Qt.CheckStateRole and state != self.checkState(col):
             treewidget = self.treeWidget()
             if treewidget is not None:
-                treewidget.treeItemChecked.emit(self, col)
+                treewidget.treeItemStateChanged.emit(self, col)
 
     def setCheckStateFromOption(self, opVal):
         """Set the checkState of the item according to the boolean <opVal>"""
@@ -39,14 +166,14 @@ class TreeWidgetItem(QtGui.QTreeWidgetItem):
 class logRecordsTree(QtGui.QTreeWidget):
     """We need to subclass QTreeWidget to define a new custom signal
     in the class. This signal is emitted by the TreeWidgetItem and
-    connecting to handleItemChecked() which process the signal.
+    connecting to handleItemStateChanged() which process the signal.
     """
-    treeItemChecked = QtCore.Signal(object, int)
+    treeItemStateChanged = QtCore.Signal(object, int)
 
     def __init__(self, parent, configFile, config):
         """Get the config file <configFile> and the config dictionary
-        <config> from the parent class becaus createLogRecordsTreeItem
-        need to access it and handleItemChecked need to modify it.
+        <config> from the parent class because createLogRecordsTreeItem
+        need to access it and handleItemStateChanged need to modify it.
         Also define the config section used by the class.
         """
         QtGui.QTreeWidget.__init__(self, parent)
@@ -54,7 +181,8 @@ class logRecordsTree(QtGui.QTreeWidget):
         self.configFile = configFile
         self.section = 'GUILogRecords'
         self.initTree()
-        self.treeItemChecked.connect(self.handleItemChecked)
+        ## SIGNALS CONNECTIONS ##
+        self.treeItemStateChanged.connect(self.handleItemStateChanged)
 
     def initTree(self):
         # -+++++++----------------- tree properties -----------------+++++++- #
@@ -126,7 +254,6 @@ class logRecordsTree(QtGui.QTreeWidget):
         """
         item = TreeWidgetItem(parent)
         item.setText(0, text)
-        item.section = self.section
         item.option = option
         if option:
             try:
@@ -137,16 +264,16 @@ class logRecordsTree(QtGui.QTreeWidget):
         return item
 
     @QtCore.Slot()
-    def handleItemChecked(self, item, column):
-        """This slot is triggered by the emission of the treeItemChecked
+    def handleItemStateChanged(self, item, column):
+        """This slot is triggered by the emission of the treeItemStateChanged
         signal. The slot update the value of the config dictionary option
         if the item is managed by an option.
         """
-        if not item.section or not item.option:
+        if not self.section or not item.option:
             return
         # it would be easier to toggle value but it's impossible with strings
         v = 'True' if item.checkState(column) == QtCore.Qt.Checked else 'False'
-        self.config.set(item.section, item.option, v)
+        self.config.set(self.section, item.option, v)
 
 
 class SettingsWidget(QtGui.QWidget):
@@ -160,6 +287,8 @@ class SettingsWidget(QtGui.QWidget):
         super(SettingsWidget, self).__init__()
         self.importConfigFromFile(configFile)
         self.initUI()
+        ## SIGNALS CONNECTIONS ##
+        self.closeButtonBox.clicked.connect(self.saveAndClose)
 
     def importConfigFromFile(self, configFile):
         """Create a config dictionary from <configFile>."""
@@ -181,13 +310,11 @@ class SettingsWidget(QtGui.QWidget):
         self.clockGroupBox.setTitle("Clock")
         self.clockGrid = QtGui.QGridLayout(self.clockGroupBox)
         self.clockGrid.setObjectName("clockGrid")
-        self.doubleSpinBox = QtGui.QDoubleSpinBox(self.clockGroupBox)
-        self.doubleSpinBox.setObjectName("doubleSpinBox")
-        self.clockGrid.addWidget(self.doubleSpinBox, 0, 1, 1, 1)
-        self.secLabel = QtGui.QLabel(self.clockGroupBox)
-        self.secLabel.setObjectName("secLabel")
-        self.secLabel.setText("seconds")
-        self.clockGrid.addWidget(self.secLabel, 0, 2, 1, 1)
+        ######################### CLOCK SPINBOX OBJECT ########################
+        self.clockDoubleSpinBox = ClockSpeedSpinBox(
+            self.clockGroupBox, self.config)
+        #######################################################################
+        self.clockGrid.addWidget(self.clockDoubleSpinBox, 0, 1, 1, 1)
         self.clockLabel = QtGui.QLabel(self.clockGroupBox)
         self.clockLabel.setObjectName("label")
         self.clockLabel.setText("Dafault clock speed (0 = clock stoped): ")
@@ -206,17 +333,20 @@ class SettingsWidget(QtGui.QWidget):
         self.logOutputsGroupBox.setTitle("Log outputs")
         self.logOutputsGrid = QtGui.QGridLayout(self.logOutputsGroupBox)
         self.logOutputsGrid.setObjectName("logOutputsGrid")
-        self.GUICheckBox = QtGui.QCheckBox(self.logOutputsGroupBox)
-        self.GUICheckBox.setObjectName("GUICheckBox")
-        self.GUICheckBox.setText("GUI")
+        ##################### LOG OUTPUT CHECK BOX OBJECT #####################
+        self.GUICheckBox = logOutputCheckBox(
+            self.logOutputsGroupBox, self.config, 'gui', 'GUI')
+        #######################################################################
         self.logOutputsGrid.addWidget(self.GUICheckBox, 0, 0, 1, 1)
-        self.stdoutCheckBox = QtGui.QCheckBox(self.logOutputsGroupBox)
-        self.stdoutCheckBox.setObjectName("stdoutCheckBox")
-        self.stdoutCheckBox.setText("stdout")
+        ##################### LOG OUTPUT CHECK BOX OBJECT #####################
+        self.stdoutCheckBox = logOutputCheckBox(
+            self.logOutputsGroupBox, self.config, 'stdout', 'stdout')
+        #######################################################################
         self.logOutputsGrid.addWidget(self.stdoutCheckBox, 1, 0, 1, 1)
-        self.fileCheckBox = QtGui.QCheckBox(self.logOutputsGroupBox)
-        self.fileCheckBox.setObjectName("fileCheckBox")
-        self.fileCheckBox.setText("File")
+        ##################### LOG OUTPUT CHECK BOX OBJECT #####################
+        self.fileCheckBox = logOutputCheckBox(
+            self.logOutputsGroupBox, self.config, 'file', 'File')
+        #######################################################################
         self.logOutputsGrid.addWidget(self.fileCheckBox, 2, 0, 1, 1)
         self.logGrid.addWidget(self.logOutputsGroupBox, 1, 0, 1, 1)
         self.settingsGrid.addWidget(self.logGroupBox, 0, 0, 1, 1)
@@ -230,8 +360,10 @@ class SettingsWidget(QtGui.QWidget):
         self.logRecordsLabel.setObjectName("logRecordsLabel")
         self.logRecordsLabel.setText("Print a log message upon:")
         self.logRecordsGrid.addWidget(self.logRecordsLabel, 0, 0, 1, 1)
+        ####################### LOG RECORDS TREE OBJECT #######################
         self.logRecordsTree = logRecordsTree(
             self.logRecordsGroupBox, self.configFile, self.config)
+        #######################################################################
         self.logRecordsGrid.addWidget(self.logRecordsTree, 1, 0, 1, 1)
         self.logGrid.addWidget(self.logRecordsGroupBox, 1, 1, 1, 1)
         # -+++++++--------------- the appearance group --------------+++++++- #
@@ -245,16 +377,10 @@ class SettingsWidget(QtGui.QWidget):
         self.circBgColorLabel.setText("Circuit background color:")
         self.appearanceGrid.addWidget(
             self.circBgColorLabel, 0, 0, 1, 1, QtCore.Qt.AlignRight)
-        self.colorButton0 = QtGui.QToolButton(self.appearanceGroupBox)
-        self.colorButton0.setCheckable(False)
-        self.colorButton0.setChecked(False)
-        self.colorButton0.setAutoRaise(False)
-        self.colorButton0.setArrowType(QtCore.Qt.NoArrow)
-        self.colorButton0.setObjectName("colorButton0")
-        self.colorButton0.setToolTip(
-            "<html><head/><body><p>Show a dialog for selecting a "
-            "color.</p></body></html>")
-        self.colorButton0.setText("choose...")
+        ######################## COLOR SELECTOR OBJECT ########################
+        self.colorButton0 = ColorSelectorButton(
+            self.appearanceGroupBox, self.config, 'circ_bg_color', 'choose...')
+        #######################################################################
         self.appearanceGrid.addWidget(self.colorButton0, 0, 1, 1, 1)
         leftSpace = QtGui.QSpacerItem(
             20, 40, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
@@ -264,9 +390,10 @@ class SettingsWidget(QtGui.QWidget):
         self.line.setFrameShadow(QtGui.QFrame.Sunken)
         self.line.setObjectName("line")
         self.appearanceGrid.addWidget(self.line, 0, 3, 1, 1)
-        self.colorButton1 = QtGui.QToolButton(self.appearanceGroupBox)
-        self.colorButton1.setObjectName("colorButton1")
-        self.colorButton1.setText("choose...")
+        ######################## COLOR SELECTOR OBJECT ########################
+        self.colorButton1 = ColorSelectorButton(
+            self.appearanceGroupBox, self.config, 'log_bg_color', 'choose...')
+        #######################################################################
         self.appearanceGrid.addWidget(self.colorButton1, 0, 6, 1, 1)
         self.GUIBgColorLabel = QtGui.QLabel(self.appearanceGroupBox)
         self.GUIBgColorLabel.setObjectName("GUIBgColorLabel")
@@ -280,7 +407,6 @@ class SettingsWidget(QtGui.QWidget):
         self.closeButtonBox = QtGui.QDialogButtonBox(self)
         self.closeButtonBox.setStandardButtons(QtGui.QDialogButtonBox.Close)
         self.closeButtonBox.setObjectName("closeButtonBox")
-        self.closeButtonBox.clicked.connect(self.saveAndClose)
         self.settingsGrid.addWidget(self.closeButtonBox, 3, 0, 1, 1)
 
     def save_config_file(self, mode='w+'):
