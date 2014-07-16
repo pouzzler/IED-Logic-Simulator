@@ -127,13 +127,12 @@ class Circuit:
     """Represents a logic circuit."""
 
     namesDict = {}
-    addPlugVerbose = True        # Adding an I/O
-    addCircuitVerbose = True     # Adding a circuit
-    removePlugVerbose = True     # Removing an I/O
-    removeCircuitVerbose = True  # Removing a circuit
-    detailedRemove = True        # Detailed remove
+    addPlugVerbose = True         # Adding an I/O
+    addCircuitVerbose = True      # Adding a circuit
+    removePlugVerbose = True      # Removing an I/O
+    removeCircuitVerbose = True   # Removing a circuit
+    detailedRemoveVerbose = True  # Detailed remove
     
-
     def __init__(self, name):
         if name is None:
             name = self.generate_name()
@@ -197,6 +196,7 @@ class Circuit:
     def remove_circuit(self, circuit):
         """Remove a circuit from the circuitList of the circuit."""
         self.circuitList.remove(circuit)
+        Circuit.removePlugVerbose
         if Circuit.removeCircuitVerbose:
             log.info(
                 "circuit %s '%s' removed from %s"
@@ -214,7 +214,7 @@ class Circuit:
             for plug in component.connectedTo:  # remove references of the plug
                 if component in plug.connections:
                     plug.connections.remove(component)
-                    if Circuit.detailedRemove:
+                    if Circuit.detailedRemoveVerbose:
                         log.debug(
                             "plug %s has been removed from %s connections"
                             % (component.name, self.name,))

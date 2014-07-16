@@ -1,11 +1,14 @@
 #!/usr/bin/env python3
 # coding=utf-8
 
+
 from PySide import QtGui, QtCore
 from .toolbox import ToolBox
 from .tooloptions import ToolOptions
 from .graphicitem import CircuitItem, IOItem
 from engine.simulator import Circuit
+from .settings import configFile
+
 
 mainCircuit = Circuit("Main_Circuit")
 
@@ -21,13 +24,13 @@ class MainView(QtGui.QGraphicsView):
 
     def __init__(self, parent):
         super(MainView, self).__init__(parent)
+        
         # Accept dragged items from the toolbox to the main view.
         self.setAcceptDrops(True)
         # Allow mouseover effects (self.mouseMoveEvent)
         self.setMouseTracking(True)
-        scene = QtGui.QGraphicsScene(parent)
-        scene.setBackgroundBrush(QtGui.QColor(150, 150, 150))
-        self.setScene(scene)
+        self.graphScene = QtGui.QGraphicsScene(parent)
+        self.setScene(self.graphScene)
 
     def setName(self, item):
         # ret = tuple string, bool (false when the dialog is dismissed)

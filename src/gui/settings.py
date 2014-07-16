@@ -13,16 +13,18 @@ The config file location is defined in mainwindow.py and passed
 as parameter to SettingsWidget.
 """
 
-# TODO: subclass each settings group
-# TODO: import log outputs, clock and appearance settings from config file
 # TODO: add error message before return in slot functions
 # TODO: move handleItemStateChanged in TreeWidgetItem
 # TODO: in ColorSelectorButton, add a pix of the color instead of changing
 #       button background color.
+# TODO: send settings values to the GUI
 
 from PySide import QtCore, QtGui
 import sys
 import configparser
+
+
+configFile = "../settings/settings.cfg"
 
 
 class ColorSelectorButton(QtGui.QPushButton):
@@ -295,6 +297,7 @@ class SettingsWidget(QtGui.QWidget):
         self.configFile = configFile
         self.config = configparser.ConfigParser()
         self.config.read(configFile)
+        self.origConfig = self.config
 
     def initUI(self):
         # -+++++++--------------- the settings window ---------------+++++++- #
@@ -413,8 +416,10 @@ class SettingsWidget(QtGui.QWidget):
         """Write the in-memory config structure <config> in the config
         file <configFile>. mode 'w+' for updating but not superseding.
         """
-        with open(self.configFile, mode) as configfile:
-            self.config.write(configfile)
+        if True:
+            with open(self.configFile, mode) as configfile:
+                self.config.write(configfile)
+            #~ configChanged.emit()
 
     @QtCore.Slot()
     def saveAndClose(self):
