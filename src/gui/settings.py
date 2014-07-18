@@ -124,7 +124,6 @@ class ClockSpeedSpinBox(QtGui.QDoubleSpinBox):
         """Set object properties then set the value retrieved from the
         config dictionary.
         """
-        self.setObjectName("clockDoubleSpinBox")
         self.setRange(0, 99.99)
         self.setSingleStep(0.5)
         self.setSuffix(' s.')
@@ -186,7 +185,6 @@ class logRecordsTree(QtGui.QTreeWidget):
         self.setTabKeyNavigation(False)
         self.setAlternatingRowColors(False)
         self.setAnimated(True)
-        self.setObjectName("logRecordsTree")
         # -+++++++------------------- tree headers ------------------+++++++- #
         self.header().setVisible(False)
         self.header().setDefaultSectionSize(100)
@@ -297,41 +295,32 @@ class SettingsWidget(QtGui.QWidget):
 
     def initUI(self):
         # -+++++++--------------- the settings window ---------------+++++++- #
-        self.setObjectName("Settings window")
         self.setWindowTitle("Settings")
         self.resize(562, 466)
         self.settingsGrid = QtGui.QGridLayout(self)
         QtCore.QMetaObject.connectSlotsByName(self)
-        self.settingsGrid.setObjectName("gridLayout")
         # -+++++++----------------- the clock group -----------------+++++++- #
         self.clockGroupBox = QtGui.QGroupBox(self)
-        self.clockGroupBox.setObjectName("groupBox")
         self.clockGroupBox.setTitle("Clock")
         self.clockGrid = QtGui.QGridLayout(self.clockGroupBox)
-        self.clockGrid.setObjectName("clockGrid")
         ######################### CLOCK SPINBOX OBJECT ########################
         self.clockDoubleSpinBox = ClockSpeedSpinBox(
             self.clockGroupBox, self.config)
         #######################################################################
         self.clockGrid.addWidget(self.clockDoubleSpinBox, 0, 1, 1, 1)
         self.clockLabel = QtGui.QLabel(self.clockGroupBox)
-        self.clockLabel.setObjectName("label")
-        self.clockLabel.setText("Dafault clock speed (0 = clock stoped): ")
+        self.clockLabel.setText("Default clock speed (0 = clock stopped): ")
         self.clockGrid.addWidget(self.clockLabel, 0, 0, 1, 1)
         self.settingsGrid.addWidget(self.clockGroupBox, 1, 0, 1, 1)
         # -+++++++------------------ the log group ------------------+++++++- #
         self.logGroupBox = QtGui.QGroupBox(self)
-        self.logGroupBox.setObjectName("logGroupBox")
         self.logGroupBox.setTitle("Log")
         self.logGrid = QtGui.QGridLayout(self.logGroupBox)
-        self.logGrid.setObjectName("logGrid")
         # -+++++++-------------- the log outputs group --------------+++++++- #
         self.logOutputsGroupBox = QtGui.QGroupBox(self.logGroupBox)
         self.logOutputsGroupBox.setCheckable(False)
-        self.logOutputsGroupBox.setObjectName("logOutputsGroupBox")
         self.logOutputsGroupBox.setTitle("Log outputs")
         self.logOutputsGrid = QtGui.QGridLayout(self.logOutputsGroupBox)
-        self.logOutputsGrid.setObjectName("logOutputsGrid")
         ##################### LOG OUTPUT CHECK BOX OBJECT #####################
         self.GUICheckBox = logOutputCheckBox(
             self.logOutputsGroupBox, self.config, 'gui', 'GUI')
@@ -351,12 +340,9 @@ class SettingsWidget(QtGui.QWidget):
         self.settingsGrid.addWidget(self.logGroupBox, 0, 0, 1, 1)
         # -+++++++---------------- the GUI log group ----------------+++++++- #
         self.logRecordsGroupBox = QtGui.QGroupBox(self.logGroupBox)
-        self.logRecordsGroupBox.setObjectName("logRecordsGroupBox")
         self.logRecordsGroupBox.setTitle("GUI Log records")
         self.logRecordsGrid = QtGui.QGridLayout(self.logRecordsGroupBox)
-        self.logRecordsGrid.setObjectName("logRecordsGrid")
         self.logRecordsLabel = QtGui.QLabel(self.logRecordsGroupBox)
-        self.logRecordsLabel.setObjectName("logRecordsLabel")
         self.logRecordsLabel.setText("Print a log message upon:")
         self.logRecordsGrid.addWidget(self.logRecordsLabel, 0, 0, 1, 1)
         ####################### LOG RECORDS TREE OBJECT #######################
@@ -367,12 +353,9 @@ class SettingsWidget(QtGui.QWidget):
         self.logGrid.addWidget(self.logRecordsGroupBox, 1, 1, 1, 1)
         # -+++++++--------------- the appearance group --------------+++++++- #
         self.appearanceGroupBox = QtGui.QGroupBox(self)
-        self.appearanceGroupBox.setObjectName("appearanceGroupBox")
         self.appearanceGroupBox.setTitle("Appearance")
         self.appearanceGrid = QtGui.QGridLayout(self.appearanceGroupBox)
-        self.appearanceGrid.setObjectName("appearanceGrid")
         self.circBgColorLabel = QtGui.QLabel(self.appearanceGroupBox)
-        self.circBgColorLabel.setObjectName("circBgColorLabel")
         self.circBgColorLabel.setText("Circuit background color:")
         self.appearanceGrid.addWidget(
             self.circBgColorLabel, 0, 0, 1, 1, QtCore.Qt.AlignRight)
@@ -387,7 +370,6 @@ class SettingsWidget(QtGui.QWidget):
         self.line = QtGui.QFrame(self.appearanceGroupBox)
         self.line.setFrameShape(QtGui.QFrame.VLine)
         self.line.setFrameShadow(QtGui.QFrame.Sunken)
-        self.line.setObjectName("line")
         self.appearanceGrid.addWidget(self.line, 0, 3, 1, 1)
         ######################## COLOR SELECTOR OBJECT ########################
         self.colorButton1 = ColorSelectorButton(
@@ -395,7 +377,6 @@ class SettingsWidget(QtGui.QWidget):
         #######################################################################
         self.appearanceGrid.addWidget(self.colorButton1, 0, 6, 1, 1)
         self.GUIBgColorLabel = QtGui.QLabel(self.appearanceGroupBox)
-        self.GUIBgColorLabel.setObjectName("GUIBgColorLabel")
         self.GUIBgColorLabel.setText("GUI log background color:")
         self.appearanceGrid.addWidget(self.GUIBgColorLabel, 0, 5, 1, 1)
         rightSpace = QtGui.QSpacerItem(
@@ -405,7 +386,6 @@ class SettingsWidget(QtGui.QWidget):
         # -+++++++---------------- the Close button -----------------+++++++- #
         self.closeButtonBox = QtGui.QDialogButtonBox(self)
         self.closeButtonBox.setStandardButtons(QtGui.QDialogButtonBox.Close)
-        self.closeButtonBox.setObjectName("closeButtonBox")
         self.settingsGrid.addWidget(self.closeButtonBox, 3, 0, 1, 1)
 
     def saveConfigFile(self, mode='w+'):
