@@ -10,7 +10,6 @@ https://bugs.launchpad.net/ubuntu/+source/qt4-x11/+bug/805303 .
 import sys
 from PySide.QtGui import QApplication
 from gui.mainwindow import MainWindow
-from gui.settings import configFile
 
 
 # La boucle principale du programme

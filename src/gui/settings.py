@@ -14,10 +14,8 @@ as parameter to SettingsWidget.
 """
 
 # TODO: add error message before return in slot functions
-# TODO: move handleItemStateChanged in TreeWidgetItem
 # TODO: in ColorSelectorButton, add a pix of the color instead of changing
 #       button background color.
-# TODO: send settings values to the GUI
 
 from PySide import QtCore, QtGui
 import sys
@@ -28,7 +26,7 @@ configFile = "../settings/settings.cfg"
 
 
 class ColorSelectorButton(QtGui.QPushButton):
-    def __init__(self, parent, config, option, text, name=None):
+    def __init__(self, parent, config, option, text=None):
         """Get the config dictionary <config> from the parent class
         because handleStateChanged need to modify it.
         Also define the config section and option used by the class
@@ -42,17 +40,15 @@ class ColorSelectorButton(QtGui.QPushButton):
         self.color = QtGui.QColor(0, 0, 0)
         self.palette = QtGui.QPalette()
         self.colorDialog = QtGui.QColorDialog()
-        self.initToolButton(text, name)
+        self.initToolButton(text)
         ## SIGNALS CONNECTIONS ##
         self.clicked.connect(self.choose_color)
         self.colorDialog.currentColorChanged.connect(self.handleColorChanged)
 
-    def initToolButton(self, text, name):
+    def initToolButton(self, text):
         """Set object properties and define the colorDialog and palette
         then set the value retrieved from the config dictionary.
         """
-        if name:
-            self.setObjectName(name)
         self.setText(text)
         self.color.setNamedColor(self.config.get(self.section, self.option))
         self.colorDialog.setCurrentColor(self.color)
@@ -81,7 +77,7 @@ class ColorSelectorButton(QtGui.QPushButton):
 
 
 class logOutputCheckBox(QtGui.QCheckBox):
-    def __init__(self, parent, config, option, text, name=None):
+    def __init__(self, parent, config, option, text=None):
         """Get the config dictionary <config> from the parent class
         because handleStateChanged need to modify it.
         Also define the config section and option used by the class.
@@ -90,16 +86,14 @@ class logOutputCheckBox(QtGui.QCheckBox):
         self.config = config
         self.section = 'LogOutputs'
         self.option = option
-        self.initCheckBox(text, name)
+        self.initCheckBox(text)
         ## SIGNALS CONNECTIONS ##
         self.stateChanged.connect(self.handleStateChanged)
 
-    def initCheckBox(self, text, name):
+    def initCheckBox(self, text):
         """Set object properties then set the value retrieved from the
         config dictionary.
         """
-        if name:
-            self.setObjectName(name)
         self.setText(text)
         value = self.config.getboolean(self.section, self.option)
         self.setCheckState(QtCore.Qt.Checked if value else QtCore.Qt.Unchecked)
@@ -284,7 +278,9 @@ class SettingsWidget(QtGui.QWidget):
     * log records and outputs
     * some GUI colors values
     """
-    def __init__(self, configFile):
+    configSaved = QtCore.Signal()
+    
+    def __init__(self, configFile=configFile):
         """Init the parent class, the config dictionary and the window."""
         super(SettingsWidget, self).__init__()
         self.importConfigFromFile(configFile)
@@ -412,19 +408,18 @@ class SettingsWidget(QtGui.QWidget):
         self.closeButtonBox.setObjectName("closeButtonBox")
         self.settingsGrid.addWidget(self.closeButtonBox, 3, 0, 1, 1)
 
-    def save_config_file(self, mode='w+'):
+    def saveConfigFile(self, mode='w+'):
         """Write the in-memory config structure <config> in the config
         file <configFile>. mode 'w+' for updating but not superseding.
         """
-        if True:
-            with open(self.configFile, mode) as configfile:
-                self.config.write(configfile)
-            #~ configChanged.emit()
+        with open(self.configFile, mode) as configfile:
+            self.config.write(configfile)
 
     @QtCore.Slot()
     def saveAndClose(self):
         """Saves the config file and closes the widget."""
-        self.save_config_file()
+        self.saveConfigFile()
+        self.configSaved.emit()
         self.close()
 
     @QtCore.Slot()
