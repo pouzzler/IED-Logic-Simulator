@@ -22,7 +22,7 @@ import sys
 import configparser
 
 
-configFile = "../settings/settings.cfg"
+configFile = "settings.cfg"
 
 
 class ColorSelectorButton(QtGui.QPushButton):

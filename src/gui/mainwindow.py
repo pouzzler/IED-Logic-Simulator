@@ -13,6 +13,7 @@ from PySide import QtGui, QtCore
 from .mainview import MainView
 from .toolbox import ToolBox
 from .tooloptions import ToolOptions
+from .docu import HelpDockWidget
 from .guilog import LoggerTextEdit
 from .settings import SettingsWidget, configFile
 
@@ -97,7 +98,7 @@ class MainWindow(QtGui.QMainWindow):
         windowsMenu.addAction(self.logAct)
         #         -+++++++---------- THE HELP MENU ----------+++++++-         #
         helpMenu = QtGui.QMenu('Help')
-        helpMenu.addAction('Documentation')
+        helpMenu.addAction('Documentation', self.showDocumentation)
         helpMenu.addAction('About', self.about)
         #                 -+--------- THE MENU BAR --------+-                 #
         self.menuBar().addMenu(fileMenu)
@@ -167,3 +168,8 @@ class MainWindow(QtGui.QMainWindow):
         msgBox = QtGui.QMessageBox()
         msgBox.setText(u'v0.1\nPar Mathieu Fourcroy & Sébastien Magnien.')
         msgBox.exec_()
+            
+    def showDocumentation(self):
+        """Shows the help dock widget."""
+        self.addDockWidget(
+            QtCore.Qt.RightDockWidgetArea, HelpDockWidget('Help'))
