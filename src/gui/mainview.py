@@ -24,7 +24,7 @@ class MainView(QtGui.QGraphicsView):
 
     def __init__(self, parent):
         super(MainView, self).__init__(parent)
-        
+
         # Accept dragged items from the toolbox to the main view.
         self.setAcceptDrops(True)
         # Allow mouseover effects (self.mouseMoveEvent)
@@ -127,7 +127,7 @@ class MainView(QtGui.QGraphicsView):
             #~ group.setTransformOriginPoint(x, y)
             #~ group.setRotation(group.rotation() - 90)
             #~ group.setTransform(
-                #~ QtGui.QTransform().translate(x, y).rotate(-90).translate(y, x))
+            #~ QtGui.QTransform().translate(x, y).rotate(-90).translate(y, x))
             #~ scene.destroyItemGroup(group)
             for item in selection:
                 x = item.boundingRect().width() / 2

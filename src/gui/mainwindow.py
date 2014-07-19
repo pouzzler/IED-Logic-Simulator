@@ -1,11 +1,6 @@
 #!/usr/bin/env python3
 # coding=utf-8
 
-"""Ne pas oublié d'ajouter style=GTK+ dans le paragraphe [Qt] de
-~/.config/Trolltech.conf pour utiliser le style GTK+.
-Puis installer le paquet gtk2-engines-pixbuf.
-"""
-
 import time
 import configparser
 from PySide import QtGui, QtCore
@@ -26,27 +21,27 @@ class MainWindow(QtGui.QMainWindow):
 
     def __init__(self):
         super(MainWindow, self).__init__()
-        
+
         self.setWindowTitle("IED Logic Simulator")
         self.centerAndResize()
         self.setFocusPolicy(QtCore.Qt.StrongFocus)
-        
+
         self.view = MainView(self)
-        self.setCentralWidget(self.view) 
-        
+        self.setCentralWidget(self.view)
+
         self.toolbox = ToolBox()
-        self.boxDock = QtGui.QDockWidget('Tool box')  
+        self.boxDock = QtGui.QDockWidget('Tool box')
         self.boxDock.setWidget(self.toolbox)
         self.addDockWidget(QtCore.Qt.LeftDockWidgetArea, self.boxDock)
-        
+
         self.tooloptions = ToolOptions()
-        self.optionsDock = QtGui.QDockWidget('Tool options')  
+        self.optionsDock = QtGui.QDockWidget('Tool options')
         self.optionsDock.setWidget(self.tooloptions)
         self.optionsDock.setMaximumSize(QtCore.QSize(524287, 161))
         self.addDockWidget(QtCore.Qt.LeftDockWidgetArea, self.optionsDock)
-        
+
         self.logWindow = LoggerTextEdit()
-        
+
         handler = logging.StreamHandler(self.logWindow)
         handler.setLevel(logging.DEBUG)
         log.addHandler(handler)
@@ -55,54 +50,55 @@ class MainWindow(QtGui.QMainWindow):
         self.logDock = QtGui.QDockWidget('Logs')
         self.logDock.setWidget(self.logWindow)
         self.addDockWidget(QtCore.Qt.BottomDockWidgetArea, self.logDock)
-        
+
         self.settings = SettingsWidget(configFile)
-        self.settings.setGeometry(100, 100, 600, 500) #TODO : il devrait décider sa géométrie tout seul
-        
+        # TODO : il devrait décider sa géométrie tout seul
+        self.settings.setGeometry(100, 100, 600, 500)
+
         fileMenu = QtGui.QMenu(u'File')
         fileMenu.addAction(u'Quit', self.close)
-        
+
         editMenu = QtGui.QMenu(u'Edit')
         self.settingAct = QtGui.QAction('&Settings...', self)
         self.settingAct.setStatusTip('Open the settings window.')
         self.settingAct.triggered.connect(self.settings.show)
         editMenu.addAction(self.settingAct)
-        
+
         self.toolBoxAct = self.boxDock.toggleViewAction()
         self.toolBoxAct.setShortcut("Ctrl+Shift+T")
         self.toolBoxAct.setStatusTip("Shows the tool box")
         self.toolBoxAct.setChecked(True)
-        
+
         self.toolOptionsAct = self.optionsDock.toggleViewAction()
         self.toolOptionsAct.setShortcut("Ctrl+Shift+O")
         self.toolOptionsAct.setStatusTip("Shows the item options")
         self.toolOptionsAct.setChecked(True)
-        
+
         self.logAct = self.logDock.toggleViewAction()
         self.logAct.setShortcut("Ctrl+Shift+L")
         self.logAct.setStatusTip("Shows the logs messages dock")
         self.logAct.setChecked(True)
-        
+
         windowsMenu = QtGui.QMenu('Windows')
         windowsMenu.addAction(self.toolBoxAct)
         windowsMenu.addAction(self.toolOptionsAct)
         windowsMenu.addAction(self.logAct)
-        
+
         helpMenu = QtGui.QMenu('Help')
         helpMenu.addAction('Documentation', self.showDocumentation)
         helpMenu.addAction('Test', self.Test)
         helpMenu.addAction('About', self.about)
-        
+
         self.menuBar().addMenu(fileMenu)
         self.menuBar().addMenu(editMenu)
         self.menuBar().addMenu(windowsMenu)
         self.menuBar().addMenu(helpMenu)
-        
+
         self.tooloptions.clicked.connect(self.setStatusMessage)
         # it could be possible to reload only the changed option
         # but I'm not sure that it would be simplier and faster
         self.settings.configSaved.connect(self.loadConfig)
-        
+
         self.loadConfig()
         self.show()
         self.Test()
@@ -110,9 +106,9 @@ class MainWindow(QtGui.QMainWindow):
     def loadConfig(self):
         config = configparser.ConfigParser()
         config.read(configFile)
-        
+
         # background color for the scene
-        circBgColor = QtGui.QColor()    #todo: circ???bgcolor, pourquoi pas sceneBgColor?
+        circBgColor = QtGui.QColor()
         circBgColor.setNamedColor(config.get('Appearance', 'circ_bg_color'))
         # background color for the log windget
         logBgColor = QtGui.QColor()
@@ -126,7 +122,7 @@ class MainWindow(QtGui.QMainWindow):
         addPlugVb = config.getboolean('GUILogRecords', 'adding_io')
         addCircuitVb = config.getboolean('GUILogRecords', 'adding_circ')
         removePlugVb = config.getboolean('GUILogRecords', 'removing_io')
-        removeCircuitVb = config.getboolean('GUILogRecords','removing_circ')
+        removeCircuitVb = config.getboolean('GUILogRecords', 'removing_circ')
         detailedRemoveVb = config.getboolean('GUILogRecords', 'detailed_rm')
 
         # apply config values
@@ -161,7 +157,7 @@ class MainWindow(QtGui.QMainWindow):
         msgBox = QtGui.QMessageBox()
         msgBox.setText(u'v0.1\nPar Mathieu Fourcroy & Sébastien Magnien.')
         msgBox.exec_()
-            
+
     def showDocumentation(self):
         """Shows the help dock widget."""
         self.addDockWidget(

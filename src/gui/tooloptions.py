@@ -14,7 +14,7 @@ class ToolOptions(QtGui.QWidget):
     def __init__(self):
         super(ToolOptions, self).__init__()
         self.initUI()
-    
+
     def initUI(self):
         # -+++++++-------------- the tooloptions widget -------------+++++++- #
         self.setObjectName("tooloptions")

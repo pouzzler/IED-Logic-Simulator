@@ -277,7 +277,7 @@ class SettingsWidget(QtGui.QWidget):
     * some GUI colors values
     """
     configSaved = QtCore.Signal()
-    
+
     def __init__(self, configFile=configFile):
         """Init the parent class, the config dictionary and the window."""
         super(SettingsWidget, self).__init__()
