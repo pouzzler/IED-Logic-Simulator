@@ -16,6 +16,8 @@ class Wire(QtGui.QGraphicsPathItem):
     
     def __init__(self, startIO, p1):
         super(Wire, self).__init__()
+        #~ self.setFlag(QtGui.QGraphicsItem.ItemIsMovable)
+        #~ self.setFlag(QtGui.QGraphicsItem.ItemIsSelectable)
         self.startIO = startIO
         self.points = [p1, p1]
         
@@ -218,7 +220,19 @@ class MainView(QtGui.QGraphicsView):
             return
         if self.isDrawing:
             self.isDrawing = False
+            
+            
+            item = self.itemAt(e.pos())
+            if item:
+                pos = item.mapFromScene(self.mapToScene(e.pos()))
+                if isinstance(item, CircuitItem) or isinstance(item, IOItem):
+                    ioatpos = item.IOAtPos(pos)
+                    if ioatpos:
+                        self.currentWire.startIO.connect(ioatpos)
+                        
             self.currentWire.addPoint(e.pos())
+            self.currentWire = None
+                        
         super(MainView, self).mouseReleaseEvent(e)
 
     def mouseMoveEvent(self, e):
@@ -227,16 +241,16 @@ class MainView(QtGui.QGraphicsView):
         """
         if self.isDrawing:
             self.currentWire.moveLastPoint(e.pos())
-        else:
-            item = self.itemAt(e.pos())
-            if item:
-                pos = item.mapFromScene(self.mapToScene(e.pos()))
-                if isinstance(item, CircuitItem) or isinstance(item, IOItem):
-                    ioatpos = item.IOAtPos(pos)
-                    if ioatpos:
-                        self.setCursor(QtCore.Qt.CursorShape.UpArrowCursor)
-                        return
-            self.setCursor(QtCore.Qt.CursorShape.ArrowCursor)
+
+        item = self.itemAt(e.pos())
+        if item:
+            pos = item.mapFromScene(self.mapToScene(e.pos()))
+            if isinstance(item, CircuitItem) or isinstance(item, IOItem):
+                ioatpos = item.IOAtPos(pos)
+                if ioatpos:
+                    self.setCursor(QtCore.Qt.CursorShape.UpArrowCursor)
+                    return
+        self.setCursor(QtCore.Qt.CursorShape.ArrowCursor)
         super(MainView, self).mouseMoveEvent(e)
 
     #~ def mousePressEvent(self, e):
