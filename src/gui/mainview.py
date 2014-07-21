@@ -14,10 +14,12 @@ mainCircuit = Circuit("Main_Circuit")
 
 class Wire(QtGui.QGraphicsPathItem):
     
+    RADIUS = 5
+    
     def __init__(self, startIO, p1):
         super(Wire, self).__init__()
-        #~ self.setFlag(QtGui.QGraphicsItem.ItemIsMovable)
-        #~ self.setFlag(QtGui.QGraphicsItem.ItemIsSelectable)
+        self.setFlag(QtGui.QGraphicsItem.ItemIsMovable)
+        self.setFlag(QtGui.QGraphicsItem.ItemIsSelectable)
         self.startIO = startIO
         self.points = [p1, p1]
         
@@ -27,12 +29,18 @@ class Wire(QtGui.QGraphicsPathItem):
         path.moveTo(self.points[0])
         for p in self.points[1:]:
             path.lineTo(p)
-        path.addEllipse(self.points[-1], 10, 10)
+        path.addEllipse(self.points[-1], self.RADIUS, self.RADIUS)
+        path.closeSubpath()
         self.setPath(path)
     
     def addPoint(self, point):
         self.points.append(point)
 
+    def handleAtPos(self, pos):
+        handlePath = QtGui.QPainterPath()
+        handlePath.addEllipse(self.points[-1], self.RADIUS, self.RADIUS)
+        return handlePath.contains(pos)
+        
 class MainView(QtGui.QGraphicsView):
     """A graphic view representing a circuit schematic, as created by
     the user. This view manages most user interaction, in particular:
@@ -199,14 +207,16 @@ class MainView(QtGui.QGraphicsView):
                 ioatpos = item.IOAtPos(pos)
                 if ioatpos:
                     self.isDrawing = True
-                    self.currentWire = Wire(ioatpos, e.pos())
+                    self.currentWire = Wire(ioatpos, self.mapToScene(e.pos()))
                     self.scene().addItem(self.currentWire)
                     # No super() processing, thus no dragging/selecting.
                     return
             elif isinstance(item, Wire):
-                self.currentWire = item
-                self.isDrawing = True
-        # Didn't click an I/O? We wanted to drag or select the circuit.
+                if item.handleAtPos(pos):
+                    self.currentWire = item
+                    self.isDrawing = True
+                    return
+        # Didn't click an item? We wanted to drag or select
         super(MainView, self).mousePressEvent(e)
 
     def mouseReleaseEvent(self, e):
@@ -250,6 +260,10 @@ class MainView(QtGui.QGraphicsView):
                 if ioatpos:
                     self.setCursor(QtCore.Qt.CursorShape.UpArrowCursor)
                     return
+            elif isinstance(item, Wire) and item.handleAtPos(pos):
+                self.setCursor(QtCore.Qt.CursorShape.UpArrowCursor)
+                return
+                
         self.setCursor(QtCore.Qt.CursorShape.ArrowCursor)
         super(MainView, self).mouseMoveEvent(e)
 
