@@ -201,6 +201,9 @@ class MainView(QtGui.QGraphicsView):
                     self.scene().addItem(self.currentWire)
                     # No super() processing, thus no dragging/selecting.
                     return
+            elif isinstance(item, Wire):
+                self.currentWire = item
+                self.isDrawing = True
         # Didn't click an I/O? We wanted to drag or select the circuit.
         super(MainView, self).mousePressEvent(e)
 
