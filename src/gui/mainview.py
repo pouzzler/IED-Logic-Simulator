@@ -25,6 +25,9 @@ class Wire(QtGui.QGraphicsPathItem):
         
     def moveLastPoint(self, endPoint):
         self.points[-1] = endPoint
+        self.redraw()
+        
+    def redraw(self):
         path = QtGui.QPainterPath()
         path.moveTo(self.points[0])
         for p in self.points[1:]:
@@ -38,8 +41,13 @@ class Wire(QtGui.QGraphicsPathItem):
 
     def handleAtPos(self, pos):
         handlePath = QtGui.QPainterPath()
-        handlePath.addEllipse(self.points[-1], self.RADIUS, self.RADIUS)
+        handlePath.addEllipse(self.points[-2], self.RADIUS, self.RADIUS)
         return handlePath.contains(pos)
+        
+    def removeLast(self):
+        self.points.pop()
+        self.redraw()
+        
         
 class MainView(QtGui.QGraphicsView):
     """A graphic view representing a circuit schematic, as created by
@@ -88,6 +96,13 @@ class MainView(QtGui.QGraphicsView):
             if ioatpos and ioatpos.owner == mainCircuit and ioatpos.isInput:
                 menu.addAction(str(item.value), lambda: self.toggleValue(item))
             menu.popup(e.globalPos())
+        elif isinstance(item, Wire):
+            pos = item.mapFromScene(self.mapToScene(e.pos()))
+            if item.handleAtPos(pos):
+                menu = QtGui.QMenu(self)
+                menu.addAction("Remove last", lambda: item.removeLast())
+                menu.popup(e.globalPos())
+            
 
     def dragEnterEvent(self, e):
         """Accept drag events coming from ToolBox."""
@@ -250,7 +265,7 @@ class MainView(QtGui.QGraphicsView):
         input or output pin.
         """
         if self.isDrawing:
-            self.currentWire.moveLastPoint(e.pos())
+            self.currentWire.moveLastPoint(self.currentWire.mapFromScene(self.mapToScene(e.pos())))
 
         item = self.itemAt(e.pos())
         if item:
