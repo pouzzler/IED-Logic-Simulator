@@ -77,11 +77,7 @@ class ColorSelectorButton(QtGui.QPushButton):
 
 
 class logOutputCheckBox(QtGui.QCheckBox):
-    def __init__(self, parent, config, option, text=None):
-        """Get the config dictionary <config> from the parent class
-        because handleStateChanged need to modify it.
-        Also define the config section and option used by the class.
-        """
+    def __init__(self, parent, config, option, text=None): 
         QtGui.QCheckBox.__init__(self, parent)
         self.config = config
         self.section = 'LogOutputs'
@@ -270,7 +266,7 @@ class logRecordsTree(QtGui.QTreeWidget):
         self.config.set(self.section, item.option, v)
 
 
-class SettingsWidget(QtGui.QWidget):
+class SettingsDialog(QtGui.QDialog):
     """A widget for cotroling some settings of the GUI and the engine such as:
     * clock speed
     * log records and outputs
@@ -280,7 +276,7 @@ class SettingsWidget(QtGui.QWidget):
 
     def __init__(self, configFile=configFile):
         """Init the parent class, the config dictionary and the window."""
-        super(SettingsWidget, self).__init__()
+        super(SettingsDialog, self).__init__()
         self.importConfigFromFile(configFile)
         self.initUI()
         ## SIGNALS CONNECTIONS ##

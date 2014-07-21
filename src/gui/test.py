@@ -75,11 +75,15 @@ class SettingsDialog(QtGui.QDialog):
         lbcButton.setObjectName('log_bg_color')
         appearanceLayout.addWidget(lbcButton)
 
+        close = QtGui.QPushButton('Close')
+        close.clicked.connect(self.close)
+        
         layout = QtGui.QGridLayout(self)
         layout.addWidget(logOutputs, 0, 0, 1, 1)
         layout.addWidget(logVerbosity, 0, 1, 1, 1)
         layout.addWidget(clock, 1, 0, 1, 2)
         layout.addWidget(appearance, 2, 0, 1, 2)
+        layout.addWidget(close, 3, 1, 1, 1)
         self.setLayout(layout)
 
     def settingsChanged(self, item):
@@ -93,24 +97,37 @@ class SettingsDialog(QtGui.QDialog):
             self.config.set('Clock', 'speed', str(sender.value()))
         elif isinstance(sender, QtGui.QTreeWidget):
             sender.blockSignals(True)
-            if item.childCount():
-                print("Node")
-            else:
+            for i in range(item.childCount()):
                 self.config.set(
                     'GUILogRecords',
-                    item.text(0),
-                    'True'
-                        if item.checkState(0) == QtCore.Qt.CheckState.Checked
-                        else 'False')
+                    item.child(i).text(0),
+                    str(bool(item.checkState(0))))
+                item.child(i).setCheckState(0, item.checkState(0))
+            self.config.set(
+                'GUILogRecords', item.text(0), str(bool(item.checkState(0))))
+            if isinstance(item.parent(), QtGui.QTreeWidgetItem):
+                siblings = [
+                    item.parent().child(i).checkState(0) 
+                    for i in range(item.parent().childCount())]
+                if all(siblings):
+                    item.parent().setCheckState(0, QtCore.Qt.CheckState.Checked)
+                elif any(siblings):
+                    item.parent().setCheckState(0, QtCore.Qt.CheckState.PartiallyChecked)
+                else:
+                    item.parent().setCheckState(0, QtCore.Qt.CheckState.Unchecked)
             sender.blockSignals(False)
         with open(self.configFile, 'w+') as configfile:
             self.config.write(configfile)
 
     def colorDialog(self):
-        print()
-        self.config.set(
-            'Appearance',
-            self.sender().objectName(),
-            QtGui.QColorDialog.getColor().name())
+        old = QtGui.QColor()
+        old.setNamedColor(self.config.get('Appearance', self.sender().objectName()))
+        new = QtGui.QColorDialog.getColor()
+        color = old if not new.isValid() else new
+        self.config.set('Appearance', self.sender().objectName(), color)
         with open(self.configFile, 'w+') as configfile:
             self.config.write(configfile)
+        palette = QtGui.QPalette()
+        palette.setColor(QtGui.QPalette.Button, color)
+        self.sender().setPalette(palette)
+        self.sender().setAutoFillBackground(True)

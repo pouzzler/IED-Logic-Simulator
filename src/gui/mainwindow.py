@@ -10,7 +10,7 @@ from .toolbox import ToolBox
 from .tooloptions import ToolOptions
 from .docu import HelpDockWidget
 from .guilog import LoggerTextEdit
-from .settings import SettingsWidget, configFile
+from .settings import SettingsDialog, configFile
 
 from engine.gates import *                   # basic logic gates
 from engine.simulator import log, formatter, Plug
@@ -51,7 +51,7 @@ class MainWindow(QtGui.QMainWindow):
         self.logDock.setWidget(self.logWindow)
         self.addDockWidget(QtCore.Qt.BottomDockWidgetArea, self.logDock)
 
-        self.settings = SettingsWidget(configFile)
+        self.settings = SettingsDialog(configFile)
         # TODO : il devrait décider sa géométrie tout seul
         self.settings.setGeometry(100, 100, 600, 500)
 
@@ -101,7 +101,6 @@ class MainWindow(QtGui.QMainWindow):
 
         self.loadConfig()
         self.show()
-        self.Test()
 
     def loadConfig(self):
         config = configparser.ConfigParser()
@@ -110,7 +109,7 @@ class MainWindow(QtGui.QMainWindow):
         # background color for the scene
         circBgColor = QtGui.QColor()
         circBgColor.setNamedColor(config.get('Appearance', 'circ_bg_color'))
-        # background color for the log windget
+        # background color for the log widget
         logBgColor = QtGui.QColor()
         logBgColor.setNamedColor(config.get('Appearance', 'log_bg_color'))
         logPalette = self.logWindow.pal
