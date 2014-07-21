@@ -52,8 +52,6 @@ class MainWindow(QtGui.QMainWindow):
         self.addDockWidget(QtCore.Qt.BottomDockWidgetArea, self.logDock)
 
         self.settings = SettingsDialog(configFile)
-        # TODO : il devrait décider sa géométrie tout seul
-        self.settings.setGeometry(100, 100, 600, 500)
 
         fileMenu = QtGui.QMenu(u'File')
         fileMenu.addAction(u'Quit', self.close)
