@@ -12,6 +12,24 @@ from .settings import configFile
 
 mainCircuit = Circuit("Main_Circuit")
 
+class Wire(QtGui.QGraphicsPathItem):
+    
+    def __init__(self, startIO, p1):
+        super(Wire, self).__init__()
+        self.startIO = startIO
+        self.points = [p1, p1]
+        
+    def moveLastPoint(self, endPoint):
+        self.points[-1] = endPoint
+        path = QtGui.QPainterPath()
+        path.moveTo(self.points[0])
+        for p in self.points[1:]:
+            path.lineTo(p)
+        path.addEllipse(self.points[-1], 10, 10)
+        self.setPath(path)
+    
+    def addPoint(self, point):
+        self.points.append(point)
 
 class MainView(QtGui.QGraphicsView):
     """A graphic view representing a circuit schematic, as created by
@@ -31,7 +49,8 @@ class MainView(QtGui.QGraphicsView):
         self.setMouseTracking(True)
         self.graphScene = QtGui.QGraphicsScene(parent)
         self.setScene(self.graphScene)
-
+        self.isDrawing = False
+        
     def setName(self, item):
         # ret = tuple string, bool (false when the dialog is dismissed)
         ret = QtGui.QInputDialog.getText(
@@ -171,15 +190,15 @@ class MainView(QtGui.QGraphicsView):
         if e.buttons() == QtCore.Qt.RightButton:
             super(MainView, self).mousePressEvent(e)
             return
-        self.connStart = None
-        self.connEnd = None
         item = self.itemAt(e.pos())
         if item:
             pos = item.mapFromScene(self.mapToScene(e.pos()))
             if isinstance(item, CircuitItem) or isinstance(item, IOItem):
                 ioatpos = item.IOAtPos(pos)
                 if ioatpos:
-                    self.connStart = ioatpos
+                    self.isDrawing = True
+                    self.currentWire = Wire(ioatpos, e.pos())
+                    self.scene().addItem(self.currentWire)
                     # No super() processing, thus no dragging/selecting.
                     return
         # Didn't click an I/O? We wanted to drag or select the circuit.
@@ -194,14 +213,69 @@ class MainView(QtGui.QGraphicsView):
         if e.buttons() == QtCore.Qt.RightButton:
             super(MainView, self).mousePressEvent(e)
             return
-        if self.connStart:
+        if self.isDrawing:
+            self.isDrawing = False
+            self.currentWire.addPoint(e.pos())
+        super(MainView, self).mouseReleaseEvent(e)
+
+    def mouseMoveEvent(self, e):
+        """Changes the cursor shape when the mouse hovers over an
+        input or output pin.
+        """
+        if self.isDrawing:
+            self.currentWire.moveLastPoint(e.pos())
+        else:
             item = self.itemAt(e.pos())
             if item:
                 pos = item.mapFromScene(self.mapToScene(e.pos()))
                 if isinstance(item, CircuitItem) or isinstance(item, IOItem):
                     ioatpos = item.IOAtPos(pos)
                     if ioatpos:
-                        self.connEnd = ioatpos
+                        self.setCursor(QtCore.Qt.CursorShape.UpArrowCursor)
+                        return
+            self.setCursor(QtCore.Qt.CursorShape.ArrowCursor)
+        super(MainView, self).mouseMoveEvent(e)
+
+    #~ def mousePressEvent(self, e):
+        #~ """When the mouse is pressed over a portion of a graphic item
+        #~ that represents an engine.simulator.Plug, that Plug is appended
+        #~ to self.connectionData.
+        #~ """
+        #~ # Reserve right-clicks for contextual menus.
+        #~ if e.buttons() == QtCore.Qt.RightButton:
+            #~ super(MainView, self).mousePressEvent(e)
+            #~ return
+        #~ self.connStart = None
+        #~ self.connEnd = None
+        #~ item = self.itemAt(e.pos())
+        #~ if item:
+            #~ pos = item.mapFromScene(self.mapToScene(e.pos()))
+            #~ if isinstance(item, CircuitItem) or isinstance(item, IOItem):
+                #~ ioatpos = item.IOAtPos(pos)
+                #~ if ioatpos:
+                    #~ self.connStart = ioatpos
+                    #~ # No super() processing, thus no dragging/selecting.
+                    #~ return
+        #~ # Didn't click an I/O? We wanted to drag or select the circuit.
+        #~ super(MainView, self).mousePressEvent(e)
+#~ 
+    #~ def mouseReleaseEvent(self, e):
+        #~ """When the mouse is released over an I/O, and was previously
+        #~ pressed over another I/O, if one is an input, and the other an
+        #~ output, a connection will be created between the two of them.
+        #~ """
+        #~ # Ignore right-clicks.
+        #~ if e.buttons() == QtCore.Qt.RightButton:
+            #~ super(MainView, self).mousePressEvent(e)
+            #~ return
+        #~ if self.connStart:
+            #~ item = self.itemAt(e.pos())
+            #~ if item:
+                #~ pos = item.mapFromScene(self.mapToScene(e.pos()))
+                #~ if isinstance(item, CircuitItem) or isinstance(item, IOItem):
+                    #~ ioatpos = item.IOAtPos(pos)
+                    #~ if ioatpos:
+                        #~ self.connEnd = ioatpos
         #keeping old drawing code here
                 #~ origin = item.mapToScene(
                     #~ item.I_LEFT, i * item.IO_HEIGHT + item.iOffset
@@ -234,58 +308,58 @@ class MainView(QtGui.QGraphicsView):
                 #~ item.circuit.inputList[i].connect(
                     #~ self.connectionData[1])
                 #~ return
-        if (
-                not self.connStart
-                or not self.connEnd
-                or self.connStart == self.connEnd):
-            super(MainView, self).mouseReleaseEvent(e)
-            return
-        elif (
-                self.connStart.owner == mainCircuit
-                and self.connEnd.owner == mainCircuit
-                and self.connStart.isInput == self.connEnd.isInput):
-            self.toast(
-                "Don't connect two global " +
-                ("inputs" if self.connStart.isInput else "outputs"))
-            return
-        elif (
-                self.connStart.owner != mainCircuit
-                and self.connEnd.owner != mainCircuit
-                and self.connStart.isInput == self.connEnd.isInput):
-            self.toast(
-                "Don't connect two circuit " +
-                ("inputs" if self.connStart.isInput else "outputs"))
-            return
-        elif ((
-                (self.connStart.owner != mainCircuit
-                    and self.connEnd.owner == mainCircuit)
-                or (self.connStart.owner == mainCircuit
-                    and self.connEnd.owner != mainCircuit))
-                and self.connStart.isInput != self.connEnd.isInput):
-            a = "local " if self.connStart.owner != mainCircuit else "global "
-            b = "input" if self.connStart.isInput else "output"
-            c = "global " if a == "local " else "local "
-            d = "output" if b == "inputs" else "input"
-            self.toast("Don't connect a " + a + b + " with a " + c + d)
-            return
-        else:
-            self.connStart.connect(self.connEnd)
-        super(MainView, self).mouseReleaseEvent(e)
+        #~ if (
+                #~ not self.connStart
+                #~ or not self.connEnd
+                #~ or self.connStart == self.connEnd):
+            #~ super(MainView, self).mouseReleaseEvent(e)
+            #~ return
+        #~ elif (
+                #~ self.connStart.owner == mainCircuit
+                #~ and self.connEnd.owner == mainCircuit
+                #~ and self.connStart.isInput == self.connEnd.isInput):
+            #~ self.toast(
+                #~ "Don't connect two global " +
+                #~ ("inputs" if self.connStart.isInput else "outputs"))
+            #~ return
+        #~ elif (
+                #~ self.connStart.owner != mainCircuit
+                #~ and self.connEnd.owner != mainCircuit
+                #~ and self.connStart.isInput == self.connEnd.isInput):
+            #~ self.toast(
+                #~ "Don't connect two circuit " +
+                #~ ("inputs" if self.connStart.isInput else "outputs"))
+            #~ return
+        #~ elif ((
+                #~ (self.connStart.owner != mainCircuit
+                    #~ and self.connEnd.owner == mainCircuit)
+                #~ or (self.connStart.owner == mainCircuit
+                    #~ and self.connEnd.owner != mainCircuit))
+                #~ and self.connStart.isInput != self.connEnd.isInput):
+            #~ a = "local " if self.connStart.owner != mainCircuit else "global "
+            #~ b = "input" if self.connStart.isInput else "output"
+            #~ c = "global " if a == "local " else "local "
+            #~ d = "output" if b == "inputs" else "input"
+            #~ self.toast("Don't connect a " + a + b + " with a " + c + d)
+            #~ return
+        #~ else:
+            #~ self.connStart.connect(self.connEnd)
+        #~ super(MainView, self).mouseReleaseEvent(e)
 
-    def mouseMoveEvent(self, e):
-        """Changes the cursor shape when the mouse hovers over an
-        input or output pin.
-        """
-        item = self.itemAt(e.pos())
-        if item:
-            pos = item.mapFromScene(self.mapToScene(e.pos()))
-            if isinstance(item, CircuitItem) or isinstance(item, IOItem):
-                ioatpos = item.IOAtPos(pos)
-                if ioatpos:
-                    self.setCursor(QtCore.Qt.CursorShape.UpArrowCursor)
-                    return
-        self.setCursor(QtCore.Qt.CursorShape.ArrowCursor)
-        super(MainView, self).mouseMoveEvent(e)
+    #~ def mouseMoveEvent(self, e):
+        #~ """Changes the cursor shape when the mouse hovers over an
+        #~ input or output pin.
+        #~ """
+        #~ item = self.itemAt(e.pos())
+        #~ if item:
+            #~ pos = item.mapFromScene(self.mapToScene(e.pos()))
+            #~ if isinstance(item, CircuitItem) or isinstance(item, IOItem):
+                #~ ioatpos = item.IOAtPos(pos)
+                #~ if ioatpos:
+                    #~ self.setCursor(QtCore.Qt.CursorShape.UpArrowCursor)
+                    #~ return
+        #~ self.setCursor(QtCore.Qt.CursorShape.ArrowCursor)
+        #~ super(MainView, self).mouseMoveEvent(e)
 
     def toast(self, message):
         """Displays a short-lived informative message."""
