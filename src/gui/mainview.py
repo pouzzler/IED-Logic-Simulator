@@ -22,6 +22,7 @@ class Wire(QtGui.QGraphicsPathItem):
         self.setFlag(QtGui.QGraphicsItem.ItemIsSelectable)
         self.startIO = startIO
         self.points = [p1, p1]
+        self.setZValue(-1)
         
     def moveLastPoint(self, endPoint):
         self.points[-1] = endPoint
