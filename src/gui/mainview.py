@@ -24,13 +24,11 @@ class MainView(QtGui.QGraphicsView):
 
     def __init__(self, parent):
         super(MainView, self).__init__(parent)
-
         # Accept dragged items from the toolbox to the main view.
         self.setAcceptDrops(True)
         # Allow mouseover effects (self.mouseMoveEvent)
         self.setMouseTracking(True)
-        self.graphScene = QtGui.QGraphicsScene(parent)
-        self.setScene(self.graphScene)
+        self.setScene(QtGui.QGraphicsScene(parent))
         self.isDrawing = False
 
     def setName(self, item):
@@ -53,10 +51,7 @@ class MainView(QtGui.QGraphicsView):
             if isinstance(item, CircuitItem):
                 pos = item.mapFromScene(self.mapToScene(e.pos()))
                 ioatpos = item.IOAtPos(pos)
-                if ioatpos:
-                    item = ioatpos
-                else:
-                    item = item.circuit
+                item = ioatpos if ioatpos else item.circuit
                 menu.addAction("Set name", lambda: self.setName(item))
             elif isinstance(item, IOItem):
                 menu.addAction("Set name", lambda: self.setName(item))

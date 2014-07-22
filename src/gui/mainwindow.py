@@ -123,7 +123,7 @@ class MainWindow(QtGui.QMainWindow):
         detailedRemoveVb = config.getboolean('GUILogRecords', 'detailed_rm')
 
         # apply config values
-        self.view.graphScene.setBackgroundBrush(circBgColor)
+        self.view.scene().setBackgroundBrush(circBgColor)
         self.logWindow.setPalette(logPalette)
         Plug.setInputVerbose = setInputVb
         Plug.setOutputVerbose = setOutputVb
