@@ -29,17 +29,15 @@ import logging
 
 log = logging.getLogger(__name__)
 log.setLevel(logging.DEBUG)
-fh = logging.FileHandler('simulator.log')
-sh = logging.StreamHandler()
-fh.setLevel(logging.DEBUG)
-sh.setLevel(logging.ERROR)
+fileHandler = logging.FileHandler('simulator.log')
+stdoutHandler = logging.StreamHandler()
+fileHandler.setLevel(logging.DEBUG)
+stdoutHandler.setLevel(logging.ERROR)
 formatter = logging.Formatter(
     '%(asctime)s %(levelname)s %(message)s',
     datefmt='%H:%M:%S')
-fh.setFormatter(formatter)
-sh.setFormatter(formatter)
-log.addHandler(fh)
-log.addHandler(sh)
+fileHandler.setFormatter(formatter)
+stdoutHandler.setFormatter(formatter)
 
 
 #============================ CLASS FOR THE PLUGS ============================#
