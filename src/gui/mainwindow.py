@@ -13,7 +13,7 @@ from .guilog import LoggerTextEdit
 from .settings import SettingsDialog, configFile
 
 from engine.gates import *                   # basic logic gates
-from engine.simulator import log, formatter, Plug
+from engine.simulator import log, fileHandler, stdoutHandler, formatter, Plug
 
 
 class MainWindow(QtGui.QMainWindow):
@@ -42,10 +42,9 @@ class MainWindow(QtGui.QMainWindow):
 
         self.logWindow = LoggerTextEdit()
 
-        handler = logging.StreamHandler(self.logWindow)
-        handler.setLevel(logging.DEBUG)
-        log.addHandler(handler)
-        handler.setFormatter(formatter)
+        self.handler = logging.StreamHandler(self.logWindow)
+        self.handler.setLevel(logging.DEBUG)
+        self.handler.setFormatter(formatter)
         log.info("New session started on %s" % (time.strftime("%d/%m/%Y"),))
         self.logDock = QtGui.QDockWidget('Logs')
         self.logDock.setWidget(self.logWindow)
@@ -121,6 +120,10 @@ class MainWindow(QtGui.QMainWindow):
         removePlugVb = config.getboolean('GUILogRecords', 'removing_io')
         removeCircuitVb = config.getboolean('GUILogRecords', 'removing_circ')
         detailedRemoveVb = config.getboolean('GUILogRecords', 'detailed_rm')
+        # log outputs
+        guiLogOutput = config.getboolean('LogOutputs', 'gui')
+        stdoutLogOutput = config.getboolean('LogOutputs', 'stdout')
+        fileLogOutput = config.getboolean('LogOutputs', 'file')
 
         # apply config values
         self.view.graphScene.setBackgroundBrush(circBgColor)
@@ -133,6 +136,18 @@ class MainWindow(QtGui.QMainWindow):
         Circuit.removePlugVerbose = removePlugVb
         Circuit.removeCircuitVerbose = removeCircuitVb
         Circuit.detailedRemoveVerbose = detailedRemoveVb
+        if guiLogOutput:
+            log.addHandler(self.handler)
+        else:
+            log.removeHandler(self.handler)
+        if stdoutLogOutput:
+            log.addHandler(stdoutHandler)
+        else:
+            log.removeHandler(stdoutHandler)
+        if fileLogOutput:
+            log.addHandler(fileHandler)
+        else:
+            log.removeHandler(fileHandler)
 
     def centerAndResize(self):
         screen = QtGui.QDesktopWidget().screenGeometry()
