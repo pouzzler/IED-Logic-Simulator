@@ -48,24 +48,24 @@ class MainView(QtGui.QGraphicsView):
     def contextMenuEvent(self, e):
         """Pops a contextual menu up on right-clicks"""
         item = self.itemAt(e.pos())
-        if isinstance(item, CircuitItem) or isinstance(item, IOItem):
-            pos = item.mapFromScene(self.mapToScene(e.pos()))
-            ioatpos = item.IOAtPos(pos)
-            if ioatpos:
-                item = ioatpos
-            elif isinstance(item, CircuitItem):
-                item = item.circuit
+        if item:
             menu = QtGui.QMenu(self)
-            menu.addAction("Set name", lambda: self.setName(item))
-            if ioatpos and ioatpos.owner == mainCircuit and ioatpos.isInput:
+            if isinstance(item, CircuitItem):
+                pos = item.mapFromScene(self.mapToScene(e.pos()))
+                ioatpos = item.IOAtPos(pos)
+                if ioatpos:
+                    item = ioatpos
+                else:
+                    item = item.circuit
+                menu.addAction("Set name", lambda: self.setName(item))
+            elif isinstance(item, IOItem):
+                menu.addAction("Set name", lambda: self.setName(item))
                 menu.addAction(str(item.value), lambda: self.toggleValue(item))
+            elif isinstance(item, Wire):
+                pos = item.mapFromScene(self.mapToScene(e.pos()))
+                if item.handleAtPos(pos):
+                    menu.addAction("Remove last", lambda: item.removeLast())
             menu.popup(e.globalPos())
-        elif isinstance(item, Wire):
-            pos = item.mapFromScene(self.mapToScene(e.pos()))
-            if item.handleAtPos(pos):
-                menu = QtGui.QMenu(self)
-                menu.addAction("Remove last", lambda: item.removeLast())
-                menu.popup(e.globalPos())
 
     def dragEnterEvent(self, e):
         """Accept drag events coming from ToolBox."""
