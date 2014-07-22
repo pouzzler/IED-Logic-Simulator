@@ -77,7 +77,7 @@ class ColorSelectorButton(QtGui.QPushButton):
 
 
 class logOutputCheckBox(QtGui.QCheckBox):
-    def __init__(self, parent, config, option, text=None): 
+    def __init__(self, parent, config, option, text=None):
         QtGui.QCheckBox.__init__(self, parent)
         self.config = config
         self.section = 'LogOutputs'

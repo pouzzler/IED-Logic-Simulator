@@ -6,6 +6,44 @@ from engine.simulator import Circuit, Plug
 import engine
 
 
+class Wire(QtGui.QGraphicsPathItem):
+
+    RADIUS = 5
+
+    def __init__(self, startIO, p1):
+        super(Wire, self).__init__()
+        self.setFlag(QtGui.QGraphicsItem.ItemIsMovable)
+        self.setFlag(QtGui.QGraphicsItem.ItemIsSelectable)
+        self.startIO = startIO
+        self.points = [p1, p1]
+        self.setZValue(-1)
+
+    def moveLastPoint(self, endPoint):
+        self.points[-1] = endPoint
+        self.redraw()
+
+    def redraw(self):
+        path = QtGui.QPainterPath()
+        path.moveTo(self.points[0])
+        for p in self.points[1:]:
+            path.lineTo(p)
+        path.addEllipse(self.points[-1], self.RADIUS, self.RADIUS)
+        path.closeSubpath()
+        self.setPath(path)
+
+    def addPoint(self, point):
+        self.points.append(point)
+
+    def handleAtPos(self, pos):
+        handlePath = QtGui.QPainterPath()
+        handlePath.addEllipse(self.points[-2], self.RADIUS, self.RADIUS)
+        return handlePath.contains(pos)
+
+    def removeLast(self):
+        self.points.pop()
+        self.redraw()
+
+
 class IOItem(QtGui.QGraphicsPathItem, Plug):
     """We represent an I pin as a graphic square path,
     and a O pin as a circle.

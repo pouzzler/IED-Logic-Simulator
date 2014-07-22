@@ -45,10 +45,10 @@ class SettingsDialog(QtGui.QDialog):
                 item.setCheckState(
                     0,
                     QtCore.Qt.CheckState.Checked
-                        if self.config.getboolean('GUILogRecords', val)
-                        else QtCore.Qt.CheckState.Unchecked)
+                    if self.config.getboolean('GUILogRecords', val)
+                    else QtCore.Qt.CheckState.Unchecked)
         logVerbosityLayout.addWidget(verbosityOptions)
-        
+
         clock = QtGui.QGroupBox("Clock :")
         clockLayout = QtGui.QHBoxLayout()
         clock.setLayout(clockLayout)
@@ -77,7 +77,7 @@ class SettingsDialog(QtGui.QDialog):
 
         close = QtGui.QPushButton('Close')
         close.clicked.connect(self.close)
-        
+
         layout = QtGui.QGridLayout(self)
         layout.addWidget(logOutputs, 0, 0, 1, 1)
         layout.addWidget(logVerbosity, 0, 1, 1, 1)
@@ -107,21 +107,25 @@ class SettingsDialog(QtGui.QDialog):
                 'GUILogRecords', item.text(0), str(bool(item.checkState(0))))
             if isinstance(item.parent(), QtGui.QTreeWidgetItem):
                 siblings = [
-                    item.parent().child(i).checkState(0) 
+                    item.parent().child(i).checkState(0)
                     for i in range(item.parent().childCount())]
                 if all(siblings):
-                    item.parent().setCheckState(0, QtCore.Qt.CheckState.Checked)
+                    item.parent().setCheckState(
+                        0, QtCore.Qt.CheckState.Checked)
                 elif any(siblings):
-                    item.parent().setCheckState(0, QtCore.Qt.CheckState.PartiallyChecked)
+                    item.parent().setCheckState(
+                        0, QtCore.Qt.CheckState.PartiallyChecked)
                 else:
-                    item.parent().setCheckState(0, QtCore.Qt.CheckState.Unchecked)
+                    item.parent().setCheckState(
+                        0, QtCore.Qt.CheckState.Unchecked)
             sender.blockSignals(False)
         with open(self.configFile, 'w+') as configfile:
             self.config.write(configfile)
 
     def colorDialog(self):
         old = QtGui.QColor()
-        old.setNamedColor(self.config.get('Appearance', self.sender().objectName()))
+        old.setNamedColor(
+            self.config.get('Appearance', self.sender().objectName()))
         new = QtGui.QColorDialog.getColor()
         color = old if not new.isValid() else new
         self.config.set('Appearance', self.sender().objectName(), color)
