@@ -106,23 +106,8 @@ class Plug:
             self.connections.append(plug)   # add each connection of the lists
             plug.connectedTo.append(self)
             if Plug.connectVerbose:
-                if self.isInput:
-                    selfIdx = self.owner.inputList.index(self)
-                else:
-                    selfIdx = self.owner.outputList.index(self)
-                if plug.isInput:
-                    plugIdx = plug.owner.inputList.index(plug)
-                else:
-                    plugIdx = plug.owner.outputList.index(plug)
-                log.info(
-                    '%s.%s[%i] connected to %s.%s[%i]'
-                    % (
-                        plug.owner.name,
-                        'inputList' if plug.isInput else 'outputList',
-                        plugIdx,
-                        self.owner.name,
-                        'inputList' if self.isInput else 'outputList',
-                        selfIdx))
+                log.info('%s.%s connected to %s.%s' % (
+                    plug.owner.name, plug.name, self.owner.name, self.name))
 
     def generate_name(self):
         """Generate a name for a plug (like 'Input2' or 'Output1')."""
