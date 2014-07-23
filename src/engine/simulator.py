@@ -63,11 +63,11 @@ class Plug:
     def setName(self, name):
         if len(name):
             if (self.isInput and name in [
-                x.name for x in self.owner.inputList]) or \
-                (not self.isInput and name in [
-                x.name for x in self.owner.outputList]):
-                    log.error('name %s already in use' % (name,))
-                    return False
+                    x.name for x in self.owner.inputList]) or \
+                    (not self.isInput and name in [
+                        x.name for x in self.owner.outputList]):
+                log.error('name %s already in use' % (name,))
+                return False
             else:
                 log.info("%s's name changed to %s" % (self.name, name,))
                 self.name = name
@@ -75,7 +75,7 @@ class Plug:
         else:
             log.error('name must be at least one character long')
             return False
-        
+
     def set(self, value):
         """Sets the boolean value of a Plug."""
         if self.value == value and self.__nbEval != 0:  # unchanged value, stop
@@ -127,12 +127,10 @@ class Plug:
     def generate_name(self):
         """Generate a name for a plug (like 'Input2' or 'Output1')."""
         i = 0
-        if self.isInput:
-            names = [input.name for input in self.owner.inputList]
-        else:
-            names = [output.name for output in self.owner.outputList]
+        names = [io.name for io in (
+            self.owner.inputList if self.isInput else self.owner.outputList)]
         while True:
-            name = 'INPUT' + str(i) if self.isInput else 'OUTPUT' + str(i)
+            name = ('INPUT' if self.isInput else 'OUTPUT') + str(i)
             if name not in names:
                 return name
             i += 1
@@ -148,7 +146,7 @@ class Circuit:
     removePlugVerbose = True      # Removing an I/O
     removeCircuitVerbose = True   # Removing a circuit
     detailedRemoveVerbose = True  # Detailed remove
-    
+
     def __init__(self, name):
         if name is None:
             name = self.generate_name()
@@ -257,7 +255,7 @@ class Circuit:
         removeMethod(component)                 # remove the compon from list
 
     # -+-----------------------    OTHER METHODS    -----------------------+- #
-            
+
     def generate_name(self):
         """Generate a name for a Circuit (like 'NandGate4' or 'NotGate0')."""
         className = self.class_name().upper()  # get class name of the object
