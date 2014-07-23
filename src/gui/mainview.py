@@ -209,7 +209,7 @@ class MainView(QGraphicsView):
                     ioatpos = item.IOAtPos(pos)
                     if ioatpos:
                         self.currentWire.startIO.connect(ioatpos)
-            self.currentWire.addPoint(e.pos())
+            self.currentWire.addPoint()
             self.currentWire = None
         super(MainView, self).mouseReleaseEvent(e)
 

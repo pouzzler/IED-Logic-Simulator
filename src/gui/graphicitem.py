@@ -32,20 +32,22 @@ class Wire(QGraphicsPathItem):
         path.closeSubpath()
         self.setPath(path)
 
-    def addPoint(self, point):
-        self.points.append(point)
+    def addPoint(self):
+        self.points.append(self.points[-1])
 
     def handleAtPos(self, pos):
         handlePath = QPainterPath()
-        handlePath.addEllipse(self.points[-2], self.RADIUS, self.RADIUS)
+        handlePath.addEllipse(self.points[-1], self.RADIUS, self.RADIUS)
         return handlePath.contains(pos)
 
     def removeLast(self):
         scene = self.scene()
         scene.removeItem(self)
-        self.points.pop()
-        self.redraw()
-        scene.addItem(self)
+        self.points = self.points[0:-2]
+        if len(self.points) > 1:
+            self.addPoint()
+            self.redraw()
+            scene.addItem(self)
 
 
 class IOItem(QGraphicsPathItem, Plug):
