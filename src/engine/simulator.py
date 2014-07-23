@@ -51,14 +51,14 @@ class Plug:
 
     def __init__(self, isInput, name, owner):
         self.isInput = isInput    # specifies whether to evaluate the values
-        if name is None:
-            name = self.generate_name()
         self.owner = owner        # circuit or door featuring this I/O
         self.name = name          # its name
         self.value = False        # at first, no electricity
         self.__nbEval = 0         # number of evaluations
         self.connections = []     # plugs connected to this plug
         self.connectedTo = []     # plugs which this plug is connected to
+        if name is None:
+            name = self.generate_name()
 
     def setName(self, name):
         if len(name):
@@ -126,14 +126,17 @@ class Plug:
 
     def generate_name(self):
         """Generate a name for a plug (like 'Input2' or 'Output1')."""
-        plugType = 'INPUT' if self.isInput else 'OUTPUT'
-        try:                              # try to get the ID of that type
-            ID = Plug.namesDict[plugType]
-        except KeyError:                  # add a new dictionary entry, ID = 0
-            Plug.namesDict[plugType] = 0
-            ID = 0
-        Plug.namesDict[plugType] += 1     # set the new ID for that class
-        return str(plugType) + str(ID)    # create and return the object name
+        i = 0
+        if self.isInput:
+            names = [input.name for input in self.owner.inputList]
+        else:
+            names = [output.name for output in self.owner.outputList]
+        while True:
+            name = 'INPUT' + str(i) if self.isInput else 'OUTPUT' + str(i)
+            if name not in names:
+                self.name = name
+                break
+            i += 1
 
 
 #=========================== CLASS FOR THE CIRCUITS ==========================#
