@@ -5,7 +5,7 @@
 from PySide import QtGui, QtCore
 
 
-class LoggerTextEdit(QtGui.QTextEdit):
+class LoggerTextEdit(QtGui.QTextBrowser):
     """A multiline text field that receives log messages."""
 
     def __init__(self):

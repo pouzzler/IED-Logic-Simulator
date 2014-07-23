@@ -44,12 +44,15 @@ stdoutHandler.setFormatter(formatter)
 class Plug:
     """Represents an input or output."""
 
+    namesDict = {}              # for auto-naming
     setInputVerbose = True      # Inputs changes
     setOutputVerbose = True     # Outputs changes
     connectVerbose = True       # Connecting / diconnecting I/O
 
     def __init__(self, isInput, name, owner):
         self.isInput = isInput    # specifies whether to evaluate the values
+        if name is None:
+            name = self.generate_name()
         self.owner = owner        # circuit or door featuring this I/O
         self.name = name          # its name
         self.value = False        # at first, no electricity
@@ -112,12 +115,23 @@ class Plug:
                         'inputList' if self.isInput else 'outputList',
                         selfIdx))
 
+    def generate_name(self):
+        """Generate a name for a plug (like 'Input2' or 'Output1')."""
+        plugType = 'INPUT' if self.isInput else 'OUTPUT'
+        try:                              # try to get the ID of that type
+            ID = Plug.namesDict[plugType]
+        except KeyError:                  # add a new dictionary entry, ID = 0
+            Plug.namesDict[plugType] = 0
+            ID = 0
+        Plug.namesDict[plugType] += 1     # set the new ID for that class
+        return str(plugType) + str(ID)    # create and return the object name
+
 
 #=========================== CLASS FOR THE CIRCUITS ==========================#
 class Circuit:
     """Represents a logic circuit."""
 
-    namesDict = {}
+    namesDict = {}                # for auto-naming
     addPlugVerbose = True         # Adding an I/O
     addCircuitVerbose = True      # Adding a circuit
     removePlugVerbose = True      # Removing an I/O
@@ -127,46 +141,41 @@ class Circuit:
     def __init__(self, name):
         if name is None:
             name = self.generate_name()
-        self.name = name        # name (optional)
+        self.name = name        # name (generated if not specified)
         self.inputList = []     # circuit's inputs list
         self.outputList = []    # circuit's outputs list
         self.circuitList = []   # circuit's circuits list
-        log.info("circuit %s '%s' has been created" %
-            (self.class_name(), self.name,))
+        log.info(
+            "circuit %s '%s' has been created"
+            % (self.class_name(), self.name,))
 
     # -+---------------    METHODS FOR ADDING COMPONENTS    ---------------+- #
     def add_plug(self, plug):
         """Add a plug (input or output) in the appropriate list of the circuit.
         """
         if plug.isInput:
-            if plug.name is None:
-                plug.name = 'ThisIsINPUT' + str(len(self.inputList))
             self.inputList.append(plug)
             if Circuit.addPlugVerbose:
                 log.info("input '%s' added to %s" % (plug.name, self.name,))
         else:
-            if plug.name is None:
-                plug.name = 'ThisIsOUTPUT' + str(len(self.outputList))
             self.outputList.append(plug)
             if Circuit.addPlugVerbose:
                 log.info("output '%s' added to %s" % (plug.name, self.name,))
 
     def add_input(self, name=None):
         """Add an input to the inputList of the circuit."""
-        if name is None:
-            name = 'ThisIsINPUT' + str(len(self.inputList))
-        self.inputList.append(Plug(True, name, self))
+        input = Plug(True, name, self)
+        self.inputList.append(input)
         if Circuit.addPlugVerbose:
-            log.info("input '%s' added to %s" % (name, self.name,))
+            log.info("input '%s' added to %s" % (input.name, self.name,))
         return self.inputList[-1]
 
     def add_output(self, name=None):
         """Add an output to the outputList of the circuit."""
-        if name is None:
-            name = 'ThisIsOUTPUT' + str(len(self.outputList))
-        self.outputList.append(Plug(False, name, self))
+        output = Plug(False, name, self)
+        self.outputList.append(output)
         if Circuit.addPlugVerbose:
-            log.info("output '%s' added to %s" % (name, self.name,))
+            log.info("output '%s' added to %s" % (output.name, self.name,))
         return self.outputList[-1]
 
     def add_circuit(self, circuit):
@@ -181,19 +190,19 @@ class Circuit:
     # -+--------------    METHODS FOR REMOVING COMPONENTS    --------------+- #
     # these functions can also be implemented using the component name or
     # index but using its instance is the easiest way
-    def remove_input(self, input):
+    def __remove_input(self, input):
         """Remove an input from the inputList of the circuit."""
         self.inputList.remove(input)
         if Circuit.removePlugVerbose:
             log.info("input '%s' removed from %s" % (input.name, self.name,))
 
-    def remove_output(self, output):
+    def __remove_output(self, output):
         """Remove an output from the outputList of the circuit."""
         self.outputList.remove(output)
         if Circuit.removePlugVerbose:
             log.info("output '%s' removed from %s" % (output.name, self.name,))
 
-    def remove_circuit(self, circuit):
+    def __remove_circuit(self, circuit):
         """Remove a circuit from the circuitList of the circuit."""
         self.circuitList.remove(circuit)
         Circuit.removePlugVerbose
@@ -207,10 +216,10 @@ class Circuit:
         if isinstance(component, Plug):         # it is a Plug
             if component.isInput:               # it is an input Plug
                 componentList = self.inputList
-                removeMethod = self.remove_input
+                removeMethod = self.__remove_input
             else:                               # it is an output Plug
                 componentList = self.outputList
-                removeMethod = self.remove_output
+                removeMethod = self.__remove_output
             for plug in component.connectedTo:  # remove references of the plug
                 if component in plug.connections:
                     plug.connections.remove(component)
@@ -220,13 +229,14 @@ class Circuit:
                             % (component.name, self.name,))
         elif isinstance(component, Circuit):    # it is a Circuit
             componentList = self.circuitList
-            removeMethod = self.remove_circuit
+            removeMethod = self.__remove_circuit
             for plug in component.inputList + component.outputList:
-                component.remove(plug)          # remove references of the plug
+                component.remove(plug)          # remove all circuit's plugs
         else:                                   # it is an error
             log.error(
                 "Cannot remove component because it is neither a Plug nor a "
                 "Circuit.")
+            return
         if component not in componentList:      # no need to remove the compon
             if Circuit.removePlugVerbose or Circuit.removeCircuitVerbose:
                 log.info(
@@ -238,7 +248,7 @@ class Circuit:
     # -+-----------------------    OTHER METHODS    -----------------------+- #
     def generate_name(self):
         """Generate a name for a Circuit (like 'NandGate4' or 'NotGate0')."""
-        className = self.class_name()      # get the class name of the object
+        className = self.class_name().upper()  # get class name of the object
         try:                               # try to get the ID of that class
             ID = Circuit.namesDict[className]
         except KeyError:                   # add a new dictionary entry, ID = 0
