@@ -44,15 +44,12 @@ stdoutHandler.setFormatter(formatter)
 class Plug:
     """Represents an input or output."""
 
-    namesDict = {}              # for auto-naming
     setInputVerbose = True      # Inputs changes
     setOutputVerbose = True     # Outputs changes
     connectVerbose = True       # Connecting / diconnecting I/O
 
     def __init__(self, isInput, name, owner):
         self.isInput = isInput    # specifies whether to evaluate the values
-        if name is None:
-            name = self.generate_name()
         self.owner = owner        # circuit or door featuring this I/O
         self.name = name          # its name
         self.value = False        # at first, no electricity
@@ -108,17 +105,6 @@ class Plug:
                         'inputList' if self.isInput else 'outputList',
                         selfIdx))
 
-    def generate_name(self):
-        """Generate a name for a plug (like 'Input2' or 'Output1')."""
-        plugType = 'Input' if self.isInput else 'Output'
-        try:                              # try to get the ID of that type
-            ID = Plug.namesDict[plugType]
-        except KeyError:                  # add a new dictionary entry, ID = 0
-            Plug.namesDict[plugType] = 0
-            ID = 0
-        Plug.namesDict[plugType] += 1     # set the new ID for that class
-        return str(plugType) + str(ID)    # create and return the object name
-
 
 #=========================== CLASS FOR THE CIRCUITS ==========================#
 class Circuit:
@@ -138,23 +124,30 @@ class Circuit:
         self.inputList = []     # circuit's inputs list
         self.outputList = []    # circuit's outputs list
         self.circuitList = []   # circuit's circuits list
-        log.info("%s '%s' has been created" % (self.class_name(), self.name,))
+        log.info("circuit %s '%s' has been created" %
+            (self.class_name(), self.name,))
 
     # -+---------------    METHODS FOR ADDING COMPONENTS    ---------------+- #
     def add_plug(self, plug):
         """Add a plug (input or output) in the appropriate list of the circuit.
         """
         if plug.isInput:
+            if plug.name is None:
+                plug.name = 'ThisIsINPUT' + str(len(self.inputList))
             self.inputList.append(plug)
             if Circuit.addPlugVerbose:
                 log.info("input '%s' added to %s" % (plug.name, self.name,))
         else:
+            if plug.name is None:
+                plug.name = 'ThisIsOUTPUT' + str(len(self.outputList))
             self.outputList.append(plug)
             if Circuit.addPlugVerbose:
                 log.info("output '%s' added to %s" % (plug.name, self.name,))
 
     def add_input(self, name=None):
         """Add an input to the inputList of the circuit."""
+        if name is None:
+            name = 'ThisIsINPUT' + str(len(self.inputList))
         self.inputList.append(Plug(True, name, self))
         if Circuit.addPlugVerbose:
             log.info("input '%s' added to %s" % (name, self.name,))
@@ -162,6 +155,8 @@ class Circuit:
 
     def add_output(self, name=None):
         """Add an output to the outputList of the circuit."""
+        if name is None:
+            name = 'ThisIsOUTPUT' + str(len(self.outputList))
         self.outputList.append(Plug(False, name, self))
         if Circuit.addPlugVerbose:
             log.info("output '%s' added to %s" % (name, self.name,))
