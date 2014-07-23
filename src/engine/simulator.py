@@ -67,11 +67,14 @@ class Plug:
                 (not self.isInput and name in [
                 x.name for x in self.owner.outputList]):
                     log.error('name %s already in use' % (name,))
+                    return False
             else:
                 log.info("%s's name changed to %s" % (self.name, name,))
                 self.name = name
+                return True
         else:
             log.error('name must be at least one character long')
+            return False
         
     def set(self, value):
         """Sets the boolean value of a Plug."""
