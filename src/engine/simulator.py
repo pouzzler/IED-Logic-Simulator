@@ -134,7 +134,7 @@ class Circuit:
     def __init__(self, name):
         if name is None:
             name = self.generate_name()
-        self.name = name        # name (optional)
+        self.name = name        # name (generated if not specified)
         self.inputList = []     # circuit's inputs list
         self.outputList = []    # circuit's outputs list
         self.circuitList = []   # circuit's circuits list
@@ -183,19 +183,19 @@ class Circuit:
     # -+--------------    METHODS FOR REMOVING COMPONENTS    --------------+- #
     # these functions can also be implemented using the component name or
     # index but using its instance is the easiest way
-    def remove_input(self, input):
+    def __remove_input(self, input):
         """Remove an input from the inputList of the circuit."""
         self.inputList.remove(input)
         if Circuit.removePlugVerbose:
             log.info("input '%s' removed from %s" % (input.name, self.name,))
 
-    def remove_output(self, output):
+    def __remove_output(self, output):
         """Remove an output from the outputList of the circuit."""
         self.outputList.remove(output)
         if Circuit.removePlugVerbose:
             log.info("output '%s' removed from %s" % (output.name, self.name,))
 
-    def remove_circuit(self, circuit):
+    def __remove_circuit(self, circuit):
         """Remove a circuit from the circuitList of the circuit."""
         self.circuitList.remove(circuit)
         Circuit.removePlugVerbose
@@ -209,10 +209,10 @@ class Circuit:
         if isinstance(component, Plug):         # it is a Plug
             if component.isInput:               # it is an input Plug
                 componentList = self.inputList
-                removeMethod = self.remove_input
+                removeMethod = self.__remove_input
             else:                               # it is an output Plug
                 componentList = self.outputList
-                removeMethod = self.remove_output
+                removeMethod = self.__remove_output
             for plug in component.connectedTo:  # remove references of the plug
                 if component in plug.connections:
                     plug.connections.remove(component)
@@ -222,13 +222,14 @@ class Circuit:
                             % (component.name, self.name,))
         elif isinstance(component, Circuit):    # it is a Circuit
             componentList = self.circuitList
-            removeMethod = self.remove_circuit
+            removeMethod = self.__remove_circuit
             for plug in component.inputList + component.outputList:
-                component.remove(plug)          # remove references of the plug
+                component.remove(plug)          # remove all circuit's plugs
         else:                                   # it is an error
             log.error(
                 "Cannot remove component because it is neither a Plug nor a "
                 "Circuit.")
+            return
         if component not in componentList:      # no need to remove the compon
             if Circuit.removePlugVerbose or Circuit.removeCircuitVerbose:
                 log.info(
