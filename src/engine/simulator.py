@@ -69,7 +69,8 @@ class Plug:
                 log.error('name %s already in use' % (name,))
                 return False
             else:
-                log.info("%s's name changed to %s" % (self.name, name,))
+                log.info("%s.%s's name changed to %s" % (
+                    self.owner.name, self.name, name,))
                 self.name = name
                 return True
         else:
@@ -252,7 +253,8 @@ class Circuit:
                 log.error('name %s already in use' % (name,))
                 return False
             else:
-                log.info("%s's name changed to %s" % (self.name, name,))
+                log.info("%s.%s's name changed to %s" % (
+                    self.owner.name, self.name, name,))
                 self.name = name
                 return True
         else:

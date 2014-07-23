@@ -38,7 +38,11 @@ class MainView(QGraphicsView):
         # ret = tuple string, bool (false when the dialog is dismissed)
         ret = QInputDialog.getText(self, u'Set name', u'Name:')
         if ret[1]:
-            item.setName(ret[0])
+            if isinstance(item, CircuitItem):
+                if item.circuit.setName(ret[0]):
+                    item.initPath()
+            elif isinstance(item, Plug):
+                item.setName(ret[0])
 
     def contextMenuEvent(self, e):
         """Pops a contextual menu up on right-clicks"""
@@ -48,12 +52,13 @@ class MainView(QGraphicsView):
             if isinstance(item, CircuitItem):
                 pos = item.mapFromScene(self.mapToScene(e.pos()))
                 ioatpos = item.IOAtPos(pos)
-                item = ioatpos if ioatpos else item.circuit
+                item = ioatpos if ioatpos else item
                 menu.addAction("Set name", lambda: self.setItemName(item))
             elif isinstance(item, IOItem):
                 menu.addAction("Set name", lambda: self.setItemName(item))
-                menu.addAction(
-                    str(item.value), lambda: item.set(not item.value))
+                if item.isInput:
+                    menu.addAction(
+                        str(item.value), lambda: item.set(not item.value))
             elif isinstance(item, Wire):
                 pos = item.mapFromScene(self.mapToScene(e.pos()))
                 if item.handleAtPos(pos):

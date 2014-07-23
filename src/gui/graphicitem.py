@@ -2,7 +2,8 @@
 # coding=utf-8
 
 from PySide import QtGui, QtCore
-from PySide.QtGui import (QGraphicsPathItem, QPainterPath, QGraphicsItem)
+from PySide.QtGui import (
+    QFont, QGraphicsItem, QGraphicsPathItem, QPainterPath)
 from engine.simulator import Circuit, Plug
 import engine
 
@@ -15,15 +16,26 @@ class Wire(QGraphicsPathItem):
         super(Wire, self).__init__()
         self.setFlag(QGraphicsItem.ItemIsMovable)
         self.setFlag(QGraphicsItem.ItemIsSelectable)
+        # Remembering the Plug where the Wire starts, for creating the
+        # connection, when the last segment is drawn over another IO.
         self.startIO = startIO
+        # The first point of our segments. The "moving point" used to
+        # redraw during mouseMove events.
         self.points = [p1, p1]
+        # We dont want't to catch the Wire handle when it is connected
+        # to a Plug, this puts our item under the Plug, and itemAt()
+        # will grab the Plug.
         self.setZValue(-1)
 
     def moveLastPoint(self, endPoint):
+        """While dragging the mouse, redrawing the last segment."""
         self.points[-1] = endPoint
         self.redraw()
 
     def redraw(self):
+        """We draw the segments between our array of points and a small
+        handle circle on the last segment.
+        """
         path = QPainterPath()
         path.moveTo(self.points[0])
         for p in self.points[1:]:
@@ -33,14 +45,21 @@ class Wire(QGraphicsPathItem):
         self.setPath(path)
 
     def addPoint(self):
+        """When a segment ends (on mouseRelease), we duplicate the last
+        point, to be used as a moving point during the next mouseMove.
+        """
         self.points.append(self.points[-1])
 
     def handleAtPos(self, pos):
+        """We drag the end-segment when the user clicks the handle."""
         handlePath = QPainterPath()
         handlePath.addEllipse(self.points[-1], self.RADIUS, self.RADIUS)
         return handlePath.contains(pos)
 
     def removeLast(self):
+        """We remove the last segment (when the user made an error and
+        corrects it).
+        """
         scene = self.scene()
         scene.removeItem(self)
         self.points = self.points[0:-2]
@@ -112,6 +131,9 @@ class CircuitItem(QGraphicsPathItem):
         # Creating a circuit from our engine, using dynamic class lookup.
         self.circuit = parent.add_circuit(
             getattr(engine.gates, gate + "Gate")(parent))
+        self.initPath()
+        
+    def initPath(self):
         # Getting some model values useful for the drawing.
         nInputs = self.circuit.nb_inputs()
         nOutputs = self.circuit.nb_outputs()
@@ -125,6 +147,7 @@ class CircuitItem(QGraphicsPathItem):
             self.oOffset = self.BODY_OFFSET
             self.iOffset = offset + self.BODY_OFFSET
         path = QPainterPath()
+        path.addText(0, 0, QFont(), self.circuit.name)
         # Drawing inputs.
         for i in range(nInputs):
             path.addEllipse(
@@ -138,7 +161,8 @@ class CircuitItem(QGraphicsPathItem):
                 self.I_RIGHT, i * self.IO_HEIGHT + self.iOffset +
                 self.BODY_OFFSET + self.DIAMETER / 2.)
         # Drawing the little circle implying negation.
-        if gate in ['Nand', 'Not', 'Nor', 'Xnor']:
+        if self.circuit.__class__.__name__ in [
+            'NandGate', 'NotGate', 'NorGate', 'XnorGate']:
             path.addEllipse(
                 self.O_LEFT, height * self.IO_HEIGHT / 2. - self.DIAMETER / 2.,
                 self.DIAMETER, self.DIAMETER)
@@ -149,7 +173,8 @@ class CircuitItem(QGraphicsPathItem):
                 self.BODY_OFFSET, self.DIAMETER, self.DIAMETER)
             self.left = (
                 self.O_LEFT + self.DIAMETER
-                if gate in ['Nand', 'Not', 'Nor', 'Xnor']
+                if self.circuit.__class__.__name__ in [
+                    'NandGate', 'NotGate', 'NorGate', 'XnorGate']
                 else self.O_LEFT)
             path.moveTo(
                 self.left, i * self.IO_HEIGHT + self.oOffset +
@@ -158,22 +183,25 @@ class CircuitItem(QGraphicsPathItem):
                 self.O_RIGHT, i * self.IO_HEIGHT + self.oOffset +
                 self.BODY_OFFSET + self.DIAMETER / 2.)
         # Vertical line for these gates.
-        if gate in ['Nand', 'Not', 'And']:
+        if self.circuit.__class__.__name__ in [
+            'NandGate', 'NotGate', 'AndGate']:
             path.moveTo(self.I_RIGHT + 1, 0)
             path.lineTo(self.I_RIGHT + 1, height * self.IO_HEIGHT)
-        if gate == 'Not':
+        if self.circuit.__class__.__name__ == 'NotGate':
             path.lineTo(self.O_LEFT - 1, height * self.IO_HEIGHT / 2)
-        elif gate in ['Xor', 'Xnor']:
+        elif self.circuit.__class__.__name__ in ['XorGate', 'XnorGate']:
             path.moveTo(self.XOR_LEFT + self.ARC_BOX, 0)
             path.arcTo(
                 self.XOR_LEFT, 0, self.ARC_BOX, height * self.IO_HEIGHT,
                 90, -180)
-        if gate in ['Or', 'Nor', 'Xor', 'Xnor']:
+        if self.circuit.__class__.__name__ in [
+            'OrGate', 'NorGate', 'XorGate', 'XnorGate']:
             path.moveTo(self.OR_LEFT + self.ARC_BOX, 0)
             path.arcTo(
                 self.OR_LEFT, 0, self.ARC_BOX, height * self.IO_HEIGHT,
                 90, -180)
-        if gate in ['And', 'Nand', 'Or', 'Nor', 'Xor', 'Xnor']:
+        if self.circuit.__class__.__name__ in [
+            'AndGate', 'NandGate', 'OrGate', 'NorGate', 'XorGate', 'XnorGate']:
             path.lineTo(self.AND_LEFT,  height * self.IO_HEIGHT)
             path.arcTo(
                 self.AND_LEFT,  0, self.ARC_BOX, height * self.IO_HEIGHT,
@@ -207,3 +235,4 @@ class CircuitItem(QGraphicsPathItem):
         for i in range(self.circuit.nb_outputs()):
             if self.outputPaths[i].contains(pos):
                 return self.circuit.outputList[i]
+
