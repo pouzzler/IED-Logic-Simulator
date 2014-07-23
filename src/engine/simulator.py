@@ -57,6 +57,13 @@ class Plug:
         self.connections = []     # plugs connected to this plug
         self.connectedTo = []     # plugs which this plug is connected to
 
+    def setName(self, name):
+        if len(name):
+            log.info("%s's name changed to %s" % (self.name, name,))
+            self.name = name
+        else:
+            log.error('Names must be at least one character long')
+        
     def set(self, value):
         """Sets the boolean value of a Plug."""
         if self.value == value and self.__nbEval != 0:  # unchanged value, stop
