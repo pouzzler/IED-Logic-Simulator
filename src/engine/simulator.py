@@ -63,6 +63,9 @@ class Plug:
     def setName(self, name):
         if len(name):
             log.info("%s's name changed to %s" % (self.name, name,))
+            if self.isInput and name in [x.name for x in self.owner.inputList]:
+                #à finir
+                
             self.name = name
         else:
             log.error('Names must be at least one character long')
