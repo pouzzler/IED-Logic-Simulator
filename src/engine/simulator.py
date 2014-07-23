@@ -62,9 +62,6 @@ class Plug:
 
     def setName(self, name):
         if len(name):
-            inputNamesList = [x.name for x in self.owner.inputList]
-            outputNamesList = [x.name for x in self.owner.outputList]
-            
             if (self.isInput and name in [
                 x.name for x in self.owner.inputList]) or \
                 (not self.isInput and name in [
@@ -255,6 +252,7 @@ class Circuit:
         removeMethod(component)                 # remove the compon from list
 
     # -+-----------------------    OTHER METHODS    -----------------------+- #
+            
     def generate_name(self):
         """Generate a name for a Circuit (like 'NandGate4' or 'NotGate0')."""
         className = self.class_name().upper()  # get class name of the object
