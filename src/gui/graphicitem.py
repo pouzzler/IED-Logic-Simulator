@@ -2,18 +2,19 @@
 # coding=utf-8
 
 from PySide import QtGui, QtCore
+from PySide.QtGui import (QGraphicsPathItem, QPainterPath, QGraphicsItem)
 from engine.simulator import Circuit, Plug
 import engine
 
 
-class Wire(QtGui.QGraphicsPathItem):
+class Wire(QGraphicsPathItem):
 
-    RADIUS = 5
+    RADIUS = 2.5
 
     def __init__(self, startIO, p1):
         super(Wire, self).__init__()
-        self.setFlag(QtGui.QGraphicsItem.ItemIsMovable)
-        self.setFlag(QtGui.QGraphicsItem.ItemIsSelectable)
+        self.setFlag(QGraphicsItem.ItemIsMovable)
+        self.setFlag(QGraphicsItem.ItemIsSelectable)
         self.startIO = startIO
         self.points = [p1, p1]
         self.setZValue(-1)
@@ -23,7 +24,7 @@ class Wire(QtGui.QGraphicsPathItem):
         self.redraw()
 
     def redraw(self):
-        path = QtGui.QPainterPath()
+        path = QPainterPath()
         path.moveTo(self.points[0])
         for p in self.points[1:]:
             path.lineTo(p)
@@ -35,16 +36,19 @@ class Wire(QtGui.QGraphicsPathItem):
         self.points.append(point)
 
     def handleAtPos(self, pos):
-        handlePath = QtGui.QPainterPath()
+        handlePath = QPainterPath()
         handlePath.addEllipse(self.points[-2], self.RADIUS, self.RADIUS)
         return handlePath.contains(pos)
 
     def removeLast(self):
+        scene = self.scene()
+        scene.removeItem(self)
         self.points.pop()
         self.redraw()
+        scene.addItem(self)
 
 
-class IOItem(QtGui.QGraphicsPathItem, Plug):
+class IOItem(QGraphicsPathItem, Plug):
     """We represent an I pin as a graphic square path,
     and a O pin as a circle.
     """
@@ -57,9 +61,9 @@ class IOItem(QtGui.QGraphicsPathItem, Plug):
         Plug.__init__(self, isInput, None, parent)
         # Creating a plug from our engine
         parent.add_plug(self)
-        self.setFlag(QtGui.QGraphicsItem.ItemIsMovable)
-        self.setFlag(QtGui.QGraphicsItem.ItemIsSelectable)
-        path = QtGui.QPainterPath()
+        self.setFlag(QGraphicsItem.ItemIsMovable)
+        self.setFlag(QGraphicsItem.ItemIsSelectable)
+        path = QPainterPath()
         if isInput:
             path.addEllipse(0, 0, self.LARGE_DIAMETER, self.LARGE_DIAMETER)
         else:
@@ -73,7 +77,7 @@ class IOItem(QtGui.QGraphicsPathItem, Plug):
         # This path is needed at each mouse over event, to check if
         # the mouse is over a pin. We save it as an instance field,
         # rather than recreate it at each event.
-        self.pinPath = QtGui.QPainterPath()
+        self.pinPath = QPainterPath()
         self.pinPath.addEllipse(
             self.LARGE_DIAMETER - self.SMALL_DIAMETER,
             self.LARGE_DIAMETER / 2 - self.SMALL_DIAMETER,
@@ -84,7 +88,7 @@ class IOItem(QtGui.QGraphicsPathItem, Plug):
         return self if self.pinPath.contains(pos) else None
 
 
-class CircuitItem(QtGui.QGraphicsPathItem):
+class CircuitItem(QGraphicsPathItem):
     """We represent a circuit or logic gate as a graphic path."""
 
     IO_HEIGHT = 25   # pixels par E/S
@@ -101,8 +105,8 @@ class CircuitItem(QtGui.QGraphicsPathItem):
 
     def __init__(self, gate, parent):
         super(CircuitItem, self).__init__()
-        self.setFlag(QtGui.QGraphicsItem.ItemIsMovable)
-        self.setFlag(QtGui.QGraphicsItem.ItemIsSelectable)
+        self.setFlag(QGraphicsItem.ItemIsMovable)
+        self.setFlag(QGraphicsItem.ItemIsSelectable)
         # Creating a circuit from our engine, using dynamic class lookup.
         self.circuit = parent.add_circuit(
             getattr(engine.gates, gate + "Gate")(None))
@@ -118,7 +122,7 @@ class CircuitItem(QtGui.QGraphicsPathItem):
         else:
             self.oOffset = self.BODY_OFFSET
             self.iOffset = offset + self.BODY_OFFSET
-        path = QtGui.QPainterPath()
+        path = QPainterPath()
         # Drawing inputs.
         for i in range(nInputs):
             path.addEllipse(
@@ -180,14 +184,14 @@ class CircuitItem(QtGui.QGraphicsPathItem):
         self.inputPaths = []
         self.outputPaths = []
         for i in range(self.circuit.nb_inputs()):
-            path = QtGui.QPainterPath()
+            path = QPainterPath()
             path.addEllipse(
                 - self.DIAMETER, i * self.IO_HEIGHT + self.iOffset +
                 self.BODY_OFFSET - self.DIAMETER, self.DIAMETER * 3,
                 self.DIAMETER * 3)
             self.inputPaths.append(path)
         for i in range(self.circuit.nb_outputs()):
-            path = QtGui.QPainterPath()
+            path = QPainterPath()
             path.addEllipse(
                 self.O_RIGHT + 1 - self.DIAMETER, i * self.IO_HEIGHT +
                 self.oOffset + self.BODY_OFFSET - self.DIAMETER,

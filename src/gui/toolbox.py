@@ -1,38 +1,33 @@
 #!/usr/bin/env python3
 # coding=utf-8
 
-from PySide import QtGui, QtCore
-import os
+from PySide.QtGui import QTreeWidget, QTreeWidgetItem
+from PySide.QtCore import Signal, Slot
 
 
-class ToolBox(QtGui.QTreeWidget):
+class ToolBox(QTreeWidget):
     """A toolbox that contains logic gates and user circuits, for use
     in the main designer window.
     """
 
-    clicked = QtCore.Signal(str)
+    clicked = Signal(str)
 
     def __init__(self):
         super(ToolBox, self).__init__()
-        icon = QtGui.QIcon(
-            '/home/seb/Documents/IED-Logic-Simulator/src/gui/icons/AND_mini.png')
         self.setDragEnabled(True)
-        self.setColumnCount(2)
+        self.setColumnCount(1)
         self.header().setVisible(False)
-        gatesheader = QtGui.QTreeWidgetItem(self, [u'Basic Gates'])
+        gatesheader = QTreeWidgetItem(self, [u'Basic Gates'])
         gates = [
-            QtGui.QTreeWidgetItem(gatesheader, [name])
+            QTreeWidgetItem(gatesheader, [name])
             for name in ['And', 'Or', 'Nand', 'Nor', 'Not', 'Xor', 'Xnor']]
-        for gate in gates:
-            gate.setIcon(2, icon)
-        ioheader = QtGui.QTreeWidgetItem(self, [u'I/O'])
+        ioheader = QTreeWidgetItem(self, [u'I/O'])
         io = [
-            QtGui.QTreeWidgetItem(ioheader, [name])
+            QTreeWidgetItem(ioheader, [name])
             for name in ['Input Pin', 'Output Pin']]
-        userheader = QtGui.QTreeWidgetItem(self, [u'User Circuits'])
+        userheader = QTreeWidgetItem(self, [u'User Circuits'])
         self.insertTopLevelItems(0, [gatesheader, ioheader, userheader])
 
-    @QtCore.Slot()
+    @Slot()
     def focusInEvent(self, event):
-        self.clicked.emit(
-            u'This panel contains draggable items.')
+        self.clicked.emit(u'This panel contains draggable items.')

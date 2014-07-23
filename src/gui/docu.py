@@ -1,10 +1,12 @@
 #!/usr/bin/env python3
 # coding=utf-8
 
-from PySide import QtGui, QtCore, QtHelp
+from PySide.QtGui import QTextBrowser, QDockWidget, QSplitter
+from PySide.QtCore import Qt
+from PySide.QtHelp import QHelpEngine
 
 
-class HelpTextBrowser(QtGui.QTextBrowser):
+class HelpTextBrowser(QTextBrowser):
     """A simple overload to enable communication between the help
     engine and a QTextBrowser.
     """
@@ -20,7 +22,7 @@ class HelpTextBrowser(QtGui.QTextBrowser):
             return super(HelpTextBrowser, self).loadResource(type, url)
 
 
-class HelpDockWidget(QtGui.QDockWidget):
+class HelpDockWidget(QDockWidget):
     """A dock widget integrating all the necessary widgets for our help
     and documentation system.
     """
@@ -28,9 +30,9 @@ class HelpDockWidget(QtGui.QDockWidget):
     def __init__(self, title):
         super(HelpDockWidget, self).__init__(title)
         # http://doc.qt.digia.com/qq/qq28-qthelp.html
-        helpEngine = QtHelp.QHelpEngine('collection.qhc')
+        helpEngine = QHelpEngine('collection.qhc')
         helpEngine.setupData()
-        helpPanel = QtGui.QSplitter(QtCore.Qt.Vertical)
+        helpPanel = QSplitter(Qt.Vertical)
         helpBrowser = HelpTextBrowser(helpEngine)
         helpEngine.contentWidget().linkActivated.connect(helpBrowser.setSource)
         helpPanel.insertWidget(0, helpEngine.contentWidget())

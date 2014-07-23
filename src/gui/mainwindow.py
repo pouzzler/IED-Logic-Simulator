@@ -5,8 +5,10 @@
 
 import time
 import configparser
-from PySide import QtGui, QtCore
-
+from PySide import QtCore
+from PySide.QtGui import (
+    QMainWindow, QDockWidget, QMenu, QAction, QColor, QPalette,
+    QDesktopWidget, QMessageBox)
 from .mainview import MainView
 from .toolbox import ToolBox
 from .tooloptions import ToolOptions
@@ -18,7 +20,7 @@ from engine.gates import *                   # basic logic gates
 from engine.simulator import log, fileHandler, stdoutHandler, formatter, Plug
 
 
-class MainWindow(QtGui.QMainWindow):
+class MainWindow(QMainWindow):
     """Our application's main window."""
 
     def __init__(self):
@@ -32,12 +34,12 @@ class MainWindow(QtGui.QMainWindow):
         self.setCentralWidget(self.view)
 
         self.toolbox = ToolBox()
-        self.boxDock = QtGui.QDockWidget('Tool box')
+        self.boxDock = QDockWidget('Tool box')
         self.boxDock.setWidget(self.toolbox)
         self.addDockWidget(QtCore.Qt.LeftDockWidgetArea, self.boxDock)
 
         self.tooloptions = ToolOptions()
-        self.optionsDock = QtGui.QDockWidget('Tool options')
+        self.optionsDock = QDockWidget('Tool options')
         self.optionsDock.setWidget(self.tooloptions)
         self.optionsDock.setMaximumSize(QtCore.QSize(524287, 161))
         self.addDockWidget(QtCore.Qt.LeftDockWidgetArea, self.optionsDock)
@@ -48,17 +50,17 @@ class MainWindow(QtGui.QMainWindow):
         self.guiHandler.setLevel(logging.DEBUG)
         self.guiHandler.setFormatter(formatter)
         log.info("New session started on %s" % (time.strftime("%d/%m/%Y"),))
-        self.logDock = QtGui.QDockWidget('Logs')
+        self.logDock = QDockWidget('Logs')
         self.logDock.setWidget(self.logWindow)
         self.addDockWidget(QtCore.Qt.BottomDockWidgetArea, self.logDock)
 
         self.settings = SettingsDialog(configFile)
 
-        fileMenu = QtGui.QMenu(u'File')
+        fileMenu = QMenu(u'File')
         fileMenu.addAction(u'Quit', self.close)
 
-        editMenu = QtGui.QMenu(u'Edit')
-        self.settingAct = QtGui.QAction('&Settings...', self)
+        editMenu = QMenu(u'Edit')
+        self.settingAct = QAction('&Settings...', self)
         self.settingAct.setStatusTip('Open the settings window.')
         self.settingAct.triggered.connect(self.settings.show)
         editMenu.addAction(self.settingAct)
@@ -78,12 +80,12 @@ class MainWindow(QtGui.QMainWindow):
         self.logAct.setStatusTip("Shows the logs messages dock")
         self.logAct.setChecked(True)
 
-        windowsMenu = QtGui.QMenu('Windows')
+        windowsMenu = QMenu('Windows')
         windowsMenu.addAction(self.toolBoxAct)
         windowsMenu.addAction(self.toolOptionsAct)
         windowsMenu.addAction(self.logAct)
 
-        helpMenu = QtGui.QMenu('Help')
+        helpMenu = QMenu('Help')
         helpMenu.addAction('Documentation', self.showDocumentation)
         helpMenu.addAction('Test', self.Test)
         helpMenu.addAction('About', self.about)
@@ -106,13 +108,13 @@ class MainWindow(QtGui.QMainWindow):
         config.read(configFile)
 
         # background color for the scene
-        circBgColor = QtGui.QColor()
+        circBgColor = QColor()
         circBgColor.setNamedColor(config.get('Appearance', 'circ_bg_color'))
         # background color for the log widget
-        logBgColor = QtGui.QColor()
+        logBgColor = QColor()
         logBgColor.setNamedColor(config.get('Appearance', 'log_bg_color'))
         logPalette = self.logWindow.pal
-        logPalette.setColor(QtGui.QPalette.Base, logBgColor)
+        logPalette.setColor(QPalette.Base, logBgColor)
         # log verbose
         setInputVb = config.getboolean('GUILogRecords', 'input_chang')
         setOutputVb = config.getboolean('GUILogRecords', 'output_chang')
@@ -151,7 +153,7 @@ class MainWindow(QtGui.QMainWindow):
             log.removeHandler(fileHandler)
 
     def centerAndResize(self):
-        screen = QtGui.QDesktopWidget().screenGeometry()
+        screen = QDesktopWidget().screenGeometry()
         self.resize(screen.width() / 1.2, screen.height() / 1.2)
         size = self.geometry()
         self.move(
@@ -167,7 +169,7 @@ class MainWindow(QtGui.QMainWindow):
 
     def about(self):
         """Print a dialog about the application."""
-        msgBox = QtGui.QMessageBox()
+        msgBox = QMessageBox()
         msgBox.setText(u'v0.1\nPar Mathieu Fourcroy & Sébastien Magnien.')
         msgBox.exec_()
 

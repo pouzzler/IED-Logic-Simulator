@@ -2,7 +2,10 @@
 # coding=utf-8
 
 
-from PySide import QtGui, QtCore
+from PySide import QtCore
+from PySide.QtGui import (
+    QInputDialog, QGraphicsScene, QGraphicsView, QMenu,
+    QStandardItemModel)
 from .toolbox import ToolBox
 from .tooloptions import ToolOptions
 from .graphicitem import CircuitItem, IOItem, Wire
@@ -13,9 +16,9 @@ from .settings import configFile
 mainCircuit = Circuit("Main_Circuit")
 
 
-class MainView(QtGui.QGraphicsView):
-    """A graphic view representing a circuit schematic, as created by
-    the user. This view manages most user interaction, in particular:
+class MainView(QGraphicsView):
+    """A graphic representation of a circuit schematic created by the
+    user. This view manages most user interaction, in particular:
     * Adding logic gates & circuits
     * Linking outputs and inputs
     * Translating and rotating elements around
@@ -28,15 +31,12 @@ class MainView(QtGui.QGraphicsView):
         self.setAcceptDrops(True)
         # Allow mouseover effects (self.mouseMoveEvent)
         self.setMouseTracking(True)
-        self.setScene(QtGui.QGraphicsScene(parent))
+        self.setScene(QGraphicsScene(parent))
         self.isDrawing = False
 
     def setName(self, item):
         # ret = tuple string, bool (false when the dialog is dismissed)
-        ret = QtGui.QInputDialog.getText(
-            self,
-            u'Set name',
-            u'Enter a name for this item:')
+        ret = QInputDialog.getText(self, u'Set name', u'Name:')
         if ret[1] and len(ret[0]):
             item.name = ret[0]
 
@@ -44,7 +44,7 @@ class MainView(QtGui.QGraphicsView):
         """Pops a contextual menu up on right-clicks"""
         item = self.itemAt(e.pos())
         if item:
-            menu = QtGui.QMenu(self)
+            menu = QMenu(self)
             if isinstance(item, CircuitItem):
                 pos = item.mapFromScene(self.mapToScene(e.pos()))
                 ioatpos = item.IOAtPos(pos)
@@ -52,7 +52,8 @@ class MainView(QtGui.QGraphicsView):
                 menu.addAction("Set name", lambda: self.setName(item))
             elif isinstance(item, IOItem):
                 menu.addAction("Set name", lambda: self.setName(item))
-                menu.addAction(str(item.value), lambda: item.set(not item.value))
+                menu.addAction(
+                    str(item.value), lambda: item.set(not item.value))
             elif isinstance(item, Wire):
                 pos = item.mapFromScene(self.mapToScene(e.pos()))
                 if item.handleAtPos(pos):
@@ -76,7 +77,7 @@ class MainView(QtGui.QGraphicsView):
         # TODO: Found on the web, maybe a cleaner way exists.
         # it would be better to receive the correct item directly,
         # rather than test some text string.
-        model = QtGui.QStandardItemModel()
+        model = QStandardItemModel()
         model.dropMimeData(
             e.mimeData(),
             QtCore.Qt.CopyAction,
@@ -126,7 +127,7 @@ class MainView(QtGui.QGraphicsView):
             #~ group.setTransformOriginPoint(x, y)
             #~ group.setRotation(group.rotation() - 90)
             #~ group.setTransform(
-            #~ QtGui.QTransform().translate(x, y).rotate(-90).translate(y, x))
+            #~ QTransform().translate(x, y).rotate(-90).translate(y, x))
             #~ scene.destroyItemGroup(group)
             for item in selection:
                 x = item.boundingRect().width() / 2
