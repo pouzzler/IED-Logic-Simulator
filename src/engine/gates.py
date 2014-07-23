@@ -25,8 +25,8 @@ from .simulator import *
 class NotGate(Circuit):
     def __init__(self, name=None):
         Circuit.__init__(self, name)
-        self.add_input('I')
-        self.add_output('O')
+        self.add_input()
+        self.add_output()
 
     def evalfun(self):
         self.outputList[0].set(not self.inputList[0].value)
@@ -37,8 +37,8 @@ class AndGate(Circuit):
     def __init__(self, name=None, inputs=2):
         Circuit.__init__(self, name)
         for inp in range(inputs):
-            self.add_input('I' + str(inp))
-        self.add_output('O')
+            self.add_input()
+        self.add_output()
 
     def evalfun(self):
         self.outputList[0].set(all([inp.value for inp in self.inputList]))
@@ -49,8 +49,8 @@ class OrGate(Circuit):
     def __init__(self, name=None, inputs=2):
         Circuit.__init__(self, name)
         for inp in range(inputs):
-            self.add_input('I' + str(inp))
-        self.add_output('O')
+            self.add_input()
+        self.add_output()
 
     def evalfun(self):
         self.outputList[0].set(any([inp.value for inp in self.inputList]))
@@ -61,8 +61,8 @@ class NorGate(Circuit):
     def __init__(self, name=None, inputs=2):
         Circuit.__init__(self, name)
         for inp in range(inputs):
-            self.add_input('I' + str(inp))
-        self.add_output('O')
+            self.add_input()
+        self.add_output()
 
     def evalfun(self):
         self.outputList[0].set(not any([inp.value for inp in self.inputList]))
@@ -73,8 +73,8 @@ class XorGate(Circuit):
     def __init__(self, name, inputs=2):
         Circuit.__init__(self, name)
         for inp in range(inputs):
-            self.add_input('I' + str(inp))
-        self.add_output('O')
+            self.add_input()
+        self.add_output()
 
     def evalfun(self):
         c = 0
@@ -89,8 +89,8 @@ class XnorGate(Circuit):
     def __init__(self, name, inputs=2):
         Circuit.__init__(self, name)
         for inp in range(inputs):
-            self.add_input('I' + str(inp))
-        self.add_output('O')
+            self.add_input()
+        self.add_output()
 
     def evalfun(self):
         valuesList = [inp.value for inp in self.inputList]
@@ -102,8 +102,8 @@ class NandGate(Circuit):
     def __init__(self, name, inputs=2):
         Circuit.__init__(self, name)
         for inp in range(inputs):
-            self.add_input('I' + str(inp))
-        self.add_output('O')
+            self.add_input()
+        self.add_output()
 
     def evalfun(self):
         out = False
