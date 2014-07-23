@@ -52,13 +52,13 @@ class Plug:
     def __init__(self, isInput, name, owner):
         self.isInput = isInput    # specifies whether to evaluate the values
         self.owner = owner        # circuit or door featuring this I/O
+        if name is None:
+            name = self.generate_name()
         self.name = name          # its name
         self.value = False        # at first, no electricity
         self.__nbEval = 0         # number of evaluations
         self.connections = []     # plugs connected to this plug
         self.connectedTo = []     # plugs which this plug is connected to
-        if name is None:
-            name = self.generate_name()
 
     def setName(self, name):
         if len(name):
@@ -134,8 +134,7 @@ class Plug:
         while True:
             name = 'INPUT' + str(i) if self.isInput else 'OUTPUT' + str(i)
             if name not in names:
-                self.name = name
-                break
+                return name
             i += 1
 
 
