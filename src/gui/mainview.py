@@ -13,7 +13,7 @@ from engine.simulator import Circuit
 from .settings import configFile
 
 
-mainCircuit = Circuit("Main_Circuit", None)
+mainCircuit = Circuit(None, "Main_Circuit")
 
 
 class MainView(QGraphicsView):
