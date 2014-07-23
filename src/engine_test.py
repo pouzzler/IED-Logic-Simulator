@@ -59,7 +59,7 @@ from time import sleep
 
 
 if __name__ == '__main__':
-    TC = Circuit("Main_Circuit")
+    TC = Circuit(None, "Main_Circuit")
     
     #~ clk = TC.add_output('CLOCK')       # l'horloge est une simple sortie du TL
     #~ bgClockThread = ClockThread(clk)   # mais elle est simulée dans un thread
@@ -107,50 +107,16 @@ if __name__ == '__main__':
     #~ print("nb total de sorties:  " + str(total_nb_outputs(TC)))
     #~ print("nb total d'E/S:       " + str(total_nb_plugs(TC)))
 
-    NOT = TC.add_circuit(NotGate('NOT'))
-    GIN = TC.add_input('GIN')
-    GOUT = TC.add_output('GOUT')
+    NOT = NotGate(TC)
+    print(NOT.name)
+    GIN = TC.add_input(TC)
+    GOUT = TC.add_output(TC)
     I = NOT.inputList[0]
     O = NOT.outputList[0]
     I.connect(GIN)
     GOUT.connect(O)
 
     print('_____________________________________________________\n')
-    print(GIN); print(GOUT); print(I); print(O)
-    print("GIN:")
-    print(GIN.connections)
-    print(GIN.connectedTo)
-    print("GOUT")
-    print(GOUT.connections)
-    print(GOUT.connectedTo)
-    print("I:")
-    print(I.connections)
-    print(I.connectedTo)
-    print("nb total d'E/S: " + str(total_nb_plugs(TC)))
-    
-    print('_____________________________________________________\n')
-    TC.remove(GIN)
-    print("GIN:")
-    print(GIN.connections)
-    print(GIN.connectedTo)
-    print("GOUT")
-    print(GOUT.connections)
-    print(GOUT.connectedTo)
-    print("I:")
-    print(I.connections)
-    print(I.connectedTo)
-    print("nb total d'E/S: " + str(total_nb_plugs(TC)))
-    
-    print('_____________________________________________________\n')
-    TC.remove(NOT)
-    print("GIN:")
-    print(GIN.connections)
-    print(GIN.connectedTo)
-    print("GOUT")
-    print(GOUT.connections)
-    print(GOUT.connectedTo)
-    print("I:")
-    print(I.connections)
-    print(I.connectedTo)
-    print("nb total d'E/S: " + str(total_nb_plugs(TC)))
+    print(GIN.name); print(GOUT.name); print(I.name); print(O.name)
+
 

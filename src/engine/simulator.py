@@ -147,9 +147,9 @@ class Circuit:
     removeCircuitVerbose = True   # Removing a circuit
     detailedRemoveVerbose = True  # Detailed remove
 
-    def __init__(self, name, owner=None):
+    def __init__(self, owner, name):
         self.owner = owner      # parent circuit
-        if name is None and owner:
+        if name is None:
             name = self.generate_name()
         self.name = name        # name (generated if not specified)
         self.inputList = []     # circuit's inputs list
@@ -158,6 +158,11 @@ class Circuit:
         log.info(
             "circuit %s '%s' has been created"
             % (self.class_name(), self.name,))
+        if owner:
+            owner.circuitList.append(self)
+            log.info(
+                "circuit %s '%s' added to %s"
+                % (self.class_name(), self.name, self.owner.name,))
 
     # -+---------------    METHODS FOR ADDING COMPONENTS    ---------------+- #
     def add_plug(self, plug):
@@ -190,7 +195,6 @@ class Circuit:
 
     def add_circuit(self, circuit):
         """Add an circuit to the circuitList of the circuit."""
-        circuit.owner = self
         self.circuitList.append(circuit)
         if Circuit.addCircuitVerbose:
             log.info(
