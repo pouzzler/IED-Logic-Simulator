@@ -94,6 +94,8 @@ class MainWindow(QMainWindow):
         self.menuBar().addMenu(editMenu)
         self.menuBar().addMenu(windowsMenu)
         self.menuBar().addMenu(helpMenu)
+        
+        self.statusBar()
 
         self.tooloptions.clicked.connect(self.setStatusMessage)
         # it could be possible to reload only the changed option
