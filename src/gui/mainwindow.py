@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 # coding=utf-8
 
+# TODO: the settings should be load in a unique file
+
 import time
 import configparser
 from PySide import QtGui, QtCore
