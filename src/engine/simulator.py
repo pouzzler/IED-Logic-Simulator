@@ -256,6 +256,19 @@ class Circuit:
 
     # -+-----------------------    OTHER METHODS    -----------------------+- #
 
+    def setName(self, name):
+        if len(name):
+            if name in [x.name for x in self.owner.circuitList]):
+                log.error('name %s already in use' % (name,))
+                return False
+            else:
+                log.info("%s's name changed to %s" % (self.name, name,))
+                self.name = name
+                return True
+        else:
+            log.error('name must be at least one character long')
+            return False
+            
     def generate_name(self):
         """Generate a name for a Circuit (like 'NandGate4' or 'NotGate0')."""
         className = self.class_name().upper()  # get class name of the object
