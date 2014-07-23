@@ -62,13 +62,17 @@ class Plug:
 
     def setName(self, name):
         if len(name):
-            log.info("%s's name changed to %s" % (self.name, name,))
-            if self.isInput and name in [x.name for x in self.owner.inputList]:
-                #à finir
-                
-            self.name = name
+            inputNamesList = [x.name for x in self.owner.inputList]
+            outputNamesList = [x.name for x in self.owner.outputList]
+            
+            if (self.isInput and name in inputNamesList) \
+                or (not self.isInput and name in outputNamesList):
+                    log.error('name already in use')
+            else:
+                self.name = name
+                log.info("%s's name changed to %s" % (self.name, name,))
         else:
-            log.error('Names must be at least one character long')
+            log.error('name must be at least one character long')
         
     def set(self, value):
         """Sets the boolean value of a Plug."""
