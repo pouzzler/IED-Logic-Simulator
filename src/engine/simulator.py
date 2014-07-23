@@ -65,12 +65,14 @@ class Plug:
             inputNamesList = [x.name for x in self.owner.inputList]
             outputNamesList = [x.name for x in self.owner.outputList]
             
-            if (self.isInput and name in inputNamesList) \
-                or (not self.isInput and name in outputNamesList):
-                    log.error('name already in use')
+            if (self.isInput and name in [
+                x.name for x in self.owner.inputList]) or \
+                (not self.isInput and name in [
+                x.name for x in self.owner.outputList]):
+                    log.error('name %s already in use' % (name,))
             else:
-                self.name = name
                 log.info("%s's name changed to %s" % (self.name, name,))
+                self.name = name
         else:
             log.error('name must be at least one character long')
         
