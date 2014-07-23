@@ -147,8 +147,9 @@ class Circuit:
     removeCircuitVerbose = True   # Removing a circuit
     detailedRemoveVerbose = True  # Detailed remove
 
-    def __init__(self, name):
-        if name is None:
+    def __init__(self, name, owner=None):
+        self.owner = owner      # parent circuit
+        if name is None and owner:
             name = self.generate_name()
         self.name = name        # name (generated if not specified)
         self.inputList = []     # circuit's inputs list
@@ -189,6 +190,7 @@ class Circuit:
 
     def add_circuit(self, circuit):
         """Add an circuit to the circuitList of the circuit."""
+        circuit.owner = self
         self.circuitList.append(circuit)
         if Circuit.addCircuitVerbose:
             log.info(
@@ -255,10 +257,9 @@ class Circuit:
         removeMethod(component)                 # remove the compon from list
 
     # -+-----------------------    OTHER METHODS    -----------------------+- #
-
     def setName(self, name):
         if len(name):
-            if name in [x.name for x in self.owner.circuitList]):
+            if name in [x.name for x in self.owner.circuitList]:
                 log.error('name %s already in use' % (name,))
                 return False
             else:
@@ -271,14 +272,23 @@ class Circuit:
             
     def generate_name(self):
         """Generate a name for a Circuit (like 'NandGate4' or 'NotGate0')."""
+        i = 0
         className = self.class_name().upper()  # get class name of the object
-        try:                               # try to get the ID of that class
-            ID = Circuit.namesDict[className]
-        except KeyError:                   # add a new dictionary entry, ID = 0
-            Circuit.namesDict[className] = 0
-            ID = 0
-        Circuit.namesDict[className] += 1  # set the new ID for that class
-        return str(className) + str(ID)    # create and return the object name
+        names = [circuit.name for circuit in self.owner.circuitList]
+        while True:
+            name = str(className) + str(i)
+            if name not in names:
+                return name
+            i += 1
+
+        #~ className = self.class_name().upper()  # get class name of the object
+        #~ try:                               # try to get the ID of that class
+            #~ ID = Circuit.namesDict[className]
+        #~ except KeyError:                   # add a new dictionary entry, ID = 0
+            #~ Circuit.namesDict[className] = 0
+            #~ ID = 0
+        #~ Circuit.namesDict[className] += 1  # set the new ID for that class
+        #~ return str(className) + str(ID)    # create and return the object name
 
     def class_name(self):
         """Return the original clas name of the circuit instance."""
