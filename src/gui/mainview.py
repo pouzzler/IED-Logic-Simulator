@@ -40,9 +40,6 @@ class MainView(QtGui.QGraphicsView):
         if ret[1] and len(ret[0]):
             item.name = ret[0]
 
-    def toggleValue(self, item):
-        item.set(not item.value)
-
     def contextMenuEvent(self, e):
         """Pops a contextual menu up on right-clicks"""
         item = self.itemAt(e.pos())
@@ -55,7 +52,7 @@ class MainView(QtGui.QGraphicsView):
                 menu.addAction("Set name", lambda: self.setName(item))
             elif isinstance(item, IOItem):
                 menu.addAction("Set name", lambda: self.setName(item))
-                menu.addAction(str(item.value), lambda: self.toggleValue(item))
+                menu.addAction(str(item.value), lambda: item.set(not item.value))
             elif isinstance(item, Wire):
                 pos = item.mapFromScene(self.mapToScene(e.pos()))
                 if item.handleAtPos(pos):
@@ -188,7 +185,7 @@ class MainView(QtGui.QGraphicsView):
                     self.currentWire = item
                     self.isDrawing = True
                     return   # no super(), prevents dragging/selecting
-        # Didn't click an item? We wanted to drag or select
+        # Didn't click a handle? We wanted to drag or select
         super(MainView, self).mousePressEvent(e)
 
     def mouseReleaseEvent(self, e):
