@@ -9,7 +9,7 @@ from PySide.QtGui import (
 from .toolbox import ToolBox
 from .tooloptions import ToolOptions
 from .graphicitem import CircuitItem, IOItem, Wire
-from engine.simulator import Circuit
+from engine.simulator import Circuit, Plug
 from .settings import configFile
 
 
@@ -112,6 +112,8 @@ class MainView(QGraphicsView):
                 if isinstance(item, CircuitItem):
                     mainCircuit.remove(item.circuit)
                     item.circuit = None
+                elif isinstance(item, Plug):
+                    mainCircuit.remove(item)
                 scene.removeItem(item)
         # <- , anti-clockwise rotation
         # TODO: serious problem with Qt: it is impossible to rotate
