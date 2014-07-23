@@ -109,7 +109,7 @@ class CircuitItem(QGraphicsPathItem):
         self.setFlag(QGraphicsItem.ItemIsSelectable)
         # Creating a circuit from our engine, using dynamic class lookup.
         self.circuit = parent.add_circuit(
-            getattr(engine.gates, gate + "Gate")(None))
+            getattr(engine.gates, gate + "Gate")(parent))
         # Getting some model values useful for the drawing.
         nInputs = self.circuit.nb_inputs()
         nOutputs = self.circuit.nb_outputs()
