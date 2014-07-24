@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # coding=utf-8
 
-from math import fabs
+from math import atan2, floor, pi, pow, sqrt
 
 from PySide.QtCore import QPointF
 from PySide.QtGui import (
@@ -28,15 +28,19 @@ class WireItem(QGraphicsPathItem):
         # to a Plug, this puts our item under the Plug, and itemAt()
         # will grab the Plug.
         self.setZValue(-1)
-
+        self.complete = False
+        
     def moveLastPoint(self, endPoint):
         """While dragging the mouse, redrawing the last segment."""
-        x1 = endPoint.x()
-        y1 = endPoint.y()
-        x2 = self.points[-2].x()
-        y2 = self.points[-2].y()
-        isHMove = fabs(x1 - x2) > fabs(y1 - y2)
-        self.points[-1] = QPointF(x1 if isHMove else x2, y2 if isHMove else y1)
+        sq2 = sqrt(2) / 2
+        A = [[0, 1], [sq2, sq2], [1, 0], [sq2, -sq2],
+            [0, -1], [-sq2, -sq2], [-1, 0], [-sq2, sq2]]
+        x = self.points[-2].x()
+        y = self.points[-2].y()
+        L = sqrt(pow(endPoint.x() - x, 2) + pow(endPoint.y() - y, 2))
+        angle = atan2(endPoint.x() - x, endPoint.y() - y)
+        a = round(8 * angle / (2 * pi)) % 8
+        self.points[-1] = QPointF(x + A[a][0] * L, y + A[a][1] * L)
         self.redraw()
 
     def redraw(self):
@@ -47,8 +51,9 @@ class WireItem(QGraphicsPathItem):
         path.moveTo(self.points[0])
         for p in self.points[1:]:
             path.lineTo(p)
-        path.addEllipse(self.points[-1], self.RADIUS, self.RADIUS)
-        path.closeSubpath()
+        if not self.complete:
+            path.addEllipse(self.points[-1], self.RADIUS, self.RADIUS)
+        #~ path.closeSubpath()
         self.setPath(path)
 
     def addPoint(self):
@@ -59,6 +64,8 @@ class WireItem(QGraphicsPathItem):
 
     def handleAtPos(self, pos):
         """We drag the end-segment when the user clicks the handle."""
+        if self.complete:
+            return
         handlePath = QPainterPath()
         handlePath.addEllipse(self.points[-1], self.RADIUS, self.RADIUS)
         return handlePath.contains(pos)
@@ -67,6 +74,8 @@ class WireItem(QGraphicsPathItem):
         """We remove the last segment (when the user made an error and
         corrects it).
         """
+        if self.complete:
+            return
         scene = self.scene()
         scene.removeItem(self)
         self.points = self.points[0:-2]
@@ -74,7 +83,15 @@ class WireItem(QGraphicsPathItem):
             self.addPoint()
             self.redraw()
             scene.addItem(self)
-
+    
+    def connect(self, endIO):
+        if not self.startIO.connect(endIO):
+            return False
+        else:
+            self.endIO = endIO
+            self.complete = True
+            self.redraw()
+            return True
 
 class IOItem(QGraphicsPathItem, Plug):
     """We represent an I pin as a graphic square path,

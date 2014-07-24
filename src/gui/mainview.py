@@ -121,6 +121,8 @@ class MainView(QGraphicsView):
                     item.circuit = None
                 elif isinstance(item, Plug):
                     mainCircuit.remove(item)
+                elif isinstance(item, WireItem):
+                    pass
                 scene.removeItem(item)
         # <- , anti-clockwise rotation
         # TODO: serious problem with Qt: it is impossible to rotate
@@ -216,9 +218,9 @@ class MainView(QGraphicsView):
                 if isinstance(item, CircuitItem) or isinstance(item, IOItem):
                     ioatpos = item.IOAtPos(pos)
                     if ioatpos:
-                        if not self.currentWire.startIO.connect(ioatpos):
+                        if not self.currentWire.connect(ioatpos):
                             self.scene().removeItem(self.currentWire)
-                            return
+                        return
             self.currentWire.addPoint()
             self.currentWire = None
         super(MainView, self).mouseReleaseEvent(e)
