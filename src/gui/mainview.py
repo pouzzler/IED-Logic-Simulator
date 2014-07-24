@@ -12,7 +12,6 @@ from .graphicitem import CircuitItem, IOItem, Wire
 from engine.simulator import Circuit, Plug
 from .settings import configFile
 
-
 mainCircuit = Circuit("Main_Circuit", None)
 
 
@@ -174,8 +173,9 @@ class MainView(QGraphicsView):
 
     def mousePressEvent(self, e):
         """When the mouse is pressed over a portion of a graphic item
-        that represents an engine.simulator.Plug, that Plug is appended
-        to self.connectionData.
+        that represents a Plug, we create a Wire.
+        Over a Wire handle, we extend the Wire.
+        
         """
         # Reserve right-clicks for contextual menus.
         if e.buttons() == QtCore.Qt.RightButton:
@@ -216,7 +216,9 @@ class MainView(QGraphicsView):
                 if isinstance(item, CircuitItem) or isinstance(item, IOItem):
                     ioatpos = item.IOAtPos(pos)
                     if ioatpos:
-                        self.currentWire.startIO.connect(ioatpos)
+                        if not self.currentWire.startIO.connect(ioatpos):
+                            self.scene().removeItem(self.currentWire)
+                            return
             self.currentWire.addPoint()
             self.currentWire = None
         super(MainView, self).mouseReleaseEvent(e)
@@ -236,13 +238,14 @@ class MainView(QGraphicsView):
                 if ioatpos:
                     self.setCursor(QtCore.Qt.CursorShape.UpArrowCursor)
                     return
-            elif isinstance(item, Wire) and item.handleAtPos(pos):
+            elif (isinstance(item, Wire) and item.handleAtPos(pos) and
+                    not self.isDrawing):
                 self.setCursor(QtCore.Qt.CursorShape.UpArrowCursor)
                 return
         self.setCursor(QtCore.Qt.CursorShape.ArrowCursor)
         super(MainView, self).mouseMoveEvent(e)
 
-    def toast(self, message):
+    def write(self, message):
         """Displays a short-lived informative message."""
         scene = self.scene()
         toast = scene.addText(message)

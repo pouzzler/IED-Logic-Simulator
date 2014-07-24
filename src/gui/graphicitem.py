@@ -130,6 +130,7 @@ class CircuitItem(QGraphicsPathItem):
         self.setFlag(QGraphicsItem.ItemIsSelectable)
         # Creating a circuit from our engine, using dynamic class lookup.
         self.circuit = parent.add_circuit(getattr(engine.gates, gate + "Gate"))
+        self.showName = True
         self.initPath()
         
     def initPath(self):
@@ -146,7 +147,8 @@ class CircuitItem(QGraphicsPathItem):
             self.oOffset = self.BODY_OFFSET
             self.iOffset = offset + self.BODY_OFFSET
         path = QPainterPath()
-        path.addText(0, 0, QFont("Times", 8, QFont.Bold), self.circuit.name)
+        if self.showName:
+            path.addText(0, 0, QFont("Times", 8, QFont.Bold), self.circuit.name)
         # Drawing inputs.
         for i in range(nInputs):
             path.addEllipse(
@@ -235,3 +237,6 @@ class CircuitItem(QGraphicsPathItem):
             if self.outputPaths[i].contains(pos):
                 return self.circuit.outputList[i]
 
+    def toggleNameVisibility(self):
+        self.showName = not self.showName
+        self.initPath()

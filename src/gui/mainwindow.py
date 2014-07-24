@@ -13,7 +13,7 @@ from .mainview import MainView
 from .toolbox import ToolBox
 from .tooloptions import ToolOptions
 from .docu import HelpDockWidget
-from .guilog import LoggerTextEdit
+from .loggertextedit import LoggerTextEdit
 from .settings import SettingsDialog, configFile
 
 from engine.gates import *                   # basic logic gates
@@ -54,6 +54,10 @@ class MainWindow(QMainWindow):
         self.logDock.setWidget(self.logWindow)
         self.addDockWidget(QtCore.Qt.BottomDockWidgetArea, self.logDock)
 
+        self.toastHandler = logging.StreamHandler(self.view)
+        self.toastHandler.setLevel(logging.WARNING)
+        log.addHandler(self.toastHandler)
+         
         self.settings = SettingsDialog(configFile)
 
         fileMenu = QMenu(u'File')
@@ -151,7 +155,7 @@ class MainWindow(QMainWindow):
             log.addHandler(fileHandler)
         else:
             log.removeHandler(fileHandler)
-
+        
     def centerAndResize(self):
         screen = QDesktopWidget().screenGeometry()
         self.resize(screen.width() / 1.2, screen.height() / 1.2)
