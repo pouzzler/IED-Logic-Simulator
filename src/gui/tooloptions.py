@@ -3,7 +3,7 @@
 
 from PySide.QtGui import (
     QWidget, QGridLayout, QLabel, QLineEdit, QPushButton, QRadioButton)
-
+from .graphicitem import CircuitItem
 
 class ToolOptions(QWidget):
     """Widget for modifying the selected circuit or gate."""
@@ -11,7 +11,7 @@ class ToolOptions(QWidget):
     def __init__(self, view):
         super(ToolOptions, self).__init__()
         self.view = view
-        self.view.scene().selectionChanged.connect(self.grayNameLE)
+        self.view.scene().selectionChanged.connect(self.grayOrSetNameLE)
         self.resize(400, 300)
         self.gridLayout = QGridLayout(self)
 
@@ -20,7 +20,8 @@ class ToolOptions(QWidget):
 
         self.nameLE = QLineEdit(self)
         self.gridLayout.addWidget(self.nameLE, 0, 1, 1, 2)
-        #~ self.nameLE.textChanged.connect(self.setItemName())
+        self.nameLE.setDisabled(True)
+        self.nameLE.textChanged.connect(self.setItemName)
 
         nbInputsLabel = QLabel('Inputs number:', self)
         self.gridLayout.addWidget(nbInputsLabel, 1, 0, 1, 1)
@@ -53,10 +54,15 @@ class ToolOptions(QWidget):
         self.highRadioButton.setText('High')
         self.gridLayout.addWidget(self.highRadioButton, 3, 2, 1, 1)
 
-    def grayNameLE(self):
+    def grayOrSetNameLE(self):
         selection = self.view.scene().selectedItems()
-        if len(selection) == 1:
+        if len(selection) == 1 and isinstance(selection[0], CircuitItem): 
             self.nameLE.setDisabled(False)
+            self.nameLE.setText(selection[0].circuit.name)
         else:
             self.nameLE.setDisabled(True)
+        
+    def setItemName(self):
+        item = self.view.scene().selectedItems()[0]
+        self.view.setItemName(self.nameLE.text(), item)
             

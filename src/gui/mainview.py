@@ -34,15 +34,13 @@ class MainView(QGraphicsView):
         self.setScene(QGraphicsScene(parent))
         self.isDrawing = False
 
-    def setItemNameDialog(self, item):
+    def getNewName(self, item):
         # ret = tuple string, bool (false when the dialog is dismissed)
         ret = QInputDialog.getText(self, u'Set name', u'Name:')
         if ret[1]:
             setItemName(self, item, ret[0])
             
-    def setItemName(self, name, item=None):
-        #~ if item == None:     # comes from ToolOptions
-            
+    def setItemName(self, name, item):
         if isinstance(item, CircuitItem):
             if item.circuit.setName(name):
                 item.initPath()
@@ -58,9 +56,9 @@ class MainView(QGraphicsView):
                 pos = item.mapFromScene(self.mapToScene(e.pos()))
                 ioatpos = item.IOAtPos(pos)
                 item = ioatpos if ioatpos else item
-                menu.addAction("Set name", lambda: self.setItemName(item))
+                menu.addAction("Set name", lambda: self.getNewName(item))
             elif isinstance(item, IOItem):
-                menu.addAction("Set name", lambda: self.setItemName(item))
+                menu.addAction("Set name", lambda: self.getNewName(item))
                 if item.isInput:
                     menu.addAction(
                         str(item.value), lambda: item.set(not item.value))
