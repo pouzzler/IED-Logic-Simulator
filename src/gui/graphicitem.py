@@ -129,8 +129,7 @@ class CircuitItem(QGraphicsPathItem):
         self.setFlag(QGraphicsItem.ItemIsMovable)
         self.setFlag(QGraphicsItem.ItemIsSelectable)
         # Creating a circuit from our engine, using dynamic class lookup.
-        self.circuit = parent.add_circuit(
-            getattr(engine.gates, gate + "Gate")(parent))
+        self.circuit = parent.add_circuit(getattr(engine.gates, gate + "Gate"))
         self.initPath()
         
     def initPath(self):
