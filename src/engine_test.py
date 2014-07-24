@@ -108,15 +108,19 @@ if __name__ == '__main__':
     #~ print("nb total d'E/S:       " + str(total_nb_plugs(TC)))
 
     NOT = TC.add_circuit(NotGate)
-    print(NOT.name)
     GIN = TC.add_input()
     GOUT = TC.add_output()
     I = NOT.inputList[0]
     O = NOT.outputList[0]
-    I.connect(GIN)
-    GOUT.connect(O)
+    GIN.connect(I)
+    O.connect(GOUT)
+    
+    GIN.set(False)
 
+    print(NOT.name)
     print('_____________________________________________________\n')
-    print(GIN.name); print(GOUT.name); print(I.name); print(O.name)
+    print(GIN.name); print(I.name); print(O.name); print(GOUT.name)
+    print('_____________________________________________________\n')
+    print(GIN.value); print(I.value); print(O.value); print(GOUT.value)
 
 
