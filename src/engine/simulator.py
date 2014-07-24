@@ -56,7 +56,7 @@ class Plug:
         self.name = name          # its name
         self.value = False        # at first, no electricity
         self.__nbEval = 0         # number of evaluations
-        self.connections = []     # plugs connected to this plug
+        self.connections = []     # plugs connected on this plug
         self.connectedTo = []     # plugs which this plug is connected to
 
     def set(self, value):
@@ -83,14 +83,53 @@ class Plug:
         """Connects a Plug to a list of Plugs."""
         if not isinstance(plugList, list):
             plugList = [plugList]           # create a list
+            
         for plug in plugList:
-            if plug in self.connections:
+
+            #   * connection already exists
+            if plug in self.connections or self in plug.connections:
+                log.info('connection between %s and %s already exists'
+                        % (self.name, plug.name))
                 continue
-            self.connections.append(plug)   # add each connection of the lists
-            plug.connectedTo.append(self)
+
+            #   * I/O => same I/O
+            if plug is self:
+                log.warning('cannot connect I/O on itself')
+                return False
+
+            fromCIToCO =    (self.owner.owner and self.isInput) and \
+                            (plug.owner.owner and not plug.isInput)
+            fromCIToGI =    (self.owner.owner and self.isInput) and \
+                            (not plug.owner.owner and plug.isInput)
+            fromGOToCO =    (not self.owner.owner and not self.isInput) and \
+                            (plug.owner.owner and not plug.isInput)
+            fromCOToCI =    (self.owner.owner and not self.isInput) and \
+                            (plug.owner.owner and plug.isInput)
+            fromGIToCI =    (not self.owner.owner and self.isInput) and \
+                            (plug.owner.owner and plug.isInput)
+            fromCOToGO =    (self.owner.owner and not self.isInput) and \
+                            (not plug.owner.owner and not plug.isInput)
+
+
+            #   * valid connections
+            if fromCIToCO or fromCIToGI or fromGOToCO:
+                plug.connections.append(self)
+                self.connectedTo.append(plug)
+
+            #   * inverted valid connections
+            elif fromCOToCI or fromGIToCI or fromCOToGO:
+                self.connections.append(plug)
+                plug.connectedTo.append(self)
+
+            #   * invalid connections
+            else:
+                log.warning('invalid connection')
+                return False
+
             if Plug.connectVerbose:
-                log.info('%s.%s connected to %s.%s' % (
-                    plug.owner.name, plug.name, self.owner.name, self.name))
+                log.info('%s->%s connected to %s->%s'
+                        % (self.owner.name, self.name, plug.owner.name,
+                            plug.name))
 
     def setName(self, name):
         if len(name):
