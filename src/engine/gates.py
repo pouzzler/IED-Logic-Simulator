@@ -23,8 +23,8 @@ from .simulator import *
 
 # NOT gate
 class NotGate(Circuit):
-    def __init__(self, owner, name=None):
-        Circuit.__init__(self, owner, name)
+    def __init__(self, name, owner):
+        Circuit.__init__(self, name, owner)
         self.add_input()
         self.add_output()
 
@@ -34,8 +34,8 @@ class NotGate(Circuit):
 
 # AND gate
 class AndGate(Circuit):
-    def __init__(self, owner, name=None, inputs=2):
-        Circuit.__init__(self, owner, name)
+    def __init__(self, name, owner, inputs=2):
+        Circuit.__init__(self, name, owner)
         for inp in range(inputs):
             self.add_input()
         self.add_output()
@@ -46,8 +46,8 @@ class AndGate(Circuit):
 
 # OR gate
 class OrGate(Circuit):
-    def __init__(self, owner, name=None, inputs=2):
-        Circuit.__init__(self, owner, name)
+    def __init__(self, name, owner, inputs=2):
+        Circuit.__init__(self, name, owner)
         for inp in range(inputs):
             self.add_input()
         self.add_output()
@@ -58,8 +58,8 @@ class OrGate(Circuit):
 
 # NOR gate
 class NorGate(Circuit):
-    def __init__(self, owner, name=None, inputs=2):
-        Circuit.__init__(self, owner, name)
+    def __init__(self, name, owner, inputs=2):
+        Circuit.__init__(self, name, owner)
         for inp in range(inputs):
             self.add_input()
         self.add_output()
@@ -70,8 +70,8 @@ class NorGate(Circuit):
 
 # XOR gate
 class XorGate(Circuit):
-    def __init__(self, owner, name=None, inputs=2):
-        Circuit.__init__(self, owner, name)
+    def __init__(self, name, owner, inputs=2):
+        Circuit.__init__(self, name, owner)
         for inp in range(inputs):
             self.add_input()
         self.add_output()
@@ -86,8 +86,8 @@ class XorGate(Circuit):
 
 # XNOR gate
 class XnorGate(Circuit):
-    def __init__(self, owner, name=None, inputs=2):
-        Circuit.__init__(self, owner, name)
+    def __init__(self, name, owner, inputs=2):
+        Circuit.__init__(self, name, owner)
         for inp in range(inputs):
             self.add_input()
         self.add_output()
@@ -99,8 +99,8 @@ class XnorGate(Circuit):
 
 # NAND gate
 class NandGate(Circuit):
-    def __init__(self, owner, name=None, inputs=2):
-        Circuit.__init__(self, owner, name)
+    def __init__(self, name, owner, inputs=2):
+        Circuit.__init__(self, name, owner)
         for inp in range(inputs):
             self.add_input()
         self.add_output()

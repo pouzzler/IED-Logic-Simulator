@@ -59,7 +59,7 @@ from time import sleep
 
 
 if __name__ == '__main__':
-    TC = Circuit(None, "Main_Circuit")
+    TC = Circuit("Main_Circuit", None)
     
     #~ clk = TC.add_output('CLOCK')       # l'horloge est une simple sortie du TL
     #~ bgClockThread = ClockThread(clk)   # mais elle est simulée dans un thread
@@ -107,10 +107,10 @@ if __name__ == '__main__':
     #~ print("nb total de sorties:  " + str(total_nb_outputs(TC)))
     #~ print("nb total d'E/S:       " + str(total_nb_plugs(TC)))
 
-    NOT = NotGate(TC)
+    NOT = TC.add_circuit(NotGate)
     print(NOT.name)
-    GIN = TC.add_input(TC)
-    GOUT = TC.add_output(TC)
+    GIN = TC.add_input()
+    GOUT = TC.add_output()
     I = NOT.inputList[0]
     O = NOT.outputList[0]
     I.connect(GIN)

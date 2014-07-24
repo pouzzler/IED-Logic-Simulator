@@ -44,7 +44,6 @@ stdoutHandler.setFormatter(formatter)
 class Plug:
     """Represents an input or output."""
 
-    namesDict = {}              # for auto-naming
     setInputVerbose = True      # Inputs changes
     setOutputVerbose = True     # Outputs changes
     connectVerbose = True       # Connecting / diconnecting I/O
@@ -111,12 +110,14 @@ class Plug:
                     plug.owner.name, plug.name, self.owner.name, self.name))
 
     def generate_name(self):
-        """Generate a name for a plug (like 'Input2' or 'Output1')."""
+        """Generate a name for a plug (like 'TOP_INPUT2' or 'OUTPUT1')."""
         i = 0
         names = [io.name for io in (
             self.owner.inputList if self.isInput else self.owner.outputList)]
         while True:
-            name = ('INPUT' if self.isInput else 'OUTPUT') + str(i)
+            name = ('INPUT_' if self.isInput else 'OUTPUT_') + str(i)
+            if self.owner.owner is None:
+                name = 'TOP_' + name
             if name not in names:
                 return name
             i += 1
@@ -126,14 +127,13 @@ class Plug:
 class Circuit:
     """Represents a logic circuit."""
 
-    namesDict = {}                # for auto-naming
     addPlugVerbose = True         # Adding an I/O
     addCircuitVerbose = True      # Adding a circuit
     removePlugVerbose = True      # Removing an I/O
     removeCircuitVerbose = True   # Removing a circuit
     detailedRemoveVerbose = True  # Detailed remove
 
-    def __init__(self, owner, name):
+    def __init__(self, name, owner):
         self.owner = owner      # parent circuit
         if name is None:
             name = self.generate_name()
@@ -144,11 +144,6 @@ class Circuit:
         log.info(
             "circuit %s '%s' has been created"
             % (self.class_name(), self.name,))
-        if owner:
-            owner.circuitList.append(self)
-            log.info(
-                "circuit %s '%s' added to %s"
-                % (self.class_name(), self.name, self.owner.name,))
 
     # -+---------------    METHODS FOR ADDING COMPONENTS    ---------------+- #
     def add_plug(self, plug):
@@ -179,8 +174,9 @@ class Circuit:
             log.info("output '%s' added to %s" % (output.name, self.name,))
         return self.outputList[-1]
 
-    def add_circuit(self, circuit):
+    def add_circuit(self, circuitClass, name=None):
         """Add an circuit to the circuitList of the circuit."""
+        circuit = circuitClass(name, self)  # also pass inputs using kwargs
         self.circuitList.append(circuit)
         if Circuit.addCircuitVerbose:
             log.info(
@@ -267,19 +263,10 @@ class Circuit:
         className = self.class_name().upper()  # get class name of the object
         names = [circuit.name for circuit in self.owner.circuitList]
         while True:
-            name = str(className) + str(i)
+            name = str(className) + '_' + str(i)
             if name not in names:
                 return name
             i += 1
-
-        #~ className = self.class_name().upper()  # get class name of the object
-        #~ try:                               # try to get the ID of that class
-            #~ ID = Circuit.namesDict[className]
-        #~ except KeyError:                   # add a new dictionary entry, ID = 0
-            #~ Circuit.namesDict[className] = 0
-            #~ ID = 0
-        #~ Circuit.namesDict[className] += 1  # set the new ID for that class
-        #~ return str(className) + str(ID)    # create and return the object name
 
     def class_name(self):
         """Return the original clas name of the circuit instance."""
