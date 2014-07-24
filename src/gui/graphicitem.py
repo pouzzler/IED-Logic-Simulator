@@ -1,35 +1,42 @@
 #!/usr/bin/env python3
 # coding=utf-8
 
-from PySide import QtGui, QtCore
+from math import fabs
+
+from PySide.QtCore import QPointF
 from PySide.QtGui import (
     QFont, QGraphicsItem, QGraphicsPathItem, QPainterPath)
 from engine.simulator import Circuit, Plug
 import engine
 
 
-class Wire(QGraphicsPathItem):
+class WireItem(QGraphicsPathItem):
 
     RADIUS = 2.5
 
     def __init__(self, startIO, p1):
-        super(Wire, self).__init__()
+        super(WireItem, self).__init__()
         self.setFlag(QGraphicsItem.ItemIsMovable)
         self.setFlag(QGraphicsItem.ItemIsSelectable)
-        # Remembering the Plug where the Wire starts, for creating the
+        # Remembering the Plug where the WireItem starts, for creating the
         # connection, when the last segment is drawn over another IO.
         self.startIO = startIO
         # The first point of our segments. The "moving point" used to
         # redraw during mouseMove events.
         self.points = [p1, p1]
-        # We dont want't to catch the Wire handle when it is connected
+        # We dont want't to catch the WireItem handle when it is connected
         # to a Plug, this puts our item under the Plug, and itemAt()
         # will grab the Plug.
         self.setZValue(-1)
 
     def moveLastPoint(self, endPoint):
         """While dragging the mouse, redrawing the last segment."""
-        self.points[-1] = endPoint
+        x1 = endPoint.x()
+        y1 = endPoint.y()
+        x2 = self.points[-2].x()
+        y2 = self.points[-2].y()
+        isHMove = fabs(x1 - x2) > fabs(y1 - y2)
+        self.points[-1] = QPointF(x1 if isHMove else x2, y2 if isHMove else y1)
         self.redraw()
 
     def redraw(self):

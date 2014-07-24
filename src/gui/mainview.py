@@ -8,7 +8,7 @@ from PySide.QtGui import (
     QStandardItemModel)
 from .toolbox import ToolBox
 from .tooloptions import ToolOptions
-from .graphicitem import CircuitItem, IOItem, Wire
+from .graphicitem import CircuitItem, IOItem, WireItem
 from engine.simulator import Circuit, Plug
 from .settings import configFile
 
@@ -61,7 +61,7 @@ class MainView(QGraphicsView):
                 if item.isInput:
                     menu.addAction(
                         str(item.value), lambda: item.set(not item.value))
-            elif isinstance(item, Wire):
+            elif isinstance(item, WireItem):
                 pos = item.mapFromScene(self.mapToScene(e.pos()))
                 if item.handleAtPos(pos):
                     menu.addAction("Remove last", lambda: item.removeLast())
@@ -173,8 +173,8 @@ class MainView(QGraphicsView):
 
     def mousePressEvent(self, e):
         """When the mouse is pressed over a portion of a graphic item
-        that represents a Plug, we create a Wire.
-        Over a Wire handle, we extend the Wire.
+        that represents a Plug, we create a WireItem.
+        Over a WireItem handle, we extend the WireItem.
         
         """
         # Reserve right-clicks for contextual menus.
@@ -188,10 +188,10 @@ class MainView(QGraphicsView):
                 ioatpos = item.IOAtPos(pos)
                 if ioatpos:
                     self.isDrawing = True
-                    self.currentWire = Wire(ioatpos, self.mapToScene(e.pos()))
+                    self.currentWire = WireItem(ioatpos, self.mapToScene(e.pos()))
                     self.scene().addItem(self.currentWire)
                     return   # no super(), prevents dragging/selecting
-            elif isinstance(item, Wire):
+            elif isinstance(item, WireItem):
                 if item.handleAtPos(pos):
                     self.currentWire = item
                     self.isDrawing = True
@@ -233,12 +233,11 @@ class MainView(QGraphicsView):
         item = self.itemAt(e.pos())
         if item:
             pos = item.mapFromScene(self.mapToScene(e.pos()))
-            if isinstance(item, CircuitItem) or isinstance(item, IOItem):
-                ioatpos = item.IOAtPos(pos)
-                if ioatpos:
-                    self.setCursor(QtCore.Qt.CursorShape.UpArrowCursor)
-                    return
-            elif (isinstance(item, Wire) and item.handleAtPos(pos) and
+            if ((isinstance(item, CircuitItem) or isinstance(item, IOItem))
+                    and item.IOAtPos(pos)):
+                self.setCursor(QtCore.Qt.CursorShape.UpArrowCursor)
+                return
+            elif (isinstance(item, WireItem) and item.handleAtPos(pos) and
                     not self.isDrawing):
                 self.setCursor(QtCore.Qt.CursorShape.UpArrowCursor)
                 return
@@ -248,5 +247,5 @@ class MainView(QGraphicsView):
     def write(self, message):
         """Displays a short-lived informative message."""
         scene = self.scene()
-        toast = scene.addText(message)
-        QtCore.QTimer.singleShot(1500, lambda: scene.removeItem(toast))
+        msg = scene.addText(message)
+        QtCore.QTimer.singleShot(1500, lambda: scene.removeItem(msg))
