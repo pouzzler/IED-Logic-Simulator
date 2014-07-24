@@ -13,8 +13,8 @@ outputlist and circuitList lists, respectively.
 Plugs and Circuits may have an optional name.
 
 There are two ways to access a component (Plug or Circuit) of a circuit:
-* Using its index in the list: circuit.inputList ([1])
-* Using its name (if any): circuit.input ('B')
+* Using its index in the list: circuit.inputList[1]
+* Using its name (if any): circuit.input('B')
 
 When the value (Boolean) of an input is modified (with .set()), the entire
 circuit is evaluated: all outputs are recalculated based on the values ​​of
@@ -59,23 +59,6 @@ class Plug:
         self.connections = []     # plugs connected to this plug
         self.connectedTo = []     # plugs which this plug is connected to
 
-    def setName(self, name):
-        if len(name):
-            if (self.isInput and name in [
-                    x.name for x in self.owner.inputList]) or \
-                    (not self.isInput and name in [
-                        x.name for x in self.owner.outputList]):
-                log.error('name %s already in use' % (name,))
-                return False
-            else:
-                log.info("%s.%s's name changed to %s" % (
-                    self.owner.name, self.name, name,))
-                self.name = name
-                return True
-        else:
-            log.error('name must be at least one character long')
-            return False
-
     def set(self, value):
         """Sets the boolean value of a Plug."""
         if self.value == value and self.__nbEval != 0:  # unchanged value, stop
@@ -108,6 +91,23 @@ class Plug:
             if Plug.connectVerbose:
                 log.info('%s.%s connected to %s.%s' % (
                     plug.owner.name, plug.name, self.owner.name, self.name))
+
+    def setName(self, name):
+        if len(name):
+            if (self.isInput and name in [
+                    x.name for x in self.owner.inputList]) or \
+                    (not self.isInput and name in [
+                        x.name for x in self.owner.outputList]):
+                log.error('name %s already in use' % (name,))
+                return False
+            else:
+                log.info("%s.%s's name changed to %s" % (
+                    self.owner.name, self.name, name,))
+                self.name = name
+                return True
+        else:
+            log.error('name must be at least one character long')
+            return False
 
     def generate_name(self):
         """Generate a name for a plug (like 'TOP_INPUT2' or 'OUTPUT1')."""
@@ -256,7 +256,7 @@ class Circuit:
         else:
             log.error('name must be at least one character long')
             return False
-            
+
     def generate_name(self):
         """Generate a name for a Circuit (like 'NandGate4' or 'NotGate0')."""
         i = 0
