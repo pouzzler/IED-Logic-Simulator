@@ -130,6 +130,7 @@ class Plug:
                 log.info('%s->%s connected to %s->%s'
                         % (self.owner.name, self.name, plug.owner.name,
                             plug.name))
+        return True
 
     def setName(self, name):
         if len(name):
