@@ -122,7 +122,7 @@ class MainView(QGraphicsView):
                 elif isinstance(item, Plug):
                     mainCircuit.remove(item)
                 elif isinstance(item, WireItem):
-                    pass
+                    item.startIO.disconnect(item.endIO)
                 scene.removeItem(item)
         # <- , anti-clockwise rotation
         # TODO: serious problem with Qt: it is impossible to rotate

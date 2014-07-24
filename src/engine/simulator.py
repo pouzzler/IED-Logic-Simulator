@@ -132,6 +132,17 @@ class Plug:
                             plug.name))
         return True
 
+    def disconnect(self, plug):
+        if plug in self.connections:
+            plug.connectedTo.remove(self)
+            self.connections.remove(plug)
+        else:
+            plug.connections.remove(self)
+            self.connectedTo.remove(plug)
+        log.info(
+            '%s.%s and %s.%s disconnected'
+            % (self.owner.name, self.name, plug.owner.name, plug.name,))
+            
     def setName(self, name):
         if len(name):
             if (self.isInput and name in [
