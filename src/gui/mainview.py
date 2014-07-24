@@ -8,7 +8,7 @@ from PySide.QtGui import (
     QStandardItemModel)
 from .toolbox import ToolBox
 from .tooloptions import ToolOptions
-from .graphicitem import CircuitItem, IOItem, WireItem
+from .graphicitem import CircuitItem, PlugItem, WireItem
 from engine.simulator import Circuit, Plug
 from .settings import configFile
 
@@ -56,7 +56,7 @@ class MainView(QGraphicsView):
                 ioatpos = item.IOAtPos(pos)
                 item = ioatpos if ioatpos else item
                 menu.addAction("Set name", lambda: self.getNewName(item))
-            elif isinstance(item, IOItem):
+            elif isinstance(item, PlugItem):
                 menu.addAction("Set name", lambda: self.getNewName(item))
                 if item.isInput:
                     menu.addAction(
@@ -96,9 +96,9 @@ class MainView(QGraphicsView):
         if name in ['And', 'Or', 'Nand', 'Nor', 'Not', 'Xor', 'Xnor']:
             item = CircuitItem(name, mainCircuit)
         elif name == 'Input Pin':
-            item = IOItem(True, mainCircuit)
+            item = PlugItem(True, mainCircuit)
         elif name == 'Output Pin':
-            item = IOItem(False, mainCircuit)
+            item = PlugItem(False, mainCircuit)
         if item:
             self.scene().addItem(item)
             item.setPos(e.pos())
@@ -186,7 +186,7 @@ class MainView(QGraphicsView):
         item = self.itemAt(e.pos())
         if item:
             pos = item.mapFromScene(self.mapToScene(e.pos()))
-            if isinstance(item, CircuitItem) or isinstance(item, IOItem):
+            if isinstance(item, CircuitItem) or isinstance(item, PlugItem):
                 ioatpos = item.IOAtPos(pos)
                 if ioatpos:
                     self.isDrawing = True
@@ -215,7 +215,7 @@ class MainView(QGraphicsView):
             item = self.itemAt(e.pos())
             if item:
                 pos = item.mapFromScene(self.mapToScene(e.pos()))
-                if isinstance(item, CircuitItem) or isinstance(item, IOItem):
+                if isinstance(item, CircuitItem) or isinstance(item, PlugItem):
                     ioatpos = item.IOAtPos(pos)
                     if ioatpos:
                         if not self.currentWire.connect(ioatpos):
@@ -235,7 +235,7 @@ class MainView(QGraphicsView):
         item = self.itemAt(e.pos())
         if item:
             pos = item.mapFromScene(self.mapToScene(e.pos()))
-            if ((isinstance(item, CircuitItem) or isinstance(item, IOItem))
+            if ((isinstance(item, CircuitItem) or isinstance(item, PlugItem))
                     and item.IOAtPos(pos)):
                 self.setCursor(QtCore.Qt.CursorShape.UpArrowCursor)
                 return

@@ -93,7 +93,7 @@ class WireItem(QGraphicsPathItem):
             self.redraw()
             return True
 
-class IOItem(QGraphicsPathItem, Plug):
+class PlugItem(QGraphicsPathItem, Plug):
     """We represent an I pin as a graphic square path,
     and a O pin as a circle.
     """
@@ -102,7 +102,7 @@ class IOItem(QGraphicsPathItem, Plug):
     SMALL_DIAMETER = 5
 
     def __init__(self, isInput, parent):
-        super(IOItem, self).__init__()
+        super(PlugItem, self).__init__()
         Plug.__init__(self, isInput, None, parent)
         # Creating a plug from our engine
         parent.add_plug(self)
