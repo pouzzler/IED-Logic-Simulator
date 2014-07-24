@@ -38,7 +38,7 @@ class MainWindow(QMainWindow):
         self.boxDock.setWidget(self.toolbox)
         self.addDockWidget(QtCore.Qt.LeftDockWidgetArea, self.boxDock)
 
-        self.tooloptions = ToolOptions()
+        self.tooloptions = ToolOptions(self.view)
         self.optionsDock = QDockWidget('Tool options')
         self.optionsDock.setWidget(self.tooloptions)
         self.optionsDock.setMaximumSize(QtCore.QSize(524287, 161))
@@ -97,9 +97,7 @@ class MainWindow(QMainWindow):
         
         self.statusBar()
 
-        self.tooloptions.clicked.connect(self.setStatusMessage)
-        # it could be possible to reload only the changed option
-        # but I'm not sure that it would be simplier and faster
+        # this is easier than reloading one setting only
         self.settings.configSaved.connect(self.loadConfig)
 
         self.loadConfig()

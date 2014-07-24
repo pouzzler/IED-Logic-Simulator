@@ -147,7 +147,7 @@ class CircuitItem(QGraphicsPathItem):
             self.oOffset = self.BODY_OFFSET
             self.iOffset = offset + self.BODY_OFFSET
         path = QPainterPath()
-        path.addText(0, 0, QFont(), self.circuit.name)
+        path.addText(0, 0, QFont("Times", 8, QFont.Bold), self.circuit.name)
         # Drawing inputs.
         for i in range(nInputs):
             path.addEllipse(

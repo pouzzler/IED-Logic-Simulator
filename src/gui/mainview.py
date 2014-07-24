@@ -34,15 +34,20 @@ class MainView(QGraphicsView):
         self.setScene(QGraphicsScene(parent))
         self.isDrawing = False
 
-    def setItemName(self, item):
+    def setItemNameDialog(self, item):
         # ret = tuple string, bool (false when the dialog is dismissed)
         ret = QInputDialog.getText(self, u'Set name', u'Name:')
         if ret[1]:
-            if isinstance(item, CircuitItem):
-                if item.circuit.setName(ret[0]):
-                    item.initPath()
-            elif isinstance(item, Plug):
-                item.setName(ret[0])
+            setItemName(self, item, ret[0])
+            
+    def setItemName(self, name, item=None):
+        #~ if item == None:     # comes from ToolOptions
+            
+        if isinstance(item, CircuitItem):
+            if item.circuit.setName(name):
+                item.initPath()
+        elif isinstance(item, Plug):
+            item.setName(name)
 
     def contextMenuEvent(self, e):
         """Pops a contextual menu up on right-clicks"""
