@@ -83,13 +83,12 @@ class Plug:
         """Connects a Plug to a list of Plugs."""
         if not isinstance(plugList, list):
             plugList = [plugList]           # create a list
-            
         for plug in plugList:
-
-            #   * connection already exists
+            # connection already exists
             if plug in self.connections or self in plug.connections:
-                log.info('connection between %s and %s already exists'
-                        % (self.name, plug.name))
+                log.info(
+                    'connection between %s and %s already exists'
+                    % (self.name, plug.name))
                 continue
 
             #   * I/O => same I/O
@@ -97,19 +96,18 @@ class Plug:
                 log.warning('cannot connect I/O on itself')
                 return False
 
-            fromCIToCO =    (self.owner.owner and self.isInput) and \
-                            (plug.owner.owner and not plug.isInput)
-            fromCIToGI =    (self.owner.owner and self.isInput) and \
-                            (not plug.owner.owner and plug.isInput)
-            fromGOToCO =    (not self.owner.owner and not self.isInput) and \
-                            (plug.owner.owner and not plug.isInput)
-            fromCOToCI =    (self.owner.owner and not self.isInput) and \
-                            (plug.owner.owner and plug.isInput)
-            fromGIToCI =    (not self.owner.owner and self.isInput) and \
-                            (plug.owner.owner and plug.isInput)
-            fromCOToGO =    (self.owner.owner and not self.isInput) and \
-                            (not plug.owner.owner and not plug.isInput)
-
+            fromCIToCO = (self.owner.owner and self.isInput) and \
+                (plug.owner.owner and not plug.isInput)
+            fromCIToGI = (self.owner.owner and self.isInput) and \
+                (not plug.owner.owner and plug.isInput)
+            fromGOToCO = (not self.owner.owner and not self.isInput) and \
+                (plug.owner.owner and not plug.isInput)
+            fromCOToCI = (self.owner.owner and not self.isInput) and \
+                (plug.owner.owner and plug.isInput)
+            fromGIToCI = (not self.owner.owner and self.isInput) and \
+                (plug.owner.owner and plug.isInput)
+            fromCOToGO = (self.owner.owner and not self.isInput) and \
+                (not plug.owner.owner and not plug.isInput)
 
             #   * valid connections
             if fromCIToCO or fromCIToGI or fromGOToCO:
@@ -127,9 +125,10 @@ class Plug:
                 return False
 
             if Plug.connectVerbose:
-                log.info('%s->%s connected to %s->%s'
-                        % (self.owner.name, self.name, plug.owner.name,
-                            plug.name))
+                log.info(
+                    '%s->%s connected to %s->%s'
+                    % (self.owner.name, self.name, plug.owner.name,
+                    plug.name))
         return True
 
     def disconnect(self, plug):
@@ -142,7 +141,7 @@ class Plug:
         log.info(
             '%s.%s and %s.%s disconnected'
             % (self.owner.name, self.name, plug.owner.name, plug.name,))
-            
+
     def setName(self, name):
         if len(name):
             if (self.isInput and name in [

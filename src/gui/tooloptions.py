@@ -2,9 +2,11 @@
 # coding=utf-8
 
 from PySide.QtGui import (
-    QCheckBox, QWidget, QGridLayout, QLabel, QLineEdit, QPushButton, QRadioButton)
+    QCheckBox, QDockWidget, QGridLayout, QLabel,
+    QLineEdit, QPushButton, QRadioButton, QWidget)
 from PySide.QtCore import Qt
 from .graphicitem import CircuitItem
+
 
 class ToolOptions(QWidget):
     """Widget for modifying the selected circuit or gate."""
@@ -27,12 +29,12 @@ class ToolOptions(QWidget):
 
         showNameLabel = QLabel('Show name?', self)
         self.gridLayout.addWidget(showNameLabel, 1, 0, 1, 1)
-        
+
         self.showNameCB = QCheckBox(self)
         self.showNameCB.setDisabled(True)
         self.gridLayout.addWidget(self.showNameCB, 1, 1, 1, 1)
         self.showNameCB.stateChanged.connect(self.toggleItemNameVisibility)
-        
+
         nbInputsLabel = QLabel('Inputs number:', self)
         self.gridLayout.addWidget(nbInputsLabel, 2, 0, 1, 1)
 
@@ -66,7 +68,7 @@ class ToolOptions(QWidget):
 
     def updateName(self):
         selection = self.view.scene().selectedItems()
-        if len(selection) == 1 and isinstance(selection[0], CircuitItem): 
+        if len(selection) == 1 and isinstance(selection[0], CircuitItem):
             self.nameLE.setDisabled(False)
             self.nameLE.setText(selection[0].circuit.name)
             self.showNameCB.setDisabled(False)
@@ -79,11 +81,11 @@ class ToolOptions(QWidget):
             self.nameLE.setText('')
             self.showNameCB.setDisabled(True)
             self.showNameCB.setCheckState(Qt.CheckState.Unchecked)
-    
+
     def setItemName(self):
         item = self.view.scene().selectedItems()[0]
         self.view.setItemName(self.nameLE.text(), item)
-            
+
     def toggleItemNameVisibility(self):
         if self.ignoreShowNameCB:
             print("Was true")
@@ -92,4 +94,12 @@ class ToolOptions(QWidget):
             print("Was false")
             item = self.view.scene().selectedItems()[0]
             item.toggleNameVisibility()
-        
+
+
+class ToolOptionsDockWidget(QDockWidget):
+    """A dock widget containing our tool options."""
+
+    def __init__(self, view):
+        super(ToolOptionsDockWidget, self).__init__('Tool Options')
+        self.setWidget(ToolOptions(view))
+        self.setFeatures(QDockWidget.NoDockWidgetFeatures)

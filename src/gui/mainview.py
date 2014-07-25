@@ -38,7 +38,7 @@ class MainView(QGraphicsView):
         ret = QInputDialog.getText(self, u'Set name', u'Name:')
         if ret[1]:
             setItemName(self, item, ret[0])
-            
+
     def setItemName(self, name, item):
         if isinstance(item, CircuitItem):
             if item.circuit.setName(name):
@@ -53,8 +53,8 @@ class MainView(QGraphicsView):
             menu = QMenu(self)
             if isinstance(item, CircuitItem):
                 pos = item.mapFromScene(self.mapToScene(e.pos()))
-                ioatpos = item.IOAtPos(pos)
-                item = ioatpos if ioatpos else item
+                plug = item.IOAtPos(pos)
+                item = plug if plug else item
                 menu.addAction("Set name", lambda: self.getNewName(item))
             elif isinstance(item, PlugItem):
                 menu.addAction("Set name", lambda: self.getNewName(item))
@@ -177,7 +177,6 @@ class MainView(QGraphicsView):
         """When the mouse is pressed over a portion of a graphic item
         that represents a Plug, we create a WireItem.
         Over a WireItem handle, we extend the WireItem.
-        
         """
         # Reserve right-clicks for contextual menus.
         if e.buttons() == QtCore.Qt.RightButton:
@@ -187,10 +186,10 @@ class MainView(QGraphicsView):
         if item:
             pos = item.mapFromScene(self.mapToScene(e.pos()))
             if isinstance(item, CircuitItem) or isinstance(item, PlugItem):
-                ioatpos = item.IOAtPos(pos)
-                if ioatpos:
+                plug = item.IOAtPos(pos)
+                if plug:
                     self.isDrawing = True
-                    self.currentWire = WireItem(ioatpos, self.mapToScene(e.pos()))
+                    self.currentWire = WireItem(plug, self.mapToScene(e.pos()))
                     self.scene().addItem(self.currentWire)
                     return   # no super(), prevents dragging/selecting
             elif isinstance(item, WireItem):
@@ -216,9 +215,9 @@ class MainView(QGraphicsView):
             if item:
                 pos = item.mapFromScene(self.mapToScene(e.pos()))
                 if isinstance(item, CircuitItem) or isinstance(item, PlugItem):
-                    ioatpos = item.IOAtPos(pos)
-                    if ioatpos:
-                        if not self.currentWire.connect(ioatpos):
+                    plug = item.IOAtPos(pos)
+                    if plug:
+                        if not self.currentWire.connect(plug):
                             self.scene().removeItem(self.currentWire)
                         return
             self.currentWire.addPoint()

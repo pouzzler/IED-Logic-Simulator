@@ -29,7 +29,7 @@ class WireItem(QGraphicsPathItem):
         # will grab the Plug.
         self.setZValue(-1)
         self.complete = False
-        
+
     def moveLastPoint(self, endPoint):
         """While dragging the mouse, redrawing the last segment."""
         sq2 = sqrt(2) / 2
@@ -83,7 +83,7 @@ class WireItem(QGraphicsPathItem):
             self.addPoint()
             self.redraw()
             scene.addItem(self)
-    
+
     def connect(self, endIO):
         if not self.startIO.connect(endIO):
             return False
@@ -92,6 +92,7 @@ class WireItem(QGraphicsPathItem):
             self.complete = True
             self.redraw()
             return True
+
 
 class PlugItem(QGraphicsPathItem, Plug):
     """We represent an I pin as a graphic square path,
@@ -156,7 +157,7 @@ class CircuitItem(QGraphicsPathItem):
         self.circuit = parent.add_circuit(getattr(engine.gates, gate + "Gate"))
         self.showName = True
         self.initPath()
-        
+
     def initPath(self):
         # Getting some model values useful for the drawing.
         nInputs = self.circuit.nb_inputs()
@@ -172,7 +173,8 @@ class CircuitItem(QGraphicsPathItem):
             self.iOffset = offset + self.BODY_OFFSET
         path = QPainterPath()
         if self.showName:
-            path.addText(0, 0, QFont("Times", 8, QFont.Bold), self.circuit.name)
+            path.addText(
+                0, 0, QFont("Times", 8, QFont.Bold), self.circuit.name)
         # Drawing inputs.
         for i in range(nInputs):
             path.addEllipse(
@@ -187,7 +189,7 @@ class CircuitItem(QGraphicsPathItem):
                 self.BODY_OFFSET + self.DIAMETER / 2.)
         # Drawing the little circle implying negation.
         if self.circuit.__class__.__name__ in [
-            'NandGate', 'NotGate', 'NorGate', 'XnorGate']:
+                'NandGate', 'NotGate', 'NorGate', 'XnorGate']:
             path.addEllipse(
                 self.O_LEFT, height * self.IO_HEIGHT / 2. - self.DIAMETER / 2.,
                 self.DIAMETER, self.DIAMETER)
@@ -209,7 +211,7 @@ class CircuitItem(QGraphicsPathItem):
                 self.BODY_OFFSET + self.DIAMETER / 2.)
         # Vertical line for these gates.
         if self.circuit.__class__.__name__ in [
-            'NandGate', 'NotGate', 'AndGate']:
+                'NandGate', 'NotGate', 'AndGate']:
             path.moveTo(self.I_RIGHT + 1, 0)
             path.lineTo(self.I_RIGHT + 1, height * self.IO_HEIGHT)
         if self.circuit.__class__.__name__ == 'NotGate':
@@ -220,13 +222,14 @@ class CircuitItem(QGraphicsPathItem):
                 self.XOR_LEFT, 0, self.ARC_BOX, height * self.IO_HEIGHT,
                 90, -180)
         if self.circuit.__class__.__name__ in [
-            'OrGate', 'NorGate', 'XorGate', 'XnorGate']:
+                'OrGate', 'NorGate', 'XorGate', 'XnorGate']:
             path.moveTo(self.OR_LEFT + self.ARC_BOX, 0)
             path.arcTo(
                 self.OR_LEFT, 0, self.ARC_BOX, height * self.IO_HEIGHT,
                 90, -180)
         if self.circuit.__class__.__name__ in [
-            'AndGate', 'NandGate', 'OrGate', 'NorGate', 'XorGate', 'XnorGate']:
+                'AndGate', 'NandGate', 'OrGate',
+                'NorGate', 'XorGate', 'XnorGate']:
             path.lineTo(self.AND_LEFT,  height * self.IO_HEIGHT)
             path.arcTo(
                 self.AND_LEFT,  0, self.ARC_BOX, height * self.IO_HEIGHT,
