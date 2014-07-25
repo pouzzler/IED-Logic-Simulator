@@ -86,8 +86,8 @@ class MainWindow(QMainWindow):
 
     def loadConfig(self):
         """Load color, verbosity and logging options."""
-        cfg = cfgParser()
-        cfg.read(cfgFile)
+        cfg = ConfigParser()
+        cfg.read(configFile)
 
         self.logDock.setBgColor(cfg.get('Appearance', 'log_bg_color'))
         self.view.scene().setBackgroundBrush(
