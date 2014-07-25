@@ -216,7 +216,10 @@ class MainView(QGraphicsView):
                 pos = item.mapFromScene(self.mapToScene(e.pos()))
                 if isinstance(item, CircuitItem) or isinstance(item, PlugItem):
                     plug = item.IOAtPos(pos)
-                    if plug:
+                    if (plug and 
+                            self.currentWire.handleAtPos(
+                                self.currentWire.mapFromScene(
+                                    self.mapToScene(e.pos())))):
                         if not self.currentWire.connect(plug):
                             self.scene().removeItem(self.currentWire)
                         return
@@ -225,9 +228,7 @@ class MainView(QGraphicsView):
         super(MainView, self).mouseReleaseEvent(e)
 
     def mouseMoveEvent(self, e):
-        """Changes the cursor shape when the mouse hovers over an
-        input or output pin.
-        """
+        """Changes the cursor shape on mousing over a handle."""
         if self.isDrawing:
             self.currentWire.moveLastPoint(
                 self.currentWire.mapFromScene(self.mapToScene(e.pos())))

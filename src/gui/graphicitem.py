@@ -53,7 +53,6 @@ class WireItem(QGraphicsPathItem):
             path.lineTo(p)
         if not self.complete:
             path.addEllipse(self.points[-1], self.RADIUS, self.RADIUS)
-        #~ path.closeSubpath()
         self.setPath(path)
 
     def addPoint(self):
@@ -66,9 +65,9 @@ class WireItem(QGraphicsPathItem):
         """We drag the end-segment when the user clicks the handle."""
         if self.complete:
             return
-        handlePath = QPainterPath()
-        handlePath.addEllipse(self.points[-1], self.RADIUS, self.RADIUS)
-        return handlePath.contains(pos)
+        path = QPainterPath()
+        path.addEllipse(self.points[-1], self.RADIUS, self.RADIUS)
+        return path.contains(pos)
 
     def removeLast(self):
         """We remove the last segment (when the user made an error and
