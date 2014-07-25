@@ -102,20 +102,24 @@ class Plug:
                 (not plug.owner.owner and plug.isInput)
             fromGOToCO = (not self.owner.owner and not self.isInput) and \
                 (plug.owner.owner and not plug.isInput)
+            fromGOToGI = (self.owner.owner and not self.isInput) and \
+                (plug.owner.owner and plug.isInput)
             fromCOToCI = (self.owner.owner and not self.isInput) and \
                 (plug.owner.owner and plug.isInput)
             fromGIToCI = (not self.owner.owner and self.isInput) and \
                 (plug.owner.owner and plug.isInput)
             fromCOToGO = (self.owner.owner and not self.isInput) and \
                 (not plug.owner.owner and not plug.isInput)
+            fromGIToGO = (self.owner.owner and self.isInput) and \
+                (plug.owner.owner and not plug.isInput)
 
             #   * valid connections
-            if fromCIToCO or fromCIToGI or fromGOToCO:
+            if fromCIToCO or fromCIToGI or fromGOToCO or fromGOToGI:
                 plug.connections.append(self)
                 self.connectedTo.append(plug)
 
             #   * inverted valid connections
-            elif fromCOToCI or fromGIToCI or fromCOToGO:
+            elif fromCOToCI or fromGIToCI or fromCOToGO or fromGIToGO:
                 self.connections.append(plug)
                 plug.connectedTo.append(self)
 
@@ -132,12 +136,19 @@ class Plug:
         return True
 
     def disconnect(self, plug):
-        if plug in self.connections:
+        if plug not in self.connections and self not in plug.connections:
+            log.info(
+                '%s.%s and %s.%s are not connected'
+                 % (self.owner.name, self.name, plug.owner.name, plug.name,))
+            return
+        elif plug in self.connections:
             plug.connectedTo.remove(self)
             self.connections.remove(plug)
+            plug.set(0)
         else:
             plug.connections.remove(self)
             self.connectedTo.remove(plug)
+            self.set(0)
         log.info(
             '%s.%s and %s.%s disconnected'
             % (self.owner.name, self.name, plug.owner.name, plug.name,))
