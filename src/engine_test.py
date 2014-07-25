@@ -12,6 +12,22 @@ from engine.circuits import *     # circuits logiques avancés
 from engine.clock import *        # horloge
 
 
+HEADER = '\033[95m'
+BLUE = '\033[94m'
+GREEN = '\033[92m'
+YELLOW = '\033[93m'
+RED = '\033[91m'
+AUTO = '\033[0m'
+
+
+def print_plug_info(plug):
+    COLOR = GREEN if plug.value else RED
+    print('%s: %s\n\tconnections: %s\n\tconnectedTo: %s'
+            % (plug.name, COLOR + str(plug.value) + AUTO,
+                str([conn.name for conn in plug.connections]),
+                str([conn.name for conn in plug.connectedTo])))
+
+
 # un simple nand
 def nand(a, b):
     # composantes du circuit
@@ -114,13 +130,15 @@ if __name__ == '__main__':
     O = NOT.outputList[0]
     GIN.connect(I)
     O.connect(GOUT)
-    
     GIN.set(False)
 
-    print(NOT.name)
-    print('_____________________________________________________\n')
-    print(GIN.name); print(I.name); print(O.name); print(GOUT.name)
-    print('_____________________________________________________\n')
-    print(GIN.value); print(I.value); print(O.value); print(GOUT.value)
+    print('________________________________________________________________\n')
+    for plug in [GIN, I, O, GOUT]:
+        print_plug_info(plug)
+    
+    O.disconnect(GOUT)
+    print('\n___________________DISCONNECTED GOUT AND O____________________\n')
+    for plug in [GIN, I, O, GOUT]:
+        print_plug_info(plug)
 
 
