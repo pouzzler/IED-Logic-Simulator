@@ -2,7 +2,7 @@
 # coding=utf-8
 
 import time
-import configparser
+from configparser import ConfigParser
 from PySide.QtCore import Qt
 from PySide.QtGui import (
     QAction, QColor, QDesktopWidget, QDockWidget, QMainWindow, QMenu,
@@ -25,6 +25,7 @@ class MainWindow(QMainWindow):
         self.setWindowTitle("IED Logic Simulator")
         self.centerAndResize()
         self.setFocusPolicy(Qt.StrongFocus)
+        # Initialize sub-widgets :
         # A graphical view in which the user can draw circuits.
         self.view = MainView(self)
         self.setCentralWidget(self.view)
@@ -37,20 +38,14 @@ class MainWindow(QMainWindow):
         # A log window.
         self.logDock = LogDockWidget()
         self.addDockWidget(Qt.BottomDockWidgetArea, self.logDock)
-
-        self.toastHandler = logging.StreamHandler(self.view)
-        self.toastHandler.setLevel(logging.WARNING)
-        log.addHandler(self.toastHandler)
-
-        self.settings = SettingsDialog(configFile)
-
+        # Initialize application menu :
         fileMenu = QMenu(u'File')
         fileMenu.addAction(u'Quit', self.close)
 
         editMenu = QMenu(u'Edit')
         settingAct = QAction('&Settings...', self)
         settingAct.setStatusTip('Open the settings window.')
-        settingAct.triggered.connect(self.settings.show)
+        settingAct.triggered.connect(lambda: SettingsDialog(self).exec_())
         editMenu.addAction(settingAct)
 
         toolBoxAct = self.boxDock.toggleViewAction()
@@ -82,57 +77,38 @@ class MainWindow(QMainWindow):
         self.menuBar().addMenu(windowsMenu)
         self.menuBar().addMenu(helpMenu)
 
-        # this is easier than reloading one setting only
-        self.settings.configSaved.connect(self.loadConfig)
+        self.toastHandler = logging.StreamHandler(self.view)
+        self.toastHandler.setLevel(logging.WARNING)
+        log.addHandler(self.toastHandler)
 
         self.loadConfig()
         self.show()
 
     def loadConfig(self):
-        config = configparser.ConfigParser()
-        config.read(configFile)
+        """Load color, verbosity and logging options."""
+        cfg = cfgParser()
+        cfg.read(cfgFile)
 
-        # background color for the scene
-        circBgColor = QColor()
-        circBgColor.setNamedColor(config.get('Appearance', 'circ_bg_color'))
-        # background color for the log widget
-        logBgColor = QColor()
-        logBgColor.setNamedColor(config.get('Appearance', 'log_bg_color'))
-        logPalette = self.logDock.widget().pal
-        logPalette.setColor(QPalette.Base, logBgColor)
-        # log verbose
-        setInputVb = config.getboolean('GUILogRecords', 'input_chang')
-        setOutputVb = config.getboolean('GUILogRecords', 'output_chang')
-        connectVb = config.getboolean('GUILogRecords', 'conn_discon_io')
-        addPlugVb = config.getboolean('GUILogRecords', 'adding_io')
-        addCircuitVb = config.getboolean('GUILogRecords', 'adding_circ')
-        removePlugVb = config.getboolean('GUILogRecords', 'removing_io')
-        removeCircuitVb = config.getboolean('GUILogRecords', 'removing_circ')
-        detailedRemoveVb = config.getboolean('GUILogRecords', 'detailed_rm')
-        guiLogOutput = config.getboolean('LogOutputs', 'gui')
-        stdoutLogOutput = config.getboolean('LogOutputs', 'stdout')
-        fileLogOutput = config.getboolean('LogOutputs', 'file')
-
-        # apply config values
-        self.view.scene().setBackgroundBrush(circBgColor)
-        self.logDock.widget().setPalette(logPalette)
-        Plug.setInputVerbose = setInputVb
-        Plug.setOutputVerbose = setOutputVb
-        Plug.connectVerbose = connectVb
-        Circuit.addPlugVerbose = addPlugVb
-        Circuit.addCircuitVerbose = addCircuitVb
-        Circuit.removePlugVerbose = removePlugVb
-        Circuit.removeCircuitVerbose = removeCircuitVb
-        Circuit.detailedRemoveVerbose = detailedRemoveVb
-        if guiLogOutput:
+        self.logDock.setBgColor(cfg.get('Appearance', 'log_bg_color'))
+        self.view.scene().setBackgroundBrush(
+            QColor(cfg.get('Appearance', 'circ_bg_color')))
+        Plug.setInputVerbose = cfg.getboolean('GUILogRecords', 'input_chang')
+        Plug.setOutputVerbose = cfg.getboolean('GUILogRecords', 'output_chang')
+        Plug.connectVerbose = cfg.getboolean('GUILogRecords', 'conn_discon_io')
+        Circuit.addPlugVerbose = cfg.getboolean('GUILogRecords', 'adding_io')
+        Circuit.addCircuitVerbose = cfg.getboolean('GUILogRecords', 'adding_circ')
+        Circuit.removePlugVerbose = cfg.getboolean('GUILogRecords', 'removing_io')
+        Circuit.removeCircuitVerbose = cfg.getboolean('GUILogRecords', 'removing_circ')
+        Circuit.detailedRemoveVerbose = cfg.getboolean('GUILogRecords', 'detailed_rm')
+        if cfg.getboolean('LogOutputs', 'gui'):
             log.addHandler(self.logDock.handler)
         else:
             log.removeHandler(self.logDock.handler)
-        if stdoutLogOutput:
+        if cfg.getboolean('LogOutputs', 'stdout'):
             log.addHandler(stdoutHandler)
         else:
             log.removeHandler(stdoutHandler)
-        if fileLogOutput:
+        if cfg.getboolean('LogOutputs', 'file'):
             log.addHandler(fileHandler)
         else:
             log.removeHandler(fileHandler)

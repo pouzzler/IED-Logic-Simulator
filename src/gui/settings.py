@@ -274,10 +274,11 @@ class SettingsDialog(QtGui.QDialog):
     """
     configSaved = QtCore.Signal()
 
-    def __init__(self, configFile=configFile):
+    def __init__(self, mainwindow, configFile=configFile):
         """Init the parent class, the config dictionary and the window."""
         super(SettingsDialog, self).__init__()
         self.importConfigFromFile(configFile)
+        self.configSaved.connect(mainwindow.loadConfig)
         self.initUI()
         ## SIGNALS CONNECTIONS ##
         self.closeButtonBox.clicked.connect(self.saveAndClose)

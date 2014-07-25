@@ -32,3 +32,8 @@ class LogDockWidget(QDockWidget):
         self.handler = logging.StreamHandler(self.widget())
         self.handler.setLevel(logging.DEBUG)
         self.handler.setFormatter(formatter)
+
+    def setBgColor(self, color):
+        pal = QPalette()
+        pal.setColor(QPalette.Base, QColor(color))
+        self.widget().setPalette(pal)
