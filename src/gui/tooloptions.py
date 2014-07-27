@@ -70,7 +70,7 @@ class ToolOptions(QWidget):
         selection = self.view.scene().selectedItems()
         if len(selection) == 1 and isinstance(selection[0], CircuitItem):
             self.nameLE.setDisabled(False)
-            self.nameLE.setText(selection[0].circuit.name)
+            self.nameLE.setText(selection[0].item.name)
             self.showNameCB.setDisabled(False)
             self.showNameCB.setCheckState(
                 Qt.CheckState.Checked if selection[0].showName

@@ -1,20 +1,20 @@
 #!/usr/bin/env python3
 # coding=utf-8
 
-
 from PySide import QtCore
 from PySide.QtGui import (
-    QInputDialog, QGraphicsScene, QGraphicsView, QMenu,
-    QStandardItemModel)
+    QImage, QInputDialog, QGraphicsItem, QGraphicsScene, QGraphicsView,
+    QMenu, QStandardItemModel)
 from .toolbox import ToolBox
 from .tooloptions import ToolOptions
 from .graphicitem import CircuitItem, PlugItem, WireItem
 from engine.simulator import Circuit, Plug
 from .settings import configFile
+import engine
 
 mainCircuit = Circuit("Main_Circuit", None)
 
-
+    
 class MainView(QGraphicsView):
     """A graphic representation of a circuit schematic created by the
     user. This view manages most user interaction, in particular:
@@ -37,12 +37,12 @@ class MainView(QGraphicsView):
         # ret = tuple string, bool (false when the dialog is dismissed)
         ret = QInputDialog.getText(self, u'Set name', u'Name:')
         if ret[1]:
-            setItemName(self, item, ret[0])
+            self.setItemName(ret[0], item)
 
     def setItemName(self, name, item):
         if isinstance(item, CircuitItem):
-            if item.circuit.setName(name):
-                item.initPath()
+            if item.item.setName(name):
+                item.update()
         elif isinstance(item, Plug):
             item.setName(name)
 
@@ -53,7 +53,7 @@ class MainView(QGraphicsView):
             menu = QMenu(self)
             if isinstance(item, CircuitItem):
                 pos = item.mapFromScene(self.mapToScene(e.pos()))
-                plug = item.IOAtPos(pos)
+                plug = item.handleAtPos(pos)
                 item = plug if plug else item
                 menu.addAction("Set name", lambda: self.getNewName(item))
             elif isinstance(item, PlugItem):
@@ -94,7 +94,7 @@ class MainView(QGraphicsView):
         name = model.item(0).text()
         item = None
         if name in ['And', 'Or', 'Nand', 'Nor', 'Not', 'Xor', 'Xnor']:
-            item = CircuitItem(name, mainCircuit)
+            item = CircuitItem(getattr(engine.gates, name + 'Gate'), mainCircuit)
         elif name == 'Input Pin':
             item = PlugItem(True, mainCircuit)
         elif name == 'Output Pin':
@@ -102,7 +102,7 @@ class MainView(QGraphicsView):
         if item:
             self.scene().addItem(item)
             item.setPos(e.pos())
-
+    
     def keyPressEvent(self, e):
         """Manages keyboard events, in particular item rotation,
         translation, removal and alignment.
@@ -114,14 +114,14 @@ class MainView(QGraphicsView):
             for item in selection:
                 item.setSelected(False)
         # Del, suppression
-        if e.key() == QtCore.Qt.Key_Delete:
+        elif e.key() == QtCore.Qt.Key_Delete:
             for item in selection:
                 if isinstance(item, CircuitItem):
                     mainCircuit.remove(item.circuit)
                     item.circuit = None
                 elif isinstance(item, Plug):
                     mainCircuit.remove(item)
-                elif isinstance(item, WireItem):
+                elif isinstance(item, WireItem) and hasattr(item, 'endIO'):
                     item.startIO.disconnect(item.endIO)
                 scene.removeItem(item)
         # <- , anti-clockwise rotation
@@ -186,7 +186,7 @@ class MainView(QGraphicsView):
         if item:
             pos = item.mapFromScene(self.mapToScene(e.pos()))
             if isinstance(item, CircuitItem) or isinstance(item, PlugItem):
-                plug = item.IOAtPos(pos)
+                plug = item.handleAtPos(pos)
                 if plug:
                     self.isDrawing = True
                     self.currentWire = WireItem(plug, self.mapToScene(e.pos()))
@@ -215,7 +215,7 @@ class MainView(QGraphicsView):
             if item:
                 pos = item.mapFromScene(self.mapToScene(e.pos()))
                 if isinstance(item, CircuitItem) or isinstance(item, PlugItem):
-                    plug = item.IOAtPos(pos)
+                    plug = item.handleAtPos(pos)
                     if (plug and 
                             self.currentWire.handleAtPos(
                                 self.currentWire.mapFromScene(
@@ -236,7 +236,7 @@ class MainView(QGraphicsView):
         if item:
             pos = item.mapFromScene(self.mapToScene(e.pos()))
             if ((isinstance(item, CircuitItem) or isinstance(item, PlugItem))
-                    and item.IOAtPos(pos)):
+                    and item.handleAtPos(pos)):
                 self.setCursor(QtCore.Qt.CursorShape.UpArrowCursor)
                 return
             elif (isinstance(item, WireItem) and item.handleAtPos(pos) and

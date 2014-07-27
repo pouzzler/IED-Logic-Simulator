@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # coding=utf-8
 
-import time
+import pickle, time
 from configparser import ConfigParser
 from PySide.QtCore import Qt
 from PySide.QtGui import (
@@ -15,6 +15,8 @@ from .logwidgets import LogDockWidget
 from .settings import SettingsDialog, configFile
 from engine.gates import *
 from engine.simulator import log, fileHandler, stdoutHandler, formatter, Plug
+
+from .graphicitem import *
 
 
 class MainWindow(QMainWindow):
@@ -41,6 +43,7 @@ class MainWindow(QMainWindow):
         # Initialize application menu :
         fileMenu = QMenu(u'File')
         fileMenu.addAction(u'Quit', self.close)
+        fileMenu.addAction(u'Save circuit', self.saveCircuit)
 
         editMenu = QMenu(u'Edit')
         settingAct = QAction('&Settings...', self)
@@ -128,6 +131,35 @@ class MainWindow(QMainWindow):
         msgBox.setText(u'v0.1\nPar Mathieu Fourcroy & Sébastien Magnien.')
         msgBox.exec_()
 
+    def saveCircuit(self):
+        f = open('save', 'wb')
+        items = []
+        selection = self.view.scene().items()
+        for item in selection:
+            if isinstance(item, PlugItem):
+                items.append([item, item.pos()])
+            elif isinstance(item, CircuitItem):
+                items.append([item.circuit, item.pos()])
+            self.view.scene().removeItem(item)
+        pickle.dump(selection, f, pickle.HIGHEST_PROTOCOL)
+        f.close()
+        f = open('save', 'rb')
+        items = pickle.load(f)
+        for item in items:
+            print(item.name)
+            #~ if isinstance(item[0], PlugItem):
+                #~ plugItem = PlugItem(item[0].isInput, item[0].owner)
+                #~ plugItem.setName(item[0].name)
+                #~ plugItem.setPos(item[1])
+                #~ self.view.scene().addItem(plugItem)
+            #~ else:
+                #~ for k, v in item[0].__dict__.items():
+                    #~ print(k, v)
+                    #~ if isinstance(v, list):
+                        #~ for x in v:
+                            #~ print('    ', x.__dict__)
+        
+        
     def showDocumentation(self):
         """Shows the help dock widget."""
         self.addDockWidget(

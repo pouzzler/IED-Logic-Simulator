@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 # coding=utf-8
 
-from math import atan2, floor, pi, pow, sqrt
+import os
+from math import atan2, pi, pow, sqrt
 
-from PySide.QtCore import QPointF
+from PySide.QtCore import QPointF, QRectF
 from PySide.QtGui import (
-    QFont, QGraphicsItem, QGraphicsPathItem, QPainterPath)
+    QFont, QGraphicsItem, QGraphicsPathItem, QImage, QPainterPath)
 from engine.simulator import Circuit, Plug
-import engine
 
 
 class WireItem(QGraphicsPathItem):
@@ -129,11 +129,125 @@ class PlugItem(QGraphicsPathItem, Plug):
             self.SMALL_DIAMETER * 2,
             self.SMALL_DIAMETER * 2)
 
-    def IOAtPos(self, pos):
+    def handleAtPos(self, pos):
         return self if self.pinPath.contains(pos) else None
 
+    def __getnewargs__(self):
+        return (self.isInput, self.owner)
 
-class CircuitItem(QGraphicsPathItem):
+
+class CircuitItem(QGraphicsItem):
+    """Should represent any sub-item of the circuit, ie. circuits, gates,
+    inputs, outputs and wires."""
+
+    self.ioH = 10
+    self.ioW = 20
+    self.radius = 2.5
+
+    def __init__(self, circuitClass, owner):
+        super(CircuitItem, self).__init__()
+        self.setFlag(QGraphicsItem.ItemIsMovable)
+        self.setFlag(QGraphicsItem.ItemIsSelectable)
+        imgDir = os.path.dirname(os.path.realpath(__file__)) + '/icons/'
+        self.item = owner.add_circuit(circuitClass)
+        self.image = QImage(imgDir + circuitClass.__name__ + '.png')
+        self.showName = True
+        self.setupPaint()
+
+    def setupPaint(self):
+        """Setting up long-lived variables."""
+        self.nIn = self.item.nb_inputs()
+        self.nOut = self.item.nb_outputs()
+        # 3 sections with different heights must be aligned :
+        self.imgH = self.image.size().height()   # central (png image)
+        self.imgW = self.image.size().width()
+        self.inH = (self.nIn - 1) * self.ioH + 2 * self.radius  # inputs
+        self.outH = (self.nOut - 1) * self.ioH + 2 * self.radius    # outputs
+        # therefore we calculate a vertical offset for each section :
+        maxH = max(self.imgH, self.inH, self.outH)
+        self.imgOff = 0 if maxH == self.imgH else (maxH - self.imgH) / 2.
+        self.inOff = 0 if maxH == self.inH else (maxH - self.inH) / 2.
+        self.outOff = 0 if maxH == self.outH else (maxH - self.outH) / 2.
+        # i/o mouseover detection. Create once, use on each mouseMoveEvent.
+        self.inputPaths = []
+        self.outputPaths = []
+        for i in range(self.item.nb_inputs()):
+            path = QPainterPath()
+            path.addEllipse(
+                0,
+                i * self.ioH + self.inOff,
+                2 * self.radius,
+                2 * self.radius)
+            self.inputPaths.append(path)
+        for i in range(self.item.nb_outputs()):
+            path = QPainterPath()
+            path.addEllipse(
+                2 * self.radius + 2 * self.ioW + self.imgW,
+                i * self.ioH + self.outOff,
+                2 * self.radius,
+                2 * self.radius)
+            self.outputPaths.append(path)
+
+    def boundingRect(self):
+        return QRectF(0, 0, 200, 200)
+
+    def paint(self, painter, option, widget):
+        """Drawing the i/o pins 'by hand', and pasting a png file for
+        the body of the gate/circuit."""
+        for i in range(self.nIn):
+            painter.drawEllipse(
+                0,
+                i * self.ioH + self.inOff,
+                2 * self.radius,
+                2 * self.radius)
+            painter.drawLine(
+                2 * self.radius,
+                i * self.ioH + self.inOff + self.radius,
+                2 * self.radius + self.ioW,
+                i * self.ioH + self.inOff + self.radius)
+        painter.drawLine(
+            2 * self.radius + self.ioW,
+            self.inOff + self.radius,
+            2 * self.radius + self.ioW,
+            (self.nIn - 1) * self.ioH + self.inOff + self.radius)
+        for i in range(self.nOut):
+            painter.drawEllipse(
+                2 * self.radius + 2 * self.ioW + self.imgW,
+                i * self.ioH + self.outOff,
+                2 * self.radius,
+                2 * self.radius)
+            painter.drawLine(
+                2 * self.radius + self.ioW + self.imgW,
+                i * self.ioH + self.outOff + self.radius,
+                2 * self.radius + 2 * self.ioW + self.imgW,
+                i * self.ioH + self.outOff + self.radius)
+        painter.drawLine(
+            2 * self.radius + self.ioW + self.imgW,
+            self.outOff + self.radius,
+            2 * self.radius + self.ioW + self.imgW,
+            (self.nOut - 1) * self.ioH + self.outOff + self.radius)
+        painter.drawImage(
+            QRectF(
+                2 * self.radius + self.ioW,
+                self.imgOff,
+                self.imgW,
+                self.imgH),
+            self.image)
+
+    def handleAtPos(self, pos):
+        for i in range(len(self.inputPaths)):
+            if self.inputPaths[i].contains(pos):
+                return self.item.inputList[i]
+        for i in range(len(self.outputPaths)):
+            if self.outputPaths[i].contains(pos):
+                return self.item.outputList[i]
+
+    def toggleNameVisibility(self):
+        self.showName = not self.showName
+        self.initPath()
+
+
+class CircuitItemOld(QGraphicsPathItem):
     """We represent a circuit or logic gate as a graphic path."""
 
     IO_HEIGHT = 25   # pixels par E/S
@@ -148,12 +262,12 @@ class CircuitItem(QGraphicsPathItem):
     AND_LEFT = 31    # |  ) and
     ARC_BOX = 18     # la largeur du rectangle dans lequel l'arc s'inscrit
 
-    def __init__(self, gate, parent):
+    def __init__(self, circuitClass, parent):
         super(CircuitItem, self).__init__()
         self.setFlag(QGraphicsItem.ItemIsMovable)
         self.setFlag(QGraphicsItem.ItemIsSelectable)
         # Creating a circuit from our engine, using dynamic class lookup.
-        self.circuit = parent.add_circuit(getattr(engine.gates, gate + "Gate"))
+        self.circuit = parent.add_circuit(circuitClass)
         self.showName = True
         self.initPath()
 
@@ -255,7 +369,7 @@ class CircuitItem(QGraphicsPathItem):
                 self.DIAMETER * 3, self.DIAMETER * 3)
             self.outputPaths.append(path)
 
-    def IOAtPos(self, pos):
+    def handleAtPos(self, pos):
         for i in range(self.circuit.nb_inputs()):
             if self.inputPaths[i].contains(pos):
                 return self.circuit.inputList[i]
