@@ -174,7 +174,7 @@ class CircuitItem(QGraphicsItem):
         # i/o mouseover detection. Create once, use on each mouseMoveEvent.
         self.inputPaths = []
         self.outputPaths = []
-        for i in range(self.item.nb_inputs()):
+        for i in range(self.nIn):
             path = QPainterPath()
             path.addEllipse(
                 0,
@@ -182,7 +182,7 @@ class CircuitItem(QGraphicsItem):
                 2 * self.radius,
                 2 * self.radius)
             self.inputPaths.append(path)
-        for i in range(self.item.nb_outputs()):
+        for i in range(self.nOut):
             path = QPainterPath()
             path.addEllipse(
                 2 * self.radius + 2 * self.ioW + self.imgW,
