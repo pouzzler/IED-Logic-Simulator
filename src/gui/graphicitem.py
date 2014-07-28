@@ -4,9 +4,10 @@
 import os
 from math import atan2, pi, pow, sqrt
 
-from PySide.QtCore import QPointF, QRectF
-from PySide.QtGui import (
-    QFont, QGraphicsItem, QGraphicsPathItem, QImage, QPainterPath)
+
+from PySide.QtCore import QPointF, QRectF, Qt
+from PySide.QtGui import (QFont, QGraphicsItem, QGraphicsPathItem, 
+    QImage, QPainterPath, QPen, QStyle)
 from engine.simulator import Circuit, Plug
 
 
@@ -140,9 +141,9 @@ class CircuitItem(QGraphicsItem):
     """Should represent any sub-item of the circuit, ie. circuits, gates,
     inputs, outputs and wires."""
 
-    self.ioH = 10
-    self.ioW = 20
-    self.radius = 2.5
+    ioH = 10
+    ioW = 20
+    radius = 2.5
 
     def __init__(self, circuitClass, owner):
         super(CircuitItem, self).__init__()
@@ -155,7 +156,9 @@ class CircuitItem(QGraphicsItem):
         self.setupPaint()
 
     def setupPaint(self):
-        """Setting up long-lived variables."""
+        """Setting up long-lived variables that might still change,
+        necessiting a redraw (ie. number of inputs, height & width...)
+        """
         self.nIn = self.item.nb_inputs()
         self.nOut = self.item.nb_outputs()
         # 3 sections with different heights must be aligned :
@@ -164,10 +167,10 @@ class CircuitItem(QGraphicsItem):
         self.inH = (self.nIn - 1) * self.ioH + 2 * self.radius  # inputs
         self.outH = (self.nOut - 1) * self.ioH + 2 * self.radius    # outputs
         # therefore we calculate a vertical offset for each section :
-        maxH = max(self.imgH, self.inH, self.outH)
-        self.imgOff = 0 if maxH == self.imgH else (maxH - self.imgH) / 2.
-        self.inOff = 0 if maxH == self.inH else (maxH - self.inH) / 2.
-        self.outOff = 0 if maxH == self.outH else (maxH - self.outH) / 2.
+        self.maxH = max(self.imgH, self.inH, self.outH)
+        self.imgOff = 0 if self.maxH == self.imgH else (self.maxH - self.imgH) / 2.
+        self.inOff = 0 if self.maxH == self.inH else (self.maxH - self.inH) / 2.
+        self.outOff = 0 if self.maxH == self.outH else (self.maxH - self.outH) / 2.
         # i/o mouseover detection. Create once, use on each mouseMoveEvent.
         self.inputPaths = []
         self.outputPaths = []
@@ -189,17 +192,19 @@ class CircuitItem(QGraphicsItem):
             self.outputPaths.append(path)
 
     def boundingRect(self):
-        return QRectF(0, 0, 200, 200)
+        return QRectF(
+            0,
+            0,
+            4 * self.radius + 2 * self.ioW + self.imgW,
+            self.maxH)
 
     def paint(self, painter, option, widget):
-        """Drawing the i/o pins 'by hand', and pasting a png file for
-        the body of the gate/circuit."""
+        """Drawing the i/o pins 'by hand', the handles from the saved
+        collision detection paths, and pasting a png file for the body
+        of the gate/circuit.
+        """
         for i in range(self.nIn):
-            painter.drawEllipse(
-                0,
-                i * self.ioH + self.inOff,
-                2 * self.radius,
-                2 * self.radius)
+            painter.drawPath(self.inputPaths[i])
             painter.drawLine(
                 2 * self.radius,
                 i * self.ioH + self.inOff + self.radius,
@@ -211,11 +216,7 @@ class CircuitItem(QGraphicsItem):
             2 * self.radius + self.ioW,
             (self.nIn - 1) * self.ioH + self.inOff + self.radius)
         for i in range(self.nOut):
-            painter.drawEllipse(
-                2 * self.radius + 2 * self.ioW + self.imgW,
-                i * self.ioH + self.outOff,
-                2 * self.radius,
-                2 * self.radius)
+            painter.drawPath(self.outputPaths[i])
             painter.drawLine(
                 2 * self.radius + self.ioW + self.imgW,
                 i * self.ioH + self.outOff + self.radius,
@@ -233,6 +234,12 @@ class CircuitItem(QGraphicsItem):
                 self.imgW,
                 self.imgH),
             self.image)
+        # Apparently the default selection box doesn't work with custom 
+        # QGraphicsItems
+        if option.state & QStyle.State_Selected:
+            pen = QPen(Qt.black, 1, Qt.DashLine)
+            painter.setPen(pen)
+            painter.drawRect(self.boundingRect())
 
     def handleAtPos(self, pos):
         for i in range(len(self.inputPaths)):
