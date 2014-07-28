@@ -3,7 +3,8 @@
 
 import inspect
 import os
-from PySide.QtGui import QDockWidget, QIcon, QTreeWidget, QTreeWidgetItem
+from PySide.QtGui import QDockWidget, QDrag, QIcon, QTreeWidget, QTreeWidgetItem
+from PySide.QtCore import QByteArray, QDir, QMimeData, Qt
 from engine import gates, circuits
 
 
@@ -20,7 +21,7 @@ class ToolBox(QTreeWidget):
         gatesheader = QTreeWidgetItem(self, [u'Basic Gates'])
         gatesheader.setExpanded(True)
         imgDir = os.path.dirname(os.path.realpath(__file__)) + '/icons/'
-        for name, _ in inspect.getmembers(
+        for name, class_ in inspect.getmembers(
                 gates,
                 lambda m: (
                     inspect.isclass(m) and m.__module__ == 'engine.gates')):

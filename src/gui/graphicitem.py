@@ -153,6 +153,10 @@ class CircuitItem(QGraphicsItem):
         imgDir = os.path.dirname(os.path.realpath(__file__)) + '/icons/'
         self.item = owner.add_circuit(circuitClass)
         self.image = QImage(imgDir + circuitClass.__name__ + '.png')
+        self.showClassName = False
+        if not self.image:
+            self.image = QImage(imgDir + 'Input.png')
+            self.showClassName = True
         self.showName = True
         self.setupPaint()
 
@@ -207,6 +211,10 @@ class CircuitItem(QGraphicsItem):
         collision detection paths, and pasting a png file for the body
         of the gate/circuit.
         """
+        if self.showName:
+            painter.drawText(QRectF(-100, -100, 0, 0), self.item.name)
+        if self.showClassName:
+            painter.drawText(QRectF(0, 0, 100, 100), self.item.__class__.__name__)
         for i in range(self.nIn):
             painter.drawPath(self.inputPaths[i])
             painter.drawLine(

@@ -87,9 +87,6 @@ class MainView(QGraphicsView):
 
     def dropEvent(self, e):
         """Accept drop events."""
-        # TODO: Found on the web, maybe a cleaner way exists.
-        # it would be better to receive the correct item directly,
-        # rather than test some text string.
         model = QStandardItemModel()
         model.dropMimeData(
             e.mimeData(),
@@ -106,6 +103,8 @@ class MainView(QGraphicsView):
             item = PlugItem(True, mainCircuit)
         elif name == 'Output Pin':
             item = PlugItem(False, mainCircuit)
+        else:
+            item = CircuitItem(Circuit, mainCircuit)
         if item:
             self.scene().addItem(item)
             item.setPos(e.pos())
