@@ -75,6 +75,12 @@ class MainView(QGraphicsView):
         else:
             e.ignore()
 
+    def dragLeaveEvent(self, e):
+        """Fixing bug where items are not fully dragged over MainView,
+        then dragged away.
+        """
+        e.ignore()
+        
     def dragMoveEvent(self, e):
         """Accept drag move events."""
         e.accept()
