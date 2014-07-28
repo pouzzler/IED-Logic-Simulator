@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 # coding=utf-8
 
-import pickle, time
+import pickle
+import time
 from configparser import ConfigParser
 from PySide.QtCore import Qt
 from PySide.QtGui import (
@@ -95,14 +96,22 @@ class MainWindow(QMainWindow):
         self.logDock.setBgColor(cfg.get('Appearance', 'log_bg_color'))
         self.view.scene().setBackgroundBrush(
             QColor(cfg.get('Appearance', 'circ_bg_color')))
-        Plug.setInputVerbose = cfg.getboolean('GUILogRecords', 'input_chang')
-        Plug.setOutputVerbose = cfg.getboolean('GUILogRecords', 'output_chang')
-        Plug.connectVerbose = cfg.getboolean('GUILogRecords', 'conn_discon_io')
-        Circuit.addPlugVerbose = cfg.getboolean('GUILogRecords', 'adding_io')
-        Circuit.addCircuitVerbose = cfg.getboolean('GUILogRecords', 'adding_circ')
-        Circuit.removePlugVerbose = cfg.getboolean('GUILogRecords', 'removing_io')
-        Circuit.removeCircuitVerbose = cfg.getboolean('GUILogRecords', 'removing_circ')
-        Circuit.detailedRemoveVerbose = cfg.getboolean('GUILogRecords', 'detailed_rm')
+        Plug.setInputVerbose = cfg.getboolean(
+            'GUILogRecords', 'input_chang')
+        Plug.setOutputVerbose = cfg.getboolean(
+            'GUILogRecords', 'output_chang')
+        Plug.connectVerbose = cfg.getboolean(
+            'GUILogRecords', 'conn_discon_io')
+        Circuit.addPlugVerbose = cfg.getboolean(
+            'GUILogRecords', 'adding_io')
+        Circuit.addCircuitVerbose = cfg.getboolean(
+            'GUILogRecords', 'adding_circ')
+        Circuit.removePlugVerbose = cfg.getboolean(
+            'GUILogRecords', 'removing_io')
+        Circuit.removeCircuitVerbose = cfg.getboolean(
+            'GUILogRecords', 'removing_circ')
+        Circuit.detailedRemoveVerbose = cfg.getboolean(
+            'GUILogRecords', 'detailed_rm')
         if cfg.getboolean('LogOutputs', 'gui'):
             log.addHandler(self.logDock.handler)
         else:
@@ -147,19 +156,7 @@ class MainWindow(QMainWindow):
         items = pickle.load(f)
         for item in items:
             print(item.name)
-            #~ if isinstance(item[0], PlugItem):
-                #~ plugItem = PlugItem(item[0].isInput, item[0].owner)
-                #~ plugItem.setName(item[0].name)
-                #~ plugItem.setPos(item[1])
-                #~ self.view.scene().addItem(plugItem)
-            #~ else:
-                #~ for k, v in item[0].__dict__.items():
-                    #~ print(k, v)
-                    #~ if isinstance(v, list):
-                        #~ for x in v:
-                            #~ print('    ', x.__dict__)
-        
-        
+
     def showDocumentation(self):
         """Shows the help dock widget."""
         self.addDockWidget(

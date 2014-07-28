@@ -14,7 +14,7 @@ import engine
 
 mainCircuit = Circuit("Main_Circuit", None)
 
-    
+
 class MainView(QGraphicsView):
     """A graphic representation of a circuit schematic created by the
     user. This view manages most user interaction, in particular:
@@ -94,7 +94,8 @@ class MainView(QGraphicsView):
         name = model.item(0).text()
         item = None
         if name in ['And', 'Or', 'Nand', 'Nor', 'Not', 'Xor', 'Xnor']:
-            item = CircuitItem(getattr(engine.gates, name + 'Gate'), mainCircuit)
+            item = CircuitItem(
+                getattr(engine.gates, name + 'Gate'), mainCircuit)
         elif name == 'Input Pin':
             item = PlugItem(True, mainCircuit)
         elif name == 'Output Pin':
@@ -102,7 +103,7 @@ class MainView(QGraphicsView):
         if item:
             self.scene().addItem(item)
             item.setPos(e.pos())
-    
+
     def keyPressEvent(self, e):
         """Manages keyboard events, in particular item rotation,
         translation, removal and alignment.
@@ -117,7 +118,7 @@ class MainView(QGraphicsView):
         elif e.key() == QtCore.Qt.Key_Delete:
             for item in selection:
                 if isinstance(item, CircuitItem):
-                    mainCircuit.remove(item.circuit)
+                    mainCircuit.remove(item.item)
                     item.circuit = None
                 elif isinstance(item, Plug):
                     mainCircuit.remove(item)
@@ -216,7 +217,7 @@ class MainView(QGraphicsView):
                 pos = item.mapFromScene(self.mapToScene(e.pos()))
                 if isinstance(item, CircuitItem) or isinstance(item, PlugItem):
                     plug = item.handleAtPos(pos)
-                    if (plug and 
+                    if (plug and
                             self.currentWire.handleAtPos(
                                 self.currentWire.mapFromScene(
                                     self.mapToScene(e.pos())))):

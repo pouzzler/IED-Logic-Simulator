@@ -2,7 +2,8 @@
 # coding=utf-8
 
 import inspect
-from PySide.QtGui import QDockWidget, QTreeWidget, QTreeWidgetItem
+import os
+from PySide.QtGui import QDockWidget, QIcon, QTreeWidget, QTreeWidgetItem
 from engine import gates, circuits
 
 
@@ -18,11 +19,13 @@ class ToolBox(QTreeWidget):
         self.header().setVisible(False)
         gatesheader = QTreeWidgetItem(self, [u'Basic Gates'])
         gatesheader.setExpanded(True)
-        [
-            QTreeWidgetItem(gatesheader, [name[:-4]])
-            for name, _ in inspect.getmembers(
+        imgDir = os.path.dirname(os.path.realpath(__file__)) + '/icons/'
+        for name, _ in inspect.getmembers(
                 gates,
-                lambda m: inspect.isclass(m) and m.__module__ == 'engine.gates')]
+                lambda m: (
+                    inspect.isclass(m) and m.__module__ == 'engine.gates')):
+            item = QTreeWidgetItem(gatesheader, [name[:-4]])
+            item.setIcon(0, QIcon(imgDir + name + '.png'))
         ioheader = QTreeWidgetItem(self, [u'I/O'])
         ioheader.setExpanded(True)
         [
@@ -33,7 +36,9 @@ class ToolBox(QTreeWidget):
         [QTreeWidgetItem(circuitsheader, [name[:-4]])
             for name, _ in inspect.getmembers(
                 circuits,
-                lambda m: inspect.isclass(m) and m.__module__ == 'engine.circuits')]
+                lambda m: (
+                    inspect.isclass(m) and
+                    m.__module__ == 'engine.circuits'))]
         userheader = QTreeWidgetItem(self, [u'User Circuits'])
         userheader.setExpanded(True)
 
