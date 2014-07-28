@@ -211,10 +211,6 @@ class CircuitItem(QGraphicsItem):
         collision detection paths, and pasting a png file for the body
         of the gate/circuit.
         """
-        if self.showName:
-            painter.drawText(QRectF(-100, -100, 0, 0), self.item.name)
-        if self.showClassName:
-            painter.drawText(QRectF(0, 0, 100, 100), self.item.__class__.__name__)
         for i in range(self.nIn):
             painter.drawPath(self.inputPaths[i])
             painter.drawLine(
@@ -246,6 +242,14 @@ class CircuitItem(QGraphicsItem):
                 self.imgW,
                 self.imgH),
             self.image)
+        if self.showName:
+            painter.drawText(
+                QRectF(2 * self.radius + self.ioW, self.imgOff, 100, 20),
+                self.item.name)
+        if self.showClassName:
+            painter.drawText(
+                QRectF(2 * self.radius + self.ioW, self.imgOff + 20, 100, 40),
+                self.item.__class__.__name__)
         # Apparently the default selection box doesn't work with custom
         # QGraphicsItems
         if option.state & QStyle.State_Selected:
@@ -264,3 +268,4 @@ class CircuitItem(QGraphicsItem):
     def toggleNameVisibility(self):
         self.showName = not self.showName
         self.setupPaint()
+        self.update()
