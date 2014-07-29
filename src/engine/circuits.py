@@ -30,7 +30,7 @@ class HalfAdder(Circuit):
         self.B = self.add_input('B')    # inputList[1]
         # circuit's outputs
         self.S = self.add_output('S')   # outputList[0]
-        self.O = self.add_output('O')   # outputList[1]
+        self.O = self.add_output('COUT')   # outputList[1]
         # circuit's components
         self.XOR1 = self.add_circuit(XorGate, 'X1')
         self.AND1 = self.add_circuit(AndGate, 'A1')
