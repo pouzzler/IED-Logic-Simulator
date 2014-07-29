@@ -140,7 +140,7 @@ class PlugItem(QGraphicsPathItem, Plug):
 
 class CircuitItem(QGraphicsItem):
     """Should represent any sub-item of the circuit, ie. circuits, gates,
-    inputs, outputs and wires."""
+    inputs, outputs and wires. Only represents circuits so far."""
 
     textH = 12
     ioH = 10
@@ -253,12 +253,12 @@ class CircuitItem(QGraphicsItem):
         if self.showName:
             painter.setPen(QPen(QColor('red')))
             painter.drawText(
-                QPointF(0, self.imgOff + self.imgH + self.textH),
+                QPointF(0, self.maxH + self.textH),
                 self.item.name)
         if self.showClassName:
             painter.setPen(QPen(QColor('green')))
             painter.drawText(
-                QPointF(0, self.imgOff + self.imgH + 2 * self.textH),
+                QPointF(0, self.maxH + 2 * self.textH),
                 self.item.__class__.__name__)
         # Apparently the default selection box doesn't work with custom
         # QGraphicsItems
@@ -284,3 +284,12 @@ class CircuitItem(QGraphicsItem):
         self.showClassName = isVisible
         self.setupPaint()
         self.update()
+        
+    def setNbInputs(self, nb):
+        if nb > self.item.nb_inputs():
+            for x in range (nb - self.item.nb_inputs()):
+                self.item.add_input()
+        elif nb < self.item.nb_inputs():
+            for x in range (self.item.nb_inputs() - nb):
+                self.item.remove_input(self.item.inputList[0])
+        self.setupPaint()

@@ -1,12 +1,13 @@
 #!/usr/bin/env python3
 # coding=utf-8
 
+import inspect
 from PySide.QtGui import (
-    QCheckBox, QDockWidget, QGridLayout, QLabel,
+    QCheckBox, QComboBox, QDockWidget, QGridLayout, QLabel,
     QLineEdit, QPushButton, QRadioButton, QWidget)
 from PySide.QtCore import Qt
 from .graphicitem import CircuitItem
-
+from engine import gates
 
 class ToolOptions(QWidget):
     """Widget for modifying the selected circuit or gate."""
@@ -43,11 +44,14 @@ class ToolOptions(QWidget):
         self.gridLayout.addWidget(self.showClassNameCB, 2, 1, 1, 1)
         self.showClassNameCB.stateChanged.connect(self.setClassVisibility)
 
-        nbInputsLabel = QLabel('Inputs number:', self)
+        nbInputsLabel = QLabel('Number of inputs:', self)
         self.gridLayout.addWidget(nbInputsLabel, 3, 0, 1, 1)
 
-        self.nbInputsLE = QLineEdit(self)
-        self.gridLayout.addWidget(self.nbInputsLE, 3, 1, 1, 2)
+        self.nbInputsCB = QComboBox(self)
+        self.nbInputsCB.setDisabled(True)
+        self.nbInputsCB.activated.connect(self.setNbInputs)
+        self.nbInputsCB.addItems([str(x) for x in range(2, 33)])
+        self.gridLayout.addWidget(self.nbInputsCB, 3, 1, 1, 2)
 
         orientLabel = QLabel('Orientation:', self)
         self.gridLayout.addWidget(orientLabel, 4, 0, 1, 1)
@@ -75,28 +79,37 @@ class ToolOptions(QWidget):
         self.gridLayout.addWidget(self.highRadioButton, 5, 2, 1, 1)
 
     def updateOptions(self):
+        self.nameLE.setDisabled(True)
+        self.nameLE.setText('')
+        self.showNameCB.setDisabled(True)
+        self.showClassNameCB.setDisabled(True)
+        self.showNameCB.setCheckState(Qt.CheckState.Unchecked)
+        self.showClassNameCB.setCheckState(Qt.CheckState.Unchecked)
+
         selection = self.view.scene().selectedItems()
-        
-        if len(selection) == 0:
-            self.nameLE.setDisabled(True)
-            self.nameLE.setText('')
-            self.showNameCB.setDisabled(True)
-            self.showClassNameCB.setDisabled(True)
-            self.showNameCB.setCheckState(Qt.CheckState.Unchecked)
-            self.showClassNameCB.setCheckState(Qt.CheckState.Unchecked)
-            return
-            
+        notAllGates = True
+        for item in selection:
+            if not isinstance(item, CircuitItem) or item.item.__class__ not in [
+                    gates.AndGate, gates.NandGate, gates.OrGate,
+                    gates.NorGate, gates.XorGate, gates.XnorGate]:
+                break
+            notAllGates = False
+        self.nbInputsCB.setDisabled(notAllGates) 
         self.showNameCB.setDisabled(False)
         self.showClassNameCB.setDisabled(False)
         if len(selection) == 1:
             self.nameLE.setDisabled(False)
             self.nameLE.setText(selection[0].item.name)
+            # Wrong check box on multiple selection
+            # Better than arbitrarily setting them all
+            # TODO : possible solution by ignoring events while doing it
             self.showNameCB.setCheckState(
                 Qt.CheckState.Checked if selection[0].showName
                 else Qt.CheckState.Unchecked)
             self.showClassNameCB.setCheckState(
                 Qt.CheckState.Checked if selection[0].showClassName
                 else Qt.CheckState.Unchecked)
+            self.nbInputsCB.setCurrentIndex(selection[0].item.nb_inputs() - 2)
 
     def setItemName(self):
         item = self.view.scene().selectedItems()[0]
@@ -109,6 +122,10 @@ class ToolOptions(QWidget):
     def setClassVisibility(self, arg1):
         for item in self.view.scene().selectedItems():
             item.setClassVisibility(True if arg1 else False)
+
+    def setNbInputs(self, index):
+        for item in self.view.scene().selectedItems():
+            item.setNbInputs(index + 2)
 
 class ToolOptionsDockWidget(QDockWidget):
     """A dock widget containing our tool options."""
