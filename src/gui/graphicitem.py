@@ -215,6 +215,7 @@ class CircuitItem(QGraphicsItem):
         collision detection paths, and pasting a png file for the body
         of the gate/circuit.
         """
+        painter.setPen(QPen(QColor('black'), 2))
         for i in range(self.nIn):
             painter.drawPath(self.inputPaths[i])
             painter.drawLine(
