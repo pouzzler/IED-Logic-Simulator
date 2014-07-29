@@ -98,26 +98,26 @@ if __name__ == '__main__':
                                        #~ # logique car 1 ET 0 = 0 / 1 ET 1 = 1
     #~ bgClockThread.stop()               # enfin on quite le thread de l'horloge
 
-    HA = TC.add_circuit(HalfAdder)
-    A = HA.inputList[0]
-    B = HA.inputList[1]
-    O = HA.outputList[0]
-    COUT = HA.outputList[1]
-    A.set(1)
-    B.set(1)
-    print('A:   ' + str(A.value))
-    print('B:   ' + str(B.value))
-    print('O:    ' + str(O.value))
-    print('COUT: ' + str(COUT.value))
-    
-    print('________________________________________________________________\n')
-    for plug in [A, B, HA.XOR1.inputList[0], HA.XOR1.inputList[1], HA.XOR1.outputList[0], HA.AND1.inputList[0], HA.AND1.inputList[1], HA.AND1.outputList[0], O, COUT]:
-        print_plug_info(plug)
-        
-    HA.remove(COUT)
-    print('________________________________________________________________\n')
-    for plug in [A, B, HA.XOR1.inputList[0], HA.XOR1.inputList[1], HA.XOR1.outputList[0], HA.AND1.inputList[0], HA.AND1.inputList[1], HA.AND1.outputList[0], O, COUT]:
-        print_plug_info(plug)
+    #~ HA = TC.add_circuit(HalfAdder)
+    #~ A = HA.inputList[0]
+    #~ B = HA.inputList[1]
+    #~ O = HA.outputList[0]
+    #~ COUT = HA.outputList[1]
+    #~ A.set(1)
+    #~ B.set(1)
+    #~ print('A:   ' + str(A.value))
+    #~ print('B:   ' + str(B.value))
+    #~ print('O:    ' + str(O.value))
+    #~ print('COUT: ' + str(COUT.value))
+    #~ 
+    #~ print('________________________________________________________________\n')
+    #~ for plug in [A, B, HA.XOR1.inputList[0], HA.XOR1.inputList[1], HA.XOR1.outputList[0], HA.AND1.inputList[0], HA.AND1.inputList[1], HA.AND1.outputList[0], O, COUT]:
+        #~ print_plug_info(plug)
+        #~ 
+    #~ HA.remove(COUT)
+    #~ print('________________________________________________________________\n')
+    #~ for plug in [A, B, HA.XOR1.inputList[0], HA.XOR1.inputList[1], HA.XOR1.outputList[0], HA.AND1.inputList[0], HA.AND1.inputList[1], HA.AND1.outputList[0], O, COUT]:
+        #~ print_plug_info(plug)
     
     #~ FA = TC.add_circuit(FullAdder)
     #~ I0 = FA.inputList[0]
@@ -126,22 +126,22 @@ if __name__ == '__main__':
     #~ O = FA.outputList[0]
     #~ COUT = FA.outputList[1]
     
-    #~ NOT = TC.add_circuit(NotGate)
-    #~ GIN = TC.add_input()
-    #~ GOUT = TC.add_output()
-    #~ I = NOT.inputList[0]
-    #~ O = NOT.outputList[0]
-    #~ GIN.connect(I)
-    #~ O.connect(GOUT)
-    #~ GIN.set(False)
-#~ 
-    #~ print('________________________________________________________________\n')
-    #~ for plug in [GIN, I, O, GOUT]:
-        #~ print_plug_info(plug)
-    #~ 
-    #~ O.disconnect(GOUT)
-    #~ print('\n___________________DISCONNECTED GOUT AND O____________________\n')
-    #~ for plug in [GIN, I, O, GOUT]:
-        #~ print_plug_info(plug)
+    NOT = TC.add_circuit(NotGate)
+    GIN = TC.add_input()
+    GOUT = TC.add_output()
+    I = NOT.inputList[0]
+    O = NOT.outputList[0]
+    I.connect(GIN)
+    GOUT.connect(O)
+    GIN.set(False)
+
+    print('________________________________________________________________\n')
+    for plug in [GIN, I, O, GOUT]:
+        print_plug_info(plug)
+    
+    O.disconnect(GOUT)
+    print('\n___________________DISCONNECTED GOUT AND O____________________\n')
+    for plug in [GIN, I, O, GOUT]:
+        print_plug_info(plug)
 
 

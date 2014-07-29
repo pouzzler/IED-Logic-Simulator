@@ -109,27 +109,41 @@ class Plug:
             srcIsOutput = not srcIsInput
             destIsInput = plug.isInput
             destIsOutput = not destIsInput
+            srcP = self.owner
+            destP = plug.owner
             srcGP = self.owner.owner
             destGP = plug.owner.owner
+            print('GP = P: ', srcGP == destP)
+            print('srcIsInput: ', srcIsInput)
+            print('destIsInput: ', destIsInput)
             #   * Ix => Iy is valid IF Ix.GP != Iy.GP
             #   * Ox => Oy is valid IF Ox.GP != Oy.GP
             #   * O => I is valid IF O.GP == I.GP
-            if (srcIsInput and destIsInput and srcGP != destGP) or \
+            if (srcIsInput and destIsInput and srcGP == destP) or \
+                (srcIsOutput and destIsOutput and srcP == destGP):
+                    plug.destinationPlugs.append(self)
+                    self.sourcePlug = plug
+                
+            elif (srcIsInput and destIsInput and srcGP != destGP) or \
                 (srcIsOutput and destIsOutput and srcGP != destGP) or \
                 (srcIsOutput and destIsInput and srcGP == destGP):
                     self.destinationPlugs.append(plug)
                     plug.sourcePlug = self
-                    if Plug.connectVerbose:
-                        log.info(
-                            '%s.%s connected to %s.%s'
-                            % (self.owner.name, self.name, plug.owner.name,
-                            plug.name))
+                
+
             #  INVALID connections:
             else:
                 log.warning(
                     'invalid connection between %s.%s and %s.%s'
                     % (self.owner.name, self.name, plug.owner.name, plug.name))
                 return False
+
+            if Plug.connectVerbose:
+                log.info(
+                    '%s.%s connected to %s.%s'
+                    % (self.owner.name, self.name, plug.owner.name,
+                    plug.name))
+
         return True
 
     def disconnect(self, plug):
