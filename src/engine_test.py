@@ -77,21 +77,27 @@ from time import sleep
 if __name__ == '__main__':
     TC = Circuit("Main_Circuit", None)
     
-    #~ clk = TC.add_output('CLOCK')       # l'horloge est une simple sortie du TL
-    #~ bgClockThread = ClockThread(clk)   # mais elle est simulée dans un thread
-    #~ bgClockThread.start()              # on démarre l'horloge (1 tic par sec)
-    #~ AND = TC.add_circuit(AndGate())    # puis on créé une porte AND
-    #~ AND.input('I0').set(1)             # on positionne son entrée I0 à 1
-    #~ clk.connect(AND.input('I1'))       # on connecte l'horloge à son entrée I1
-    #~ sleep(bgClockThread.spd)           # on attends un tic d'horloge
-    #~ print(AND.output('O').value)       # on imprime la sortie de la porte AND
-    #~ time.sleep(1)                      # on attends un second tic d'horloge
-    #~ print(AND.output('O').value)       # le tic à modifié la sortie du AND
-    #~ time.sleep(1)                      # on attends encore un troisième tic
-    #~ print(AND.output('O').value)       # la sortie vaut la valeur de l'horloge
-                                       #~ # logique car 1 ET 0 = 0 / 1 ET 1 = 1
-    #~ bgClockThread.stop()               # enfin on quite le thread de l'horloge
-#~ 
+    clk = TC.add_input('CLOCK')        # l'horloge est une simple sortie du TL
+    bgClockThread = ClockThread(clk)   # mais elle est simulée dans un thread
+    bgClockThread.start()              # on démarre l'horloge (1 tic par sec)
+
+    AND = TC.add_circuit(AndGate)      # puis on créé une porte AND
+    I0 = AND.inputList[0]
+    I1 = AND.inputList[1]
+    O0 = AND.outputList[0]
+
+    I0.set(1)                          # on positionne son entrée I0 à 1
+    clk.connect(I1)                    # on connecte l'horloge à son entrée I1
+    
+    sleep(bgClockThread.spd)           # on attends un tic d'horloge
+    print(O0.value)                    # on imprime la sortie de la porte AND
+    time.sleep(1)                      # on attends un second tic d'horloge
+    print(O0.value)                    # le tic à modifié la sortie du AND
+    time.sleep(1)                      # on attends encore un troisième tic
+    print(O0.value)                    # la sortie vaut la valeur de l'horloge
+                                       # logique car 1 ET 0 = 0 / 1 ET 1 = 1
+    bgClockThread.stop()               # enfin on quite le thread de l'horloge
+
     #~ print('_____________________________________________________\n')
     #~ # on ajoute 2 entrées et 1 sortie au circuit du "top-level"
     #~ A = TC.add_input('A')
@@ -123,22 +129,22 @@ if __name__ == '__main__':
     #~ print("nb total de sorties:  " + str(total_nb_outputs(TC)))
     #~ print("nb total d'E/S:       " + str(total_nb_plugs(TC)))
 
-    NOT = TC.add_circuit(NotGate)
-    GIN = TC.add_input()
-    GOUT = TC.add_output()
-    I = NOT.inputList[0]
-    O = NOT.outputList[0]
-    GIN.connect(I)
-    O.connect(GOUT)
-    GIN.set(False)
-
-    print('________________________________________________________________\n')
-    for plug in [GIN, I, O, GOUT]:
-        print_plug_info(plug)
-    
-    O.disconnect(GOUT)
-    print('\n___________________DISCONNECTED GOUT AND O____________________\n')
-    for plug in [GIN, I, O, GOUT]:
-        print_plug_info(plug)
+    #~ NOT = TC.add_circuit(NotGate)
+    #~ GIN = TC.add_input()
+    #~ GOUT = TC.add_output()
+    #~ I = NOT.inputList[0]
+    #~ O = NOT.outputList[0]
+    #~ GIN.connect(I)
+    #~ O.connect(GOUT)
+    #~ GIN.set(False)
+#~ 
+    #~ print('________________________________________________________________\n')
+    #~ for plug in [GIN, I, O, GOUT]:
+        #~ print_plug_info(plug)
+    #~ 
+    #~ O.disconnect(GOUT)
+    #~ print('\n___________________DISCONNECTED GOUT AND O____________________\n')
+    #~ for plug in [GIN, I, O, GOUT]:
+        #~ print_plug_info(plug)
 
 

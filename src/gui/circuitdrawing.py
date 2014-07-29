@@ -135,14 +135,19 @@ class paintArea(QtGui.QWidget):
 
     def drawPreview(self, endPoint_x, endPoint_y):
         painter = QtGui.QPainter(self.imagePreview)
-        painter.setPen(QtGui.QPen(self.myPenColor, self.myPenWidth, QtCore.Qt.SolidLine, QtCore.Qt.RoundCap, QtCore.Qt.RoundJoin))
+        painter.setPen(QtGui.QPen(
+            self.myPenColor,
+            self.myPenWidth,
+            QtCore.Qt.SolidLine,
+            QtCore.Qt.RoundCap,
+            QtCore.Qt.RoundJoin))
         painter.setClipping(True)
                     
         painter.setRenderHint(QtGui.QPainter.SmoothPixmapTransform, True)
         painter.setRenderHint(QtGui.QPainter.HighQualityAntialiasing, True)
         painter.setRenderHint(QtGui.QPainter.Antialiasing, True)        
         
-        painter.setOpacity(0.4)
+        painter.setOpacity(0.5)
 
         if self.tools['circle']:
             x1 = self.firstPoint_x
@@ -166,7 +171,7 @@ class paintArea(QtGui.QWidget):
                 painter.drawRoundedRect(endPoint_x, endPoint_y, -dx, -dy, 20, 20, 0 )
             else:
                 painter.drawRoundedRect(x1, y1, dx, dy, 20., 20.)
-                 
+
         self.update()
     
     def rotate(self):
@@ -186,7 +191,6 @@ class paintArea(QtGui.QWidget):
     def resizeImage(self, image, newSize):
         if image.size() == newSize:
             return
-
         newImage = QtGui.QImage(newSize, QtGui.QImage.Format_RGB32)
         newImage.fill(QtGui.qRgb(255, 255, 255))
         painter = QtGui.QPainter(newImage)
@@ -208,20 +212,14 @@ class CustomCircuitCreator(QtGui.QWidget):
 
     def __init__(self):
         super(CustomCircuitCreator, self).__init__()
-
         self.paintArea = paintArea(self)
-        
         self.paintArea.clearImage()
-
         self.grid = QtGui.QGridLayout(self)
         self.grid.addWidget(self.paintArea, 1, 0, 1, 9)
-
         self.scrollArea = QtGui.QScrollArea()
         self.scrollArea.setBackgroundRole(QtGui.QPalette.Dark)        
-        
-        self.createActions()
+        self.createToolsButtons()
         self.createButtons()
-
         self.setWindowTitle("Custom circuit creator")
         self.resize(self.paintArea.size_w, self.paintArea.size_h + 85)
 
@@ -230,7 +228,6 @@ class CustomCircuitCreator(QtGui.QWidget):
             event.accept()
         else:
             event.ignore()
-
 
     def createButtons(self):
         buttonsDialog = QtGui.QDialogButtonBox(self)
@@ -246,7 +243,7 @@ class CustomCircuitCreator(QtGui.QWidget):
         buttonsDialog.button(QtGui.QDialogButtonBox.Cancel).clicked.connect(
             self.close)
 
-    def createActions(self):
+    def createToolsButtons(self):
         buttonsFrame = QtGui.QFrame()
         buttonsLayout = QtGui.QHBoxLayout(buttonsFrame)
         buttonsLayout.setSizeConstraint(QtGui.QLayout.SetDefaultConstraint)
@@ -372,6 +369,7 @@ def main():
     window = CustomCircuitCreator()
     window.show()
     sys.exit(app.exec_())
+
 
 if __name__ == '__main__':
     main()
