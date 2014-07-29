@@ -38,10 +38,10 @@ class ToolOptions(QWidget):
         showClassNameLabel = QLabel('Show class name?', self)
         self.gridLayout.addWidget(showClassNameLabel, 2, 0, 1, 1)
 
-        self.showClassNameLabelCB = QCheckBox(self)
-        self.showClassNameLabelCB.setDisabled(True)
-        self.gridLayout.addWidget(self.showClassNameLabelCB, 2, 1, 1, 1)
-        self.showClassNameLabelCB.stateChanged.connect(self.setClassVisibility)
+        self.showClassNameCB = QCheckBox(self)
+        self.showClassNameCB.setDisabled(True)
+        self.gridLayout.addWidget(self.showClassNameCB, 2, 1, 1, 1)
+        self.showClassNameCB.stateChanged.connect(self.setClassVisibility)
 
         nbInputsLabel = QLabel('Inputs number:', self)
         self.gridLayout.addWidget(nbInputsLabel, 3, 0, 1, 1)
@@ -81,20 +81,21 @@ class ToolOptions(QWidget):
             self.nameLE.setDisabled(True)
             self.nameLE.setText('')
             self.showNameCB.setDisabled(True)
+            self.showClassNameCB.setDisabled(True)
             self.showNameCB.setCheckState(Qt.CheckState.Unchecked)
-            self.showClassNameLabelCB.setCheckState(Qt.CheckState.Unchecked)
+            self.showClassNameCB.setCheckState(Qt.CheckState.Unchecked)
             return
             
         self.showNameCB.setDisabled(False)
-        self.showClassNameLabelCB.setDisabled(False)
+        self.showClassNameCB.setDisabled(False)
         if len(selection) == 1:
             self.nameLE.setDisabled(False)
             self.nameLE.setText(selection[0].item.name)
             self.showNameCB.setCheckState(
                 Qt.CheckState.Checked if selection[0].showName
                 else Qt.CheckState.Unchecked)
-            self.showClassNameLabelCB.setCheckState(
-                Qt.CheckState.Checked if selection[0].showName
+            self.showClassNameCB.setCheckState(
+                Qt.CheckState.Checked if selection[0].showClassName
                 else Qt.CheckState.Unchecked)
 
     def setItemName(self):

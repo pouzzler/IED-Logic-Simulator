@@ -7,7 +7,7 @@ from math import atan2, pi, pow, sqrt
 
 from PySide.QtCore import QPointF, QRectF, Qt
 from PySide.QtGui import (
-    QFont, QGraphicsItem, QGraphicsPathItem, QImage,
+    QColor, QFont, QGraphicsItem, QGraphicsPathItem, QImage,
     QPainterPath, QPen, QStyle)
 from engine.simulator import Circuit, Plug
 
@@ -156,7 +156,7 @@ class CircuitItem(QGraphicsItem):
         self.image = QImage(imgDir + circuitClass.__name__ + '.png')
         self.showClassName = False
         if not self.image:
-            self.image = QImage(imgDir + 'Input.png')
+            self.image = QImage(imgDir + 'Default.png')
             self.showClassName = True
         self.showName = True
         self.setupPaint()
@@ -250,10 +250,12 @@ class CircuitItem(QGraphicsItem):
         f.setPixelSize(self.textH)
         painter.setFont(f)
         if self.showName:
+            painter.setPen(QPen(QColor('red')))
             painter.drawText(
                 QPointF(0, self.imgOff + self.imgH + self.textH),
                 self.item.name)
         if self.showClassName:
+            painter.setPen(QPen(QColor('green')))
             painter.drawText(
                 QPointF(0, self.imgOff + self.imgH + 2 * self.textH),
                 self.item.__class__.__name__)
