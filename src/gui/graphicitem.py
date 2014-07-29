@@ -7,8 +7,8 @@ from math import atan2, pi, pow, sqrt
 
 from PySide.QtCore import QPointF, QRectF, Qt
 from PySide.QtGui import (
-    QFont, QGraphicsItem, QGraphicsPathItem, QImage, QPainterPath, QPen,
-    QStyle)
+    QColor, QFont, QGraphicsItem, QGraphicsPathItem, QImage,
+    QPainterPath, QPen, QStyle)
 from engine.simulator import Circuit, Plug
 
 
@@ -142,6 +142,7 @@ class CircuitItem(QGraphicsItem):
     """Should represent any sub-item of the circuit, ie. circuits, gates,
     inputs, outputs and wires."""
 
+    textH = 12
     ioH = 10
     ioW = 20
     radius = 2.5
@@ -155,7 +156,7 @@ class CircuitItem(QGraphicsItem):
         self.image = QImage(imgDir + circuitClass.__name__ + '.png')
         self.showClassName = False
         if not self.image:
-            self.image = QImage(imgDir + 'Input.png')
+            self.image = QImage(imgDir + 'Default.png')
             self.showClassName = True
         self.showName = True
         self.setupPaint()
@@ -198,13 +199,16 @@ class CircuitItem(QGraphicsItem):
                 2 * self.radius,
                 2 * self.radius)
             self.outputPaths.append(path)
+        self.prepareGeometryChange()
 
     def boundingRect(self):
-        return QRectF(
-            0,
-            0,
-            4 * self.radius + 2 * self.ioW + self.imgW,
-            self.maxH)
+        H = self.maxH
+        W = 4 * self.radius + 2 * self.ioW + self.imgW
+        if self.showClassName:
+            H = H + 2 * self.textH
+        elif self.showName:
+            H = H + self.textH
+        return QRectF(0, 0, W, H)
 
     def paint(self, painter, option, widget):
         """Drawing the i/o pins 'by hand', the handles from the saved
@@ -242,13 +246,18 @@ class CircuitItem(QGraphicsItem):
                 self.imgW,
                 self.imgH),
             self.image)
+        f = QFont('Times')
+        f.setPixelSize(self.textH)
+        painter.setFont(f)
         if self.showName:
+            painter.setPen(QPen(QColor('red')))
             painter.drawText(
-                QRectF(2 * self.radius + self.ioW, self.imgOff, 100, 20),
+                QPointF(0, self.imgOff + self.imgH + self.textH),
                 self.item.name)
         if self.showClassName:
+            painter.setPen(QPen(QColor('green')))
             painter.drawText(
-                QRectF(2 * self.radius + self.ioW, self.imgOff + 20, 100, 40),
+                QPointF(0, self.imgOff + self.imgH + 2 * self.textH),
                 self.item.__class__.__name__)
         # Apparently the default selection box doesn't work with custom
         # QGraphicsItems
@@ -265,7 +274,12 @@ class CircuitItem(QGraphicsItem):
             if self.outputPaths[i].contains(pos):
                 return self.item.outputList[i]
 
-    def toggleNameVisibility(self):
-        self.showName = not self.showName
+    def setNameVisibility(self, isVisible):
+        self.showName = isVisible
+        self.setupPaint()
+        self.update()
+
+    def setClassVisibility(self, isVisible):
+        self.showClassName = isVisible
         self.setupPaint()
         self.update()

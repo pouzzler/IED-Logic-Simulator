@@ -31,7 +31,7 @@ class ToolBox(QTreeWidget):
         ioheader.setExpanded(True)
         [
             QTreeWidgetItem(ioheader, [name])
-            for name in ['Input Pin', 'Output Pin']]
+            for name in ['Input Pin', 'Output Pin', 'Clock']]
         circuitsheader = QTreeWidgetItem(self, [u'Circuits'])
         circuitsheader.setExpanded(True)
         [QTreeWidgetItem(circuitsheader, [name[:-4]])
