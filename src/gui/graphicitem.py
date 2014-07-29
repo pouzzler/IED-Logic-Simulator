@@ -291,5 +291,5 @@ class CircuitItem(QGraphicsItem):
                 self.item.add_input()
         elif nb < self.item.nb_inputs():
             for x in range (self.item.nb_inputs() - nb):
-                self.item.__remove_input(self.item.inputList[0])
+                self.item.remove_input(self.item.inputList[0])
         self.setupPaint()

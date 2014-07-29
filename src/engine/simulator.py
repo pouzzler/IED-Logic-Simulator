@@ -246,13 +246,13 @@ class Circuit:
     # -+--------------    METHODS FOR REMOVING COMPONENTS    --------------+- #
     # these functions can also be implemented using the component name or
     # index but using its instance is the easiest way
-    def __remove_input(self, input):
+    def remove_input(self, input):
         """Remove an input from the inputList of the circuit."""
         self.inputList.remove(input)
         if Circuit.removePlugVerbose:
             log.info("input '%s' removed from %s" % (input.name, self.name,))
 
-    def __remove_output(self, output):
+    def remove_output(self, output):
         """Remove an output from the outputList of the circuit."""
         self.outputList.remove(output)
         if Circuit.removePlugVerbose:
