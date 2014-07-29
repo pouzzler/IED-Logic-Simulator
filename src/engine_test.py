@@ -22,10 +22,10 @@ AUTO = '\033[0m'
 
 def print_plug_info(plug):
     COLOR = GREEN if plug.value else RED
-    print('%s: %s\n\tconnections: %s\n\tconnectedTo: %s'
+    print('%s: %s\n\tsourcePlug: %s\n\tdestinationPlugs: %s'
             % (plug.name, COLOR + str(plug.value) + AUTO,
-                str([conn.name for conn in plug.connections]),
-                str([conn.name for conn in plug.connectedTo])))
+                str(plug.sourcePlug.name if plug.sourcePlug else ''),
+                str([conn.name for conn in plug.destinationPlugs])))
 
 
 # un simple nand
@@ -99,10 +99,25 @@ if __name__ == '__main__':
     #~ bgClockThread.stop()               # enfin on quite le thread de l'horloge
 
     HA = TC.add_circuit(HalfAdder)
-    I0 = HA.inputList[0]
-    I1 = HA.inputList[1]
+    A = HA.inputList[0]
+    B = HA.inputList[1]
     O = HA.outputList[0]
     COUT = HA.outputList[1]
+    A.set(1)
+    B.set(1)
+    print('A:   ' + str(A.value))
+    print('B:   ' + str(B.value))
+    print('O:    ' + str(O.value))
+    print('COUT: ' + str(COUT.value))
+    
+    print('________________________________________________________________\n')
+    for plug in [A, B, HA.XOR1.inputList[0], HA.XOR1.inputList[1], HA.XOR1.outputList[0], HA.AND1.inputList[0], HA.AND1.inputList[1], HA.AND1.outputList[0], O, COUT]:
+        print_plug_info(plug)
+        
+    HA.remove(COUT)
+    print('________________________________________________________________\n')
+    for plug in [A, B, HA.XOR1.inputList[0], HA.XOR1.inputList[1], HA.XOR1.outputList[0], HA.AND1.inputList[0], HA.AND1.inputList[1], HA.AND1.outputList[0], O, COUT]:
+        print_plug_info(plug)
     
     #~ FA = TC.add_circuit(FullAdder)
     #~ I0 = FA.inputList[0]

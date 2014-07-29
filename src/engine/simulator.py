@@ -18,7 +18,7 @@ There are two ways to access a component (Plug or Circuit) of a circuit:
 
 When the value (Boolean) of an input is modified (with .set()), the entire
 circuit is evaluated: all outputs are recalculated based on the values ​​of
-its inputs and connections between components.
+its inputs and sourcePlug between components.
 """
 
 # TODO: replace log.error messages by exceptions.
@@ -56,14 +56,14 @@ class Plug:
         self.name = name          # its name
         self.value = False        # at first, no electricity
         self.__nbEval = 0         # number of evaluations
-        self.connections = []     # plugs connected on this plug
-        self.connectedTo = []     # plugs which this plug is connected to
+        self.sourcePlug = None     # plug on the left
+        self.destinationPlugs = []  # plugs on the right
 
     def set(self, value):
         """Sets the boolean value of a Plug."""
         if self.value == value and self.__nbEval != 0:  # unchanged value, stop
             return
-        else:                               # else, set the new value
+        else:                           # else, set the new value
             self.value = bool(value)
             self.__nbEval += 1
         if Plug.setInputVerbose and self.isInput:
@@ -74,82 +74,78 @@ class Plug:
             log.info(
                 'output %s.%s set to %i'
                 % (self.owner.name, self.name, int(self.value),))
-        if self.isInput:                    # input? evaluate the circuit
+        # if the input of a gate change, we must evaluate its
+        # logic function to set its outpu(s) valu(s)
+        if self.isInput:
             self.owner.evalfun()
-        for connection in self.connections:
-            connection.set(value)           # set value of the connected plugs
+        # then, all plugs in the destination list are set to this value
+        for connection in self.destinationPlugs:
+            connection.set(value)
 
     def connect(self, plugList):
         """Connects a Plug to a list of Plugs."""
         if not isinstance(plugList, list):
             plugList = [plugList]           # create a list
         for plug in plugList:
-            # connection already exists
-            if plug in self.connections or self in plug.connections:
+            # INVALID connections:
+            #   * connection already exists
+            if plug in self.destinationPlugs:
                 log.info(
                     'connection between %s and %s already exists'
                     % (self.name, plug.name))
                 continue
-
             #   * I/O => same I/O
             if plug is self:
                 log.warning('cannot connect I/O on itself')
                 return False
-
-            fromCIToCO = (self.owner.owner and self.isInput) and \
-                (plug.owner.owner and not plug.isInput)
-            fromCIToGI = (self.owner.owner and self.isInput) and \
-                (not plug.owner.owner and plug.isInput)
-            fromGOToCO = (not self.owner.owner and not self.isInput) and \
-                (plug.owner.owner and not plug.isInput)
-            fromGOToGI = (self.owner.owner and not self.isInput) and \
-                (plug.owner.owner and plug.isInput)
-            fromCOToCI = (self.owner.owner and not self.isInput) and \
-                (plug.owner.owner and plug.isInput)
-            fromGIToCI = (not self.owner.owner and self.isInput) and \
-                (plug.owner.owner and plug.isInput)
-            fromCOToGO = (self.owner.owner and not self.isInput) and \
-                (not plug.owner.owner and not plug.isInput)
-            fromGIToGO = (self.owner.owner and self.isInput) and \
-                (plug.owner.owner and not plug.isInput)
-
-            #   * valid connections
-            if fromCIToCO or fromCIToGI or fromGOToCO or fromGOToGI:
-                plug.connections.append(self)
-                self.connectedTo.append(plug)
-
-            #   * inverted valid connections
-            elif fromCOToCI or fromGIToCI or fromCOToGO or fromGIToGO:
-                self.connections.append(plug)
-                plug.connectedTo.append(self)
-
-            #   * invalid connections
+            #   * destination plug already have a source
+            if plug.sourcePlug:
+                log.warning(
+                    '%s.%s already have an incoming connection'
+                    % (plug.owner.name, plug.name))
+                return False
+            # VALID connections:
+            srcIsInput = self.isInput
+            srcIsOutput = not srcIsInput
+            destIsInput = plug.isInput
+            destIsOutput = not destIsInput
+            srcGP = self.owner.owner
+            destGP = plug.owner.owner
+            #   * Ix => Iy is valid IF Ix.GP != Iy.GP
+            #   * Ox => Oy is valid IF Ox.GP != Oy.GP
+            #   * O => I is valid IF O.GP == I.GP
+            if (srcIsInput and destIsInput and srcGP != destGP) or \
+                (srcIsOutput and destIsOutput and srcGP != destGP) or \
+                (srcIsOutput and destIsInput and srcGP == destGP):
+                    self.destinationPlugs.append(plug)
+                    plug.sourcePlug = self
+                    if Plug.connectVerbose:
+                        log.info(
+                            '%s.%s connected to %s.%s'
+                            % (self.owner.name, self.name, plug.owner.name,
+                            plug.name))
+            #  INVALID connections:
             else:
                 log.warning(
                     'invalid connection between %s.%s and %s.%s'
                     % (self.owner.name, self.name, plug.owner.name, plug.name))
                 return False
-
-            if Plug.connectVerbose:
-                log.info(
-                    '%s->%s connected to %s->%s'
-                    % (self.owner.name, self.name, plug.owner.name,
-                    plug.name))
         return True
 
     def disconnect(self, plug):
-        if plug not in self.connections and self not in plug.connections:
+        if plug not in self.destinationPlugs and \
+            self not in plug.destinationPlugs:
             log.info(
                 '%s.%s and %s.%s are not connected'
                  % (self.owner.name, self.name, plug.owner.name, plug.name,))
             return
-        elif plug in self.connections:
-            plug.connectedTo.remove(self)
-            self.connections.remove(plug)
+        elif plug in self.destinationPlugs:
+            self.destinationPlugs.remove(plug)
+            plug.sourcePlug = None
             plug.set(0)
         else:
-            plug.connections.remove(self)
-            self.connectedTo.remove(plug)
+            plug.destinationPlugs.remove(self)
+            self.sourcePlug = None
             self.set(0)
         log.info(
             '%s.%s and %s.%s disconnected'
@@ -280,13 +276,17 @@ class Circuit:
             else:                               # it is an output Plug
                 componentList = self.outputList
                 removeMethod = self.__remove_output
-            for plug in component.connectedTo:  # remove references of the plug
-                if component in plug.connections:
-                    plug.connections.remove(component)
-                    if Circuit.detailedRemoveVerbose:
-                        log.debug(
-                            "plug %s has been removed from %s connections"
-                            % (component.name, self.name,))
+
+            if component.sourcePlug:
+                component.sourcePlug.destinationPlugs.remove(component)
+            for i in range(len(component.destinationPlugs)):
+                plug = component.destinationPlugs[0]
+                component.disconnect(plug)
+                if Circuit.detailedRemoveVerbose:
+                    log.debug(
+                        "plug %s has been removed from %s sourcePlug"
+                        % (component.name, self.name))
+
         elif isinstance(component, Circuit):    # it is a Circuit
             componentList = self.circuitList
             removeMethod = self.__remove_circuit
