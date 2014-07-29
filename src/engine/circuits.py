@@ -23,8 +23,8 @@ from .gates import *
 
 # half-adder: calculates the sum S and the carry C of A + B
 class HalfAdder(Circuit):
-    def __init__(self, name):
-        Circuit.__init__(self, name)
+    def __init__(self, name, owner):
+        Circuit.__init__(self, name, owner)
         # circuit's inputs
         self.A = self.add_input('A')    # inputList[0]
         self.B = self.add_input('B')    # inputList[1]
@@ -32,8 +32,8 @@ class HalfAdder(Circuit):
         self.S = self.add_output('S')   # outputList[0]
         self.O = self.add_output('O')   # outputList[1]
         # circuit's components
-        self.XOR1 = self.add_circuit(XorGate('X1'))
-        self.AND1 = self.add_circuit(AndGate('A1'))
+        self.XOR1 = self.add_circuit(XorGate, 'X1')
+        self.AND1 = self.add_circuit(AndGate, 'A1')
         # connections between circuit's components
         self.A.connect([self.XOR1.inputList[0], self.AND1.inputList[0]])
         self.B.connect([self.XOR1.inputList[1], self.AND1.inputList[1]])
@@ -43,8 +43,8 @@ class HalfAdder(Circuit):
 
 # full-adder: calculates the sum S and the carry Cout of A + B + Cin
 class FullAdder(Circuit):
-    def __init__(self, name):
-        Circuit.__init__(self, name)
+    def __init__(self, name, owner):
+        Circuit.__init__(self, name, owner)
         # circuit's inputs
         self.A = self.add_input('A')
         self.B = self.add_input('B')
@@ -53,9 +53,9 @@ class FullAdder(Circuit):
         self.S = self.add_output('S')
         self.Cout = self.add_output('Cout')
         # circuit's components
-        self.HA1 = HalfAdder('HA1')
-        self.HA2 = HalfAdder('HA2')
-        self.OR1 = OrGate('OR1')
+        self.HA1 = self.add_circuit(HalfAdder, 'HA1')
+        self.HA2 = self.add_circuit(HalfAdder, 'HA2')
+        self.OR1 = self.add_circuit(OrGate, 'OR1')
         # connections between circuit's components
         self.A.connect([self.HA1.inputList[0]])
         self.B.connect([self.HA1.inputList[1]])

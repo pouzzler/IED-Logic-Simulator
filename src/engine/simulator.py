@@ -125,7 +125,9 @@ class Plug:
 
             #   * invalid connections
             else:
-                log.warning('invalid connection')
+                log.warning(
+                    'invalid connection between %s.%s and %s.%s'
+                    % (self.owner.name, self.name, plug.owner.name, plug.name))
                 return False
 
             if Plug.connectVerbose:
