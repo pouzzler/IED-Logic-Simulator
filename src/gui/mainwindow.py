@@ -94,8 +94,8 @@ class MainWindow(QMainWindow):
         cfg.read(configFile)
 
         self.logDock.setBgColor(cfg.get('Appearance', 'log_bg_color'))
-        self.view.scene().setBackgroundBrush(
-            QColor(cfg.get('Appearance', 'circ_bg_color')))
+        #~ self.view.scene().setBackgroundBrush(
+            #~ QColor(cfg.get('Appearance', 'circ_bg_color')))
         Plug.setInputVerbose = cfg.getboolean(
             'GUILogRecords', 'input_chang')
         Plug.setOutputVerbose = cfg.getboolean(

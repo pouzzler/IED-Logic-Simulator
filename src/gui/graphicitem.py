@@ -11,7 +11,7 @@ from PySide.QtGui import (
     QPainterPath, QPen, QStyle)
 from engine.simulator import Circuit, Plug
 
-
+        
 class WireItem(QGraphicsPathItem):
 
     RADIUS = 2.5

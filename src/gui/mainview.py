@@ -4,7 +4,7 @@
 from PySide import QtCore
 from PySide.QtGui import (
     QImage, QInputDialog, QGraphicsItem, QGraphicsScene, QGraphicsView,
-    QMenu, QStandardItemModel)
+    QMenu, QStandardItemModel, QBrush)
 from .toolbox import ToolBox
 from .selectionoptions import SelectionOptions
 from .graphicitem import CircuitItem, PlugItem, WireItem
@@ -13,6 +13,21 @@ from .settings import configFile
 import engine
 
 mainCircuit = Circuit("Main_Circuit", None)
+
+
+class BgItem(QGraphicsItem):
+    """Draws a light grid of points for easier alignment of items."""
+    
+    def __init__(self):
+        super(BgItem, self).__init__()
+       
+    def boundingRect(self):
+        pass
+        
+    def paint(self, painter, option, widget):
+        for i in range(10):
+            for j in range(10):
+                painter.drawPoint(10 * i, 10 * j)
 
 
 class MainView(QGraphicsView):
@@ -31,6 +46,7 @@ class MainView(QGraphicsView):
         # Allow mouseover effects (self.mouseMoveEvent)
         self.setMouseTracking(True)
         self.setScene(QGraphicsScene(parent))
+        #~ self.scene().addItem(BgItem())
         self.isDrawing = False
 
     def getNewName(self, item):
@@ -106,6 +122,10 @@ class MainView(QGraphicsView):
         else:
             item = CircuitItem(Circuit, mainCircuit)
         if item:
+            # Fixing the default behavious of centering the first
+            # item added to scene.
+            if not len(self.scene().items()):
+                self.scene().setSceneRect(0, 0, 1, 1)
             self.scene().addItem(item)
             item.setPos(item.mapFromScene(self.mapToScene(e.pos())))
 

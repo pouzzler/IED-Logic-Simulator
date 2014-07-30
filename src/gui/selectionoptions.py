@@ -136,6 +136,9 @@ class SelectionOptions(QWidget):
         for item in self.view.scene().selectedItems():
             item.setNbInputs(index + 2)
 
+    def resizeEvent(self, e):
+        pass
+        
 class SelectionOptionsDockWidget(QDockWidget):
     """A dock widget containing our tool options."""
 
