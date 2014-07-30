@@ -9,6 +9,7 @@ from PySide.QtCore import Qt
 from .graphicitem import CircuitItem
 from engine.gates import *
 
+
 class SelectionOptions(QWidget):
     """Widget for modifying the selected circuit or gate."""
 
@@ -88,7 +89,7 @@ class SelectionOptions(QWidget):
                 notAllGates = True
                 for item in selection:
                     if (
-                        not isinstance(item, CircuitItem) 
+                        not isinstance(item, CircuitItem)
                         or item.item.__class__ not in [
                             AndGate, NandGate, OrGate,
                             NorGate, XorGate, XnorGate]):
@@ -99,9 +100,9 @@ class SelectionOptions(QWidget):
         if size > 1:
             self.nameLabel.setHidden(True)
             self.nameLE.setHidden(True)
-        # Putting reasonable values in the visible options  
+        # Putting reasonable values in the visible options
         if size == 1:
-            self.nameLE.setText(selection[0].item.name)  
+            self.nameLE.setText(selection[0].item.name)
         if size >= 1:
             # Wrong check box on multiple selection
             # Better than arbitrarily setting them all
@@ -138,7 +139,8 @@ class SelectionOptions(QWidget):
 
     def resizeEvent(self, e):
         pass
-        
+
+
 class SelectionOptionsDockWidget(QDockWidget):
     """A dock widget containing our tool options."""
 

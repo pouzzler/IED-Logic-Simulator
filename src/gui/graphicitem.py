@@ -11,7 +11,7 @@ from PySide.QtGui import (
     QPainterPath, QPen, QStyle)
 from engine.simulator import Circuit, Plug
 
-        
+
 class WireItem(QGraphicsPathItem):
 
     RADIUS = 2.5
@@ -284,12 +284,12 @@ class CircuitItem(QGraphicsItem):
         self.showClassName = isVisible
         self.setupPaint()
         self.update()
-        
+
     def setNbInputs(self, nb):
         if nb > self.item.nb_inputs():
-            for x in range (nb - self.item.nb_inputs()):
+            for x in range(nb - self.item.nb_inputs()):
                 self.item.add_input()
         elif nb < self.item.nb_inputs():
-            for x in range (self.item.nb_inputs() - nb):
+            for x in range(self.item.nb_inputs() - nb):
                 self.item.remove_input(self.item.inputList[0])
         self.setupPaint()

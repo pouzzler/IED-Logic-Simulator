@@ -7,7 +7,7 @@ from configparser import ConfigParser
 from PySide.QtCore import Qt
 from PySide.QtGui import (
     QAction, QColor, QDesktopWidget, QDockWidget, QMainWindow, QMenu,
-    QMessageBox, QPalette)
+    QMessageBox, QPalette, QPixmap, QImage, QBrush)
 from .mainview import MainView
 from .toolbox import ToolBoxDockWidget
 from .selectionoptions import SelectionOptionsDockWidget
@@ -94,8 +94,10 @@ class MainWindow(QMainWindow):
         cfg.read(configFile)
 
         self.logDock.setBgColor(cfg.get('Appearance', 'log_bg_color'))
-        #~ self.view.scene().setBackgroundBrush(
-            #~ QColor(cfg.get('Appearance', 'circ_bg_color')))
+        image = QImage(10, 10, QImage.Format_RGB32)
+        image.fill(QColor(cfg.get('Appearance', 'circ_bg_color')))
+        image.setPixel(0, 0, QColor(0, 0, 0).rgb())
+        self.view.scene().setBackgroundBrush(QBrush(QPixmap.fromImage(image)))
         Plug.setInputVerbose = cfg.getboolean(
             'GUILogRecords', 'input_chang')
         Plug.setOutputVerbose = cfg.getboolean(

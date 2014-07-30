@@ -3,7 +3,8 @@
 
 import inspect
 import os
-from PySide.QtGui import QDockWidget, QDrag, QIcon, QTreeWidget, QTreeWidgetItem
+from PySide.QtGui import (
+    QDockWidget, QDrag, QIcon, QTreeWidget, QTreeWidgetItem)
 from PySide.QtCore import QByteArray, QDir, QMimeData, Qt
 from engine import gates, circuits
 

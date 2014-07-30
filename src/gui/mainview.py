@@ -4,7 +4,7 @@
 from PySide import QtCore
 from PySide.QtGui import (
     QImage, QInputDialog, QGraphicsItem, QGraphicsScene, QGraphicsView,
-    QMenu, QStandardItemModel, QBrush)
+    QMenu, QStandardItemModel)
 from .toolbox import ToolBox
 from .selectionoptions import SelectionOptions
 from .graphicitem import CircuitItem, PlugItem, WireItem
@@ -13,21 +13,6 @@ from .settings import configFile
 import engine
 
 mainCircuit = Circuit("Main_Circuit", None)
-
-
-class BgItem(QGraphicsItem):
-    """Draws a light grid of points for easier alignment of items."""
-    
-    def __init__(self):
-        super(BgItem, self).__init__()
-       
-    def boundingRect(self):
-        pass
-        
-    def paint(self, painter, option, widget):
-        for i in range(10):
-            for j in range(10):
-                painter.drawPoint(10 * i, 10 * j)
 
 
 class MainView(QGraphicsView):
@@ -41,13 +26,16 @@ class MainView(QGraphicsView):
 
     def __init__(self, parent):
         super(MainView, self).__init__(parent)
-        # Accept dragged items from the toolbox to the main view.
-        self.setAcceptDrops(True)
-        # Allow mouseover effects (self.mouseMoveEvent)
-        self.setMouseTracking(True)
+        self.setAcceptDrops(True)       # Accept dragged items.
+        self.setMouseTracking(True)     # Allow mouseover effects.
         self.setScene(QGraphicsScene(parent))
-        #~ self.scene().addItem(BgItem())
-        self.isDrawing = False
+        self.isDrawing = False          # user currently not drawing
+        # Fixes the default behavious of centering the first
+        # item added to scene.
+        self.scene().setSceneRect(0, 0, 1, 1)
+        # Fixes artifacts on the BF while moving items, at the probable
+        # cost of performance
+        self.setViewportUpdateMode(QGraphicsView.FullViewportUpdate)
 
     def getNewName(self, item):
         # ret = tuple string, bool (false when the dialog is dismissed)
@@ -96,7 +84,7 @@ class MainView(QGraphicsView):
         then dragged away.
         """
         e.ignore()
-        
+
     def dragMoveEvent(self, e):
         """Accept drag move events."""
         e.accept()
@@ -122,10 +110,6 @@ class MainView(QGraphicsView):
         else:
             item = CircuitItem(Circuit, mainCircuit)
         if item:
-            # Fixing the default behavious of centering the first
-            # item added to scene.
-            if not len(self.scene().items()):
-                self.scene().setSceneRect(0, 0, 1, 1)
             self.scene().addItem(item)
             item.setPos(item.mapFromScene(self.mapToScene(e.pos())))
 
@@ -271,7 +255,7 @@ class MainView(QGraphicsView):
                 return
         self.setCursor(QtCore.Qt.CursorShape.ArrowCursor)
         super(MainView, self).mouseMoveEvent(e)
-        
+
     def write(self, message):
         """Displays a short-lived informative message."""
         scene = self.scene()
