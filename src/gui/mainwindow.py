@@ -174,6 +174,7 @@ class MainWindow(QMainWindow):
             print(item.name)
 
     def setLang(self, lang):
+        pass
         #~ cfg = ConfigParser()
         #~ cfg.read(self.configFile)
         #~ old = cfg.get('Appearance', 'lang')
