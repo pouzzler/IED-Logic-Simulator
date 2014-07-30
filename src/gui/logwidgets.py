@@ -27,7 +27,7 @@ class LogDockWidget(QDockWidget):
     """A main window dockable widget showing the app logs."""
 
     def __init__(self):
-        super(LogDockWidget, self).__init__('Logs')
+        super(LogDockWidget, self).__init__(self.str_logDockTitle)
         self.setWidget(LoggerTextEdit())
         self.handler = logging.StreamHandler(self.widget())
         self.handler.setLevel(logging.DEBUG)

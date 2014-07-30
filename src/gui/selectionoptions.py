@@ -21,28 +21,28 @@ class SelectionOptions(QWidget):
         self.view.scene().selectionChanged.connect(self.updateOptions)
         self.gridLayout = QGridLayout(self)
 
-        self.nameLabel = QLabel('Name:', self)
+        self.nameLabel = QLabel(self.str_name, self)
         self.gridLayout.addWidget(self.nameLabel, 0, 0, 1, 1)
 
         self.nameLE = QLineEdit(self)
         self.gridLayout.addWidget(self.nameLE, 0, 1, 1, 2)
         self.nameLE.returnPressed.connect(self.setItemName)
 
-        self.showNameLabel = QLabel('Show name?', self)
+        self.showNameLabel = QLabel(self.str_showName, self)
         self.gridLayout.addWidget(self.showNameLabel, 1, 0, 1, 1)
 
         self.showNameCB = QCheckBox(self)
         self.gridLayout.addWidget(self.showNameCB, 1, 1, 1, 1)
         self.showNameCB.stateChanged.connect(self.setNameVisibility)
 
-        showCategoryLabel = QLabel('Show category?', self)
+        showCategoryLabel = QLabel(self.str_showCategory, self)
         self.gridLayout.addWidget(showCategoryLabel, 2, 0, 1, 1)
 
         self.showCategoryCB = QCheckBox(self)
         self.gridLayout.addWidget(self.showCategoryCB, 2, 1, 1, 1)
         self.showCategoryCB.stateChanged.connect(self.setClassVisibility)
 
-        self.nbInputsLabel = QLabel('Number of inputs:', self)
+        self.nbInputsLabel = QLabel(self.str_nbInputs, self)
         self.gridLayout.addWidget(self.nbInputsLabel, 3, 0, 1, 1)
 
         self.nbInputsCB = QComboBox(self)
@@ -50,7 +50,7 @@ class SelectionOptions(QWidget):
         self.nbInputsCB.addItems([str(x) for x in range(2, 33)])
         self.gridLayout.addWidget(self.nbInputsCB, 3, 1, 1, 2)
 
-        orientLabel = QLabel('Orientation:', self)
+        orientLabel = QLabel(self.str_orientation, self)
         self.gridLayout.addWidget(orientLabel, 4, 0, 1, 1)
 
         self.cwRotationButton = QPushButton(self)
@@ -65,8 +65,6 @@ class SelectionOptions(QWidget):
         self.gridLayout.addWidget(valueLabel, 5, 0, 1, 1)
 
         self.lowRadioButton = QRadioButton(self)
-        self.lowRadioButton.setStatusTip("")
-        self.lowRadioButton.setShortcut("")
         self.lowRadioButton.setText('Low')
         self.gridLayout.addWidget(self.lowRadioButton, 5, 1, 1, 1)
 
@@ -145,6 +143,7 @@ class SelectionOptionsDockWidget(QDockWidget):
     """A dock widget containing our tool options."""
 
     def __init__(self, view):
-        super(SelectionOptionsDockWidget, self).__init__('Selection options')
+        super(SelectionOptionsDockWidget, self).__init__(
+            self.str_selectionDockTitle)
         self.setWidget(SelectionOptions(view))
         self.setFeatures(QDockWidget.NoDockWidgetFeatures)

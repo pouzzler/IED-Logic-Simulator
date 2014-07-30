@@ -30,20 +30,18 @@ class MainView(QGraphicsView):
         self.setMouseTracking(True)     # Allow mouseover effects.
         self.setScene(QGraphicsScene(parent))
         self.isDrawing = False          # user currently not drawing
-        # Fixes the default behavious of centering the first
-        # item added to scene.
-        self.scene().setSceneRect(0, 0, 1, 1)
-        # Fixes artifacts on the BF while moving items, at the probable
-        # cost of performance
-        self.setViewportUpdateMode(QGraphicsView.FullViewportUpdate)
 
     def getNewName(self, item):
+        """Spawns a name-choosing dialog, and sets item.name to that
+        dialog's return value, if not canceled by the user.
+        """
         # ret = tuple string, bool (false when the dialog is dismissed)
         ret = QInputDialog.getText(self, u'Set name', u'Name:')
         if ret[1]:
             self.setItemName(ret[0], item)
 
     def setItemName(self, name, item):
+        """Forwards a user-set name to the appropriate class method."""
         if isinstance(item, CircuitItem):
             if item.item.setName(name):
                 item.update()
@@ -59,16 +57,17 @@ class MainView(QGraphicsView):
                 pos = item.mapFromScene(self.mapToScene(e.pos()))
                 plug = item.handleAtPos(pos)
                 item = plug if plug else item
-                menu.addAction("Set name", lambda: self.getNewName(item))
+                menu.addAction(self.str_setName, lambda: self.getNewName(item))
             elif isinstance(item, PlugItem):
-                menu.addAction("Set name", lambda: self.getNewName(item))
+                menu.addAction(self.str_setName, lambda: self.getNewName(item))
                 if item.isInput:
                     menu.addAction(
                         str(item.value), lambda: item.set(not item.value))
             elif isinstance(item, WireItem):
                 pos = item.mapFromScene(self.mapToScene(e.pos()))
                 if item.handleAtPos(pos):
-                    menu.addAction("Remove last", lambda: item.removeLast())
+                    menu.addAction(
+                        self.str_removeLast, lambda: item.removeLast())
             menu.popup(e.globalPos())
 
     def dragEnterEvent(self, e):
@@ -93,23 +92,23 @@ class MainView(QGraphicsView):
         """Accept drop events."""
         model = QStandardItemModel()
         model.dropMimeData(
-            e.mimeData(),
-            QtCore.Qt.CopyAction,
-            0,
-            0,
-            QtCore.QModelIndex())
+            e.mimeData(), QtCore.Qt.CopyAction, 0, 0, QtCore.QModelIndex())
         name = model.item(0).text()
         item = None
         if name in ['And', 'Or', 'Nand', 'Nor', 'Not', 'Xor', 'Xnor']:
             item = CircuitItem(
                 getattr(engine.gates, name + 'Gate'), mainCircuit)
-        elif name == 'Input Pin':
+        elif name == self.str_I:
             item = PlugItem(True, mainCircuit)
-        elif name == 'Output Pin':
+        elif name == self.str_O:
             item = PlugItem(False, mainCircuit)
         else:
             item = CircuitItem(Circuit, mainCircuit)
         if item:
+            # Fixes the default behavious of centering the first
+            # item added to scene.
+            if not len(self.scene().items()):
+                self.scene().setSceneRect(0, 0, 1, 1)
             self.scene().addItem(item)
             item.setPos(item.mapFromScene(self.mapToScene(e.pos())))
 

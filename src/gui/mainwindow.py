@@ -6,11 +6,11 @@ import time
 from configparser import ConfigParser
 from PySide.QtCore import Qt
 from PySide.QtGui import (
-    QAction, QColor, QDesktopWidget, QDockWidget, QMainWindow, QMenu,
-    QMessageBox, QPalette, QPixmap, QImage, QBrush)
+    QAction, QBrush, QColor, QDesktopWidget, QDockWidget, QMainWindow,
+    QMenu, QMessageBox, QPalette, QPixmap, QImage)
 from .mainview import MainView
-from .toolbox import ToolBoxDockWidget
-from .selectionoptions import SelectionOptionsDockWidget
+from .toolbox import ToolBox, ToolBoxDockWidget
+from .selectionoptions import SelectionOptions, SelectionOptionsDockWidget
 from .docu import HelpDockWidget
 from .logwidgets import LogDockWidget
 from .settings import SettingsDialog, configFile
@@ -25,7 +25,14 @@ class MainWindow(QMainWindow):
 
     def __init__(self):
         super(MainWindow, self).__init__()
-        self.setWindowTitle("IED Logic Simulator")
+        # Get application strings
+        strFile = (
+            os.path.dirname(os.path.realpath(__file__))
+            + '/../../strings_en.txt')
+        f = open(strFile, 'r')
+        for _, line in enumerate(f):
+            exec(line)
+        self.setWindowTitle(self.str_mainWindowTitle)
         self.centerAndResize()
         self.setFocusPolicy(Qt.StrongFocus)
         # Initialize sub-widgets :
@@ -42,13 +49,12 @@ class MainWindow(QMainWindow):
         self.logDock = LogDockWidget()
         self.addDockWidget(Qt.BottomDockWidgetArea, self.logDock)
         # Initialize application menu :
-        fileMenu = QMenu(u'File')
-        fileMenu.addAction(u'Quit', self.close)
-        fileMenu.addAction(u'Save circuit', self.saveCircuit)
+        fileMenu = QMenu(self.str_menuFile)
+        fileMenu.addAction(self.str_menuSave, self.saveCircuit)
+        fileMenu.addAction(self.str_menuQuit, self.close)
 
-        editMenu = QMenu(u'Edit')
-        settingAct = QAction('&Settings...', self)
-        settingAct.setStatusTip('Open the settings window.')
+        editMenu = QMenu(self.str_menuEdit)
+        settingAct = QAction(self.str_menuSettings, self)
         settingAct.triggered.connect(lambda: SettingsDialog(self).exec_())
         editMenu.addAction(settingAct)
 
@@ -67,14 +73,14 @@ class MainWindow(QMainWindow):
         logAct.setStatusTip("Shows the logs messages dock")
         logAct.setChecked(True)
 
-        windowsMenu = QMenu('Windows')
+        windowsMenu = QMenu(self.str_menuDocks)
         windowsMenu.addAction(toolBoxAct)
         windowsMenu.addAction(SelectionOptionsAct)
         windowsMenu.addAction(logAct)
 
-        helpMenu = QMenu('Help')
-        helpMenu.addAction('Documentation', self.showDocumentation)
-        helpMenu.addAction('About', self.about)
+        helpMenu = QMenu(self.str_menuHelp)
+        helpMenu.addAction(self.str_menuDoc, self.showDocumentation)
+        helpMenu.addAction(self.str_menuAbout, self.about)
 
         self.menuBar().addMenu(fileMenu)
         self.menuBar().addMenu(editMenu)
@@ -139,7 +145,7 @@ class MainWindow(QMainWindow):
     def about(self):
         """Print a dialog about the application."""
         msgBox = QMessageBox()
-        msgBox.setText(u'v0.1\nPar Mathieu Fourcroy & Sébastien Magnien.')
+        msgBox.setText(self.str_aboutDialog)
         msgBox.exec_()
 
     def saveCircuit(self):
@@ -162,4 +168,4 @@ class MainWindow(QMainWindow):
     def showDocumentation(self):
         """Shows the help dock widget."""
         self.addDockWidget(
-            Qt.RightDockWidgetArea, HelpDockWidget('Help'))
+            Qt.RightDockWidgetArea, HelpDockWidget())
