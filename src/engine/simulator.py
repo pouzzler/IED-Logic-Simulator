@@ -325,10 +325,10 @@ class Circuit:
         if isinstance(component, Plug):
             if component.isInput:
                 componentList = self.inputList
-                removeMethod = self.__remove_input
+                removeMethod = self.remove_input
             else:
                 componentList = self.outputList
-                removeMethod = self.__remove_output
+                removeMethod = self.remove_output
             # disconnect the plug and its source
             if component.sourcePlug:
                 component.sourcePlug.disconnect(component)
@@ -338,7 +338,7 @@ class Circuit:
         # if the object is a Circuit...
         elif isinstance(component, Circuit):
             componentList = self.circuitList
-            removeMethod = self.__remove_circuit
+            removeMethod = self.remove_circuit
             # remove all circuit's plugs
             for plug in component.inputList + component.outputList:
                 component.remove(plug)
