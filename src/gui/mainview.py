@@ -6,7 +6,7 @@ from PySide.QtGui import (
     QImage, QInputDialog, QGraphicsItem, QGraphicsScene, QGraphicsView,
     QMenu, QStandardItemModel)
 from .toolbox import ToolBox
-from .tooloptions import ToolOptions
+from .selectionoptions import SelectionOptions
 from .graphicitem import CircuitItem, PlugItem, WireItem
 from engine.simulator import Circuit, Plug
 from .settings import configFile

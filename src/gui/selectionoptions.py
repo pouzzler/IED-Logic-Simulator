@@ -9,23 +9,23 @@ from PySide.QtCore import Qt
 from .graphicitem import CircuitItem
 from engine import gates
 
-class ToolOptions(QWidget):
+class SelectionOptions(QWidget):
     """Widget for modifying the selected circuit or gate."""
 
     def __init__(self, view):
-        super(ToolOptions, self).__init__()
+        super(SelectionOptions, self).__init__()
         self.ignoreShowNameCB = True
         self.view = view
         self.view.scene().selectionChanged.connect(self.updateOptions)
-        self.resize(400, 300)
         self.gridLayout = QGridLayout(self)
 
-        nameLabel = QLabel('Name:', self)
-        self.gridLayout.addWidget(nameLabel, 0, 0, 1, 1)
+        self.nameLabel = QLabel('Name:', self)
+        self.nameLabel.setHidden(True)
+        self.gridLayout.addWidget(self.nameLabel, 0, 0, 1, 1)
 
         self.nameLE = QLineEdit(self)
         self.gridLayout.addWidget(self.nameLE, 0, 1, 1, 2)
-        self.nameLE.setDisabled(True)
+        self.nameLE.setHidden(True)
         self.nameLE.returnPressed.connect(self.setItemName)
 
         showNameLabel = QLabel('Show name?', self)
@@ -36,7 +36,7 @@ class ToolOptions(QWidget):
         self.gridLayout.addWidget(self.showNameCB, 1, 1, 1, 1)
         self.showNameCB.stateChanged.connect(self.setNameVisibility)
 
-        showClassNameLabel = QLabel('Show class name?', self)
+        showClassNameLabel = QLabel('Show category?', self)
         self.gridLayout.addWidget(showClassNameLabel, 2, 0, 1, 1)
 
         self.showClassNameCB = QCheckBox(self)
@@ -79,8 +79,16 @@ class ToolOptions(QWidget):
         self.gridLayout.addWidget(self.highRadioButton, 5, 2, 1, 1)
 
     def updateOptions(self):
-        self.nameLE.setDisabled(True)
-        self.nameLE.setText('')
+        selection = self.view.scene().selectedItems()
+        size = len(selection)
+        
+        if size != 1:
+            self.nameLabel.setHidden(True)
+            self.nameLE.setHidden(True)
+        else:
+            self.nameLabel.setHidden(False)
+            self.nameLE.setHidden(False)
+        
         self.showNameCB.setDisabled(True)
         self.showClassNameCB.setDisabled(True)
         self.showNameCB.setCheckState(Qt.CheckState.Unchecked)
@@ -100,6 +108,7 @@ class ToolOptions(QWidget):
         if len(selection) == 1:
             self.nameLE.setDisabled(False)
             self.nameLE.setText(selection[0].item.name)
+        if len(selection) >= 1:
             # Wrong check box on multiple selection
             # Better than arbitrarily setting them all
             # TODO : possible solution by ignoring events while doing it
@@ -127,10 +136,10 @@ class ToolOptions(QWidget):
         for item in self.view.scene().selectedItems():
             item.setNbInputs(index + 2)
 
-class ToolOptionsDockWidget(QDockWidget):
+class SelectionOptionsDockWidget(QDockWidget):
     """A dock widget containing our tool options."""
 
     def __init__(self, view):
-        super(ToolOptionsDockWidget, self).__init__('Tool Options')
-        self.setWidget(ToolOptions(view))
+        super(SelectionOptionsDockWidget, self).__init__('Tool Options')
+        self.setWidget(SelectionOptions(view))
         self.setFeatures(QDockWidget.NoDockWidgetFeatures)
