@@ -43,7 +43,6 @@ stdoutHandler.setFormatter(formatter)
 #============================ CLASS FOR THE PLUGS ============================#
 class Plug:
     """Represents an input or output."""
-
     setInputVerbose = True      # Inputs changes
     setOutputVerbose = True     # Outputs changes
     connectVerbose = True       # Connecting / diconnecting I/O
@@ -61,9 +60,11 @@ class Plug:
 
     def set(self, value):
         """Sets the boolean value of a Plug."""
-        if self.value == value and self.__nbEval != 0:  # unchanged value, stop
+        # if the value do not change, do not do unnecessary work
+        if self.value == value and self.__nbEval != 0:
             return
-        else:                           # else, set the new value
+        # else set the new value and update the circuit accordingly
+        else:
             self.value = bool(value)
             self.__nbEval += 1
         if Plug.setInputVerbose and self.isInput:
@@ -74,8 +75,8 @@ class Plug:
             log.info(
                 'output %s.%s set to %i'
                 % (self.owner.name, self.name, int(self.value),))
-        # if the input of a gate change, we must evaluate its
-        # logic function to set its outpu(s) valu(s)
+        # if the input of a gate change, we must evaluate its logic function
+        # to set its outpu(s) valu(s)
         if self.isInput:
             self.owner.evalfun()
         # then, all plugs in the destination list are set to this value
@@ -83,7 +84,7 @@ class Plug:
             connection.set(value)
 
     def isValidConnection(self, plug):
-        # VALID connections:
+        """Check whether the connection left => right is valid or not"""
         return (
             # a connection is valid if it is from left to right:
             (   #   * pparent Input => child Input
@@ -104,6 +105,7 @@ class Plug:
                 self.grandparent() is plug.grandparent()))
                 
     def isValidInvertedConnection(self, plug):
+        """Check whether the connection right => left is valid or not"""
         # inverted VALID connections
         return (
             # if the user connect from right to left we just have to invert
@@ -194,6 +196,7 @@ class Plug:
             % (self.owner.name, self.name, plug.owner.name, plug.name,))
 
     def setName(self, name):
+        """Set the name of the plug."""
         if len(name):
             if (self.isInput and name in [
                     x.name for x in self.owner.inputList]) or \
@@ -224,16 +227,17 @@ class Plug:
             i += 1
 
     def parent(self):
+        """Return the parent of the plug."""
         return self.owner
 
     def grandparent(self):
+        """Return the grandparent of the plug."""
         return self.parent().owner
 
 
 #=========================== CLASS FOR THE CIRCUITS ==========================#
 class Circuit:
     """Represents a logic circuit."""
-
     addPlugVerbose = True         # Adding an I/O
     addCircuitVerbose = True      # Adding a circuit
     removePlugVerbose = True      # Removing an I/O
@@ -357,6 +361,7 @@ class Circuit:
 
     # -+-----------------------    OTHER METHODS    -----------------------+- #
     def setName(self, name):
+        """Set the name of the circuit."""
         if len(name):
             if name in [x.name for x in self.owner.circuitList]:
                 log.error('name %s already in use' % (name,))
