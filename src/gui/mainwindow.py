@@ -13,7 +13,7 @@ from .toolbox import ToolBox, ToolBoxDockWidget
 from .selectionoptions import SelectionOptions, SelectionOptionsDockWidget
 from .docu import HelpDockWidget
 from .logwidgets import LogDockWidget
-from .settings import SettingsDialog, configFile
+from .settings import SettingsDialog
 from engine.gates import *
 from engine.simulator import log, fileHandler, stdoutHandler, formatter, Plug
 
@@ -26,9 +26,13 @@ class MainWindow(QMainWindow):
     def __init__(self):
         super(MainWindow, self).__init__()
         # Get application strings
+        self.configFile = os.path.dirname(
+            os.path.realpath(__file__)) + '/../../settings.cfg'
+        cfg = ConfigParser()
+        cfg.read(self.configFile)
         strFile = (
             os.path.dirname(os.path.realpath(__file__))
-            + '/../../strings_en.txt')
+            + '/../../strings_' + cfg.get('Appearance', 'lang') + '.txt')
         f = open(strFile, 'r')
         for _, line in enumerate(f):
             exec(line)
@@ -78,6 +82,9 @@ class MainWindow(QMainWindow):
         windowsMenu.addAction(SelectionOptionsAct)
         windowsMenu.addAction(logAct)
 
+        langMenu = QMenu(self.str_menuLang)
+        langMenu.addAction(self.str_langEng, lambda: self.setLang('en'))
+        langMenu.addAction(self.str_langFr, lambda: self.setLang('fr'))
         helpMenu = QMenu(self.str_menuHelp)
         helpMenu.addAction(self.str_menuDoc, self.showDocumentation)
         helpMenu.addAction(self.str_menuAbout, self.about)
@@ -85,6 +92,7 @@ class MainWindow(QMainWindow):
         self.menuBar().addMenu(fileMenu)
         self.menuBar().addMenu(editMenu)
         self.menuBar().addMenu(windowsMenu)
+        self.menuBar().addMenu(langMenu)
         self.menuBar().addMenu(helpMenu)
 
         self.toastHandler = logging.StreamHandler(self.view)
@@ -97,7 +105,7 @@ class MainWindow(QMainWindow):
     def loadConfig(self):
         """Load color, verbosity and logging options."""
         cfg = ConfigParser()
-        cfg.read(configFile)
+        cfg.read(self.configFile)
 
         self.logDock.setBgColor(cfg.get('Appearance', 'log_bg_color'))
         image = QImage(10, 10, QImage.Format_RGB32)
@@ -165,6 +173,17 @@ class MainWindow(QMainWindow):
         for item in items:
             print(item.name)
 
+    def setLang(self, lang):
+        #~ cfg = ConfigParser()
+        #~ cfg.read(self.configFile)
+        #~ old = cfg.get('Appearance', 'lang')
+        #~ if old != lang:
+            #~ with open(self.configFile, 'w+') as cfg:
+                #~ cfg.write(self.configfile)
+        #~ msgBox = QMessageBox()
+        #~ msgBox.setText(self.str_langChanged)
+        #~ msgBox.exec_()
+        
     def showDocumentation(self):
         """Shows the help dock widget."""
         self.addDockWidget(
