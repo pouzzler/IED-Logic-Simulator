@@ -107,7 +107,7 @@ class MainView(QGraphicsView):
             item = CircuitItem(Circuit, mainCircuit)
         if item:
             self.scene().addItem(item)
-            item.setPos(e.pos())
+            item.setPos(item.mapFromScene(self.mapToScene(e.pos())))
 
     def keyPressEvent(self, e):
         """Manages keyboard events, in particular item rotation,
@@ -251,7 +251,7 @@ class MainView(QGraphicsView):
                 return
         self.setCursor(QtCore.Qt.CursorShape.ArrowCursor)
         super(MainView, self).mouseMoveEvent(e)
-
+        
     def write(self, message):
         """Displays a short-lived informative message."""
         scene = self.scene()
