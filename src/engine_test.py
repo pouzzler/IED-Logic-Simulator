@@ -131,8 +131,8 @@ if __name__ == '__main__':
     GOUT = TC.add_output()
     I = NOT.inputList[0]
     O = NOT.outputList[0]
-    I.connect(GIN)
-    GOUT.connect(O)
+    GIN.connect(I)
+    O.connect(GOUT)
     GIN.set(False)
 
     print('________________________________________________________________\n')

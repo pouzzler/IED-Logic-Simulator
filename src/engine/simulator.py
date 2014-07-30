@@ -82,10 +82,53 @@ class Plug:
         for connection in self.destinationPlugs:
             connection.set(value)
 
+    def isValidConnection(self, plug):
+        # VALID connections:
+        return (
+            # a connection is valid if it is from left to right:
+            (   #   * pparent Input => child Input
+                self.isInput and
+                plug.isInput and
+                self.parent() is plug.grandparent()) or
+            (   #   * pparent Input => parent Output
+                self.isInput and
+                not plug.isInput and
+                self.parent() is plug.parent()) or
+            (   #   * child Output => parent Output
+                not self.isInput and
+                not plug.isInput and
+                self.grandparent() is plug.parent()) or
+            (   #   * child Output => child Input
+                not self.isInput and
+                plug.isInput and
+                self.grandparent() is plug.grandparent()))
+                
+    def isValidInvertedConnection(self, plug):
+        # inverted VALID connections
+        return (
+            # if the user connect from right to left we just have to invert
+            # the conenction direction so these connections are also valid:
+            (   #   * child Input => parent Input
+                self.isInput and
+                plug.isInput and
+                self.grandparent() is plug.parent()) or
+            (   #   * parent Output => parent Input
+                not self.isInput and
+                plug.isInput and
+                self.parent() is plug.parent()) or
+            (   #   * parent Output => child Output
+                not self.isInput and
+                not plug.isInput and
+                self.parent() is plug.grandparent()) or
+            (   #   * child Input => child Output
+                self.isInput and
+                not plug.isInput and
+                slef.grandparent() is plug.grandparent()))
+
     def connect(self, plugList):
         """Connects a Plug to a list of Plugs."""
         if not isinstance(plugList, list):
-            plugList = [plugList]           # create a list
+            plugList = [plugList]
         for plug in plugList:
             # INVALID connections:
             #   * connection already exists
@@ -105,62 +148,47 @@ class Plug:
                     % (plug.owner.name, plug.name))
                 return False
             # VALID connections:
-            srcIsInput = self.isInput
-            srcIsOutput = not srcIsInput
-            destIsInput = plug.isInput
-            destIsOutput = not destIsInput
-            srcP = self.owner
-            destP = plug.owner
-            srcGP = self.owner.owner
-            destGP = plug.owner.owner
-            print('GP = P: ', srcGP == destP)
-            print('srcIsInput: ', srcIsInput)
-            print('destIsInput: ', destIsInput)
-            #   * Ix => Iy is valid IF Ix.GP != Iy.GP
-            #   * Ox => Oy is valid IF Ox.GP != Oy.GP
-            #   * O => I is valid IF O.GP == I.GP
-            if (srcIsInput and destIsInput and srcGP == destP) or \
-                (srcIsOutput and destIsOutput and srcP == destGP):
-                    plug.destinationPlugs.append(self)
-                    self.sourcePlug = plug
-                
-            elif (srcIsInput and destIsInput and srcGP != destGP) or \
-                (srcIsOutput and destIsOutput and srcGP != destGP) or \
-                (srcIsOutput and destIsInput and srcGP == destGP):
-                    self.destinationPlugs.append(plug)
-                    plug.sourcePlug = self
-                
-
-            #  INVALID connections:
+            # right => left connection
+            if self.isValidInvertedConnection(plug):
+                plug.destinationPlugs.append(self)
+                self.sourcePlug = plug
+            # left => right connection
+            elif self.isValidConnection(plug):
+                self.destinationPlugs.append(plug)
+                plug.sourcePlug = self
+            #  other INVALID connections:
             else:
                 log.warning(
                     'invalid connection between %s.%s and %s.%s'
                     % (self.owner.name, self.name, plug.owner.name, plug.name))
                 return False
-
+            # connection has been successfuly established
             if Plug.connectVerbose:
                 log.info(
                     '%s.%s connected to %s.%s'
                     % (self.owner.name, self.name, plug.owner.name,
-                    plug.name))
-
+                        plug.name))
         return True
 
     def disconnect(self, plug):
-        if plug not in self.destinationPlugs and \
-            self not in plug.destinationPlugs:
+        """Disconnect two plugs."""
+        # INVALID disconnection
+        if not(plug in self.destinationPlugs or self in plug.destinationPlugs):
             log.info(
                 '%s.%s and %s.%s are not connected'
-                 % (self.owner.name, self.name, plug.owner.name, plug.name,))
+                % (self.owner.name, self.name, plug.owner.name, plug.name,))
             return
+        # left => right disconnection
         elif plug in self.destinationPlugs:
             self.destinationPlugs.remove(plug)
             plug.sourcePlug = None
             plug.set(0)
+        # right => left disconnection
         else:
             plug.destinationPlugs.remove(self)
             self.sourcePlug = None
             self.set(0)
+        # disconnection successful: print a message
         log.info(
             '%s.%s and %s.%s disconnected'
             % (self.owner.name, self.name, plug.owner.name, plug.name,))
@@ -194,6 +222,12 @@ class Plug:
             if name not in names:
                 return name
             i += 1
+
+    def parent(self):
+        return self.owner
+
+    def grandparent(self):
+        return self.parent().owner
 
 
 #=========================== CLASS FOR THE CIRCUITS ==========================#
@@ -272,7 +306,7 @@ class Circuit:
         if Circuit.removePlugVerbose:
             log.info("output '%s' removed from %s" % (output.name, self.name,))
 
-    def __remove_circuit(self, circuit):
+    def remove_circuit(self, circuit):
         """Remove a circuit from the circuitList of the circuit."""
         self.circuitList.remove(circuit)
         Circuit.removePlugVerbose
@@ -283,41 +317,43 @@ class Circuit:
 
     def remove(self, component):
         """Remove a component (Plug or Circuit) from the circuit."""
-        if isinstance(component, Plug):         # it is a Plug
-            if component.isInput:               # it is an input Plug
+        # if the object is a Plug...
+        if isinstance(component, Plug):
+            if component.isInput:
                 componentList = self.inputList
                 removeMethod = self.__remove_input
-            else:                               # it is an output Plug
+            else:
                 componentList = self.outputList
                 removeMethod = self.__remove_output
-
+            # disconnect the plug and its source
             if component.sourcePlug:
-                component.sourcePlug.destinationPlugs.remove(component)
+                component.sourcePlug.disconnect(component)
+            # disconnect all Plugs connected to this plug
             for i in range(len(component.destinationPlugs)):
-                plug = component.destinationPlugs[0]
-                component.disconnect(plug)
-                if Circuit.detailedRemoveVerbose:
-                    log.debug(
-                        "plug %s has been removed from %s sourcePlug"
-                        % (component.name, self.name))
-
-        elif isinstance(component, Circuit):    # it is a Circuit
+                component.disconnect(component.destinationPlugs[0])
+        # if the object is a Circuit...
+        elif isinstance(component, Circuit):
             componentList = self.circuitList
             removeMethod = self.__remove_circuit
+            # remove all circuit's plugs
             for plug in component.inputList + component.outputList:
-                component.remove(plug)          # remove all circuit's plugs
-        else:                                   # it is an error
+                component.remove(plug)
+        # if it is not a Plug nor a Circuit...
+        else:
             log.error(
-                "Cannot remove component because it is neither a Plug nor a "
-                "Circuit.")
-            return
-        if component not in componentList:      # no need to remove the compon
+                "cannot remove component because it is neither a Plug nor a "
+                "Circuit")
+            return False
+        # the object is not in the list
+        if component not in componentList:
             if Circuit.removePlugVerbose or Circuit.removeCircuitVerbose:
                 log.info(
                     "Cannot remove component from list because "
                     "list have no such component")
-            return
-        removeMethod(component)                 # remove the compon from list
+            return False
+        # remove tthe object from the correct list
+        removeMethod(component)
+        return True
 
     # -+-----------------------    OTHER METHODS    -----------------------+- #
     def setName(self, name):
