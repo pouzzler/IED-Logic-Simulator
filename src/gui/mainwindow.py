@@ -10,7 +10,7 @@ from PySide.QtGui import (
     QMessageBox, QPalette)
 from .mainview import MainView
 from .toolbox import ToolBoxDockWidget
-from .tooloptions import ToolOptionsDockWidget
+from .selectionoptions import SelectionOptionsDockWidget
 from .docu import HelpDockWidget
 from .logwidgets import LogDockWidget
 from .settings import SettingsDialog, configFile
@@ -36,7 +36,7 @@ class MainWindow(QMainWindow):
         self.boxDock = ToolBoxDockWidget()
         self.addDockWidget(Qt.LeftDockWidgetArea, self.boxDock)
         # Used to modify selected items properties.
-        self.optionsDock = ToolOptionsDockWidget(self.view)
+        self.optionsDock = SelectionOptionsDockWidget(self.view)
         self.addDockWidget(Qt.LeftDockWidgetArea, self.optionsDock)
         # A log window.
         self.logDock = LogDockWidget()
@@ -57,10 +57,10 @@ class MainWindow(QMainWindow):
         toolBoxAct.setStatusTip("Shows the tool box")
         toolBoxAct.setChecked(True)
 
-        toolOptionsAct = self.optionsDock.toggleViewAction()
-        toolOptionsAct.setShortcut("Ctrl+Shift+O")
-        toolOptionsAct.setStatusTip("Shows the item options")
-        toolOptionsAct.setChecked(True)
+        SelectionOptionsAct = self.optionsDock.toggleViewAction()
+        SelectionOptionsAct.setShortcut("Ctrl+Shift+O")
+        SelectionOptionsAct.setStatusTip("Shows the item options")
+        SelectionOptionsAct.setChecked(True)
 
         logAct = self.logDock.toggleViewAction()
         logAct.setShortcut("Ctrl+Shift+L")
@@ -69,7 +69,7 @@ class MainWindow(QMainWindow):
 
         windowsMenu = QMenu('Windows')
         windowsMenu.addAction(toolBoxAct)
-        windowsMenu.addAction(toolOptionsAct)
+        windowsMenu.addAction(SelectionOptionsAct)
         windowsMenu.addAction(logAct)
 
         helpMenu = QMenu('Help')
