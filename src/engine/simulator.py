@@ -43,7 +43,7 @@ class Plug:
     setInputVerbose = True      # log input.set()
     setOutputVerbose = True     # log output.set()
     connectVerbose = True       # log i/o.connect()
-    
+
     def __init__(self, isInput, name, owner):
         self.isInput = isInput    # specifies whether to evaluate the values
         self.owner = owner        # circuit or door featuring this I/O
@@ -302,7 +302,7 @@ class Plug:
             self.set(0)
         # disconnection successful: print a message
         log.info(
-            '%s.%s and %s.%s disconnected'
+            self.str_disconnect
             % (self.owner.name, self.name, plug.owner.name, plug.name,))
 
     def setName(self, name):
@@ -312,15 +312,15 @@ class Plug:
                     x.name for x in self.owner.inputList]) or \
                     (not self.isInput and name in [
                         x.name for x in self.owner.outputList]):
-                log.error('name %s already in use' % (name,))
+                log.error(self.str_unavailableName % (name,))
                 return False
             else:
-                log.info("%s.%s's name changed to %s" % (
+                log.info(str_changedName % (
                     self.owner.name, self.name, name,))
                 self.name = name
                 return True
         else:
-            log.error('name must be at least one character long')
+            log.error(str_nameLen)
             return False
 
     def generate_name(self):
@@ -345,26 +345,24 @@ class Plug:
         return self.parent().owner
 
 
-#=========================== CLASS FOR THE CIRCUITS ==========================#
 class Circuit:
     """Represents a logic circuit."""
-    addPlugVerbose = True         # Adding an I/O
-    addCircuitVerbose = True      # Adding a circuit
-    removePlugVerbose = True      # Removing an I/O
-    removeCircuitVerbose = True   # Removing a circuit
+    # Verbosity options :
+    addPlugVerbose = True         # log self.add_plug()
+    addCircuitVerbose = True      # log self.add_circuit()
+    removePlugVerbose = True      # log self.remove_plug()
+    removeCircuitVerbose = True   # log self.remove_circuit()
     detailedRemoveVerbose = True  # Detailed remove
 
     def __init__(self, name, owner, categoryName=None):
         self.owner = owner      # parent circuit
-        if name is None:
-            name = self.generate_name()
-        self.name = name        # name (generated if not specified)
+        self.name = self.generate_name() if name is None else name
         self.categoryName = categoryName
-        self.inputList = []     # circuit's inputs list
-        self.outputList = []    # circuit's outputs list
-        self.circuitList = []   # circuit's circuits list
+        self.inputList = []
+        self.outputList = []
+        self.circuitList = []
         log.info(
-            "circuit %s '%s' has been created"
+            self.str_circuitCreated
             % (self.class_name(), self.name,))
 
     # -+---------------    METHODS FOR ADDING COMPONENTS    ---------------+- #

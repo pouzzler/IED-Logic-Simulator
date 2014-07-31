@@ -184,7 +184,7 @@ class MainWindow(QMainWindow):
             msgBox = QMessageBox()
             msgBox.setText(self.str_langChanged)
             msgBox.exec_()
-        
+
     def showDocumentation(self):
         """Shows the help dock widget."""
         self.addDockWidget(
