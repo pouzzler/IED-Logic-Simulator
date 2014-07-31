@@ -32,7 +32,7 @@ class MainWindow(QMainWindow):
         cfg.read(self.configFile)
         strFile = (
             os.path.dirname(os.path.realpath(__file__))
-            + '/../../strings_' + cfg.get('Appearance', 'lang') + '.txt')
+            + '/../../lang/strings_' + cfg.get('Appearance', 'lang') + '.txt')
         f = open(strFile, 'r')
         for _, line in enumerate(f):
             exec(line)
