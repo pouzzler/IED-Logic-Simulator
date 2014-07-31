@@ -125,7 +125,7 @@ class Plug:
             (   #   * child Input => child Output
                 self.isInput and
                 not plug.isInput and
-                slef.grandparent() is plug.grandparent()))
+                self.grandparent() is plug.grandparent()))
 
     def connect(self, plugList):
         """Connects a Plug to a list of Plugs."""
@@ -139,16 +139,70 @@ class Plug:
                     'connection between %s and %s already exists'
                     % (self.name, plug.name))
                 continue
-            #   * I/O => same I/O
-            if plug is self:
-                log.warning('cannot connect I/O on itself')
-                return False
-            #   * destination plug already have a source
-            if plug.sourcePlug:
-                log.warning(
-                    '%s.%s already have an incoming connection'
-                    % (plug.owner.name, plug.name))
-                return False
+                
+    def isInvalidConnection(plug):
+        # INVALID connection:
+        #   * I/O => same I/O
+        if plug is self:
+            log.warning('cannot connect I/O on itself')
+            return False
+        #   * destination plug already have a source
+        if plug.sourcePlug:
+            log.warning(
+                '%s.%s already have an incoming connection'
+                % (plug.owner.name, plug.name))
+            return False
+        if (    #   * child Input => child Input
+                self.isInput and
+                plug.isInput and
+                self.grandparent() is plug.grandparent()):
+                    log.warning(
+                        'cannot connect two Inputs with same grandparent')
+        if (    #   * child Input => parent Output
+                self.isInput and
+                not plug.isInput and
+                self.grandparent() is plug.parent()):
+                    log.warning(
+                        'cannot connect two Inputs with same grandparent')
+        if (    #   * child Output => child Output
+                not self.isInput and
+                not plug.isInput and
+                self.grandparent() is plug.grandparent()):
+                    log.warning(
+                        'cannot connect two Inputs with same grandparent')
+        if (    #   * child Output => parent Input
+                not self.isInput and
+                not plug.isInput and
+                self.grandparent() is plug.parent()):
+                    log.warning(
+                        'cannot connect two Inputs with same grandparent')
+        if (    #   * parent Input => child Output
+                self.isInput and
+                not plug.isInput and
+                self.parent() is plug.grandparent()):
+                    log.warning(
+                        'cannot connect two Inputs with same grandparent')
+        if (    #   * parent Input => parent Input
+                self.isInput and
+                not plug.isInput and
+                self.parent() is plug.grandparent()):
+                    log.warning(
+                        'cannot connect two Inputs with same grandparent')
+        if (    #   * parent Output => child Input
+                not self.isInput and
+                not plug.isInput and
+                self.parent() is plug.grandparent()):
+                    log.warning(
+                        'cannot connect two Inputs with same grandparent')
+        if (    #   * parent Output => parent Output
+                not self.isInput and
+                not plug.isInput and
+                self.parent() is plug.grandparent()):
+                    log.warning(
+                        'cannot connect two Inputs with same grandparent')
+            
+                
+                
             # VALID connections:
             # right => left connection
             if self.isValidInvertedConnection(plug):
@@ -244,11 +298,12 @@ class Circuit:
     removeCircuitVerbose = True   # Removing a circuit
     detailedRemoveVerbose = True  # Detailed remove
 
-    def __init__(self, name, owner):
+    def __init__(self, name, owner, categoryName=None):
         self.owner = owner      # parent circuit
         if name is None:
             name = self.generate_name()
         self.name = name        # name (generated if not specified)
+        self.categoryName = categoryName
         self.inputList = []     # circuit's inputs list
         self.outputList = []    # circuit's outputs list
         self.circuitList = []   # circuit's circuits list
