@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # coding=utf-8
 
+from os.path import dirname, realpath
 from PySide.QtGui import QTextBrowser, QDockWidget, QSplitter
 from PySide.QtCore import Qt
 from PySide.QtHelp import QHelpEngine
@@ -30,7 +31,8 @@ class HelpDockWidget(QDockWidget):
     def __init__(self):
         super(HelpDockWidget, self).__init__(self.str_helpDockTitle)
         # http://doc.qt.digia.com/qq/qq28-qthelp.html
-        helpEngine = QHelpEngine('collection.qhc')
+        qhc = dirname(realpath(__file__)) + '/../../help/collection.qhc'
+        helpEngine = QHelpEngine(qhc)
         helpEngine.setupData()
         helpPanel = QSplitter(Qt.Vertical)
         helpBrowser = HelpTextBrowser(helpEngine)
