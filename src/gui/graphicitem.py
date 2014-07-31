@@ -1,9 +1,8 @@
 #!/usr/bin/env python3
 # coding=utf-8
 
-import os
+from os import dirname, realpath
 from math import atan2, pi, pow, sqrt
-
 
 from PySide.QtCore import QPointF, QRectF, Qt
 from PySide.QtGui import (
@@ -152,7 +151,7 @@ class CircuitItem(QGraphicsItem):
         super(CircuitItem, self).__init__()
         self.setFlag(QGraphicsItem.ItemIsMovable)
         self.setFlag(QGraphicsItem.ItemIsSelectable)
-        imgDir = os.path.dirname(os.path.realpath(__file__)) + '/../../icons/'
+        imgDir = dirname(realpath(__file__)) + '/../../icons/'
         self.item = owner.add_circuit(circuitClass)
         self.image = QImage(imgDir + circuitClass.__name__ + '.png')
         self.showClassName = False

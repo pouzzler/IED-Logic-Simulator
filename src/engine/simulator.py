@@ -123,7 +123,7 @@ class Plug:
                     (not self.owner.owner and self.isInput)):
                 if other.sourcePlug:
                     log.warning(
-                        self.str_connectHasConnection 
+                        self.str_connectHasConnection
                         % (other.owner.name, other.name,))
                     return False
                 else:
@@ -132,7 +132,7 @@ class Plug:
             else:
                 if self.sourcePlug:
                     log.warning(
-                        self.str_connectHasConnection 
+                        self.str_connectHasConnection
                         % (self.owner.name, self.name,))
                     return False
                 else:

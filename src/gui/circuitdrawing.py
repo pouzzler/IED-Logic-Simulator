@@ -8,7 +8,7 @@ from PySide.QtGui import (
     QPainter, QPalette, QPen, qRgb, QScrollArea, QTransform, QToolButton,
     QWidget)
 from enum import Enum
-import os
+from os import dirname, realpath
 
 
 class PaintArea(QWidget):
@@ -266,8 +266,7 @@ class CustomCircuitCreator(QWidget):
         buttonsLayout = QHBoxLayout(buttonsFrame)
         buttonsLayout.setSizeConstraint(QLayout.SetDefaultConstraint)
 
-        iconPath = (
-            os.path.dirname(os.path.realpath(__file__)) + '/../../icons/')
+        iconPath = (dirname(realpath(__file__)) + '/../../icons/')
         self.penButton = QToolButton(
             self,
             icon=QIcon(iconPath + 'pen_w.png'))

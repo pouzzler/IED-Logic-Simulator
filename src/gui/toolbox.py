@@ -2,7 +2,7 @@
 # coding=utf-8
 
 import inspect
-import os
+from os.path import dirname, realpath
 from PySide.QtGui import (
     QDockWidget, QDrag, QIcon, QTreeWidget, QTreeWidgetItem)
 from PySide.QtCore import QByteArray, QDir, QMimeData, Qt
@@ -21,7 +21,7 @@ class ToolBox(QTreeWidget):
         self.header().setVisible(False)
         gatesheader = QTreeWidgetItem(self, [self.str_basicGates])
         gatesheader.setExpanded(True)
-        imgDir = os.path.dirname(os.path.realpath(__file__)) + '/../../icons/'
+        imgDir = dirname(realpath(__file__)) + '/../../icons/'
         for name, class_ in inspect.getmembers(
                 gates,
                 lambda m: (

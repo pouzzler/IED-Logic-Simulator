@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # coding=utf-8
 
+from os.path import dirname, realpath
 import pickle
 import time
 from configparser import ConfigParser
@@ -26,12 +27,11 @@ class MainWindow(QMainWindow):
     def __init__(self):
         super(MainWindow, self).__init__()
         # Get application strings
-        self.configFile = os.path.dirname(
-            os.path.realpath(__file__)) + '/../../settings.cfg'
+        self.configFile = dirname(realpath(__file__)) + '/../../settings.cfg'
         cfg = ConfigParser()
         cfg.read(self.configFile)
         strFile = (
-            os.path.dirname(os.path.realpath(__file__))
+            dirname(realpath(__file__))
             + '/../../lang/strings_' + cfg.get('Appearance', 'lang') + '.txt')
         f = open(strFile, 'r')
         for _, line in enumerate(f):
