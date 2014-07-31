@@ -268,18 +268,30 @@ class Plug:
                 self.owner == other.owner.owner):
             log.warning(self.str_connectGlobOutLocIn)
             return False
-        else:       # valid connections
+        else:
             if ((
                     self.owner.owner and not self.isInput) or
                     (not self.owner.owner and self.isInput)):
-                self.destinationPlugs.append(other)
-                other.sourcePlug = self
+                if other.sourcePlug:
+                    log.warning(
+                        self.str_connectHasConnection 
+                        % (other.owner.name, other.name,))
+                    return False
+                else:
+                    self.destinationPlugs.append(other)
+                    other.sourcePlug = self
             else:
-                other.destinationPlugs.append(self)
-                self.sourcePlug = other
+                if self.sourcePlug:
+                    log.warning(
+                        self.str_connectHasConnection 
+                        % (self.owner.name, self.name,))
+                    return False
+                else:
+                    other.destinationPlugs.append(self)
+                    self.sourcePlug = other
             log.info(
                 self.str_connect
-                % (other.owner.name, other.name, self.owner.name, self.name))
+                % (other.owner.name, other.name, self.owner.name, self.name,))
             return True
 
     def disconnect(self, plug):
@@ -354,10 +366,10 @@ class Circuit:
     removeCircuitVerbose = True   # log self.remove_circuit()
     detailedRemoveVerbose = True  # Detailed remove
 
-    def __init__(self, name, owner, categoryName=None):
+    def __init__(self, name, owner, category=None):
         self.owner = owner      # parent circuit
         self.name = self.generate_name() if name is None else name
-        self.categoryName = categoryName
+        self.category = category    # used to identify user circuits
         self.inputList = []
         self.outputList = []
         self.circuitList = []
