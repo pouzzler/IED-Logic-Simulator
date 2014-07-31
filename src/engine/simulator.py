@@ -21,9 +21,6 @@ circuit is evaluated: all outputs are recalculated based on the values ​​of
 its inputs and sourcePlug between components.
 """
 
-# TODO: replace log.error messages by exceptions.
-# TODO: add a Circuit.save() method for saving an entire circuit.
-
 import logging
 
 
@@ -40,13 +37,13 @@ fileHandler.setFormatter(formatter)
 stdoutHandler.setFormatter(formatter)
 
 
-#============================ CLASS FOR THE PLUGS ============================#
 class Plug:
     """Represents an input or output."""
-    setInputVerbose = True      # Inputs changes
-    setOutputVerbose = True     # Outputs changes
-    connectVerbose = True       # Connecting / diconnecting I/O
-
+    # Verbosity options :
+    setInputVerbose = True      # log input.set()
+    setOutputVerbose = True     # log output.set()
+    connectVerbose = True       # log i/o.connect()
+    
     def __init__(self, isInput, name, owner):
         self.isInput = isInput    # specifies whether to evaluate the values
         self.owner = owner        # circuit or door featuring this I/O
@@ -60,7 +57,7 @@ class Plug:
 
     def set(self, value):
         """Sets the boolean value of a Plug."""
-        # if the value do not change, do not do unnecessary work
+        # No change, nothing to do.
         if self.value == value and self.__nbEval != 0:
             return
         # else set the new value and update the circuit accordingly
@@ -69,22 +66,21 @@ class Plug:
             self.__nbEval += 1
         if Plug.setInputVerbose and self.isInput:
             log.info(
-                'input %s.%s set to %i'
+                self.str_inputV
                 % (self.owner.name, self.name, int(self.value),))
         if Plug.setOutputVerbose and not self.isInput:
             log.info(
-                'output %s.%s set to %i'
+                self.str_outputV
                 % (self.owner.name, self.name, int(self.value),))
-        # if the input of a gate change, we must evaluate its logic function
-        # to set its outpu(s) valu(s)
+        # Gate input changed, set outputs values
         if self.isInput:
             self.owner.evalfun()
         # then, all plugs in the destination list are set to this value
-        for connection in self.destinationPlugs:
-            connection.set(value)
+        for dest in self.destinationPlugs:
+            dest.set(value)
 
     def isValidConnection(self, plug):
-        """Check whether the connection left => right is valid or not"""
+        """Check whether the left to right connection is valid."""
         if (
             # a connection is valid if it is from left to right:
             (   # parent Input => child Input
@@ -146,11 +142,11 @@ class Plug:
         # INVALID connection:
         #   * I/O => same I/O
         if plug is self:
-            log.warning('cannot connect I/O on itself')
+            log.warning("Can't connect an I/O on itself.")#
         #   * destination plug already have a source
         elif plug.sourcePlug:
             log.warning(
-                '%s.%s already have an incoming connection'
+                '%s.%s already has an incoming connection.'
                 % (plug.owner.name, plug.name))
         elif (    #   * child Input => child Input
                 self.isInput and
@@ -215,7 +211,7 @@ class Plug:
                     'connection between %s and %s already exists'
                     % (self.name, plug.name))
                 continue
-            
+
             # INVALID connections:
             if self.isInvalidConnection(plug):
                 return False
@@ -233,6 +229,58 @@ class Plug:
                 log.warning('engine cannot handle this connection')
                 return False
         return True
+
+    def connect2(self, other):
+        """Connects two plugs, or logs the reason why not."""
+        if self == other:   # invalid connections
+            log.warning(self.str_connectOnItself)
+            return False
+        elif (
+                self.owner.owner == other.owner.owner
+                and self.isInput and other.isInput):
+            log.warning(self.str_connectInOnIn)
+            return False
+        elif (
+                self.owner.owner == other.owner.owner
+                and not self.isInput and not other.isInput):
+            log.warning(self.str_connectOutOnOut)
+            return False
+        elif (other == self.sourcePlug or self == other.sourcePlug):
+            log.warning(self.str_connectAlreadyExists)
+            return False
+        elif (
+                not self.isInput and other.isInput and
+                self.owner.owner == other.owner):
+            log.warning(self.str_connectGlobInLocOut)
+            return False
+        elif (
+                self.isInput and not other.isInput and
+                self.owner.owner == other.owner):
+            log.warning(self.str_connectGlobOutLocIn)
+            return False
+        elif (
+                not self.isInput and other.isInput and
+                self.owner == other.owner.owner):
+            log.warning(self.str_connectGlobInLocOut)
+            return False
+        elif (
+                self.isInput and not other.isInput and
+                self.owner == other.owner.owner):
+            log.warning(self.str_connectGlobOutLocIn)
+            return False
+        else:       # valid connections
+            if ((
+                    self.owner.owner and not self.isInput) or
+                    (not self.owner.owner and self.isInput)):
+                self.destinationPlugs.append(other)
+                other.sourcePlug = self
+            else:
+                other.destinationPlugs.append(self)
+                self.sourcePlug = other
+            log.info(
+                self.str_connect
+                % (other.owner.name, other.name, self.owner.name, self.name))
+            return True
 
     def disconnect(self, plug):
         """Disconnect two plugs."""

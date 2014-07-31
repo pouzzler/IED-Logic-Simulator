@@ -9,10 +9,7 @@ from .toolbox import ToolBox
 from .selectionoptions import SelectionOptions
 from .graphicitem import CircuitItem, PlugItem, WireItem
 from engine.simulator import Circuit, Plug
-from .settings import configFile
 import engine
-
-mainCircuit = Circuit("Main_Circuit", None)
 
 
 class MainView(QGraphicsView):
@@ -30,6 +27,7 @@ class MainView(QGraphicsView):
         self.setMouseTracking(True)     # Allow mouseover effects.
         self.setScene(QGraphicsScene(parent))
         self.isDrawing = False          # user currently not drawing
+        self.mainCircuit = Circuit("Main_Circuit", None)
 
     def getNewName(self, item):
         """Spawns a name-choosing dialog, and sets item.name to that
@@ -97,13 +95,13 @@ class MainView(QGraphicsView):
         item = None
         if name in ['And', 'Or', 'Nand', 'Nor', 'Not', 'Xor', 'Xnor']:
             item = CircuitItem(
-                getattr(engine.gates, name + 'Gate'), mainCircuit)
+                getattr(engine.gates, name + 'Gate'), self.mainCircuit)
         elif name == self.str_I:
-            item = PlugItem(True, mainCircuit)
+            item = PlugItem(True, self.mainCircuit)
         elif name == self.str_O:
-            item = PlugItem(False, mainCircuit)
+            item = PlugItem(False, self.mainCircuit)
         else:
-            item = CircuitItem(Circuit, mainCircuit)
+            item = CircuitItem(Circuit, self.mainCircuit)
         if item:
             # Fixes the default behavious of centering the first
             # item added to scene.
@@ -126,10 +124,10 @@ class MainView(QGraphicsView):
         elif e.key() == QtCore.Qt.Key_Delete:
             for item in selection:
                 if isinstance(item, CircuitItem):
-                    mainCircuit.remove(item.item)
+                    self.mainCircuit.remove(item.item)
                     item.circuit = None
                 elif isinstance(item, Plug):
-                    mainCircuit.remove(item)
+                    self.mainCircuit.remove(item)
                 elif isinstance(item, WireItem) and hasattr(item, 'endIO'):
                     item.startIO.disconnect(item.endIO)
                 scene.removeItem(item)
