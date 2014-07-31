@@ -175,14 +175,12 @@ class MainWindow(QMainWindow):
 
     def setLang(self, lang):
         cfg = ConfigParser()
-        configFile = os.path.dirname(
-            os.path.realpath(__file__)) + '/../../settings.cfg'
-        cfg.read(configFile)
+        cfg.read(self.configFile)
         old = cfg.get('Appearance', 'lang')
         if old != lang:
             cfg.set('Appearance', 'lang', lang)
-            with open(configFile, 'w+') as cfg:
-                cfg.write(configfile)
+            with open(self.configFile, 'w+') as f:
+                cfg.write(f)
             msgBox = QMessageBox()
             msgBox.setText(self.str_langChanged)
             msgBox.exec_()
