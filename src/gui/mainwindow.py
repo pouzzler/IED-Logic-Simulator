@@ -174,16 +174,18 @@ class MainWindow(QMainWindow):
             print(item.name)
 
     def setLang(self, lang):
-        pass
-        #~ cfg = ConfigParser()
-        #~ cfg.read(self.configFile)
-        #~ old = cfg.get('Appearance', 'lang')
-        #~ if old != lang:
-            #~ with open(self.configFile, 'w+') as cfg:
-                #~ cfg.write(self.configfile)
-        #~ msgBox = QMessageBox()
-        #~ msgBox.setText(self.str_langChanged)
-        #~ msgBox.exec_()
+        cfg = ConfigParser()
+        configFile = os.path.dirname(
+            os.path.realpath(__file__)) + '/../../settings.cfg'
+        cfg.read(configFile)
+        old = cfg.get('Appearance', 'lang')
+        if old != lang:
+            cfg.set('Appearance', 'lang', lang)
+            with open(configFile, 'w+') as cfg:
+                cfg.write(configfile)
+            msgBox = QMessageBox()
+            msgBox.setText(self.str_langChanged)
+            msgBox.exec_()
         
     def showDocumentation(self):
         """Shows the help dock widget."""
