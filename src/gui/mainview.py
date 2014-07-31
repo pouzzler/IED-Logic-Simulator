@@ -27,14 +27,14 @@ class MainView(QGraphicsView):
         self.setMouseTracking(True)     # Allow mouseover effects.
         self.setScene(QGraphicsScene(parent))
         self.isDrawing = False          # user currently not drawing
-        self.mainCircuit = Circuit("Main_Circuit", None)
+        self.mainCircuit = Circuit("Main Circuit", None)
 
     def getNewName(self, item):
         """Spawns a name-choosing dialog, and sets item.name to that
         dialog's return value, if not canceled by the user.
         """
         # ret = tuple string, bool (false when the dialog is dismissed)
-        ret = QInputDialog.getText(self, u'Set name', u'Name:')
+        ret = QInputDialog.getText(self, self.str_setName, self.str_name)
         if ret[1]:
             self.setItemName(ret[0], item)
 
@@ -182,8 +182,8 @@ class MainView(QGraphicsView):
 
     def mousePressEvent(self, e):
         """When the mouse is pressed over a portion of a graphic item
-        that represents a Plug, we create a WireItem.
-        Over a WireItem handle, we extend the WireItem.
+        that represents a Plug, we create a WireItem;
+        over a WireItem handle, we extend the WireItem.
         """
         # Reserve right-clicks for contextual menus.
         if e.buttons() == QtCore.Qt.RightButton:
@@ -235,7 +235,8 @@ class MainView(QGraphicsView):
         super(MainView, self).mouseReleaseEvent(e)
 
     def mouseMoveEvent(self, e):
-        """Changes the cursor shape on mousing over a handle."""
+        """Changes the cursor shape on mousing over a handle; forwards
+        moves to current wire item, if any, for redrawing."""
         if self.isDrawing:
             self.currentWire.moveLastPoint(
                 self.currentWire.mapFromScene(self.mapToScene(e.pos())))

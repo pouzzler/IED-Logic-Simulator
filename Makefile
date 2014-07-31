@@ -4,4 +4,4 @@ all:
 	qhelpgenerator doc.qhp -o doc.qch;	\
 	qcollectiongenerator collection.qhcp -o collection.qhc
 	git add src/gui/*.py src/engine/*.py lang icons Makefile
-	git commit -m $(msg)
+	git commit -m "$(msg)"
