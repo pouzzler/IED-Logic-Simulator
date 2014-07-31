@@ -27,8 +27,8 @@ class HelpDockWidget(QDockWidget):
     and documentation system.
     """
 
-    def __init__(self, title):
-        super(HelpDockWidget, self).__init__(title)
+    def __init__(self):
+        super(HelpDockWidget, self).__init__(self.str_helpDockTitle)
         # http://doc.qt.digia.com/qq/qq28-qthelp.html
         helpEngine = QHelpEngine('collection.qhc')
         helpEngine.setupData()

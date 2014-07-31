@@ -87,42 +87,42 @@ class Plug:
         """Check whether the connection left => right is valid or not"""
         return (
             # a connection is valid if it is from left to right:
-            (   #   * pparent Input => child Input
+            (   # parent Input => child Input
                 self.isInput and
                 plug.isInput and
                 self.parent() is plug.grandparent()) or
-            (   #   * pparent Input => parent Output
+            (   # parent Input => parent Output
                 self.isInput and
                 not plug.isInput and
                 self.parent() is plug.parent()) or
-            (   #   * child Output => parent Output
+            (   # child Output => parent Output
                 not self.isInput and
                 not plug.isInput and
                 self.grandparent() is plug.parent()) or
-            (   #   * child Output => child Input
+            (   # child Output => child Input
                 not self.isInput and
                 plug.isInput and
                 self.grandparent() is plug.grandparent()))
-                
+
     def isValidInvertedConnection(self, plug):
         """Check whether the connection right => left is valid or not"""
         # inverted VALID connections
         return (
             # if the user connect from right to left we just have to invert
             # the conenction direction so these connections are also valid:
-            (   #   * child Input => parent Input
+            (   # child Input => parent Input
                 self.isInput and
                 plug.isInput and
                 self.grandparent() is plug.parent()) or
-            (   #   * parent Output => parent Input
+            (   # parent Output => parent Input
                 not self.isInput and
                 plug.isInput and
                 self.parent() is plug.parent()) or
-            (   #   * parent Output => child Output
+            (   # parent Output => child Output
                 not self.isInput and
                 not plug.isInput and
                 self.parent() is plug.grandparent()) or
-            (   #   * child Input => child Output
+            (   # child Input => child Output
                 self.isInput and
                 not plug.isInput and
                 self.grandparent() is plug.grandparent()))

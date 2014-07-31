@@ -7,7 +7,7 @@ from math import atan2, pi, pow, sqrt
 
 from PySide.QtCore import QPointF, QRectF, Qt
 from PySide.QtGui import (
-    QColor, QFont, QGraphicsItem, QGraphicsPathItem, QImage,
+    QBrush, QColor, QFont, QGraphicsItem, QGraphicsPathItem, QImage,
     QPainterPath, QPen, QStyle)
 from engine.simulator import Circuit, Plug
 
@@ -49,6 +49,7 @@ class WireItem(QGraphicsPathItem):
         """We draw the segments between our array of points and a small
         handle circle on the last segment.
         """
+        self.setPen(QPen(QBrush(QColor(QColor('black'))), 2))
         path = QPainterPath()
         path.moveTo(self.points[0])
         for p in self.points[1:]:
@@ -151,7 +152,7 @@ class CircuitItem(QGraphicsItem):
         super(CircuitItem, self).__init__()
         self.setFlag(QGraphicsItem.ItemIsMovable)
         self.setFlag(QGraphicsItem.ItemIsSelectable)
-        imgDir = os.path.dirname(os.path.realpath(__file__)) + '/icons/'
+        imgDir = os.path.dirname(os.path.realpath(__file__)) + '/../../icons/'
         self.item = owner.add_circuit(circuitClass)
         self.image = QImage(imgDir + circuitClass.__name__ + '.png')
         self.showClassName = False
