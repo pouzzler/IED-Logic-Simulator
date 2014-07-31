@@ -87,7 +87,7 @@ class WireItem(QGraphicsPathItem):
             scene.addItem(self)
 
     def connect(self, endIO):
-        if not self.startIO.connect2(endIO):
+        if not self.startIO.connect(endIO):
             return False
         else:
             self.endIO = endIO
