@@ -29,13 +29,6 @@ class Settings(ConfigParser):
         ConfigParser()
         self.read(self.configFile)
 
-    def saveConfigFile(self, mode='w+'):
-        """Write the in-memory config structure <config> in the config
-        file <configFile>. mode 'w+' for updating but not superseding.
-        """
-        with open(self.configFile, mode) as configfile:
-            self.write(configfile)
-
 
 class ColorSelectorButton(QtGui.QPushButton):
     def __init__(self, parent, config, option, text=None):
@@ -289,7 +282,7 @@ class SettingsDialog(QtGui.QDialog):
         """Init the parent class, the config dictionary and the window."""
         super(SettingsDialog, self).__init__()
         self.config = config
-        self.configSaved.connect(parent.loadConfig)
+        self.configSaved.connect(parent.setSettings)
         self.initUI()
         ## SIGNALS CONNECTIONS ##
         self.closeButtonBox.clicked.connect(self.saveAndClose)
@@ -389,10 +382,17 @@ class SettingsDialog(QtGui.QDialog):
         self.closeButtonBox.setStandardButtons(QtGui.QDialogButtonBox.Close)
         self.settingsGrid.addWidget(self.closeButtonBox, 3, 0, 1, 1)
 
+    def saveConfigFile(self, mode='w+'):
+        """Write the in-memory config structure <config> in the config
+        file <configFile>. mode 'w+' for updating but not superseding.
+        """
+        with open(self.config.configFile, mode) as configfile:
+            self.config.write(configfile)
+
     @QtCore.Slot()
     def saveAndClose(self):
         """Saves the config file and closes the widget."""
-        self.config.saveConfigFile()
+        self.saveConfigFile()
         self.configSaved.emit()
         self.close()
 

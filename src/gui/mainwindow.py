@@ -18,7 +18,7 @@ from .settings import Settings, SettingsDialog
 from engine.gates import *
 from engine.simulator import log, fileHandler, stdoutHandler, formatter, Plug
 
-from .graphicitem import * 
+from .graphicitem import *
 
 
 class MainWindow(QMainWindow):
