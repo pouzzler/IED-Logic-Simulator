@@ -3,6 +3,6 @@ all:
 	cd help;	\
 	qhelpgenerator doc.qhp -o doc.qch;	\
 	qcollectiongenerator collection.qhcp -o collection.qhc
-	git add src/gui/*.py src/engine/*.py lang icons Makefile
+	git add src/gui/*.py src/engine/*.py lang icons Makefile help
 	git commit -m "$(msg)"
 	git push
