@@ -35,8 +35,8 @@ class SelectionOptions(QWidget):
         self.gridLayout.addWidget(self.showNameCB, 1, 1, 1, 1)
         self.showNameCB.stateChanged.connect(self.setNameVisibility)
 
-        showCategoryLabel = QLabel(self.str_showCategory, self)
-        self.gridLayout.addWidget(showCategoryLabel, 2, 0, 1, 1)
+        self.showCategoryLabel = QLabel(self.str_showCategory, self)
+        self.gridLayout.addWidget(self.showCategoryLabel, 2, 0, 1, 1)
 
         self.showCategoryCB = QCheckBox(self)
         self.gridLayout.addWidget(self.showCategoryCB, 2, 1, 1, 1)
@@ -75,9 +75,11 @@ class SelectionOptions(QWidget):
         self.updateOptions()
 
     def updateOptions(self):
+        """Hides irrelevant options, and sets reasonable values for the
+        visible options.
+        """
         selection = self.view.scene().selectedItems()
         size = len(selection)
-        # Hiding options that don't apply to the current selection.
         if size == 0:
             for widget in self.findChildren(QWidget):
                 widget.setHidden(True)
@@ -95,33 +97,40 @@ class SelectionOptions(QWidget):
                     notAllGates = False
                 self.nbInputsLabel.setHidden(notAllGates)
                 self.nbInputsCB.setHidden(notAllGates)
+                for item in selection:
+                    if not isinstance(item, CircuitItem):
+                        self.showCategoryLabel.setHidden(True)
+                        self.showCategoryCB.setHidden(True)
         if size > 1:
             self.nameLabel.setHidden(True)
             self.nameLE.setHidden(True)
-        # Putting reasonable values in the visible options
+
         if size == 1:
+            self.nameLE.blockSignals(True)
             self.nameLE.setText(selection[0].item.name)
+            self.nameLE.blockSignals(False)
         if size >= 1:
-            # Wrong check box on multiple selection
-            # Better than arbitrarily setting them all
-            # TODO : possible solution by ignoring events while doing it
             self.showNameCB.blockSignals(True)
             self.showNameCB.setCheckState(
                 Qt.CheckState.Checked if selection[0].showName
                 else Qt.CheckState.Unchecked)
             self.showNameCB.blockSignals(False)
-            self.showCategoryCB.blockSignals(True)
-            self.showCategoryCB.setCheckState(
-                Qt.CheckState.Checked if selection[0].showClassName
-                else Qt.CheckState.Unchecked)
-            self.showCategoryCB.blockSignals(False)
-            self.nbInputsCB.blockSignals(True)
-            self.nbInputsCB.setCurrentIndex(selection[0].item.nb_inputs() - 2)
-            self.nbInputsCB.blockSignals(False)
+            if not self.showCategoryCB.isHidden():
+                self.showCategoryCB.blockSignals(True)
+                self.showCategoryCB.setCheckState(
+                    Qt.CheckState.Checked if selection[0].showCategory
+                    else Qt.CheckState.Unchecked)
+                self.showCategoryCB.blockSignals(False)
+            if not self.nbInputsCB.isHidden():
+                self.nbInputsCB.blockSignals(True)
+                self.nbInputsCB.setCurrentIndex(
+                    selection[0].item.nb_inputs() - 2)
+                self.nbInputsCB.blockSignals(False)
 
     def setItemName(self):
         item = self.view.scene().selectedItems()[0]
-        self.view.setItemName(self.nameLE.text(), item)
+        item.item.setName(self.nameLE.text())
+        item.setupPaint()
 
     def setNameVisibility(self, arg1):
         for item in self.view.scene().selectedItems():

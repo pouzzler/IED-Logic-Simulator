@@ -28,6 +28,7 @@ class MainView(QGraphicsView):
         self.setScene(QGraphicsScene(parent))
         self.isDrawing = False          # user currently not drawing
         self.mainCircuit = Circuit("Main Circuit", None)
+        self.scene().addItem(PlugItem(True, self.mainCircuit))
 
     def getNewName(self, item):
         """Spawns a name-choosing dialog, and sets item.name to that
@@ -58,9 +59,10 @@ class MainView(QGraphicsView):
                 menu.addAction(self.str_setName, lambda: self.getNewName(item))
             elif isinstance(item, PlugItem):
                 menu.addAction(self.str_setName, lambda: self.getNewName(item))
-                if item.isInput:
+                if item.item.isInput:
                     menu.addAction(
-                        str(item.value), lambda: item.set(not item.value))
+                        str(item.item.value),
+                        lambda: item.item.set(not item.item.value))
             elif isinstance(item, WireItem):
                 pos = item.mapFromScene(self.mapToScene(e.pos()))
                 if item.handleAtPos(pos):

@@ -176,7 +176,7 @@ class Plug:
                 log.error(self.str_unavailableName % (name,))
                 return False
             else:
-                log.info(str_changedName % (
+                log.info(self.str_changedName % (
                     self.owner.name, self.name, name,))
                 self.name = name
                 return True
