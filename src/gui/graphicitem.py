@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # coding=utf-8
 
-from os import dirname, realpath
+from os.path import dirname, realpath
 from math import atan2, pi, pow, sqrt
 
 from PySide.QtCore import QPointF, QRectF, Qt
