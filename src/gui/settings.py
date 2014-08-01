@@ -2,7 +2,7 @@
 # coding=utf-8
 
 from configparser import ConfigParser
-from PySide import QtCore
+from PySide.QtCore import Qt
 from PySide.QtGui import (
     QCheckBox, QColor, QColorDialog, QDialog, QDoubleSpinBox, QGridLayout,
     QGroupBox, QHBoxLayout, QLabel, QPalette, QPushButton, QTreeWidget,
@@ -51,11 +51,11 @@ class SettingsDialog(QDialog):
         logVerbosity = QGroupBox(self.str_logVerbosity)
         logVerbosityLayout = QHBoxLayout()
         logVerbosity.setLayout(logVerbosityLayout)
-        verbosityOptions = QTreeWidget()
-        verbosityOptions.header().setVisible(False)
+        self.verbosityOptions = QTreeWidget()
+        self.verbosityOptions.header().setVisible(False)
         for k, v in self.str_treeItems.items():
-            node = QTreeWidgetItem(verbosityOptions, [k])
-            node.setCheckState(0, QtCore.Qt.Checked)
+            node = QTreeWidgetItem(self.verbosityOptions, [k])
+            node.setCheckState(0, Qt.Checked)
             if isinstance(v, str):
                 node.setText(1, v)
                 node.setCheckState(
@@ -67,8 +67,8 @@ class SettingsDialog(QDialog):
                     item.setCheckState(
                         0, boolToCheckState(
                             self.config.getboolean('LogVerbosity', val)))
-        verbosityOptions.itemChanged.connect(self.chooseVerbosity)
-        logVerbosityLayout.addWidget(verbosityOptions)
+        self.verbosityOptions.itemChanged.connect(self.chooseVerbosity)
+        logVerbosityLayout.addWidget(self.verbosityOptions)
 
         clock = QGroupBox(self.str_clock)
         clockLayout = QHBoxLayout()
@@ -116,11 +116,32 @@ class SettingsDialog(QDialog):
         self.config.set('LogHandlers', option, str(checkbox.isChecked()))
 
     def chooseVerbosity(self, item):
-        # TODO : wrong checkboxes on nodes
         option = item.text(1)
         if option:
             self.config.set('LogVerbosity', option, str(
                 checkStateToBool(item.checkState(0))))
+            if isinstance(item.parent(), QTreeWidgetItem):
+                count = item.parent().childCount()
+                for i in range(item.parent().childCount()):
+                    if not checkStateToBool(
+                            item.parent().child(i).checkState(0)):
+                        count = count - 1
+                self.verbosityOptions.blockSignals(True)
+                if count == item.parent().childCount():
+                    item.parent().setCheckState(0, Qt.Checked)
+                elif count == 0:
+                    item.parent().setCheckState(0, Qt.Unchecked)
+                else:
+                    item.parent().setCheckState(0, Qt.PartiallyChecked)
+                self.verbosityOptions.blockSignals(False)
+        else:
+            for i in range(item.childCount()):
+                self.verbosityOptions.blockSignals(True)
+                item.child(i).setCheckState(0, item.checkState(0))
+                self.config.set(
+                    'LogVerbosity', item.child(i).text(1),
+                    str(checkStateToBool(item.checkState(0))))
+                self.verbosityOptions.blockSignals(False)
 
     def closeAndApply(self):
         self.mainwindow.setSettings()

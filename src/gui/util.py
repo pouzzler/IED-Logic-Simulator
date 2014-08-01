@@ -10,7 +10,7 @@ def filePath(relPath):
 
 
 def checkStateToBool(state):
-    return 'False' if state == Qt.Unchecked else 'True'
+    return False if state == Qt.Unchecked else True
 
 
 def boolToCheckState(b):

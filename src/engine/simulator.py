@@ -138,9 +138,11 @@ class Plug:
                 else:
                     other.destinationPlugs.append(self)
                     self.sourcePlug = other
-            log.info(
-                self.str_connect
-                % (other.owner.name, other.name, self.owner.name, self.name,))
+            if Plug.connectVerbose:
+                log.info(
+                    self.str_connect % (
+                        other.owner.name, other.name, self.owner.name,
+                        self.name,))
             return True
 
     def disconnect(self, plug):
