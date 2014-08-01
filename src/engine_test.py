@@ -10,6 +10,7 @@ from engine.simulator import log  # le log
 from engine.gates import *        # portes logiques de base
 from engine.circuits import *     # circuits logiques avancés
 from engine.clock import *        # horloge
+from os.path import dirname, realpath
 
 
 HEADER = '\033[95m'
@@ -75,6 +76,14 @@ from time import sleep
 
 
 if __name__ == '__main__':
+    strFile = (
+        dirname(realpath(__file__))
+        + '/../lang/strings_' + 'en' + '.txt')
+    f = open(strFile, 'r')
+    for _, line in enumerate(f):
+        if line.startswith('Plug') or line.startswith('Circuit'):
+            exec(line)
+
     TC = Circuit("Main_Circuit", None)
     
     #~ clk = TC.add_input('CLOCK')        # l'horloge est une simple sortie du TL
