@@ -61,4 +61,4 @@ SettingsDialog.str_circBgColor = "Couleur de fond du circuit"
 SettingsDialog.str_choose = 'Choisir...'
 SettingsDialog.str_logBgColor = "Couleur de fond des journaux"
 SettingsDialog.str_close = 'Fermer'
-SettingsDialog.str_treeItems = {"Ajout / suppression d'objets": {'I/O added':'adding_io', 'I/O removed':'removing_io', 'Circuit added':'adding_circ', 'Circuit removed':'removing_circ', 'Detailed removal information':'detailed_rm'}, 'Connections / disconnections': 'conn_discon_io', 'I/O value modification': {'Input changes':'input_chang', 'Output changes':'output_chang'}}
+SettingsDialog.str_treeItems = {"Ajout / suppression d'objets": {'E/S ajoutée':'adding_io', 'E/S supprimée':'removing_io', 'Circuit ajouté':'adding_circ', 'Circuit supprimé':'removing_circ', 'Informations de suppression détaillée':'detailed_rm'}, 'Connexions / déconnexions': 'conn_discon_io', "Modifications de valeur d'E/S": {"Modification d'entrée":'input_chang', 'Modification de sortie':'output_chang'}}

@@ -99,7 +99,6 @@ class MainWindow(QMainWindow):
 
         self.setSettings()
         self.show()
-        SettingsDialog(self, self.config).exec_()
 
     def setSettings(self):
         """Load color, verbosity and logging options."""
@@ -173,7 +172,7 @@ class MainWindow(QMainWindow):
         old = self.config.get('Appearance', 'lang')
         if old != lang:
             self.config.set('Appearance', 'lang', lang)
-            with open(self.configFile, 'w+') as f:
+            with open(self.config.configFile, 'w+') as f:
                 self.config.write(f)
             msgBox = QMessageBox()
             msgBox.setText(self.str_langChanged)
