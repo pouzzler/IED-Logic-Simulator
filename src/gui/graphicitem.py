@@ -95,32 +95,20 @@ class WireItem(QGraphicsPathItem):
             return True
 
 
-class PlugItem(QGraphicsPathItem, Plug):
-    """We represent an I pin as a graphic square path,
-    and a O pin as a circle.
-    """
+class PlugItem(QGraphicsPathItem):
+    """Graphical wrapper around the engine Plug class."""
 
     LARGE_DIAMETER = 25
     SMALL_DIAMETER = 5
+    textH = 12
 
-    def __init__(self, isInput, parent):
+    def __init__(self, isInput, owner):
         super(PlugItem, self).__init__()
-        Plug.__init__(self, isInput, None, parent)
-        # Creating a plug from our engine
-        parent.add_plug(self)
+        self.item = Plug(isInput, None, owner)
+        owner.add_plug(self.item)
+        self.showName = False
         self.setFlag(QGraphicsItem.ItemIsMovable)
         self.setFlag(QGraphicsItem.ItemIsSelectable)
-        path = QPainterPath()
-        if isInput:
-            path.addEllipse(0, 0, self.LARGE_DIAMETER, self.LARGE_DIAMETER)
-        else:
-            path.addRect(0, 0, self.LARGE_DIAMETER, self.LARGE_DIAMETER)
-        path.addEllipse(
-            self.LARGE_DIAMETER + 1,
-            (self.LARGE_DIAMETER - self.SMALL_DIAMETER) / 2,
-            self.SMALL_DIAMETER,
-            self.SMALL_DIAMETER)
-        self.setPath(path)
         # This path is needed at each mouse over event, to check if
         # the mouse is over a pin. We save it as an instance field,
         # rather than recreate it at each event.
@@ -130,17 +118,42 @@ class PlugItem(QGraphicsPathItem, Plug):
             self.LARGE_DIAMETER / 2 - self.SMALL_DIAMETER,
             self.SMALL_DIAMETER * 2,
             self.SMALL_DIAMETER * 2)
+        self.setupPaint()
 
+    def setupPaint(self):
+        path = QPainterPath()
+        if self.item.isInput:
+            path.addEllipse(0, 0, self.LARGE_DIAMETER, self.LARGE_DIAMETER)
+        else:
+            path.addRect(0, 0, self.LARGE_DIAMETER, self.LARGE_DIAMETER)
+        path.addEllipse(
+            self.LARGE_DIAMETER + 1,
+            (self.LARGE_DIAMETER - self.SMALL_DIAMETER) / 2,
+            self.SMALL_DIAMETER,
+            self.SMALL_DIAMETER)
+        if self.showName:
+            path.addText(
+                QPointF(0, self.LARGE_DIAMETER + 1),
+                QFont(),
+                self.item.name)
+        self.setPath(path)
+        self.update()
+        
+        
     def handleAtPos(self, pos):
-        return self if self.pinPath.contains(pos) else None
+        return self.item if self.pinPath.contains(pos) else None
 
-    def __getnewargs__(self):
-        return (self.isInput, self.owner)
+    def setNameVisibility(self, isVisible):
+        self.showName = isVisible
+        self.setupPaint()
+
+    def setClassVisibility(self, isVisible):
+        self.showCategory = isVisible
+        self.setupPaint()
 
 
 class CircuitItem(QGraphicsItem):
-    """Should represent any sub-item of the circuit, ie. circuits, gates,
-    inputs, outputs and wires. Only represents circuits so far."""
+    """Graphical wrapper around the engine Circuit class."""
 
     textH = 12
     ioH = 10
@@ -154,10 +167,10 @@ class CircuitItem(QGraphicsItem):
         imgDir = dirname(realpath(__file__)) + '/../../icons/'
         self.item = owner.add_circuit(circuitClass)
         self.image = QImage(imgDir + circuitClass.__name__ + '.png')
-        self.showClassName = False
+        self.showCategory = False
         if not self.image:
             self.image = QImage(imgDir + 'Default.png')
-            self.showClassName = True
+            self.showCategory = True
         self.showName = True
         self.setupPaint()
 
@@ -200,11 +213,12 @@ class CircuitItem(QGraphicsItem):
                 2 * self.radius)
             self.outputPaths.append(path)
         self.prepareGeometryChange()
+        self.update()
 
     def boundingRect(self):
         H = self.maxH
         W = 4 * self.radius + 2 * self.ioW + self.imgW
-        if self.showClassName:
+        if self.showCategory:
             H = H + 2 * self.textH
         elif self.showName:
             H = H + self.textH
@@ -255,7 +269,7 @@ class CircuitItem(QGraphicsItem):
             painter.drawText(
                 QPointF(0, self.maxH + self.textH),
                 self.item.name)
-        if self.showClassName:
+        if self.showCategory:
             painter.setPen(QPen(QColor('green')))
             painter.drawText(
                 QPointF(0, self.maxH + 2 * self.textH),
@@ -278,12 +292,10 @@ class CircuitItem(QGraphicsItem):
     def setNameVisibility(self, isVisible):
         self.showName = isVisible
         self.setupPaint()
-        self.update()
 
     def setClassVisibility(self, isVisible):
-        self.showClassName = isVisible
+        self.showCategory = isVisible
         self.setupPaint()
-        self.update()
 
     def setNbInputs(self, nb):
         if nb > self.item.nb_inputs():
