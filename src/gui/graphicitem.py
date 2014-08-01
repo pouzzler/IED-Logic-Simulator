@@ -6,8 +6,8 @@ from PySide.QtCore import QPointF, QRectF, Qt
 from PySide.QtGui import (
     QBrush, QColor, QFont, QGraphicsItem, QGraphicsPathItem, QImage,
     QPainterPath, QPen, QStyle)
-from engine.simulator import Circuit, Plug
 from .util import filePath
+from engine.simulator import Circuit, Plug
 
 
 class WireItem(QGraphicsPathItem):

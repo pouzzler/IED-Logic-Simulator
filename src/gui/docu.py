@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 # coding=utf-8
 
-from PySide.QtGui import QTextBrowser, QDockWidget, QSplitter
 from PySide.QtCore import Qt
+from PySide.QtGui import QTextBrowser, QDockWidget, QSplitter
 from PySide.QtHelp import QHelpEngine
 from .util import filePath
 

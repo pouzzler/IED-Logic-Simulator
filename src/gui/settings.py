@@ -19,7 +19,11 @@ as parameter to SettingsWidget.
 
 from configparser import ConfigParser
 import sys
-from PySide import QtCore, QtGui
+from PySide import QtCore
+from PySide.QtGui import (
+    QCheckBox, QColor, QColorDialog, QDialog, QDialogButtonBox,
+    QDoubleSpinBox, QFrame, QGridLayout, QGroupBox, QLabel, QPalette,
+    QPushButton, QSizePolicy, QSpacerItem, QTreeWidget, QTreeWidgetItem)
 from .util import filePath
 
 
@@ -30,7 +34,7 @@ class Settings(ConfigParser):
         self.read(self.configFile)
 
 
-class ColorSelectorButton(QtGui.QPushButton):
+class ColorSelectorButton(QPushButton):
     def __init__(self, parent, config, option, text=None):
         """Get the config dictionary <config> from the parent class
         because handleStateChanged need to modify it.
@@ -38,13 +42,13 @@ class ColorSelectorButton(QtGui.QPushButton):
         and a QColorDialog, a QColor and a QPalette for selecting a
         color, storing it and applying it to the button background.
         """
-        QtGui.QPushButton.__init__(self, parent)
+        QPushButton.__init__(self, parent)
         self.config = config
         self.section = 'Appearance'
         self.option = option
-        self.color = QtGui.QColor(0, 0, 0)
-        self.palette = QtGui.QPalette()
-        self.colorDialog = QtGui.QColorDialog()
+        self.color = QColor(0, 0, 0)
+        self.palette = QPalette()
+        self.colorDialog = QColorDialog()
         self.initToolButton(text)
         ## SIGNALS CONNECTIONS ##
         self.clicked.connect(self.choose_color)
@@ -57,7 +61,7 @@ class ColorSelectorButton(QtGui.QPushButton):
         self.setText(text)
         self.color.setNamedColor(self.config.get(self.section, self.option))
         self.colorDialog.setCurrentColor(self.color)
-        self.palette.setColor(QtGui.QPalette.Button, self.color)
+        self.palette.setColor(QPalette.Button, self.color)
         self.setPalette(self.palette)
         self.setAutoFillBackground(True)
 
@@ -70,7 +74,7 @@ class ColorSelectorButton(QtGui.QPushButton):
         if not self.color.isValid():
             self.color = origColor  # revert back to prev color if user cancel
         self.colorDialog.setCurrentColor(self.color)
-        self.palette.setColor(QtGui.QPalette.Button, self.color)
+        self.palette.setColor(QPalette.Button, self.color)
         self.setPalette(self.palette)
 
     @QtCore.Slot()
@@ -81,9 +85,9 @@ class ColorSelectorButton(QtGui.QPushButton):
         self.config.set(self.section, self.option, color.name())
 
 
-class logOutputCheckBox(QtGui.QCheckBox):
+class logOutputCheckBox(QCheckBox):
     def __init__(self, parent, config, option, text=None):
-        QtGui.QCheckBox.__init__(self, parent)
+        QCheckBox.__init__(self, parent)
         self.config = config
         self.section = 'LogOutputs'
         self.option = option
@@ -108,13 +112,13 @@ class logOutputCheckBox(QtGui.QCheckBox):
         self.config.set(self.section, self.option, v)
 
 
-class ClockSpeedSpinBox(QtGui.QDoubleSpinBox):
+class ClockSpeedSpinBox(QDoubleSpinBox):
     def __init__(self, parent, config):
         """Get the config dictionary <config> from the parent class
         because handleSpeedValueChanged need to modify it.
         Also define the config section used by the class.
         """
-        QtGui.QDoubleSpinBox.__init__(self, parent)
+        QDoubleSpinBox.__init__(self, parent)
         self.config = config
         self.section = 'Clock'
         self.initDoubleSpinBox()
@@ -138,14 +142,14 @@ class ClockSpeedSpinBox(QtGui.QDoubleSpinBox):
         self.config.set(self.section, 'speed', str(self.value()))
 
 
-class TreeWidgetItem(QtGui.QTreeWidgetItem):
+class TreeWidgetItem(QTreeWidgetItem):
     """We need to subclass QTreeWidget to reimplement setData()
     and emiting a custom signal of the logRecordsTree class
     when the item check state is modified.
     """
     def setData(self, col, role, value):
         state = self.checkState(col)
-        QtGui.QTreeWidgetItem.setData(self, col, role, value)
+        QTreeWidgetItem.setData(self, col, role, value)
         if role == QtCore.Qt.CheckStateRole and state != self.checkState(col):
             treewidget = self.treeWidget()
             if treewidget is not None:
@@ -159,7 +163,7 @@ class TreeWidgetItem(QtGui.QTreeWidgetItem):
             self.setCheckState(0, QtCore.Qt.Unchecked)
 
 
-class logRecordsTree(QtGui.QTreeWidget):
+class logRecordsTree(QTreeWidget):
     """We need to subclass QTreeWidget to define a new custom signal
     in the class. This signal is emitted by the TreeWidgetItem and
     connecting to handleItemStateChanged() which process the signal.
@@ -172,7 +176,7 @@ class logRecordsTree(QtGui.QTreeWidget):
         need to access it and handleItemStateChanged need to modify it.
         Also define the config section used by the class.
         """
-        QtGui.QTreeWidget.__init__(self, parent)
+        QTreeWidget.__init__(self, parent)
         self.config = config
         self.section = 'GUILogRecords'
         self.initTree()
@@ -181,7 +185,7 @@ class logRecordsTree(QtGui.QTreeWidget):
 
     def initTree(self):
         # -+++++++----------------- tree properties -----------------+++++++- #
-        self.setFrameShape(QtGui.QFrame.StyledPanel)
+        self.setFrameShape(QFrame.StyledPanel)
         self.setTabKeyNavigation(False)
         self.setAlternatingRowColors(False)
         self.setAnimated(True)
@@ -270,7 +274,7 @@ class logRecordsTree(QtGui.QTreeWidget):
         self.config.set(self.section, item.option, v)
 
 
-class SettingsDialog(QtGui.QDialog):
+class SettingsDialog(QDialog):
     """A widget for cotroling some settings of the GUI and the engine such as:
     * clock speed
     * log records and outputs
@@ -291,30 +295,30 @@ class SettingsDialog(QtGui.QDialog):
         # -+++++++--------------- the settings window ---------------+++++++- #
         self.setWindowTitle("Settings")
         self.resize(562, 466)
-        self.settingsGrid = QtGui.QGridLayout(self)
+        self.settingsGrid = QGridLayout(self)
         QtCore.QMetaObject.connectSlotsByName(self)
         # -+++++++----------------- the clock group -----------------+++++++- #
-        self.clockGroupBox = QtGui.QGroupBox(self)
+        self.clockGroupBox = QGroupBox(self)
         self.clockGroupBox.setTitle("Clock")
-        self.clockGrid = QtGui.QGridLayout(self.clockGroupBox)
+        self.clockGrid = QGridLayout(self.clockGroupBox)
         ######################### CLOCK SPINBOX OBJECT ########################
         self.clockDoubleSpinBox = ClockSpeedSpinBox(
             self.clockGroupBox, self.config)
         #######################################################################
         self.clockGrid.addWidget(self.clockDoubleSpinBox, 0, 1, 1, 1)
-        self.clockLabel = QtGui.QLabel(self.clockGroupBox)
+        self.clockLabel = QLabel(self.clockGroupBox)
         self.clockLabel.setText("Default clock speed (0 = clock stopped): ")
         self.clockGrid.addWidget(self.clockLabel, 0, 0, 1, 1)
         self.settingsGrid.addWidget(self.clockGroupBox, 1, 0, 1, 1)
         # -+++++++------------------ the log group ------------------+++++++- #
-        self.logGroupBox = QtGui.QGroupBox(self)
+        self.logGroupBox = QGroupBox(self)
         self.logGroupBox.setTitle("Log")
-        self.logGrid = QtGui.QGridLayout(self.logGroupBox)
+        self.logGrid = QGridLayout(self.logGroupBox)
         # -+++++++-------------- the log outputs group --------------+++++++- #
-        self.logOutputsGroupBox = QtGui.QGroupBox(self.logGroupBox)
+        self.logOutputsGroupBox = QGroupBox(self.logGroupBox)
         self.logOutputsGroupBox.setCheckable(False)
         self.logOutputsGroupBox.setTitle("Log outputs")
-        self.logOutputsGrid = QtGui.QGridLayout(self.logOutputsGroupBox)
+        self.logOutputsGrid = QGridLayout(self.logOutputsGroupBox)
         ##################### LOG OUTPUT CHECK BOX OBJECT #####################
         self.GUICheckBox = logOutputCheckBox(
             self.logOutputsGroupBox, self.config, 'gui', 'GUI')
@@ -333,10 +337,10 @@ class SettingsDialog(QtGui.QDialog):
         self.logGrid.addWidget(self.logOutputsGroupBox, 1, 0, 1, 1)
         self.settingsGrid.addWidget(self.logGroupBox, 0, 0, 1, 1)
         # -+++++++---------------- the GUI log group ----------------+++++++- #
-        self.logRecordsGroupBox = QtGui.QGroupBox(self.logGroupBox)
+        self.logRecordsGroupBox = QGroupBox(self.logGroupBox)
         self.logRecordsGroupBox.setTitle("GUI Log records")
-        self.logRecordsGrid = QtGui.QGridLayout(self.logRecordsGroupBox)
-        self.logRecordsLabel = QtGui.QLabel(self.logRecordsGroupBox)
+        self.logRecordsGrid = QGridLayout(self.logRecordsGroupBox)
+        self.logRecordsLabel = QLabel(self.logRecordsGroupBox)
         self.logRecordsLabel.setText("Print a log message upon:")
         self.logRecordsGrid.addWidget(self.logRecordsLabel, 0, 0, 1, 1)
         ####################### LOG RECORDS TREE OBJECT #######################
@@ -346,10 +350,10 @@ class SettingsDialog(QtGui.QDialog):
         self.logRecordsGrid.addWidget(self.logRecordsTree, 1, 0, 1, 1)
         self.logGrid.addWidget(self.logRecordsGroupBox, 1, 1, 1, 1)
         # -+++++++--------------- the appearance group --------------+++++++- #
-        self.appearanceGroupBox = QtGui.QGroupBox(self)
+        self.appearanceGroupBox = QGroupBox(self)
         self.appearanceGroupBox.setTitle("Appearance")
-        self.appearanceGrid = QtGui.QGridLayout(self.appearanceGroupBox)
-        self.circBgColorLabel = QtGui.QLabel(self.appearanceGroupBox)
+        self.appearanceGrid = QGridLayout(self.appearanceGroupBox)
+        self.circBgColorLabel = QLabel(self.appearanceGroupBox)
         self.circBgColorLabel.setText("Circuit background color:")
         self.appearanceGrid.addWidget(
             self.circBgColorLabel, 0, 0, 1, 1, QtCore.Qt.AlignRight)
@@ -358,28 +362,28 @@ class SettingsDialog(QtGui.QDialog):
             self.appearanceGroupBox, self.config, 'circ_bg_color', 'choose...')
         #######################################################################
         self.appearanceGrid.addWidget(self.colorButton0, 0, 1, 1, 1)
-        leftSpace = QtGui.QSpacerItem(
-            20, 40, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
+        leftSpace = QSpacerItem(
+            20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
         self.appearanceGrid.addItem(leftSpace, 0, 4, 1, 1)
-        self.line = QtGui.QFrame(self.appearanceGroupBox)
-        self.line.setFrameShape(QtGui.QFrame.VLine)
-        self.line.setFrameShadow(QtGui.QFrame.Sunken)
+        self.line = QFrame(self.appearanceGroupBox)
+        self.line.setFrameShape(QFrame.VLine)
+        self.line.setFrameShadow(QFrame.Sunken)
         self.appearanceGrid.addWidget(self.line, 0, 3, 1, 1)
         ######################## COLOR SELECTOR OBJECT ########################
         self.colorButton1 = ColorSelectorButton(
             self.appearanceGroupBox, self.config, 'log_bg_color', 'choose...')
         #######################################################################
         self.appearanceGrid.addWidget(self.colorButton1, 0, 6, 1, 1)
-        self.GUIBgColorLabel = QtGui.QLabel(self.appearanceGroupBox)
+        self.GUIBgColorLabel = QLabel(self.appearanceGroupBox)
         self.GUIBgColorLabel.setText("GUI log background color:")
         self.appearanceGrid.addWidget(self.GUIBgColorLabel, 0, 5, 1, 1)
-        rightSpace = QtGui.QSpacerItem(
-            20, 40, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
+        rightSpace = QSpacerItem(
+            20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
         self.appearanceGrid.addItem(rightSpace, 0, 2, 1, 1)
         self.settingsGrid.addWidget(self.appearanceGroupBox, 2, 0, 1, 1)
         # -+++++++---------------- the Close button -----------------+++++++- #
-        self.closeButtonBox = QtGui.QDialogButtonBox(self)
-        self.closeButtonBox.setStandardButtons(QtGui.QDialogButtonBox.Close)
+        self.closeButtonBox = QDialogButtonBox(self)
+        self.closeButtonBox.setStandardButtons(QDialogButtonBox.Close)
         self.settingsGrid.addWidget(self.closeButtonBox, 3, 0, 1, 1)
 
     def saveConfigFile(self, mode='w+'):

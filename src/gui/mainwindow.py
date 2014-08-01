@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 # coding=utf-8
 
+from configparser import ConfigParser
 import pickle
 import time
-from configparser import ConfigParser
 from PySide.QtCore import Qt
 from PySide.QtGui import (
     QAction, QBrush, QColor, QDesktopWidget, QDockWidget, QMainWindow,
@@ -17,7 +17,7 @@ from .settings import Settings, SettingsDialog
 from .toolbox import ToolBox, ToolBoxDockWidget
 from .util import filePath
 from engine.gates import *
-from engine.simulator import log, fileHandler, stdoutHandler, formatter, Plug
+from engine.simulator import fileHandler, formatter, log, Plug, stdoutHandler 
 
 
 class MainWindow(QMainWindow):

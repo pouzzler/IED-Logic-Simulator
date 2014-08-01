@@ -2,11 +2,11 @@
 # coding=utf-8
 
 import inspect
+from PySide.QtCore import QByteArray, QDir, QMimeData, Qt
 from PySide.QtGui import (
     QDockWidget, QDrag, QIcon, QTreeWidget, QTreeWidgetItem)
-from PySide.QtCore import QByteArray, QDir, QMimeData, Qt
-from engine import gates, circuits
 from .util import filePath
+from engine import gates, circuits
 
 
 class ToolBox(QTreeWidget):

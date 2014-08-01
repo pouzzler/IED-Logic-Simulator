@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 # coding=utf-8
 
-from PySide import QtGui, QtCore
 from configparser import ConfigParser
+from PySide import QtGui, QtCore
 
 
 class SettingsDialog(QtGui.QDialog):

@@ -2,10 +2,10 @@
 # coding=utf-8
 
 import inspect
+from PySide.QtCore import Qt
 from PySide.QtGui import (
     QCheckBox, QComboBox, QDockWidget, QGridLayout, QLabel, QLineEdit,
     QPushButton, QRadioButton, QSizePolicy, QWidget)
-from PySide.QtCore import Qt
 from .graphicitem import CircuitItem
 from engine.gates import *
 
