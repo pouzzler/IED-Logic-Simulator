@@ -19,7 +19,7 @@ as parameter to SettingsWidget.
 
 from PySide import QtCore, QtGui
 import sys
-from configparser import ConfigParser 
+from configparser import ConfigParser
 
 
 class Settings(ConfigParser):
