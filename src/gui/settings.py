@@ -13,7 +13,7 @@ from .util import boolToCheckState, checkStateToBool, filePath
 class Settings(ConfigParser):
     def __init__(self):
         super(ConfigParser, self).__init__()
-        self.configFile = filePath('settings.cfg')
+        self.configFile = filePath('settings')
         self.read(self.configFile)
 
 
@@ -23,31 +23,29 @@ class SettingsDialog(QDialog):
     def __init__(self, mainwindow, config):
         super(SettingsDialog, self).__init__()
         self.setWindowTitle(self.str_title)
+        # Reference kept to set settings in MainWindow
         self.mainwindow = mainwindow
         self.config = config
-
-        logOutputs = QGroupBox(self.str_logHandlers)
-        logOutputsLayout = QVBoxLayout()
-        logOutputs.setLayout(logOutputsLayout)
-
+        # Setting log handlers
+        logHandlers = QGroupBox(self.str_logHandlers)
+        logHandlersLayout = QVBoxLayout()
+        logHandlers.setLayout(logHandlersLayout)
         logToGui = QCheckBox(self.str_logToGui)
         logToGui.setChecked(self.config.getboolean('LogHandlers', 'gui'))
         logToGui.stateChanged.connect(
             lambda: self.chooseHandler(logToGui, 'gui'))
-        logOutputsLayout.addWidget(logToGui)
-
+        logHandlersLayout.addWidget(logToGui)
         logtoStdout = QCheckBox(self.str_logToStdout)
         logtoStdout.setChecked(self.config.getboolean('LogHandlers', 'stdout'))
         logtoStdout.stateChanged.connect(
             lambda: self.chooseHandler(logtoStdout, 'stdout'))
-        logOutputsLayout.addWidget(logtoStdout)
-
+        logHandlersLayout.addWidget(logtoStdout)
         logToFile = QCheckBox(self.str_logToFile)
         logToFile.setChecked(self.config.getboolean('LogHandlers', 'file'))
         logToFile.stateChanged.connect(
             lambda: self.chooseHandler(logToFile, 'file'))
-        logOutputsLayout.addWidget(logToFile)
-
+        logHandlersLayout.addWidget(logToFile)
+        # Setting log verbosity
         logVerbosity = QGroupBox(self.str_logVerbosity)
         logVerbosityLayout = QHBoxLayout()
         logVerbosity.setLayout(logVerbosityLayout)
@@ -55,21 +53,28 @@ class SettingsDialog(QDialog):
         self.verbosityOptions.header().setVisible(False)
         for k, v in self.str_treeItems.items():
             node = QTreeWidgetItem(self.verbosityOptions, [k])
-            node.setCheckState(0, Qt.Checked)
             if isinstance(v, str):
                 node.setText(1, v)
                 node.setCheckState(
                     0, boolToCheckState(
                         self.config.getboolean('LogVerbosity', v)))
             else:
+                count = 0
                 for key, val in v.items():
                     item = QTreeWidgetItem(node, [key, val])
-                    item.setCheckState(
-                        0, boolToCheckState(
-                            self.config.getboolean('LogVerbosity', val)))
+                    checked = self.config.getboolean('LogVerbosity', val)
+                    item.setCheckState(0, boolToCheckState(checked))
+                    if checked:
+                        count += 1
+                if count == node.childCount():
+                    node.setCheckState(0, Qt.Checked)
+                elif count == 0:
+                    node.setCheckState(0, Qt.Unchecked)
+                else:
+                    node.setCheckState(0, Qt.PartiallyChecked)
         self.verbosityOptions.itemChanged.connect(self.chooseVerbosity)
         logVerbosityLayout.addWidget(self.verbosityOptions)
-
+        # Setting clock speed
         clock = QGroupBox(self.str_clock)
         clockLayout = QHBoxLayout()
         clock.setLayout(clockLayout)
@@ -77,7 +82,7 @@ class SettingsDialog(QDialog):
         spin = QDoubleSpinBox()
         spin.setValue(self.config.getfloat('Clock', 'speed'))
         clockLayout.addWidget(spin)
-
+        # Setting appearance
         appearance = QGroupBox(self.str_appearance)
         appearanceLayout = QHBoxLayout()
         appearance.setLayout(appearanceLayout)
@@ -95,10 +100,11 @@ class SettingsDialog(QDialog):
         logBgBtn.clicked.connect(
             lambda: self.chooseColor(logBgBtn, 'log_bg_color'))
         appearanceLayout.addWidget(logBgBtn)
+        # Saving settings to file and effectively setting them
         close = QPushButton(self.str_close)
         close.clicked.connect(self.closeAndApply)
         layout = QGridLayout(self)
-        layout.addWidget(logOutputs, 0, 0, 1, 1)
+        layout.addWidget(logHandlers, 0, 0, 1, 1)
         layout.addWidget(logVerbosity, 0, 1, 1, 1)
         layout.addWidget(clock, 1, 0, 1, 2)
         layout.addWidget(appearance, 2, 0, 1, 2)
@@ -113,9 +119,11 @@ class SettingsDialog(QDialog):
             self.config.set('Appearance', option, color.name())
 
     def chooseHandler(self, checkbox, option):
+        """The user chooses where to log messages."""
         self.config.set('LogHandlers', option, str(checkbox.isChecked()))
 
     def chooseVerbosity(self, item):
+        """The user chooses which logs are shown."""
         option = item.text(1)
         if option:
             self.config.set('LogVerbosity', option, str(
@@ -144,6 +152,7 @@ class SettingsDialog(QDialog):
                 self.verbosityOptions.blockSignals(False)
 
     def closeAndApply(self):
+        """Settings saved to file and applied to GUI."""
         self.mainwindow.setSettings()
         with open(self.config.configFile, 'w+') as f:
             self.config.write(f)
