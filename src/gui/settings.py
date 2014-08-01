@@ -82,19 +82,19 @@ class SettingsDialog(QDialog):
         appearanceLayout = QHBoxLayout()
         appearance.setLayout(appearanceLayout)
         appearanceLayout.addWidget(QLabel(self.str_circBgColor))
-        logBgBtn = QPushButton(self.str_choose)
-        logBgBtn.setPalette(QPalette(
-            QColor(self.config.get('Appearance', 'log_bg_color'))))
-        logBgBtn.clicked.connect(
-            lambda: self.chooseColor(logBgBtn, 'log_bg_color'))
-        appearanceLayout.addWidget(logBgBtn)
-        appearanceLayout.addWidget(QLabel(self.str_logBgColor))
         circBgBtn = QPushButton(self.str_choose)
         circBgBtn.setPalette(QPalette(
             QColor(self.config.get('Appearance', 'circ_bg_color'))))
         circBgBtn.clicked.connect(
             lambda: self.chooseColor(circBgBtn, 'circ_bg_color'))
         appearanceLayout.addWidget(circBgBtn)
+        appearanceLayout.addWidget(QLabel(self.str_logBgColor))
+        logBgBtn = QPushButton(self.str_choose)
+        logBgBtn.setPalette(QPalette(
+            QColor(self.config.get('Appearance', 'log_bg_color'))))
+        logBgBtn.clicked.connect(
+            lambda: self.chooseColor(logBgBtn, 'log_bg_color'))
+        appearanceLayout.addWidget(logBgBtn)
         close = QPushButton(self.str_close)
         close.clicked.connect(self.closeAndApply)
         layout = QGridLayout(self)
