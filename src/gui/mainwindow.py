@@ -14,7 +14,7 @@ from .toolbox import ToolBox, ToolBoxDockWidget
 from .selectionoptions import SelectionOptions, SelectionOptionsDockWidget
 from .docu import HelpDockWidget
 from .logwidgets import LogDockWidget
-from .settings import Settings, SettingsDialog
+from .settings import SettingsDialog
 from engine.gates import *
 from engine.simulator import log, fileHandler, stdoutHandler, formatter, Plug
 
@@ -26,14 +26,13 @@ class MainWindow(QMainWindow):
 
     def __init__(self):
         super(MainWindow, self).__init__()
-        # create a object to handle the config
-        self.config = Settings(
-            dirname(realpath(__file__)) + '/../../settings.cfg')
         # Get application strings
+        self.configFile = dirname(realpath(__file__)) + '/../../settings.cfg'
+        cfg = ConfigParser()
+        cfg.read(self.configFile)
         strFile = (
             dirname(realpath(__file__))
-            + '/../../lang/strings_%s.txt'
-            % (self.config.get('Appearance', 'lang')))
+            + '/../../lang/strings_' + cfg.get('Appearance', 'lang') + '.txt')
         f = open(strFile, 'r')
         for _, line in enumerate(f):
             exec(line)
@@ -60,8 +59,7 @@ class MainWindow(QMainWindow):
 
         editMenu = QMenu(self.str_menuEdit)
         settingAct = QAction(self.str_menuSettings, self)
-        settingAct.triggered.connect(
-            lambda: SettingsDialog(self, self.config).exec_())
+        settingAct.triggered.connect(lambda: SettingsDialog(self).exec_())
         editMenu.addAction(settingAct)
 
         toolBoxAct = self.boxDock.toggleViewAction()
@@ -101,41 +99,44 @@ class MainWindow(QMainWindow):
         self.toastHandler.setLevel(logging.WARNING)
         log.addHandler(self.toastHandler)
 
-        self.setSettings()
+        self.loadConfig()
         self.show()
 
-    def setSettings(self):
+    def loadConfig(self):
         """Load color, verbosity and logging options."""
-        self.logDock.setBgColor(self.config.get('Appearance', 'log_bg_color'))
+        cfg = ConfigParser()
+        cfg.read(self.configFile)
+
+        self.logDock.setBgColor(cfg.get('Appearance', 'log_bg_color'))
         image = QImage(10, 10, QImage.Format_RGB32)
-        image.fill(QColor(self.config.get('Appearance', 'circ_bg_color')))
+        image.fill(QColor(cfg.get('Appearance', 'circ_bg_color')))
         image.setPixel(0, 0, QColor(0, 0, 0).rgb())
         self.view.scene().setBackgroundBrush(QBrush(QPixmap.fromImage(image)))
-        Plug.setInputVerbose = self.config.getboolean(
+        Plug.setInputVerbose = cfg.getboolean(
             'GUILogRecords', 'input_chang')
-        Plug.setOutputVerbose = self.config.getboolean(
+        Plug.setOutputVerbose = cfg.getboolean(
             'GUILogRecords', 'output_chang')
-        Plug.connectVerbose = self.config.getboolean(
+        Plug.connectVerbose = cfg.getboolean(
             'GUILogRecords', 'conn_discon_io')
-        Circuit.addPlugVerbose = self.config.getboolean(
+        Circuit.addPlugVerbose = cfg.getboolean(
             'GUILogRecords', 'adding_io')
-        Circuit.addCircuitVerbose = self.config.getboolean(
+        Circuit.addCircuitVerbose = cfg.getboolean(
             'GUILogRecords', 'adding_circ')
-        Circuit.removePlugVerbose = self.config.getboolean(
+        Circuit.removePlugVerbose = cfg.getboolean(
             'GUILogRecords', 'removing_io')
-        Circuit.removeCircuitVerbose = self.config.getboolean(
+        Circuit.removeCircuitVerbose = cfg.getboolean(
             'GUILogRecords', 'removing_circ')
-        Circuit.detailedRemoveVerbose = self.config.getboolean(
+        Circuit.detailedRemoveVerbose = cfg.getboolean(
             'GUILogRecords', 'detailed_rm')
-        if self.config.getboolean('LogOutputs', 'gui'):
+        if cfg.getboolean('LogOutputs', 'gui'):
             log.addHandler(self.logDock.handler)
         else:
             log.removeHandler(self.logDock.handler)
-        if self.config.getboolean('LogOutputs', 'stdout'):
+        if cfg.getboolean('LogOutputs', 'stdout'):
             log.addHandler(stdoutHandler)
         else:
             log.removeHandler(stdoutHandler)
-        if self.config.getboolean('LogOutputs', 'file'):
+        if cfg.getboolean('LogOutputs', 'file'):
             log.addHandler(fileHandler)
         else:
             log.removeHandler(fileHandler)
@@ -173,11 +174,13 @@ class MainWindow(QMainWindow):
             print(item.name)
 
     def setLang(self, lang):
-        old = self.config.get('Appearance', 'lang')
+        cfg = ConfigParser()
+        cfg.read(self.configFile)
+        old = cfg.get('Appearance', 'lang')
         if old != lang:
-            self.config.set('Appearance', 'lang', lang)
+            cfg.set('Appearance', 'lang', lang)
             with open(self.configFile, 'w+') as f:
-                self.config.write(f)
+                cfg.write(f)
             msgBox = QMessageBox()
             msgBox.setText(self.str_langChanged)
             msgBox.exec_()
