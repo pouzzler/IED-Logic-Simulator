@@ -48,3 +48,17 @@ Plug.str_unavailableName = 'The name "%s" is unavailable.'
 Plug.str_changedName = "%s.%s is now named %s."
 Plug.str_nameLen = 'Names must be at least one character long.'
 Circuit.str_circuitCreated = "%s '%s' has been created."
+SettingsDialog.str_title = "Settings"
+SettingsDialog.str_logHandlers = "Output logs to :"
+SettingsDialog.str_logToGui = 'Log window'
+SettingsDialog.str_logToStdout = 'Standard output'
+SettingsDialog.str_logToFile = 'Log file'
+SettingsDialog.str_logVerbosity = "Select log verbosity :"
+SettingsDialog.str_clock = "Clock :"
+SettingsDialog.str_clockSpeed = "Default Clock Speed (0 = clock stopped)"
+SettingsDialog.str_appearance = "Appearance :"
+SettingsDialog.str_circBgColor = "Circuit background color"
+SettingsDialog.str_choose = 'Choose...'
+SettingsDialog.str_logBgColor = "Logs background color"
+SettingsDialog.str_close = 'Close'
+SettingsDialog.str_treeItems = {'Adding / removing items': {'I/O added':'adding_io', 'I/O removed':'removing_io', 'Circuit added':'adding_circ', 'Circuit removed':'removing_circ', 'Detailed removal information':'detailed_rm'}, 'Connections / disconnections': 'conn_discon_io', 'I/O value modification': {'Input changes':'input_chang', 'Output changes':'output_chang'}}

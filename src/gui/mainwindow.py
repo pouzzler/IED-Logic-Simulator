@@ -17,7 +17,7 @@ from .settings import Settings, SettingsDialog
 from .toolbox import ToolBox, ToolBoxDockWidget
 from .util import filePath
 from engine.gates import *
-from engine.simulator import fileHandler, formatter, log, Plug, stdoutHandler 
+from engine.simulator import fileHandler, formatter, log, Plug, stdoutHandler
 
 
 class MainWindow(QMainWindow):
@@ -99,6 +99,7 @@ class MainWindow(QMainWindow):
 
         self.setSettings()
         self.show()
+        SettingsDialog(self, self.config).exec_()
 
     def setSettings(self):
         """Load color, verbosity and logging options."""
@@ -108,30 +109,30 @@ class MainWindow(QMainWindow):
         image.setPixel(0, 0, QColor(0, 0, 0).rgb())
         self.view.scene().setBackgroundBrush(QBrush(QPixmap.fromImage(image)))
         Plug.setInputVerbose = self.config.getboolean(
-            'GUILogRecords', 'input_chang')
+            'LogVerbosity', 'input_chang')
         Plug.setOutputVerbose = self.config.getboolean(
-            'GUILogRecords', 'output_chang')
+            'LogVerbosity', 'output_chang')
         Plug.connectVerbose = self.config.getboolean(
-            'GUILogRecords', 'conn_discon_io')
+            'LogVerbosity', 'conn_discon_io')
         Circuit.addPlugVerbose = self.config.getboolean(
-            'GUILogRecords', 'adding_io')
+            'LogVerbosity', 'adding_io')
         Circuit.addCircuitVerbose = self.config.getboolean(
-            'GUILogRecords', 'adding_circ')
+            'LogVerbosity', 'adding_circ')
         Circuit.removePlugVerbose = self.config.getboolean(
-            'GUILogRecords', 'removing_io')
+            'LogVerbosity', 'removing_io')
         Circuit.removeCircuitVerbose = self.config.getboolean(
-            'GUILogRecords', 'removing_circ')
+            'LogVerbosity', 'removing_circ')
         Circuit.detailedRemoveVerbose = self.config.getboolean(
-            'GUILogRecords', 'detailed_rm')
-        if self.config.getboolean('LogOutputs', 'gui'):
+            'LogVerbosity', 'detailed_rm')
+        if self.config.getboolean('LogHandlers', 'gui'):
             log.addHandler(self.logDock.handler)
         else:
             log.removeHandler(self.logDock.handler)
-        if self.config.getboolean('LogOutputs', 'stdout'):
+        if self.config.getboolean('LogHandlers', 'stdout'):
             log.addHandler(stdoutHandler)
         else:
             log.removeHandler(stdoutHandler)
-        if self.config.getboolean('LogOutputs', 'file'):
+        if self.config.getboolean('LogHandlers', 'file'):
             log.addHandler(fileHandler)
         else:
             log.removeHandler(fileHandler)

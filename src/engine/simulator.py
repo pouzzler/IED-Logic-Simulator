@@ -29,7 +29,7 @@ log.setLevel(logging.DEBUG)
 fileHandler = logging.FileHandler('simulator.log')
 stdoutHandler = logging.StreamHandler()
 fileHandler.setLevel(logging.DEBUG)
-stdoutHandler.setLevel(logging.ERROR)
+stdoutHandler.setLevel(logging.DEBUG)
 formatter = logging.Formatter(
     '%(asctime)s %(levelname)s %(message)s',
     datefmt='%H:%M:%S')
