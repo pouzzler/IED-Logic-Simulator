@@ -17,12 +17,17 @@ as parameter to SettingsWidget.
 # TODO: in ColorSelectorButton, add a pix of the color instead of changing
 #       button background color.
 
-from PySide import QtCore, QtGui
+from configparser import ConfigParser
 import sys
-import configparser
+from PySide import QtCore, QtGui
+from .util import filePath
 
 
-configFile = "settings.cfg"
+class Settings(ConfigParser):
+    def __init__(self):
+        super(ConfigParser, self).__init__()
+        self.configFile = filePath('settings.cfg')
+        self.read(self.configFile)
 
 
 class ColorSelectorButton(QtGui.QPushButton):
@@ -161,7 +166,7 @@ class logRecordsTree(QtGui.QTreeWidget):
     """
     treeItemStateChanged = QtCore.Signal(object, int)
 
-    def __init__(self, parent, configFile, config):
+    def __init__(self, parent, config):
         """Get the config file <configFile> and the config dictionary
         <config> from the parent class because createLogRecordsTreeItem
         need to access it and handleItemStateChanged need to modify it.
@@ -169,7 +174,6 @@ class logRecordsTree(QtGui.QTreeWidget):
         """
         QtGui.QTreeWidget.__init__(self, parent)
         self.config = config
-        self.configFile = configFile
         self.section = 'GUILogRecords'
         self.initTree()
         ## SIGNALS CONNECTIONS ##
@@ -274,21 +278,14 @@ class SettingsDialog(QtGui.QDialog):
     """
     configSaved = QtCore.Signal()
 
-    def __init__(self, mainwindow, configFile=configFile):
+    def __init__(self, parent, config):
         """Init the parent class, the config dictionary and the window."""
         super(SettingsDialog, self).__init__()
-        self.importConfigFromFile(configFile)
-        self.configSaved.connect(mainwindow.loadConfig)
+        self.config = config
+        self.configSaved.connect(parent.setSettings)
         self.initUI()
         ## SIGNALS CONNECTIONS ##
         self.closeButtonBox.clicked.connect(self.saveAndClose)
-
-    def importConfigFromFile(self, configFile):
-        """Create a config dictionary from <configFile>."""
-        self.configFile = configFile
-        self.config = configparser.ConfigParser()
-        self.config.read(configFile)
-        self.origConfig = self.config
 
     def initUI(self):
         # -+++++++--------------- the settings window ---------------+++++++- #
@@ -344,7 +341,7 @@ class SettingsDialog(QtGui.QDialog):
         self.logRecordsGrid.addWidget(self.logRecordsLabel, 0, 0, 1, 1)
         ####################### LOG RECORDS TREE OBJECT #######################
         self.logRecordsTree = logRecordsTree(
-            self.logRecordsGroupBox, self.configFile, self.config)
+            self.logRecordsGroupBox, self.config)
         #######################################################################
         self.logRecordsGrid.addWidget(self.logRecordsTree, 1, 0, 1, 1)
         self.logGrid.addWidget(self.logRecordsGroupBox, 1, 1, 1, 1)
@@ -389,7 +386,7 @@ class SettingsDialog(QtGui.QDialog):
         """Write the in-memory config structure <config> in the config
         file <configFile>. mode 'w+' for updating but not superseding.
         """
-        with open(self.configFile, mode) as configfile:
+        with open(self.config.configFile, mode) as configfile:
             self.config.write(configfile)
 
     @QtCore.Slot()

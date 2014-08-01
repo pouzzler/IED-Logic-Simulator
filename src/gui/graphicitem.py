@@ -137,8 +137,7 @@ class PlugItem(QGraphicsPathItem):
                 self.item.name)
         self.setPath(path)
         self.update()
-        
-        
+
     def handleAtPos(self, pos):
         return self.item if self.pinPath.contains(pos) else None
 

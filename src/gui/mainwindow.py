@@ -8,13 +8,13 @@ from PySide.QtCore import Qt
 from PySide.QtGui import (
     QAction, QBrush, QColor, QDesktopWidget, QDockWidget, QMainWindow,
     QMenu, QMessageBox, QPalette, QPixmap, QImage)
-from .mainview import MainView
-from .toolbox import ToolBox, ToolBoxDockWidget
-from .selectionoptions import SelectionOptions, SelectionOptionsDockWidget
 from .docu import HelpDockWidget
-from .logwidgets import LogDockWidget
-from .settings import SettingsDialog
 from .graphicitem import *
+from .logwidgets import LogDockWidget
+from .mainview import MainView
+from .selectionoptions import SelectionOptions, SelectionOptionsDockWidget
+from .settings import Settings, SettingsDialog
+from .toolbox import ToolBox, ToolBoxDockWidget
 from .util import filePath
 from engine.gates import *
 from engine.simulator import log, fileHandler, stdoutHandler, formatter, Plug
@@ -25,15 +25,14 @@ class MainWindow(QMainWindow):
 
     def __init__(self):
         super(MainWindow, self).__init__()
-        # Get application strings
-        self.configFile = filePath('settings.cfg')
-        cfg = ConfigParser()
-        cfg.read(self.configFile)
+        self.config = Settings()    # Initiate application settings.
+        # Get application strings.
         strFile = filePath(
-            'lang/strings_' + cfg.get('Appearance', 'lang') + '.txt')
+            'lang/strings_' + self.config.get('Appearance', 'lang'))
         f = open(strFile, 'r')
         for _, line in enumerate(f):
             exec(line)
+        # Setup window.
         self.setWindowTitle(self.str_mainWindowTitle)
         self.centerAndResize()
         self.setFocusPolicy(Qt.StrongFocus)
@@ -57,7 +56,8 @@ class MainWindow(QMainWindow):
 
         editMenu = QMenu(self.str_menuEdit)
         settingAct = QAction(self.str_menuSettings, self)
-        settingAct.triggered.connect(lambda: SettingsDialog(self).exec_())
+        settingAct.triggered.connect(
+            lambda: SettingsDialog(self, self.config).exec_())
         editMenu.addAction(settingAct)
 
         toolBoxAct = self.boxDock.toggleViewAction()
@@ -97,44 +97,41 @@ class MainWindow(QMainWindow):
         self.toastHandler.setLevel(logging.WARNING)
         log.addHandler(self.toastHandler)
 
-        self.loadConfig()
+        self.setSettings()
         self.show()
 
-    def loadConfig(self):
+    def setSettings(self):
         """Load color, verbosity and logging options."""
-        cfg = ConfigParser()
-        cfg.read(self.configFile)
-
-        self.logDock.setBgColor(cfg.get('Appearance', 'log_bg_color'))
+        self.logDock.setBgColor(self.config.get('Appearance', 'log_bg_color'))
         image = QImage(10, 10, QImage.Format_RGB32)
-        image.fill(QColor(cfg.get('Appearance', 'circ_bg_color')))
+        image.fill(QColor(self.config.get('Appearance', 'circ_bg_color')))
         image.setPixel(0, 0, QColor(0, 0, 0).rgb())
         self.view.scene().setBackgroundBrush(QBrush(QPixmap.fromImage(image)))
-        Plug.setInputVerbose = cfg.getboolean(
+        Plug.setInputVerbose = self.config.getboolean(
             'GUILogRecords', 'input_chang')
-        Plug.setOutputVerbose = cfg.getboolean(
+        Plug.setOutputVerbose = self.config.getboolean(
             'GUILogRecords', 'output_chang')
-        Plug.connectVerbose = cfg.getboolean(
+        Plug.connectVerbose = self.config.getboolean(
             'GUILogRecords', 'conn_discon_io')
-        Circuit.addPlugVerbose = cfg.getboolean(
+        Circuit.addPlugVerbose = self.config.getboolean(
             'GUILogRecords', 'adding_io')
-        Circuit.addCircuitVerbose = cfg.getboolean(
+        Circuit.addCircuitVerbose = self.config.getboolean(
             'GUILogRecords', 'adding_circ')
-        Circuit.removePlugVerbose = cfg.getboolean(
+        Circuit.removePlugVerbose = self.config.getboolean(
             'GUILogRecords', 'removing_io')
-        Circuit.removeCircuitVerbose = cfg.getboolean(
+        Circuit.removeCircuitVerbose = self.config.getboolean(
             'GUILogRecords', 'removing_circ')
-        Circuit.detailedRemoveVerbose = cfg.getboolean(
+        Circuit.detailedRemoveVerbose = self.config.getboolean(
             'GUILogRecords', 'detailed_rm')
-        if cfg.getboolean('LogOutputs', 'gui'):
+        if self.config.getboolean('LogOutputs', 'gui'):
             log.addHandler(self.logDock.handler)
         else:
             log.removeHandler(self.logDock.handler)
-        if cfg.getboolean('LogOutputs', 'stdout'):
+        if self.config.getboolean('LogOutputs', 'stdout'):
             log.addHandler(stdoutHandler)
         else:
             log.removeHandler(stdoutHandler)
-        if cfg.getboolean('LogOutputs', 'file'):
+        if self.config.getboolean('LogOutputs', 'file'):
             log.addHandler(fileHandler)
         else:
             log.removeHandler(fileHandler)
@@ -172,13 +169,11 @@ class MainWindow(QMainWindow):
             print(item.name)
 
     def setLang(self, lang):
-        cfg = ConfigParser()
-        cfg.read(self.configFile)
-        old = cfg.get('Appearance', 'lang')
+        old = self.config.get('Appearance', 'lang')
         if old != lang:
-            cfg.set('Appearance', 'lang', lang)
+            self.config.set('Appearance', 'lang', lang)
             with open(self.configFile, 'w+') as f:
-                cfg.write(f)
+                self.config.write(f)
             msgBox = QMessageBox()
             msgBox.setText(self.str_langChanged)
             msgBox.exec_()
