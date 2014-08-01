@@ -1,14 +1,13 @@
 #!/usr/bin/env python3
 # coding=utf-8
 
-from os.path import dirname, realpath
 from math import atan2, pi, pow, sqrt
-
 from PySide.QtCore import QPointF, QRectF, Qt
 from PySide.QtGui import (
     QBrush, QColor, QFont, QGraphicsItem, QGraphicsPathItem, QImage,
     QPainterPath, QPen, QStyle)
 from engine.simulator import Circuit, Plug
+from .util import filePath
 
 
 class WireItem(QGraphicsPathItem):
@@ -164,14 +163,14 @@ class CircuitItem(QGraphicsItem):
         super(CircuitItem, self).__init__()
         self.setFlag(QGraphicsItem.ItemIsMovable)
         self.setFlag(QGraphicsItem.ItemIsSelectable)
-        imgDir = dirname(realpath(__file__)) + '/../../icons/'
+        imgDir = filePath('icons/')
         self.item = owner.add_circuit(circuitClass)
         self.image = QImage(imgDir + circuitClass.__name__ + '.png')
-        self.showCategory = False
         if not self.image:
             self.image = QImage(imgDir + 'Default.png')
             self.showCategory = True
         self.showName = True
+        self.showCategory = False
         self.setupPaint()
 
     def setupPaint(self):

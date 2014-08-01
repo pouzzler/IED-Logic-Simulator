@@ -28,7 +28,6 @@ class MainView(QGraphicsView):
         self.setScene(QGraphicsScene(parent))
         self.isDrawing = False          # user currently not drawing
         self.mainCircuit = Circuit("Main Circuit", None)
-        self.scene().addItem(PlugItem(True, self.mainCircuit))
 
     def getNewName(self, item):
         """Spawns a name-choosing dialog, and sets item.name to that
@@ -36,16 +35,8 @@ class MainView(QGraphicsView):
         """
         # ret = tuple string, bool (false when the dialog is dismissed)
         ret = QInputDialog.getText(self, self.str_setName, self.str_name)
-        if ret[1]:
-            self.setItemName(ret[0], item)
-
-    def setItemName(self, name, item):
-        """Forwards a user-set name to the appropriate class method."""
-        if isinstance(item, CircuitItem):
-            if item.item.setName(name):
-                item.update()
-        elif isinstance(item, Plug):
-            item.setName(name)
+        if ret[1] and item.item.setName(ret[0]):
+            item.update()
 
     def contextMenuEvent(self, e):
         """Pops a contextual menu up on right-clicks"""

@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 # coding=utf-8
 
-from os.path import dirname, realpath
 import pickle
 import time
 from configparser import ConfigParser
@@ -15,10 +14,10 @@ from .selectionoptions import SelectionOptions, SelectionOptionsDockWidget
 from .docu import HelpDockWidget
 from .logwidgets import LogDockWidget
 from .settings import SettingsDialog
+from .graphicitem import *
+from .util import filePath
 from engine.gates import *
 from engine.simulator import log, fileHandler, stdoutHandler, formatter, Plug
-
-from .graphicitem import *
 
 
 class MainWindow(QMainWindow):
@@ -27,12 +26,11 @@ class MainWindow(QMainWindow):
     def __init__(self):
         super(MainWindow, self).__init__()
         # Get application strings
-        self.configFile = dirname(realpath(__file__)) + '/../../settings.cfg'
+        self.configFile = filePath('settings.cfg')
         cfg = ConfigParser()
         cfg.read(self.configFile)
-        strFile = (
-            dirname(realpath(__file__))
-            + '/../../lang/strings_' + cfg.get('Appearance', 'lang') + '.txt')
+        strFile = filePath(
+            'lang/strings_' + cfg.get('Appearance', 'lang') + '.txt')
         f = open(strFile, 'r')
         for _, line in enumerate(f):
             exec(line)

@@ -4,14 +4,13 @@
 from PySide import QtCore
 from PySide.QtGui import (
     QApplication, QColor, QDialogButtonBox, QFileDialog, QFrame,
-    QGridLayout, QHBoxLayout, QIcon, QImage, QMessageBox, QLayout,
+    QGridLayout, QHBoxLayout, QIcon, QImage, QLayout, QMessageBox,
     QPainter, QPalette, QPen, qRgb, QScrollArea, QTransform, QToolButton,
     QWidget)
-from os.path import dirname, realpath
+from util import filePath
 
 
 class PaintArea(QWidget):
-    Tools = Enum('Tools', 'pen line rect roundRect circle eraser')
     tools = {
         'pen': True,
         'line': False,
@@ -265,7 +264,7 @@ class CustomCircuitCreator(QWidget):
         buttonsLayout = QHBoxLayout(buttonsFrame)
         buttonsLayout.setSizeConstraint(QLayout.SetDefaultConstraint)
 
-        iconPath = (dirname(realpath(__file__)) + '/../../icons/')
+        iconPath = filePath('icons/')
         self.penButton = QToolButton(
             self,
             icon=QIcon(iconPath + 'pen_w.png'))
