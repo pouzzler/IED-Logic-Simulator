@@ -7,8 +7,7 @@ from PySide.QtGui import (
     QGridLayout, QHBoxLayout, QIcon, QImage, QMessageBox, QLayout,
     QPainter, QPalette, QPen, qRgb, QScrollArea, QTransform, QToolButton,
     QWidget)
-from enum import Enum
-from os import dirname, realpath
+from os.path import dirname, realpath
 
 
 class PaintArea(QWidget):
