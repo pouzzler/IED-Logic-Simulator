@@ -48,3 +48,17 @@ Plug.str_unavailableName = 'Le nom "%s" est indisponible.'
 Plug.str_changedName = "%s.%s s'appelle maintenant %s."
 Plug.str_nameLen = "Les noms doivent être longs d'au moins un caractère."
 Circuit.str_circuitCreated = "%s '%s' créé."
+SettingsDialog.str_title = "Paamètres"
+SettingsDialog.str_logHandlers = "Sortir les journaux sur :"
+SettingsDialog.str_logToGui = 'Fenêtre de journaux'
+SettingsDialog.str_logToStdout = 'Sortie standard'
+SettingsDialog.str_logToFile = 'Fichier'
+SettingsDialog.str_logVerbosity = "Verbosité des journaux :"
+SettingsDialog.str_clock = "Horloge :"
+SettingsDialog.str_clockSpeed = "Vitesse par défaut (0 = horloge arrêtée)"
+SettingsDialog.str_appearance = "Apparance :"
+SettingsDialog.str_circBgColor = "Couleur de fond du circuit"
+SettingsDialog.str_choose = 'Choisir...'
+SettingsDialog.str_logBgColor = "Couleur de fond des journaux"
+SettingsDialog.str_close = 'Fermer'
+SettingsDialog.str_treeItems = {"Ajout / suppression d'objets": {'I/O added':'adding_io', 'I/O removed':'removing_io', 'Circuit added':'adding_circ', 'Circuit removed':'removing_circ', 'Detailed removal information':'detailed_rm'}, 'Connections / disconnections': 'conn_discon_io', 'I/O value modification': {'Input changes':'input_chang', 'Output changes':'output_chang'}}
