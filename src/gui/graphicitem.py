@@ -11,6 +11,7 @@ from engine.simulator import Circuit, Plug
 
 
 class WireItem(QGraphicsPathItem):
+    """Represents an electrical wire connecting two items."""
 
     RADIUS = 2.5
 
@@ -30,8 +31,30 @@ class WireItem(QGraphicsPathItem):
         self.setZValue(-1)
         self.complete = False
 
+    def addPoint(self):
+        """Duplicates the end point, for use as a moving point during moves."""
+        self.points.append(self.points[-1])
+
+    def connect(self, endIO):
+        """Try to connect the end points of the Wire."""
+        if not self.startIO.connect(endIO):
+            return False
+        else:
+            self.endIO = endIO
+            self.complete = True
+            self.redraw()
+            return True
+
+    def handleAtPos(self, pos):
+        """Is there an interactive handle where the mouse is?"""
+        if self.complete:
+            return
+        path = QPainterPath()
+        path.addEllipse(self.points[-1], self.RADIUS, self.RADIUS)
+        return path.contains(pos)
+
     def moveLastPoint(self, endPoint):
-        """While dragging the mouse, redrawing the last segment."""
+        """Redraw the last, unfinished segment while the mouse moves."""
         sq2 = sqrt(2) / 2
         A = [[0, 1], [sq2, sq2], [1, 0], [sq2, -sq2],
             [0, -1], [-sq2, -sq2], [-1, 0], [-sq2, sq2]]
@@ -44,9 +67,7 @@ class WireItem(QGraphicsPathItem):
         self.redraw()
 
     def redraw(self):
-        """We draw the segments between our array of points and a small
-        handle circle on the last segment.
-        """
+        """Draw the wire segments and handle."""
         self.setPen(QPen(QBrush(QColor(QColor('black'))), 2))
         path = QPainterPath()
         path.moveTo(self.points[0])
@@ -56,24 +77,8 @@ class WireItem(QGraphicsPathItem):
             path.addEllipse(self.points[-1], self.RADIUS, self.RADIUS)
         self.setPath(path)
 
-    def addPoint(self):
-        """When a segment ends (on mouseRelease), we duplicate the last
-        point, to be used as a moving point during the next mouseMove.
-        """
-        self.points.append(self.points[-1])
-
-    def handleAtPos(self, pos):
-        """We drag the end-segment when the user clicks the handle."""
-        if self.complete:
-            return
-        path = QPainterPath()
-        path.addEllipse(self.points[-1], self.RADIUS, self.RADIUS)
-        return path.contains(pos)
-
     def removeLast(self):
-        """We remove the last segment (when the user made an error and
-        corrects it).
-        """
+        """Remove the last segment (user corrects user errors)."""
         if self.complete:
             return
         scene = self.scene()
@@ -83,15 +88,6 @@ class WireItem(QGraphicsPathItem):
             self.addPoint()
             self.redraw()
             scene.addItem(self)
-
-    def connect(self, endIO):
-        if not self.startIO.connect(endIO):
-            return False
-        else:
-            self.endIO = endIO
-            self.complete = True
-            self.redraw()
-            return True
 
 
 class PlugItem(QGraphicsPathItem):
@@ -119,7 +115,23 @@ class PlugItem(QGraphicsPathItem):
             self.SMALL_DIAMETER * 2)
         self.setupPaint()
 
+    def handleAtPos(self, pos):
+        """Is there an interactive handle where the mouse is?
+        Also return the Plug under this handle.
+        """
+        return self.item if self.pinPath.contains(pos) else None
+
+    def setCategoryVisibility(self, isVisible):
+        """MainView requires PlugItems to function like CircuitItems."""
+        pass
+
+    def setNameVisibility(self, isVisible):
+        """Shows/Hide the item name in the graphical view."""
+        self.showName = isVisible
+        self.setupPaint()
+
     def setupPaint(self):
+        """Offscreen rather than onscreen redraw (few changes)."""
         path = QPainterPath()
         if self.item.isInput:
             path.addEllipse(0, 0, self.LARGE_DIAMETER, self.LARGE_DIAMETER)
@@ -136,18 +148,7 @@ class PlugItem(QGraphicsPathItem):
                 QFont(),
                 self.item.name)
         self.setPath(path)
-        self.update()
-
-    def handleAtPos(self, pos):
-        return self.item if self.pinPath.contains(pos) else None
-
-    def setNameVisibility(self, isVisible):
-        self.showName = isVisible
-        self.setupPaint()
-
-    def setClassVisibility(self, isVisible):
-        self.showCategory = isVisible
-        self.setupPaint()
+        self.update()       # Force onscreen redraw after changes.
 
 
 class CircuitItem(QGraphicsItem):
@@ -162,20 +163,112 @@ class CircuitItem(QGraphicsItem):
         super(CircuitItem, self).__init__()
         self.setFlag(QGraphicsItem.ItemIsMovable)
         self.setFlag(QGraphicsItem.ItemIsSelectable)
+        self.showName = True
+        self.showCategory = False
         imgDir = filePath('icons/')
         self.item = owner.add_circuit(circuitClass)
         self.image = QImage(imgDir + circuitClass.__name__ + '.png')
         if not self.image:
             self.image = QImage(imgDir + 'Default.png')
             self.showCategory = True
-        self.showName = True
-        self.showCategory = False
+        self.setupPaint()
+
+    def boundingRect(self):
+        """Qt requires overloading when overloading QGraphicsItem."""
+        H = self.maxH
+        W = 4 * self.radius + 2 * self.ioW + self.imgW
+        if self.showCategory:
+            H = H + 2 * self.textH
+        elif self.showName:
+            H = H + self.textH
+        return QRectF(0, 0, W, H)
+
+    def handleAtPos(self, pos):
+        """Is there an interactive handle where the mouse is?
+        Also return the Plug under this handle.
+        """
+        for i in range(self.nIn):
+            if self.inputPaths[i].contains(pos):
+                return self.item.inputList[i]
+        for i in range(self.nOut):
+            if self.outputPaths[i].contains(pos):
+                return self.item.outputList[i]
+
+    def paint(self, painter, option, widget):
+        """Draws the item."""
+        painter.setPen(QPen(QColor('black'), 2))
+        for i in range(self.nIn):   # Handles drawn 'by hand'.
+            painter.drawPath(self.inputPaths[i])
+            painter.drawLine(
+                2 * self.radius,
+                i * self.ioH + self.inOff + self.radius,
+                2 * self.radius + self.ioW,
+                i * self.ioH + self.inOff + self.radius)
+        painter.drawLine(
+            2 * self.radius + self.ioW,
+            self.inOff + self.radius,
+            2 * self.radius + self.ioW,
+            (self.nIn - 1) * self.ioH + self.inOff + self.radius)
+        for i in range(self.nOut):
+            painter.drawPath(self.outputPaths[i])
+            painter.drawLine(
+                2 * self.radius + self.ioW + self.imgW,
+                i * self.ioH + self.outOff + self.radius,
+                2 * self.radius + 2 * self.ioW + self.imgW,
+                i * self.ioH + self.outOff + self.radius)
+        painter.drawLine(
+            2 * self.radius + self.ioW + self.imgW,
+            self.outOff + self.radius,
+            2 * self.radius + self.ioW + self.imgW,
+            (self.nOut - 1) * self.ioH + self.outOff + self.radius)
+        painter.drawImage(
+            QRectF(
+                2 * self.radius + self.ioW,
+                self.imgOff,
+                self.imgW,
+                self.imgH),
+            self.image)                 # Body drawn from a png.
+        f = QFont('Times')              # Draw name & category.
+        f.setPixelSize(self.textH)
+        painter.setFont(f)
+        if self.showName:
+            painter.setPen(QPen(QColor('red')))
+            painter.drawText(
+                QPointF(0, self.maxH + self.textH),
+                self.item.name)
+        if self.showCategory:
+            painter.setPen(QPen(QColor('green')))
+            painter.drawText(
+                QPointF(0, self.maxH + 2 * self.textH),
+                self.item.__class__.__name__)
+        # Default selection box doesn't work; simple reimplementation.
+        if option.state & QStyle.State_Selected:
+            pen = QPen(Qt.black, 1, Qt.DashLine)
+            painter.setPen(pen)
+            painter.drawRect(self.boundingRect())
+
+    def setCategoryVisibility(self, isVisible):
+        """Show/Hide circuit category (mostly useful for user circuits)."""
+        self.showCategory = isVisible
+        self.setupPaint()
+
+    def setNameVisibility(self, isVisible):
+        """Shows/Hide the item name in the graphical view."""
+        self.showName = isVisible
+        self.setupPaint()
+
+    def setNbInputs(self, nb):
+        """Add/Remove inputs (for logical gates)."""
+        if nb > self.item.nb_inputs():
+            for x in range(nb - self.item.nb_inputs()):
+                self.item.add_input()
+        elif nb < self.item.nb_inputs():
+            for x in range(self.item.nb_inputs() - nb):
+                self.item.remove_input(self.item.inputList[0])
         self.setupPaint()
 
     def setupPaint(self):
-        """Setting up long-lived variables that might still change,
-        necessiting a redraw (ie. number of inputs, height & width...)
-        """
+        """Offscreen rather than onscreen redraw (few changes)."""
         self.nIn = self.item.nb_inputs()
         self.nOut = self.item.nb_outputs()
         # 3 sections with different heights must be aligned :
@@ -211,95 +304,4 @@ class CircuitItem(QGraphicsItem):
                 2 * self.radius)
             self.outputPaths.append(path)
         self.prepareGeometryChange()
-        self.update()
-
-    def boundingRect(self):
-        H = self.maxH
-        W = 4 * self.radius + 2 * self.ioW + self.imgW
-        if self.showCategory:
-            H = H + 2 * self.textH
-        elif self.showName:
-            H = H + self.textH
-        return QRectF(0, 0, W, H)
-
-    def paint(self, painter, option, widget):
-        """Drawing the i/o pins 'by hand', the handles from the saved
-        collision detection paths, and pasting a png file for the body
-        of the gate/circuit.
-        """
-        painter.setPen(QPen(QColor('black'), 2))
-        for i in range(self.nIn):
-            painter.drawPath(self.inputPaths[i])
-            painter.drawLine(
-                2 * self.radius,
-                i * self.ioH + self.inOff + self.radius,
-                2 * self.radius + self.ioW,
-                i * self.ioH + self.inOff + self.radius)
-        painter.drawLine(
-            2 * self.radius + self.ioW,
-            self.inOff + self.radius,
-            2 * self.radius + self.ioW,
-            (self.nIn - 1) * self.ioH + self.inOff + self.radius)
-        for i in range(self.nOut):
-            painter.drawPath(self.outputPaths[i])
-            painter.drawLine(
-                2 * self.radius + self.ioW + self.imgW,
-                i * self.ioH + self.outOff + self.radius,
-                2 * self.radius + 2 * self.ioW + self.imgW,
-                i * self.ioH + self.outOff + self.radius)
-        painter.drawLine(
-            2 * self.radius + self.ioW + self.imgW,
-            self.outOff + self.radius,
-            2 * self.radius + self.ioW + self.imgW,
-            (self.nOut - 1) * self.ioH + self.outOff + self.radius)
-        painter.drawImage(
-            QRectF(
-                2 * self.radius + self.ioW,
-                self.imgOff,
-                self.imgW,
-                self.imgH),
-            self.image)
-        f = QFont('Times')
-        f.setPixelSize(self.textH)
-        painter.setFont(f)
-        if self.showName:
-            painter.setPen(QPen(QColor('red')))
-            painter.drawText(
-                QPointF(0, self.maxH + self.textH),
-                self.item.name)
-        if self.showCategory:
-            painter.setPen(QPen(QColor('green')))
-            painter.drawText(
-                QPointF(0, self.maxH + 2 * self.textH),
-                self.item.__class__.__name__)
-        # Apparently the default selection box doesn't work with custom
-        # QGraphicsItems
-        if option.state & QStyle.State_Selected:
-            pen = QPen(Qt.black, 1, Qt.DashLine)
-            painter.setPen(pen)
-            painter.drawRect(self.boundingRect())
-
-    def handleAtPos(self, pos):
-        for i in range(self.nIn):
-            if self.inputPaths[i].contains(pos):
-                return self.item.inputList[i]
-        for i in range(self.nOut):
-            if self.outputPaths[i].contains(pos):
-                return self.item.outputList[i]
-
-    def setNameVisibility(self, isVisible):
-        self.showName = isVisible
-        self.setupPaint()
-
-    def setClassVisibility(self, isVisible):
-        self.showCategory = isVisible
-        self.setupPaint()
-
-    def setNbInputs(self, nb):
-        if nb > self.item.nb_inputs():
-            for x in range(nb - self.item.nb_inputs()):
-                self.item.add_input()
-        elif nb < self.item.nb_inputs():
-            for x in range(self.item.nb_inputs() - nb):
-                self.item.remove_input(self.item.inputList[0])
-        self.setupPaint()
+        self.update()       # Force onscreen redraw after changes.

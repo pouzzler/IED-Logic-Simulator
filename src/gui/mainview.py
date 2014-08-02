@@ -13,13 +13,7 @@ import engine
 
 
 class MainView(QGraphicsView):
-    """A graphic representation of a circuit schematic created by the
-    user. This view manages most user interaction, in particular:
-    * Adding logic gates & circuits
-    * Linking outputs and inputs
-    * Translating and rotating elements around
-    * Setting input values
-    """
+    """Graphic representation of a user created circuit schematic."""
 
     def __init__(self, parent):
         super(MainView, self).__init__(parent)
@@ -29,14 +23,11 @@ class MainView(QGraphicsView):
         self.isDrawing = False          # user currently not drawing
         self.mainCircuit = Circuit("Main Circuit", None)
 
-    def getNewName(self, item):
-        """Spawns a name-choosing dialog, and sets item.name to that
-        dialog's return value, if not canceled by the user.
-        """
-        # ret = tuple string, bool (false when the dialog is dismissed)
-        ret = QInputDialog.getText(self, self.str_setName, self.str_name)
-        if ret[1] and item.item.setName(ret[0]):
-            item.update()
+        item = PlugItem(True, self.mainCircuit)
+        self.scene().addItem(item)
+        item2 = CircuitItem(
+            getattr(engine.gates, 'AndGate'), self.mainCircuit)
+        self.scene().addItem(item2)
 
     def contextMenuEvent(self, e):
         """Pops a contextual menu up on right-clicks"""
@@ -65,14 +56,11 @@ class MainView(QGraphicsView):
         """Accept drag events coming from ToolBox."""
         if isinstance(e.source(), ToolBox):
             e.accept()
-        # Refuse drags from anything but our ToolBox
-        else:
+        else:       # Refuse all other drags.
             e.ignore()
 
     def dragLeaveEvent(self, e):
-        """Fixing bug where items are not fully dragged over MainView,
-        then dragged away.
-        """
+        """Fixes bug: items are half dragged over self, then away. (#16)"""
         e.ignore()
 
     def dragMoveEvent(self, e):
@@ -103,10 +91,15 @@ class MainView(QGraphicsView):
             self.scene().addItem(item)
             item.setPos(item.mapFromScene(self.mapToScene(e.pos())))
 
+    def getNewName(self, item):
+        """Shows a dialog, and sets item name to user input."""
+        # ret = tuple string, bool
+        ret = QInputDialog.getText(self, self.str_setName, self.str_name)
+        if ret[1] and item.item.setName(ret[0]):    # Not canceled.
+            item.update()
+
     def keyPressEvent(self, e):
-        """Manages keyboard events, in particular item rotation,
-        translation, removal and alignment.
-        """
+        """Manages keyboard events."""
         scene = self.scene()
         selection = scene.selectedItems()
         # ESC, unselect all items
@@ -174,10 +167,7 @@ class MainView(QGraphicsView):
                 item.setPos(item.scenePos().x(), bottom)
 
     def mousePressEvent(self, e):
-        """When the mouse is pressed over a portion of a graphic item
-        that represents a Plug, we create a WireItem;
-        over a WireItem handle, we extend the WireItem.
-        """
+        """Start Wire creation/extension."""
         # Reserve right-clicks for contextual menus.
         if e.buttons() == QtCore.Qt.RightButton:
             super(MainView, self).mousePressEvent(e)
@@ -200,11 +190,27 @@ class MainView(QGraphicsView):
         # Didn't click a handle? We wanted to drag or select
         super(MainView, self).mousePressEvent(e)
 
+    def mouseMoveEvent(self, e):
+        """Redraw CurrentWire; change cursor on mouseOver handles."""
+        if self.isDrawing:
+            self.currentWire.moveLastPoint(
+                self.currentWire.mapFromScene(self.mapToScene(e.pos())))
+        item = self.itemAt(e.pos())
+        if item:
+            pos = item.mapFromScene(self.mapToScene(e.pos()))
+            if ((isinstance(item, CircuitItem) or isinstance(item, PlugItem))
+                    and item.handleAtPos(pos)):
+                self.setCursor(QtCore.Qt.CursorShape.UpArrowCursor)
+                return
+            elif (isinstance(item, WireItem) and item.handleAtPos(pos) and
+                    not self.isDrawing):
+                self.setCursor(QtCore.Qt.CursorShape.UpArrowCursor)
+                return
+        self.setCursor(QtCore.Qt.CursorShape.ArrowCursor)
+        super(MainView, self).mouseMoveEvent(e)
+
     def mouseReleaseEvent(self, e):
-        """When the mouse is released over an I/O, and was previously
-        pressed over another I/O, if one is an input, and the other an
-        output, a connection will be created between the two of them.
-        """
+        """Complete Wire segments."""
         # Ignore right-clicks.
         if e.buttons() == QtCore.Qt.RightButton:
             super(MainView, self).mousePressEvent(e)
@@ -227,28 +233,8 @@ class MainView(QGraphicsView):
             self.currentWire = None
         super(MainView, self).mouseReleaseEvent(e)
 
-    def mouseMoveEvent(self, e):
-        """Changes the cursor shape on mousing over a handle; forwards
-        moves to current wire item, if any, for redrawing."""
-        if self.isDrawing:
-            self.currentWire.moveLastPoint(
-                self.currentWire.mapFromScene(self.mapToScene(e.pos())))
-        item = self.itemAt(e.pos())
-        if item:
-            pos = item.mapFromScene(self.mapToScene(e.pos()))
-            if ((isinstance(item, CircuitItem) or isinstance(item, PlugItem))
-                    and item.handleAtPos(pos)):
-                self.setCursor(QtCore.Qt.CursorShape.UpArrowCursor)
-                return
-            elif (isinstance(item, WireItem) and item.handleAtPos(pos) and
-                    not self.isDrawing):
-                self.setCursor(QtCore.Qt.CursorShape.UpArrowCursor)
-                return
-        self.setCursor(QtCore.Qt.CursorShape.ArrowCursor)
-        super(MainView, self).mouseMoveEvent(e)
-
     def write(self, message):
-        """Displays a short-lived informative message."""
+        """Briefly display a log WARNING."""
         scene = self.scene()
         msg = scene.addText(message)
         QtCore.QTimer.singleShot(1500, lambda: scene.removeItem(msg))

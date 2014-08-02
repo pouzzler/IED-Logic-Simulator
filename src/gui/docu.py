@@ -2,15 +2,13 @@
 # coding=utf-8
 
 from PySide.QtCore import Qt
-from PySide.QtGui import QTextBrowser, QDockWidget, QSplitter
+from PySide.QtGui import QDockWidget, QSplitter, QTextBrowser
 from PySide.QtHelp import QHelpEngine
 from .util import filePath
 
 
 class HelpTextBrowser(QTextBrowser):
-    """A simple overload to enable communication between the help
-    engine and a QTextBrowser.
-    """
+    """Overload QTextBrowser to enable communication with QHelpEngine."""
 
     def __init__(self, helpEngine):
         super(HelpTextBrowser, self).__init__()
@@ -24,9 +22,7 @@ class HelpTextBrowser(QTextBrowser):
 
 
 class HelpDockWidget(QDockWidget):
-    """A dock widget integrating all the necessary widgets for our help
-    and documentation system.
-    """
+    """A dock widget providing inline application help."""
 
     def __init__(self):
         super(HelpDockWidget, self).__init__(self.str_helpDockTitle)

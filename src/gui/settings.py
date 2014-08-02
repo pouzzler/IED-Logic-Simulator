@@ -11,6 +11,7 @@ from .util import boolToCheckState, checkStateToBool, filePath
 
 
 class Settings(ConfigParser):
+    """Abstract the config file location and loading from other code."""
     def __init__(self):
         super(ConfigParser, self).__init__()
         self.configFile = filePath('settings')

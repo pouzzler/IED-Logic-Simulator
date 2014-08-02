@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 # coding=utf-8
 
-from configparser import ConfigParser
 import pickle
 import time
 from PySide.QtCore import Qt
@@ -35,7 +34,6 @@ class MainWindow(QMainWindow):
         # Setup window.
         self.setWindowTitle(self.str_mainWindowTitle)
         self.centerAndResize()
-        self.setFocusPolicy(Qt.StrongFocus)
         # Initialize sub-widgets :
         # A graphical view in which the user can draw circuits.
         self.view = MainView(self)
@@ -55,30 +53,15 @@ class MainWindow(QMainWindow):
         fileMenu.addAction(self.str_menuQuit, self.close)
 
         editMenu = QMenu(self.str_menuEdit)
-        settingAct = QAction(self.str_menuSettings, self)
-        settingAct.triggered.connect(
+        editMenu.addAction(
+            self.str_menuSettings,
             lambda: SettingsDialog(self, self.config).exec_())
-        editMenu.addAction(settingAct)
+        editMenu.addAction(self.str_menuClearLogs, self.logDock.widget().clear)
 
-        toolBoxAct = self.boxDock.toggleViewAction()
-        toolBoxAct.setShortcut("Ctrl+Shift+T")
-        toolBoxAct.setStatusTip("Shows the tool box")
-        toolBoxAct.setChecked(True)
-
-        SelectionOptionsAct = self.optionsDock.toggleViewAction()
-        SelectionOptionsAct.setShortcut("Ctrl+Shift+O")
-        SelectionOptionsAct.setStatusTip("Shows the item options")
-        SelectionOptionsAct.setChecked(True)
-
-        logAct = self.logDock.toggleViewAction()
-        logAct.setShortcut("Ctrl+Shift+L")
-        logAct.setStatusTip("Shows the logs messages dock")
-        logAct.setChecked(True)
-
-        windowsMenu = QMenu(self.str_menuDocks)
-        windowsMenu.addAction(toolBoxAct)
-        windowsMenu.addAction(SelectionOptionsAct)
-        windowsMenu.addAction(logAct)
+        docksMenu = QMenu(self.str_menuDocks)
+        docksMenu.addAction(self.boxDock.toggleViewAction())
+        docksMenu.addAction(self.optionsDock.toggleViewAction())
+        docksMenu.addAction(self.logDock.toggleViewAction())
 
         langMenu = QMenu(self.str_menuLang)
         langMenu.addAction(self.str_langEng, lambda: self.setLang('en'))
@@ -89,19 +72,67 @@ class MainWindow(QMainWindow):
 
         self.menuBar().addMenu(fileMenu)
         self.menuBar().addMenu(editMenu)
-        self.menuBar().addMenu(windowsMenu)
+        self.menuBar().addMenu(docksMenu)
         self.menuBar().addMenu(langMenu)
         self.menuBar().addMenu(helpMenu)
-
+        # WARNING logs will be shown in the MainView.
         self.toastHandler = logging.StreamHandler(self.view)
         self.toastHandler.setLevel(logging.WARNING)
         log.addHandler(self.toastHandler)
-
+        # Every widget is created, we can now apply settings.
         self.setSettings()
         self.show()
 
+    def about(self):
+        """Print a dialog about the application."""
+        msgBox = QMessageBox()
+        msgBox.setText(self.str_aboutDialog)
+        msgBox.exec_()
+
+    def centerAndResize(self):
+        """Set up reasonable dimensions for our main window."""
+        screen = QDesktopWidget().screenGeometry()
+        self.resize(screen.width() / 1.2, screen.height() / 1.2)
+        size = self.geometry()
+        self.move(
+            (screen.width() - size.width()) / 2,
+            (screen.height() - size.height()) / 2)
+
+    def saveCircuit(self):
+        """Save a user circuit."""
+        items = [
+            [item.item, item.pos()] for item in self.view.scene().items()]
+        f = open('save', 'wb')
+        pickle.dump(items, f, pickle.HIGHEST_PROTOCOL)
+        f.close()
+        for item in self.view.scene().items():
+            self.view.mainCircuit.remove(item.item)
+            self.view.scene().removeItem(item)
+        f = open('save', 'rb')
+        items = pickle.load(f)
+        for item in items:
+            if isinstance(item[0], Plug):
+                i = PlugItem(None, self.view.mainCircuit)
+            elif isinstance(item[0], Circuit):
+                i = CircuitItem(item[0].__class__, self.view.mainCircuit)
+            i.item = item[0]
+            i.setPos(item[1])
+            i.setupPaint()
+            self.view.scene().addItem(i)
+
+    def setLang(self, lang):
+        """Sets the UI language. Warns a restart is required."""
+        old = self.config.get('Appearance', 'lang')
+        if old != lang:
+            self.config.set('Appearance', 'lang', lang)
+            with open(self.config.configFile, 'w+') as f:
+                self.config.write(f)
+            msgBox = QMessageBox()
+            msgBox.setText(self.str_langChanged)
+            msgBox.exec_()
+
     def setSettings(self):
-        """Load color, verbosity and logging options."""
+        """Set color, verbosity and logging options."""
         self.logDock.setBgColor(self.config.get('Appearance', 'log_bg_color'))
         image = QImage(10, 10, QImage.Format_RGB32)
         image.fill(QColor(self.config.get('Appearance', 'circ_bg_color')))
@@ -136,49 +167,6 @@ class MainWindow(QMainWindow):
         else:
             log.removeHandler(fileHandler)
 
-    def centerAndResize(self):
-        """Set up reasonable dimensions for our main window."""
-        screen = QDesktopWidget().screenGeometry()
-        self.resize(screen.width() / 1.2, screen.height() / 1.2)
-        size = self.geometry()
-        self.move(
-            (screen.width() - size.width()) / 2,
-            (screen.height() - size.height()) / 2)
-
-    def about(self):
-        """Print a dialog about the application."""
-        msgBox = QMessageBox()
-        msgBox.setText(self.str_aboutDialog)
-        msgBox.exec_()
-
-    def saveCircuit(self):
-        f = open('save', 'wb')
-        items = []
-        selection = self.view.scene().items()
-        for item in selection:
-            if isinstance(item, PlugItem):
-                items.append([item, item.pos()])
-            elif isinstance(item, CircuitItem):
-                items.append([item.circuit, item.pos()])
-            self.view.scene().removeItem(item)
-        pickle.dump(selection, f, pickle.HIGHEST_PROTOCOL)
-        f.close()
-        f = open('save', 'rb')
-        items = pickle.load(f)
-        for item in items:
-            print(item.name)
-
-    def setLang(self, lang):
-        old = self.config.get('Appearance', 'lang')
-        if old != lang:
-            self.config.set('Appearance', 'lang', lang)
-            with open(self.config.configFile, 'w+') as f:
-                self.config.write(f)
-            msgBox = QMessageBox()
-            msgBox.setText(self.str_langChanged)
-            msgBox.exec_()
-
     def showDocumentation(self):
         """Shows the help dock widget."""
-        self.addDockWidget(
-            Qt.RightDockWidgetArea, HelpDockWidget())
+        self.addDockWidget(Qt.RightDockWidgetArea, HelpDockWidget())

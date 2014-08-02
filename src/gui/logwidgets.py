@@ -7,7 +7,7 @@ from engine.simulator import formatter
 
 
 class LoggerTextEdit(QTextEdit):
-    """A multiline text field that receives log messages."""
+    """A multiline text field showing log messages."""
 
     def __init__(self):
         super(LoggerTextEdit, self).__init__()
@@ -18,8 +18,7 @@ class LoggerTextEdit(QTextEdit):
         self.setReadOnly(True)
 
     def write(self, text):
-        """Log handlers call a write() method. Having one is enough, no
-        need to inherit LogHandler."""
+        """Simulate LogHandler by having a write() method."""
         self.insertPlainText(text)
 
 
@@ -34,6 +33,7 @@ class LogDockWidget(QDockWidget):
         self.handler.setFormatter(formatter)
 
     def setBgColor(self, color):
+        """Set the background color of the log window."""
         pal = QPalette()
         pal.setColor(QPalette.Base, QColor(color))
         self.widget().setPalette(pal)

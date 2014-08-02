@@ -2,11 +2,11 @@
 # coding=utf-8
 
 import inspect
-from PySide.QtCore import Qt
 from PySide.QtGui import (
     QCheckBox, QComboBox, QDockWidget, QGridLayout, QLabel, QLineEdit,
     QPushButton, QRadioButton, QSizePolicy, QWidget)
 from .graphicitem import CircuitItem
+from .util import boolToCheckState
 from engine.gates import *
 
 
@@ -40,7 +40,7 @@ class SelectionOptions(QWidget):
 
         self.showCategoryCB = QCheckBox(self)
         self.gridLayout.addWidget(self.showCategoryCB, 2, 1, 1, 1)
-        self.showCategoryCB.stateChanged.connect(self.setClassVisibility)
+        self.showCategoryCB.stateChanged.connect(self.setCategoryVisibility)
 
         self.nbInputsLabel = QLabel(self.str_nbInputs, self)
         self.gridLayout.addWidget(self.nbInputsLabel, 3, 0, 1, 1)
@@ -104,7 +104,6 @@ class SelectionOptions(QWidget):
         if size > 1:
             self.nameLabel.setHidden(True)
             self.nameLE.setHidden(True)
-
         if size == 1:
             self.nameLE.blockSignals(True)
             self.nameLE.setText(selection[0].item.name)
@@ -112,14 +111,12 @@ class SelectionOptions(QWidget):
         if size >= 1:
             self.showNameCB.blockSignals(True)
             self.showNameCB.setCheckState(
-                Qt.CheckState.Checked if selection[0].showName
-                else Qt.CheckState.Unchecked)
+                boolToCheckState(selection[0].showName))
             self.showNameCB.blockSignals(False)
             if not self.showCategoryCB.isHidden():
                 self.showCategoryCB.blockSignals(True)
                 self.showCategoryCB.setCheckState(
-                    Qt.CheckState.Checked if selection[0].showCategory
-                    else Qt.CheckState.Unchecked)
+                    boolToCheckState(selection[0].showCategory))
                 self.showCategoryCB.blockSignals(False)
             if not self.nbInputsCB.isHidden():
                 self.nbInputsCB.blockSignals(True)
@@ -127,25 +124,26 @@ class SelectionOptions(QWidget):
                     selection[0].item.nb_inputs() - 2)
                 self.nbInputsCB.blockSignals(False)
 
+    def setCategoryVisibility(self, state):
+        """Show/Hide the category of an item in the main view."""
+        for item in self.view.scene().selectedItems():
+            item.setCategoryVisibility(True if state else False)
+
     def setItemName(self):
+        """Show/Hide the category of an item in the main view."""
         item = self.view.scene().selectedItems()[0]
         item.item.setName(self.nameLE.text())
         item.setupPaint()
 
-    def setNameVisibility(self, arg1):
+    def setNameVisibility(self, state):
+        """Show/Hide the name of an item in the main view."""
         for item in self.view.scene().selectedItems():
-            item.setNameVisibility(True if arg1 else False)
-
-    def setClassVisibility(self, arg1):
-        for item in self.view.scene().selectedItems():
-            item.setClassVisibility(True if arg1 else False)
+            item.setNameVisibility(True if state else False)
 
     def setNbInputs(self, index):
+        """Add/Remove inputs from basic gates."""
         for item in self.view.scene().selectedItems():
             item.setNbInputs(index + 2)
-
-    def resizeEvent(self, e):
-        pass
 
 
 class SelectionOptionsDockWidget(QDockWidget):

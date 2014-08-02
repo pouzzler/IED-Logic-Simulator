@@ -48,9 +48,7 @@ class ToolBox(QTreeWidget):
 class ToolBoxDockWidget(QDockWidget):
     """A dock widget containing our toolbox."""
 
-    str_toolBoxDockTitle = 'Toolbox'
-
     def __init__(self):
-        super(ToolBoxDockWidget, self).__init__(self.str_toolBoxDockTitle)
+        super(ToolBoxDockWidget, self).__init__(self.str_dockTitle)
         self.setWidget(ToolBox())
         self.setFeatures(QDockWidget.NoDockWidgetFeatures)

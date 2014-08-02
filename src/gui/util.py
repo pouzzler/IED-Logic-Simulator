@@ -2,16 +2,16 @@ from os.path import dirname, realpath
 from PySide.QtCore import Qt
 
 
-def filePath(relPath):
-    """Returns the absolute path of a path relative to the app's
-    installation folder.
-    """
-    return dirname(realpath(__file__)) + '/../../' + relPath
+def boolToCheckState(b):
+    """Translates booleans to Qt.CheckState."""
+    return Qt.Unchecked if not b else Qt.Checked
 
 
 def checkStateToBool(state):
+    """Translates Qt.CheckState to booleans."""
     return False if state == Qt.Unchecked else True
 
 
-def boolToCheckState(b):
-    return Qt.Unchecked if not b else Qt.Checked
+def filePath(relPath):
+    """Returns the absolute path of app data files."""
+    return dirname(realpath(__file__)) + '/../../' + relPath
