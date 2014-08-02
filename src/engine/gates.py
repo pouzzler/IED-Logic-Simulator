@@ -23,7 +23,7 @@ from .simulator import *
 
 # NOT gate
 class NotGate(Circuit):
-    def __init__(self, name, owner):
+    def __init__(self, name, owner, category=None):
         Circuit.__init__(self, name, owner)
         self.add_input()
         self.add_output()

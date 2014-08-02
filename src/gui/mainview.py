@@ -1,13 +1,15 @@
 #!/usr/bin/env python3
 # coding=utf-8
 
+import pickle
 from PySide import QtCore
 from PySide.QtGui import (
     QImage, QInputDialog, QGraphicsItem, QGraphicsScene, QGraphicsView,
     QMenu, QStandardItemModel)
-from .toolbox import ToolBox
-from .selectionoptions import SelectionOptions
 from .graphicitem import CircuitItem, PlugItem, WireItem
+from .selectionoptions import SelectionOptions
+from .toolbox import ToolBox
+from .util import filePath
 from engine.simulator import Circuit, Plug
 import engine
 
@@ -75,14 +77,31 @@ class MainView(QGraphicsView):
             item = PlugItem(True, self.mainCircuit)
         elif name == self.str_O:
             item = PlugItem(False, self.mainCircuit)
-        else:
+        elif model.item(0, 1).text() == 'user':
             item = CircuitItem(Circuit, self.mainCircuit)
+            circuit = Circuit(None, self.mainCircuit, name)
+            f = open(filePath('user/') + name + '.crc', 'rb')
+            children = pickle.load(f)
+            f.close()
+            for child in children:
+                if isinstance(child[0], Plug):
+                    child[0].owner = circuit
+                    if child[0].isInput:
+                        circuit.inputList.append(child[0])
+                    else:
+                        circuit.outputList.append(child[0])
+                elif isinstance(child[0], Circuit):
+                    child[0].owner = circuit
+                    circuit.circuitList.append(child[0])
+            circuit.category = name
+            item.item = circuit
         if item:
             # Fixes the default behavious of centering the first
             # item added to scene.
             if not len(self.scene().items()):
                 self.scene().setSceneRect(0, 0, 1, 1)
             self.scene().addItem(item)
+            item.setupPaint()
             item.setPos(item.mapFromScene(self.mapToScene(e.pos())))
 
     def getNewName(self, item):

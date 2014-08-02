@@ -245,8 +245,9 @@ class CircuitItem(QGraphicsItem):
         if self.showCategory:
             painter.setPen(QPen(QColor('green')))
             painter.drawText(
-                QPointF(0, self.maxH + 2 * self.textH),
-                self.item.__class__.__name__)
+                QPointF(0, self.maxH + 2 * self.textH), (
+                    self.item.category if self.item.category 
+                    else self.item.__class__.__name__))
         # Default selection box doesn't work; simple reimplementation.
         if option.state & QStyle.State_Selected:
             pen = QPen(Qt.black, 1, Qt.DashLine)

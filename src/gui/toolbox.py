@@ -2,6 +2,7 @@
 # coding=utf-8
 
 import inspect
+from os import listdir
 from PySide.QtCore import QByteArray, QDir, QMimeData, Qt
 from PySide.QtGui import (
     QDockWidget, QDrag, QIcon, QTreeWidget, QTreeWidgetItem)
@@ -17,7 +18,7 @@ class ToolBox(QTreeWidget):
     def __init__(self):
         super(ToolBox, self).__init__()
         self.setDragEnabled(True)
-        self.setColumnCount(1)
+        self.setColumnCount(2)
         self.header().setVisible(False)
         gatesheader = QTreeWidgetItem(self, [self.str_basicGates])
         gatesheader.setExpanded(True)
@@ -42,6 +43,8 @@ class ToolBox(QTreeWidget):
                     inspect.isclass(m) and
                     m.__module__ == 'engine.circuits'))]
         userheader = QTreeWidgetItem(self, [self.str_userCircuits])
+        [QTreeWidgetItem(userheader, [name[:-4], 'user'])
+            for name in listdir(filePath('user/'))]
         userheader.setExpanded(True)
 
 
