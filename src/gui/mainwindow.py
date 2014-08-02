@@ -5,8 +5,8 @@ import pickle
 import time
 from PySide.QtCore import Qt
 from PySide.QtGui import (
-    QAction, QBrush, QColor, QDesktopWidget, QDockWidget, QMainWindow,
-    QMenu, QMessageBox, QPalette, QPixmap, QImage)
+    QAction, QBrush, QColor, QDesktopWidget, QDockWidget, QFileDialog,
+    QMainWindow, QMenu, QMessageBox, QPalette, QPixmap, QImage)
 from .docu import HelpDockWidget
 from .graphicitem import *
 from .logwidgets import LogDockWidget
@@ -49,6 +49,7 @@ class MainWindow(QMainWindow):
         self.addDockWidget(Qt.BottomDockWidgetArea, self.logDock)
         # Initialize application menu :
         fileMenu = QMenu(self.str_menuFile)
+        fileMenu.addAction(self.str_menuLoad, self.loadCircuit)
         fileMenu.addAction(self.str_menuSave, self.saveCircuit)
         fileMenu.addAction(self.str_menuQuit, self.close)
 
@@ -98,27 +99,46 @@ class MainWindow(QMainWindow):
             (screen.width() - size.width()) / 2,
             (screen.height() - size.height()) / 2)
 
+    def loadCircuit(self):
+        """Load a user circuit."""
+        ret = QFileDialog.getOpenFileName(
+            self, self.str_loadCircuit, filePath('user'), self.str_circuitFile)
+        if len(ret[0]):
+            f = open(ret[0], 'rb')
+            items = pickle.load(f)
+            f.close()
+            for item in items:
+                if isinstance(item[0], Plug):
+                    i = PlugItem(None, self.view.mainCircuit)
+                    i.item = item[0]
+                elif isinstance(item[0], Circuit):
+                    i = CircuitItem(item[0].__class__, self.view.mainCircuit)
+                    i.item = item[0]
+                else:           # Wire item
+                    i = WireItem(item[0][0], item[0][1], item[0][1])
+                i.setPos(item[1])
+                i.setupPaint()
+                self.view.scene().addItem(i)
+
     def saveCircuit(self):
         """Save a user circuit."""
-        items = [
-            [item.item, item.pos()] for item in self.view.scene().items()]
-        f = open('save', 'wb')
-        pickle.dump(items, f, pickle.HIGHEST_PROTOCOL)
-        f.close()
-        for item in self.view.scene().items():
-            self.view.mainCircuit.remove(item.item)
-            self.view.scene().removeItem(item)
-        f = open('save', 'rb')
-        items = pickle.load(f)
-        for item in items:
-            if isinstance(item[0], Plug):
-                i = PlugItem(None, self.view.mainCircuit)
-            elif isinstance(item[0], Circuit):
-                i = CircuitItem(item[0].__class__, self.view.mainCircuit)
-            i.item = item[0]
-            i.setPos(item[1])
-            i.setupPaint()
-            self.view.scene().addItem(i)
+        ret = QFileDialog.getSaveFileName(
+            self, self.str_saveCircuit, filePath('user'), self.str_circuitFile)
+        if len(ret[0]):
+            items = []
+            for item in self.view.scene().items():
+                if not isinstance(item, WireItem):
+                    items.append([item.item, item.pos()])
+                else:
+                    items.append([
+                        [item.startIO, item.points, item.endIO], item.pos()])
+            f = open(ret[0] + '.crc', 'wb')
+            pickle.dump(items, f, pickle.HIGHEST_PROTOCOL)
+            f.close()
+            for item in self.view.scene().items():
+                if not isinstance(item, WireItem):
+                    self.view.mainCircuit.remove(item.item)
+                self.view.scene().removeItem(item)
 
     def setLang(self, lang):
         """Sets the UI language. Warns a restart is required."""

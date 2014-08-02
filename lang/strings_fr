@@ -1,5 +1,6 @@
 MainWindow.str_mainWindowTitle = 'Simulateur de circuits logiques IED'
 MainWindow.str_menuFile = 'Fichier'
+MainWindow.str_menuLoad = 'Charger un circuit'
 MainWindow.str_menuSave = 'Sauver le circuit'
 MainWindow.str_menuQuit = 'Quitter'
 MainWindow.str_menuEdit = 'Édition'
@@ -13,6 +14,9 @@ MainWindow.str_menuDoc = 'Documentation'
 MainWindow.str_menuAbout = 'À propos'
 MainWindow.str_menuDocks = "Barres d'outils"
 MainWindow.str_aboutDialog = 'Simulateur de circuits logiques IED v0.5\n(c)Mathieu Fourcroy & Sébastien Magnien.'
+MainWindow.str_loadCircuit = "Charger un circuit"
+MainWindow.str_saveCircuit = "Sauver le circuit"
+MainWindow.str_circuitFile = "Fichiers circuits (*.crc)"
 MainWindow.str_langChanged = 'Le langage sera changé au prochain démarrage.'
 ToolBoxDockWidget.str_dockTitle = 'Boite à outils'
 ToolBox.str_basicGates = 'Portes logiques'

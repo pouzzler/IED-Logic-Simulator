@@ -15,21 +15,27 @@ class WireItem(QGraphicsPathItem):
 
     RADIUS = 2.5
 
-    def __init__(self, startIO, p1):
+    def __init__(self, startIO, points, endIO=None):
+        """Handles two use cases:
+        __init__(self, startIO, onePoint, None) to create a Wire.
+        __init__(self, startIO, pointList, endIO) to load from file.
+        """
         super(WireItem, self).__init__()
         self.setFlag(QGraphicsItem.ItemIsMovable)
         self.setFlag(QGraphicsItem.ItemIsSelectable)
         # Remembering the Plug where the WireItem starts, for creating the
         # connection, when the last segment is drawn over another IO.
         self.startIO = startIO
+        self.endIO = endIO
         # The first point of our segments. The "moving point" used to
         # redraw during mouseMove events.
-        self.points = [p1, p1]
+        self.points = (
+            points if isinstance(points, list) else [points, points])
         # We dont want't to catch the WireItem handle when it is connected
         # to a Plug, this puts our item under the Plug, and itemAt()
         # will grab the Plug.
         self.setZValue(-1)
-        self.complete = False
+        self.complete = True if endIO else False
 
     def addPoint(self):
         """Duplicates the end point, for use as a moving point during moves."""
@@ -42,7 +48,7 @@ class WireItem(QGraphicsPathItem):
         else:
             self.endIO = endIO
             self.complete = True
-            self.redraw()
+            self.setupPaint()
             return True
 
     def handleAtPos(self, pos):
@@ -64,9 +70,9 @@ class WireItem(QGraphicsPathItem):
         angle = atan2(endPoint.x() - x, endPoint.y() - y)
         a = round(8 * angle / (2 * pi)) % 8
         self.points[-1] = QPointF(x + A[a][0] * L, y + A[a][1] * L)
-        self.redraw()
+        self.setupPaint()
 
-    def redraw(self):
+    def setupPaint(self):
         """Draw the wire segments and handle."""
         self.setPen(QPen(QBrush(QColor(QColor('black'))), 2))
         path = QPainterPath()
@@ -86,7 +92,7 @@ class WireItem(QGraphicsPathItem):
         self.points = self.points[0:-2]
         if len(self.points) > 1:
             self.addPoint()
-            self.redraw()
+            self.setupPaint()
             scene.addItem(self)
 
 

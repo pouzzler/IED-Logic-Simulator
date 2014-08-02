@@ -1,5 +1,6 @@
 MainWindow.str_mainWindowTitle = 'IED Logic Simulator'
 MainWindow.str_menuFile = 'File'
+MainWindow.str_menuLoad = 'Load circuit'
 MainWindow.str_menuSave = 'Save circuit'
 MainWindow.str_menuQuit = 'Quit'
 MainWindow.str_menuEdit = 'Edit'
@@ -13,6 +14,9 @@ MainWindow.str_menuDoc = 'Documentation'
 MainWindow.str_menuAbout = 'About'
 MainWindow.str_menuDocks = 'Docks'
 MainWindow.str_aboutDialog = 'IED Logic Simulator v0.5\n(c)Mathieu Fourcroy & Sébastien Magnien.'
+MainWindow.str_loadCircuit = "Load Circuit"
+MainWindow.str_saveCircuit = "Save Circuit"
+MainWindow.str_circuitFile = "Circuit Files (*.crc)"
 MainWindow.str_langChanged = 'Language will be changed on the next restart.'
 ToolBoxDockWidget.str_dockTitle = 'Toolbox'
 ToolBox.str_basicGates = 'Basic Gates'

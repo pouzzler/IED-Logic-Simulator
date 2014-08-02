@@ -23,12 +23,6 @@ class MainView(QGraphicsView):
         self.isDrawing = False          # user currently not drawing
         self.mainCircuit = Circuit("Main Circuit", None)
 
-        item = PlugItem(True, self.mainCircuit)
-        self.scene().addItem(item)
-        item2 = CircuitItem(
-            getattr(engine.gates, 'AndGate'), self.mainCircuit)
-        self.scene().addItem(item2)
-
     def contextMenuEvent(self, e):
         """Pops a contextual menu up on right-clicks"""
         item = self.itemAt(e.pos())
@@ -114,7 +108,7 @@ class MainView(QGraphicsView):
                     item.circuit = None
                 elif isinstance(item, Plug):
                     self.mainCircuit.remove(item)
-                elif isinstance(item, WireItem) and hasattr(item, 'endIO'):
+                elif isinstance(item, WireItem) and item.endIO is not None:
                     item.startIO.disconnect(item.endIO)
                 scene.removeItem(item)
         # <- , anti-clockwise rotation
