@@ -189,6 +189,8 @@ class MainView(QGraphicsView):
             bottom = max([item.scenePos().y() for item in selection])
             for item in selection:
                 item.setPos(item.scenePos().x(), bottom)
+        for item in selection:
+            item.setupPaint()
 
     def mouseMoveEvent(self, e):
         """Redraw CurrentWire; change cursor on mouseOver handles."""

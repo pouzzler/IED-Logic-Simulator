@@ -4,8 +4,8 @@
 from math import atan2, pi, pow, sqrt
 from PySide.QtCore import QPointF, QRectF, Qt
 from PySide.QtGui import (
-    QBrush, QColor, QFont, QGraphicsItem, QGraphicsPathItem, QImage,
-    QPainterPath, QPen, QStyle)
+    QBrush, QColor, QFont, QGraphicsItem, QGraphicsPathItem, 
+    QGraphicsSimpleTextItem, QImage, QPainterPath, QPen, QStyle)
 from .util import filePath
 from engine.simulator import Circuit, Plug
 
@@ -101,7 +101,8 @@ class PlugItem(QGraphicsPathItem):
 
     LARGE_DIAMETER = 25
     SMALL_DIAMETER = 5
-    textH = 12
+    VALUE_OFFSET = 8
+    NAME_OFFSET = LARGE_DIAMETER + 1
 
     def __init__(self, isInput, owner):
         super(PlugItem, self).__init__()
@@ -118,6 +119,16 @@ class PlugItem(QGraphicsPathItem):
             self.LARGE_DIAMETER / 2 - self.SMALL_DIAMETER,
             self.SMALL_DIAMETER * 2,
             self.SMALL_DIAMETER * 2)
+        f = QFont('Times', 12, 75)
+        # Won't rotate when we rotate our PlugItem.
+        self.name = QGraphicsSimpleTextItem(self)
+        self.name.setFlag(QGraphicsItem.ItemIgnoresTransformations)
+        self.name.setText(self.item.name)
+        self.name.setFont(f)
+        self.value = QGraphicsSimpleTextItem(self)
+        self.value.setFlag(QGraphicsItem.ItemIgnoresTransformations)
+        self.value.setPos(self.VALUE_OFFSET, self.VALUE_OFFSET)
+        self.value.setFont(f)
         self.setupPaint()
 
     def handleAtPos(self, pos):
@@ -125,7 +136,7 @@ class PlugItem(QGraphicsPathItem):
         Also return the Plug under this handle.
         """
         return self.item if self.pinPath.contains(pos) else None
-        
+
     def setCategoryVisibility(self, isVisible):
         """MainView requires PlugItems to function like CircuitItems."""
         pass
@@ -147,17 +158,19 @@ class PlugItem(QGraphicsPathItem):
             (self.LARGE_DIAMETER - self.SMALL_DIAMETER) / 2,
             self.SMALL_DIAMETER,
             self.SMALL_DIAMETER)
-        if self.showName:
-            path.addText(
-                QPointF(0, self.LARGE_DIAMETER + 1),
-                QFont(),
-                self.item.name)
-        path.addText(
-                QPointF(15, 15),
-                QFont(),
-                str(self.item.value)[0])
         self.setPath(path)
+        br = self.mapToScene(self.boundingRect())
+        realX = min([item.x() for item in br])
+        realY = min([item.y() for item in br])
+        self.name.setVisible(self.showName)
+        self.name.setText(self.item.name)
+        self.name.setPos(self.mapFromScene(realX, realY + self.NAME_OFFSET))
+        self.value.setText(str(int(self.item.value)))
+        self.value.setPos(self.mapFromScene(
+            realX + self.VALUE_OFFSET, realY + self.VALUE_OFFSET))
+        self.value.setBrush(QColor('green' if self.item.value else 'red'))
         self.update()       # Force onscreen redraw after changes.
+
 
 class CircuitItem(QGraphicsItem):
     """Graphical wrapper around the engine Circuit class."""
@@ -182,7 +195,7 @@ class CircuitItem(QGraphicsItem):
         self.setupPaint()
 
     def boundingRect(self):
-        """Qt requires overloading when overloading QGraphicsItem."""
+        """Qt requires overloading this when overloading QGraphicsItem."""
         H = self.maxH
         W = 4 * self.radius + 2 * self.ioW + self.imgW
         if self.showCategory:
