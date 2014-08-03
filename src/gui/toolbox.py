@@ -7,7 +7,7 @@ from PySide.QtCore import QByteArray, QDir, QMimeData, Qt
 from PySide.QtGui import (
     QDockWidget, QDrag, QIcon, QTreeWidget, QTreeWidgetItem)
 from .util import filePath
-from engine import gates, circuits
+from engine import gates
 
 
 class ToolBox(QTreeWidget):
@@ -34,14 +34,6 @@ class ToolBox(QTreeWidget):
         [
             QTreeWidgetItem(ioheader, [name])
             for name in [self.str_I, self.str_O, self.str_Clock]]
-        circuitsheader = QTreeWidgetItem(self, [self.str_Circuits])
-        circuitsheader.setExpanded(True)
-        [QTreeWidgetItem(circuitsheader, [name[:-4]])
-            for name, _ in inspect.getmembers(
-                circuits,
-                lambda m: (
-                    inspect.isclass(m) and
-                    m.__module__ == 'engine.circuits'))]
         userheader = QTreeWidgetItem(self, [self.str_userCircuits])
         [QTreeWidgetItem(userheader, [name[:-4], 'user'])
             for name in listdir(filePath('user/'))]

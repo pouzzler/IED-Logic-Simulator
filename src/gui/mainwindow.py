@@ -104,6 +104,10 @@ class MainWindow(QMainWindow):
         ret = QFileDialog.getOpenFileName(
             self, self.str_loadCircuit, filePath('user'), self.str_circuitFile)
         if len(ret[0]):
+            for item in self.view.scene().items():
+                if not isinstance(item, WireItem):
+                    self.view.mainCircuit.remove(item.item)
+                self.view.scene().removeItem(item)
             f = open(ret[0], 'rb')
             items = pickle.load(f)
             f.close()
@@ -135,10 +139,6 @@ class MainWindow(QMainWindow):
             f = open(ret[0] + '.crc', 'wb')
             pickle.dump(items, f, pickle.HIGHEST_PROTOCOL)
             f.close()
-            for item in self.view.scene().items():
-                if not isinstance(item, WireItem):
-                    self.view.mainCircuit.remove(item.item)
-                self.view.scene().removeItem(item)
 
     def setLang(self, lang):
         """Sets the UI language. Warns a restart is required."""

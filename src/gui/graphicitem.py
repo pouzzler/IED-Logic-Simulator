@@ -125,7 +125,7 @@ class PlugItem(QGraphicsPathItem):
         Also return the Plug under this handle.
         """
         return self.item if self.pinPath.contains(pos) else None
-
+        
     def setCategoryVisibility(self, isVisible):
         """MainView requires PlugItems to function like CircuitItems."""
         pass
@@ -152,9 +152,12 @@ class PlugItem(QGraphicsPathItem):
                 QPointF(0, self.LARGE_DIAMETER + 1),
                 QFont(),
                 self.item.name)
+        path.addText(
+                QPointF(15, 15),
+                QFont(),
+                str(self.item.value)[0])
         self.setPath(path)
         self.update()       # Force onscreen redraw after changes.
-
 
 class CircuitItem(QGraphicsItem):
     """Graphical wrapper around the engine Circuit class."""

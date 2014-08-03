@@ -277,13 +277,13 @@ class Circuit:
         """Remove an input from the inputList of the circuit."""
         self.inputList.remove(input)
         if Circuit.removePlugVerbose:
-            log.info(self.str_inputRem % (component.name, self.name,))
+            log.info(self.str_inputRem % (input.name, self.name,))
 
     def remove_output(self, output):
         """Remove an output from the outputList of the circuit."""
         self.outputList.remove(output)
         if Circuit.removePlugVerbose:
-            log.info(self.str_outputRem % (component.name, self.name,))
+            log.info(self.str_outputRem % (output.name, self.name,))
 
     def setName(self, name):
         """Set the name of this circuit."""

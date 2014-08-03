@@ -39,8 +39,7 @@ class MainView(QGraphicsView):
                 menu.addAction(self.str_setName, lambda: self.getNewName(item))
                 if item.item.isInput:
                     menu.addAction(
-                        str(item.item.value),
-                        lambda: item.item.set(not item.item.value))
+                        str(item.item.value), lambda: self.setAndUpdate(item))
             elif isinstance(item, WireItem):
                 pos = item.mapFromScene(self.mapToScene(e.pos()))
                 if item.handleAtPos(pos):
@@ -245,6 +244,12 @@ class MainView(QGraphicsView):
             self.currentWire.addPoint()
             self.currentWire = None
         super(MainView, self).mouseReleaseEvent(e)
+
+    def setAndUpdate(self, item):
+        item.item.set(not item.item.value)
+        for i in self.scene().items():
+            if isinstance(i, PlugItem):
+                i.setupPaint()
 
     def write(self, message):
         """Briefly display a log WARNING."""
