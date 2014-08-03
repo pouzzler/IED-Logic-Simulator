@@ -164,7 +164,7 @@ class MainWindow(QMainWindow):
             'LogVerbosity', 'output_chang')
         Plug.connectVerbose = self.config.getboolean(
             'LogVerbosity', 'conn_discon_io')
-        Circuit.addPlugVerbose = self.config.getboolean(
+        Plug.addPlugVerbose = self.config.getboolean(
             'LogVerbosity', 'adding_io')
         Circuit.addCircuitVerbose = self.config.getboolean(
             'LogVerbosity', 'adding_circ')

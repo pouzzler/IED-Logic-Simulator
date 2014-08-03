@@ -106,7 +106,6 @@ class PlugItem(QGraphicsPathItem):
     def __init__(self, isInput, owner):
         super(PlugItem, self).__init__()
         self.item = Plug(isInput, None, owner)
-        owner.add_plug(self.item)
         self.showName = False
         self.setFlag(QGraphicsItem.ItemIsMovable)
         self.setFlag(QGraphicsItem.ItemIsSelectable)
@@ -268,7 +267,7 @@ class CircuitItem(QGraphicsItem):
         """Add/Remove inputs (for logical gates)."""
         if nb > self.item.nb_inputs():
             for x in range(nb - self.item.nb_inputs()):
-                self.item.add_input()
+                Plug(True, None, self.item)
         elif nb < self.item.nb_inputs():
             for x in range(self.item.nb_inputs() - nb):
                 self.item.remove_input(self.item.inputList[0])
