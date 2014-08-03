@@ -58,6 +58,7 @@ class MainWindow(QMainWindow):
             self.str_menuSettings,
             lambda: SettingsDialog(self, self.config).exec_())
         editMenu.addAction(self.str_menuClearLogs, self.logDock.widget().clear)
+        editMenu.addAction(self.str_menuClearCircuit, self.view.clearCircuit)
 
         docksMenu = QMenu(self.str_menuDocks)
         docksMenu.addAction(self.boxDock.toggleViewAction())
@@ -104,10 +105,7 @@ class MainWindow(QMainWindow):
         ret = QFileDialog.getOpenFileName(
             self, self.str_loadCircuit, filePath('user'), self.str_circuitFile)
         if len(ret[0]):
-            for item in self.view.scene().items():
-                if not isinstance(item, WireItem):
-                    self.view.mainCircuit.remove(item.item)
-                self.view.scene().removeItem(item)
+            self.view.clearCircuit()
             f = open(ret[0], 'rb')
             items = pickle.load(f)
             f.close()

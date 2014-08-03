@@ -2,10 +2,10 @@
 # coding=utf-8
 
 import pickle
-from PySide import QtCore
+from PySide.QtCore import QModelIndex, QPoint, Qt, QTimer
 from PySide.QtGui import (
-    QImage, QInputDialog, QGraphicsItem, QGraphicsScene, QGraphicsView,
-    QMenu, QStandardItemModel)
+    QCursor, QImage, QInputDialog, QGraphicsItem, QGraphicsScene,
+    QGraphicsView, QMenu, QStandardItemModel)
 from .graphicitem import CircuitItem, PlugItem, WireItem
 from .selectionoptions import SelectionOptions
 from .toolbox import ToolBox
@@ -23,7 +23,19 @@ class MainView(QGraphicsView):
         self.setMouseTracking(True)     # Allow mouseover effects.
         self.setScene(QGraphicsScene(parent))
         self.isDrawing = False          # user currently not drawing
-        self.mainCircuit = Circuit("Main Circuit", None)
+        self.mainCircuit = Circuit("Main", None)
+        self.tooltip = None
+        self.tooltipDelay = 333
+        self.tooltipTimer = QTimer()
+        self.tooltipTimer.setSingleShot(True)
+        self.tooltipTimer.timeout.connect(self.showTooltip)
+
+    def clearCircuit(self):
+        """Clears every item from the circuit designer."""
+        for item in self.scene().items():
+            if not isinstance(item, WireItem):
+                self.mainCircuit.remove(item.item)
+            self.scene().removeItem(item)
 
     def contextMenuEvent(self, e):
         """Pops a contextual menu up on right-clicks"""
@@ -66,7 +78,7 @@ class MainView(QGraphicsView):
         """Accept drop events."""
         model = QStandardItemModel()
         model.dropMimeData(
-            e.mimeData(), QtCore.Qt.CopyAction, 0, 0, QtCore.QModelIndex())
+            e.mimeData(), Qt.CopyAction, 0, 0, QModelIndex())
         name = model.item(0).text()
         item = None
         if name in ['And', 'Or', 'Nand', 'Nor', 'Not', 'Xor', 'Xnor']:
@@ -115,11 +127,11 @@ class MainView(QGraphicsView):
         scene = self.scene()
         selection = scene.selectedItems()
         # ESC, unselect all items
-        if e.key() == QtCore.Qt.Key_Escape:
+        if e.key() == Qt.Key_Escape:
             for item in selection:
                 item.setSelected(False)
         # Del, suppression
-        elif e.key() == QtCore.Qt.Key_Delete:
+        elif e.key() == Qt.Key_Delete:
             for item in selection:
                 if isinstance(item, CircuitItem):
                     self.mainCircuit.remove(item.item)
@@ -135,7 +147,7 @@ class MainView(QGraphicsView):
         # current code does for individual items even though the
         # group class inherits from the graphicsitem class.
         # EDIT: group.boundingRect() is apparently in scene coordinates
-        elif e.key() == QtCore.Qt.Key_Left:
+        elif e.key() == Qt.Key_Left:
             #~ group = scene.createItemGroup(selection)
             #~ print(selection[0].boundingRect(), group.boundingRect())
             #~ x = group.boundingRect().width() / 2
@@ -151,37 +163,64 @@ class MainView(QGraphicsView):
                 item.setTransformOriginPoint(x, y)
                 item.setRotation(item.rotation() - 90)
         # -> , clockwise rotation
-        elif e.key() == QtCore.Qt.Key_Right:
+        elif e.key() == Qt.Key_Right:
             for item in selection:
                 x = item.boundingRect().width() / 2
                 y = item.boundingRect().height() / 2
                 item.setTransformOriginPoint(x, y)
                 item.setRotation(item.rotation() + 90)
         # L, left align
-        elif e.key() == QtCore.Qt.Key_L:
+        elif e.key() == Qt.Key_L:
             left = min([item.scenePos().x() for item in selection])
             for item in selection:
                 item.setPos(left, item.scenePos().y())
         # R, right align
-        elif e.key() == QtCore.Qt.Key_R:
+        elif e.key() == Qt.Key_R:
             right = max([item.scenePos().x() for item in selection])
             for item in selection:
                 item.setPos(right, item.scenePos().y())
         # T, top align
-        elif e.key() == QtCore.Qt.Key_T:
+        elif e.key() == Qt.Key_T:
             top = min([item.scenePos().y() for item in selection])
             for item in selection:
                 item.setPos(item.scenePos().x(), top)
         # B, bottom align
-        elif e.key() == QtCore.Qt.Key_B:
+        elif e.key() == Qt.Key_B:
             bottom = max([item.scenePos().y() for item in selection])
             for item in selection:
                 item.setPos(item.scenePos().x(), bottom)
 
+    def mouseMoveEvent(self, e):
+        """Redraw CurrentWire; change cursor on mouseOver handles."""
+        # Always active unless we stop moving for self.tooltipDelay
+        if not self.tooltipTimer.isActive():
+            self.tooltipTimer.start(self.tooltipDelay)
+            self.tooltip = None
+        if self.isDrawing:
+            self.currentWire.moveLastPoint(
+                self.currentWire.mapFromScene(self.mapToScene(e.pos())))
+        item = self.itemAt(e.pos())
+        if item:
+            pos = item.mapFromScene(self.mapToScene(e.pos()))
+            isCircuit = isinstance(item, CircuitItem)
+            if isCircuit or isinstance(item, PlugItem):
+                handle = item.handleAtPos(pos)
+                if handle:
+                    if isCircuit:
+                        self.tooltip = handle.name
+                    self.setCursor(Qt.CursorShape.UpArrowCursor)
+                    return
+            elif (isinstance(item, WireItem) and item.handleAtPos(pos) and
+                    not self.isDrawing):
+                self.setCursor(Qt.CursorShape.UpArrowCursor)
+                return
+        self.setCursor(Qt.CursorShape.ArrowCursor)
+        super(MainView, self).mouseMoveEvent(e)
+
     def mousePressEvent(self, e):
         """Start Wire creation/extension."""
         # Reserve right-clicks for contextual menus.
-        if e.buttons() == QtCore.Qt.RightButton:
+        if e.buttons() == Qt.RightButton:
             super(MainView, self).mousePressEvent(e)
             return
         item = self.itemAt(e.pos())
@@ -202,29 +241,10 @@ class MainView(QGraphicsView):
         # Didn't click a handle? We wanted to drag or select
         super(MainView, self).mousePressEvent(e)
 
-    def mouseMoveEvent(self, e):
-        """Redraw CurrentWire; change cursor on mouseOver handles."""
-        if self.isDrawing:
-            self.currentWire.moveLastPoint(
-                self.currentWire.mapFromScene(self.mapToScene(e.pos())))
-        item = self.itemAt(e.pos())
-        if item:
-            pos = item.mapFromScene(self.mapToScene(e.pos()))
-            if ((isinstance(item, CircuitItem) or isinstance(item, PlugItem))
-                    and item.handleAtPos(pos)):
-                self.setCursor(QtCore.Qt.CursorShape.UpArrowCursor)
-                return
-            elif (isinstance(item, WireItem) and item.handleAtPos(pos) and
-                    not self.isDrawing):
-                self.setCursor(QtCore.Qt.CursorShape.UpArrowCursor)
-                return
-        self.setCursor(QtCore.Qt.CursorShape.ArrowCursor)
-        super(MainView, self).mouseMoveEvent(e)
-
     def mouseReleaseEvent(self, e):
         """Complete Wire segments."""
         # Ignore right-clicks.
-        if e.buttons() == QtCore.Qt.RightButton:
+        if e.buttons() == Qt.RightButton:
             super(MainView, self).mousePressEvent(e)
             return
         if self.isDrawing:
@@ -251,8 +271,15 @@ class MainView(QGraphicsView):
             if isinstance(i, PlugItem):
                 i.setupPaint()
 
+    def showTooltip(self):
+        if self.tooltip:
+            scene = self.scene()
+            msg = scene.addText(self.tooltip)
+            msg.setPos(self.mapToScene(self.mapFromGlobal(QCursor.pos())))
+            QTimer.singleShot(1000, lambda: scene.removeItem(msg))
+
     def write(self, message):
         """Briefly display a log WARNING."""
         scene = self.scene()
         msg = scene.addText(message)
-        QtCore.QTimer.singleShot(1500, lambda: scene.removeItem(msg))
+        QTimer.singleShot(1500, lambda: scene.removeItem(msg))
