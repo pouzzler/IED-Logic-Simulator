@@ -129,9 +129,11 @@ class MainWindow(QMainWindow):
         if len(ret[0]):
             items = []
             for item in self.view.scene().items():
-                if not isinstance(item, WireItem):
+                if (
+                        isinstance(item, PlugItem)
+                        or isinstance(item, CircuitItem)):
                     items.append([item.item, item.pos()])
-                else:
+                elif isinstance(item, WireItem):
                     items.append([
                         [item.startIO, item.points, item.endIO], item.pos()])
             f = open(ret[0] + '.crc', 'wb')

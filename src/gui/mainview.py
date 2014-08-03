@@ -33,7 +33,7 @@ class MainView(QGraphicsView):
     def clearCircuit(self):
         """Clears every item from the circuit designer."""
         for item in self.scene().items():
-            if not isinstance(item, WireItem):
+            if isinstance(item, PlugItem) or isinstance(item, CircuitItem):
                 self.mainCircuit.remove(item.item)
             self.scene().removeItem(item)
 
@@ -235,6 +235,11 @@ class MainView(QGraphicsView):
                     self.currentWire = WireItem(plug, self.mapToScene(e.pos()))
                     self.scene().addItem(self.currentWire)
                     return   # no super(), prevents dragging/selecting
+                elif (
+                        isinstance(item, PlugItem) and item.item.isInput
+                        and e.modifiers() & Qt.ControlModifier):
+                    self.setAndUpdate(item)
+                    return
             elif isinstance(item, WireItem):
                 if item.handleAtPos(pos):
                     self.currentWire = item
