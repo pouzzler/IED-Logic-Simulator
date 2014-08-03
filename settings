@@ -1,0 +1,24 @@
+[LogHandlers]
+gui = True
+stdout = False
+file = False
+
+[LogVerbosity]
+adding_io = True
+adding_circ = True
+removing_io = True
+removing_circ = True
+detailed_rm = True
+conn_discon_io = True
+input_chang = True
+output_chang = True
+advices = False
+
+[Clock]
+speed = 0.0
+
+[Appearance]
+circ_bg_color = #9de5ff
+log_bg_color = #9bff6c
+lang = fr
+
