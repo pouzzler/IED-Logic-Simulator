@@ -95,7 +95,6 @@ class WireItem(QGraphicsPathItem):
             self.setupPaint()
             scene.addItem(self)
 
-
 class PlugItem(QGraphicsPathItem):
     """Graphical wrapper around the engine Plug class."""
 
@@ -110,6 +109,10 @@ class PlugItem(QGraphicsPathItem):
         self.showName = False
         self.setFlag(QGraphicsItem.ItemIsMovable)
         self.setFlag(QGraphicsItem.ItemIsSelectable)
+        self.setFlag(QGraphicsItem.ItemSendsGeometryChanges)
+        self.setAcceptsHoverEvents(True)
+        self.oldPos = QPointF(0, 0)
+        self.ignoreChange = False
         # This path is needed at each mouse over event, to check if
         # the mouse is over a pin. We save it as an instance field,
         # rather than recreate it at each event.
@@ -128,6 +131,7 @@ class PlugItem(QGraphicsPathItem):
         self.value = QGraphicsSimpleTextItem(self)
         self.value.setFlag(QGraphicsItem.ItemIgnoresTransformations)
         self.value.setPos(self.VALUE_OFFSET, self.VALUE_OFFSET)
+        self.value.setFlag(QGraphicsItem.ItemStacksBehindParent, True)
         self.value.setFont(f)
         self.setupPaint()
 
@@ -136,6 +140,19 @@ class PlugItem(QGraphicsPathItem):
         Also return the Plug under this handle.
         """
         return self.item if self.pinPath.contains(pos) else None
+
+    def itemChange(self, change, value):
+        if change == QGraphicsItem.ItemPositionHasChanged:
+            p = value - self.oldPos
+            if (p.manhattanLength() > 10):
+                if self.ignoreChange:
+                    self.ignoreChange = False
+                    return
+                else:
+                    self.ignoreChange = True
+                self.oldPos = value
+                #~ self.setPos(300, 300)
+        return QGraphicsItem.itemChange(self, change, value)
 
     def setCategoryVisibility(self, isVisible):
         """MainView requires PlugItems to function like CircuitItems."""

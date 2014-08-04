@@ -24,11 +24,6 @@ class MainView(QGraphicsView):
         self.setScene(QGraphicsScene(parent))
         self.isDrawing = False          # user currently not drawing
         self.mainCircuit = Circuit("Main", None)
-        self.tooltip = None
-        self.tooltipDelay = 333
-        self.tooltipTimer = QTimer()
-        self.tooltipTimer.setSingleShot(True)
-        self.tooltipTimer.timeout.connect(self.showTooltip)
 
     def clearCircuit(self):
         """Clears every item from the circuit designer."""
@@ -194,10 +189,6 @@ class MainView(QGraphicsView):
 
     def mouseMoveEvent(self, e):
         """Redraw CurrentWire; change cursor on mouseOver handles."""
-        # Always active unless we stop moving for self.tooltipDelay
-        if not self.tooltipTimer.isActive():
-            self.tooltipTimer.start(self.tooltipDelay)
-            self.tooltip = None
         if self.isDrawing:
             self.currentWire.moveLastPoint(
                 self.currentWire.mapFromScene(self.mapToScene(e.pos())))
@@ -209,9 +200,11 @@ class MainView(QGraphicsView):
                 handle = item.handleAtPos(pos)
                 if handle:
                     if isCircuit:
-                        self.tooltip = handle.name
+                        item.setToolTip(handle.name)
                     self.setCursor(Qt.CursorShape.UpArrowCursor)
                     return
+                elif isCircuit:
+                    item.setToolTip(None)
             elif (isinstance(item, WireItem) and item.handleAtPos(pos) and
                     not self.isDrawing):
                 self.setCursor(Qt.CursorShape.UpArrowCursor)
@@ -277,13 +270,6 @@ class MainView(QGraphicsView):
         for i in self.scene().items():
             if isinstance(i, PlugItem):
                 i.setupPaint()
-
-    def showTooltip(self):
-        if self.tooltip:
-            scene = self.scene()
-            msg = scene.addText(self.tooltip)
-            msg.setPos(self.mapToScene(self.mapFromGlobal(QCursor.pos())))
-            QTimer.singleShot(1000, lambda: scene.removeItem(msg))
 
     def write(self, message):
         """Briefly display a log WARNING."""
