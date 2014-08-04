@@ -131,7 +131,7 @@ class PlugItem(QGraphicsPathItem):
         self.value = QGraphicsSimpleTextItem(self)
         self.value.setFlag(QGraphicsItem.ItemIgnoresTransformations)
         self.value.setPos(self.VALUE_OFFSET, self.VALUE_OFFSET)
-        self.value.setFlag(QGraphicsItem.ItemStacksBehindParent, True)
+        self.value.setFlag(QGraphicsItem.ItemStacksBehindParent)
         self.value.setFont(f)
         self.setupPaint()
 

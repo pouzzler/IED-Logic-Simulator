@@ -230,7 +230,7 @@ class MainView(QGraphicsView):
                     return   # no super(), prevents dragging/selecting
                 elif (
                         isinstance(item, PlugItem) and item.item.isInput
-                        and e.modifiers() & Qt.ControlModifier):
+                        and e.modifiers() & Qt.AltModifier):
                     self.setAndUpdate(item)
                     return
             elif isinstance(item, WireItem):
