@@ -80,9 +80,10 @@ class SelectionOptions(QWidget):
         """
         selection = self.view.scene().selectedItems()
         size = len(selection)
-        if size == 0:
+        if size == 0 or any([isinstance(i, WireItem) for i in selection]):
             for widget in self.findChildren(QWidget):
                 widget.setHidden(True)
+            return
         elif size >= 1:
             for widget in self.findChildren(QWidget):
                 widget.setHidden(False)
