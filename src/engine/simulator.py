@@ -251,6 +251,7 @@ class Circuit:
             log.warning(self.str_invalidComponent)
             return False
         if component not in componentList:
+            print(component.name)
             log.warning(self.str_invalidRem)
             return False
         if isinstance(component, Plug):     # Remove the item.

@@ -85,22 +85,20 @@ class MainView(QGraphicsView):
             item = PlugItem(False, self.mainCircuit)
         elif model.item(0, 1).text() == 'user':
             item = CircuitItem(Circuit, self.mainCircuit)
-            circuit = Circuit(None, self.mainCircuit, name)
             f = open(filePath('user/') + name + '.crc', 'rb')
             children = pickle.load(f)
             f.close()
             for child in children:
                 if isinstance(child[0], Plug):
-                    child[0].owner = circuit
+                    child[0].owner = item.item
                     if child[0].isInput:
-                        circuit.inputList.append(child[0])
+                        item.item.inputList.append(child[0])
                     else:
-                        circuit.outputList.append(child[0])
+                        item.item.outputList.append(child[0])
                 elif isinstance(child[0], Circuit):
-                    child[0].owner = circuit
-                    circuit.circuitList.append(child[0])
-            circuit.category = name
-            item.item = circuit
+                    child[0].owner = item.item
+                    item.item.circuitList.append(child[0])
+            item.item.category = name
         if item:
             # Fixes the default behavious of centering the first
             # item added to scene.
@@ -204,7 +202,7 @@ class MainView(QGraphicsView):
                     self.setCursor(Qt.CursorShape.UpArrowCursor)
                     return
                 elif isCircuit:
-                    item.setToolTip(None)
+                    item.setToolTip(item.item.name)
             elif (isinstance(item, WireItem) and item.handleAtPos(pos) and
                     not self.isDrawing):
                 self.setCursor(Qt.CursorShape.UpArrowCursor)
