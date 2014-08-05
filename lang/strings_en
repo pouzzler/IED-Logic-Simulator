@@ -53,6 +53,7 @@ Plug.str_connectGlobOutLocIn = "Can't connect local input and global output."
 Plug.str_connectHasConnection = "%s.%s already has an incoming connection."
 Plug.str_connect = '%s.%s connected to %s.%s.'
 Plug.str_invalidDisconnect = "Can't disconnect : %s.%s and %s.%s are not connected."
+Plug.str_disconnect = '%s.%s disconnected from %s.%s.'
 Plug.str_unavailableName = 'The name "%s" is unavailable.'
 Plug.str_newName = "%s.%s is now named %s."
 Plug.str_nameLen = 'Names must be at least one character long.'
