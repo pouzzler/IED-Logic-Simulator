@@ -109,6 +109,7 @@ class MainView(QGraphicsView):
             item.setPos(item.mapFromScene(self.mapToScene(e.pos())))
 
     def fillIO(self):
+        """Add as many global I/Os as still needed by the main circuit."""
         for item in self.scene().items():
             if isinstance(item, CircuitItem):
                 pos = item.pos()
@@ -154,34 +155,23 @@ class MainView(QGraphicsView):
                 elif isinstance(item, WireItem) and item.endIO is not None:
                     item.startIO.disconnect(item.endIO)
                 scene.removeItem(item)
-        # <- , anti-clockwise rotation
-        # TODO: serious problem with Qt: it is impossible to rotate
-        # a QGraphicsItemGroup around its gravity center like the
-        # current code does for individual items even though the
-        # group class inherits from the graphicsitem class.
-        # EDIT: group.boundingRect() is apparently in scene coordinates
         elif e.key() == Qt.Key_Left:
-            #~ group = scene.createItemGroup(selection)
-            #~ print(selection[0].boundingRect(), group.boundingRect())
-            #~ x = group.boundingRect().width() / 2
-            #~ y = group.boundingRect().height() / 2
-            #~ group.setTransformOriginPoint(x, y)
-            #~ group.setRotation(group.rotation() - 90)
-            #~ group.setTransform(
-            #~ QTransform().translate(x, y).rotate(-90).translate(y, x))
-            #~ scene.destroyItemGroup(group)
-            for item in selection:
-                x = item.boundingRect().width() / 2
-                y = item.boundingRect().height() / 2
-                item.setTransformOriginPoint(x, y)
-                item.setRotation(item.rotation() - 90)
+            group = scene.createItemGroup(selection)
+            br = group.mapToScene(group.boundingRect())
+            x = min([i.x() for i in br]) + group.boundingRect().width() / 2
+            y = min([i.y() for i in br]) + group.boundingRect().height() / 2
+            group.setTransformOriginPoint(x, y)
+            group.setRotation(group.rotation() - 90)
+            scene.destroyItemGroup(group)
         # -> , clockwise rotation
         elif e.key() == Qt.Key_Right:
-            for item in selection:
-                x = item.boundingRect().width() / 2
-                y = item.boundingRect().height() / 2
-                item.setTransformOriginPoint(x, y)
-                item.setRotation(item.rotation() + 90)
+            group = scene.createItemGroup(selection)
+            br = group.mapToScene(group.boundingRect())
+            x = min([i.x() for i in br]) + group.boundingRect().width() / 2
+            y = min([i.y() for i in br]) + group.boundingRect().height() / 2
+            group.setTransformOriginPoint(x, y)
+            group.setRotation(group.rotation() + 90)
+            scene.destroyItemGroup(group)
         # L, left align
         elif e.key() == Qt.Key_L:
             left = min([item.scenePos().x() for item in selection])

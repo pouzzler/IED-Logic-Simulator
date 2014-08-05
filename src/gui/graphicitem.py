@@ -98,8 +98,8 @@ class WireItem(QGraphicsPathItem):
 class PlugItem(QGraphicsPathItem):
     """Graphical wrapper around the engine Plug class."""
 
-    LARGE_DIAMETER = 25
-    SMALL_DIAMETER = 5
+    LARGE_DIAMETER = 30
+    SMALL_DIAMETER = 10
     VALUE_OFFSET = 8
     NAME_OFFSET = LARGE_DIAMETER + 1
 
@@ -118,10 +118,10 @@ class PlugItem(QGraphicsPathItem):
         self.pinPath = QPainterPath()
         if isInput:
             self.pinPath.addEllipse(
-                self.LARGE_DIAMETER - self.SMALL_DIAMETER,
-                self.LARGE_DIAMETER / 2 - self.SMALL_DIAMETER,
-                self.SMALL_DIAMETER * 2,
-                self.SMALL_DIAMETER * 2)
+                self.LARGE_DIAMETER + 1,
+                (self.LARGE_DIAMETER - self.SMALL_DIAMETER) / 2,
+                self.SMALL_DIAMETER,
+                self.SMALL_DIAMETER)
         else:
             self.pinPath.addEllipse(
                 0,
@@ -180,30 +180,20 @@ class PlugItem(QGraphicsPathItem):
         path = QPainterPath()
         if self.item.isInput:
             path.addEllipse(0, 0, self.LARGE_DIAMETER, self.LARGE_DIAMETER)
-            path.addEllipse(
-                self.LARGE_DIAMETER + 1,
-                (self.LARGE_DIAMETER - self.SMALL_DIAMETER) / 2,
-                self.SMALL_DIAMETER,
-                self.SMALL_DIAMETER)
         else:
             path.addRect(
                 self.SMALL_DIAMETER + 1, 0,
                 self.LARGE_DIAMETER, self.LARGE_DIAMETER)
-            path.addEllipse(
-                0,
-                (self.LARGE_DIAMETER - self.SMALL_DIAMETER) / 2,
-                self.SMALL_DIAMETER,
-                self.SMALL_DIAMETER)
+        path.addPath(self.pinPath)
         self.setPath(path)
-        br = self.mapToScene(self.boundingRect())
-        realX = min([item.x() for item in br])
-        realY = min([item.y() for item in br])
         self.name.setVisible(self.showName)
         self.name.setText(self.item.name)
+        br = self.mapToScene(self.boundingRect())
+        realX = min([i.x() for i in br]) + self.boundingRect().width() / 3
+        realY = min([i.y() for i in br]) + self.boundingRect().height() / 3
         self.name.setPos(self.mapFromScene(realX, realY + self.NAME_OFFSET))
         self.value.setText(str(int(self.item.value)))
-        self.value.setPos(self.mapFromScene(
-            realX + self.VALUE_OFFSET, realY + self.VALUE_OFFSET))
+        self.value.setPos(self.mapFromScene(realX, realY))
         self.value.setBrush(QColor('green' if self.item.value else 'red'))
         self.update()       # Force onscreen redraw after changes.
 
@@ -253,6 +243,25 @@ class CircuitItem(QGraphicsItem):
 
     def paint(self, painter, option, widget):
         """Draws the item."""
+        #~ painter.drawImage(QRectF(0, 0, self.imgW, self.imgH), self.image)
+        #~ self.ioH = 20
+        #~ self.ioW = 15
+        #~ self.radius = 5
+        #~ n = self.item.nb_inputs()
+        #~ for i in range(1 - int(n / 2), 2 + int(n / 2)):
+            #~ if i != 1 or n % 2:
+                #~ painter.drawLine(-self.ioW, i * self.ioH, 0, i * self.ioH)
+                #~ painter.drawEllipse(
+                    #~ -self.ioW - self.radius, i * self.ioH - self.radius / 2,
+                    #~ self.radius, self.radius)
+        #~ n = self.item.nb_outputs()
+        #~ for i in range(1 - int(n / 2), 2 + int(n / 2)):
+            #~ if i != 1 or n % 2:
+                #~ painter.drawLine(
+                    #~ self.imgW, i * self.ioH, self.imgW + self.ioW, i * self.ioH)
+                #~ painter.drawEllipse(
+                    #~ self.imgW + self.ioW, i * self.ioH - self.radius / 2,
+                    #~ self.radius, self.radius)
         painter.setPen(QPen(QColor('black'), 2))
         for i in range(self.nIn):   # Handles drawn 'by hand'.
             painter.drawPath(self.inputPaths[i])
