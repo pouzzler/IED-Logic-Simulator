@@ -122,7 +122,8 @@ class MainWindow(QMainWindow):
                     i = WireItem(item[0][0], item[0][1], item[0][1])
                 i.setPos(item[1])
                 i.setTransformOriginPoint(
-                    i.boundingRect().width() / 2, i.boundingRect().height() / 2)
+                    i.boundingRect().width() / 2,
+                    i.boundingRect().height() / 2)
                 i.setRotation(item[2])
                 i.setupPaint()
                 self.view.scene().addItem(i)

@@ -155,23 +155,22 @@ class MainView(QGraphicsView):
                 elif isinstance(item, WireItem) and item.endIO is not None:
                     item.startIO.disconnect(item.endIO)
                 scene.removeItem(item)
-        elif e.key() == Qt.Key_Left:
-            group = scene.createItemGroup(selection)
-            br = group.mapToScene(group.boundingRect())
-            x = min([i.x() for i in br]) + group.boundingRect().width() / 2
-            y = min([i.y() for i in br]) + group.boundingRect().height() / 2
-            group.setTransformOriginPoint(x, y)
-            group.setRotation(group.rotation() - 90)
-            scene.destroyItemGroup(group)
-        # -> , clockwise rotation
-        elif e.key() == Qt.Key_Right:
-            group = scene.createItemGroup(selection)
-            br = group.mapToScene(group.boundingRect())
-            x = min([i.x() for i in br]) + group.boundingRect().width() / 2
-            y = min([i.y() for i in br]) + group.boundingRect().height() / 2
-            group.setTransformOriginPoint(x, y)
-            group.setRotation(group.rotation() + 90)
-            scene.destroyItemGroup(group)
+        # <- ->, item rotation.
+        elif e.key() == Qt.Key_Left or e.key() == Qt.Key_Right:
+            angle = 90 if e.key() == Qt.Key_Right else -90
+            if len(selection) == 1:
+                x = selection[0].boundingRect().width() / 2
+                y = selection[0].boundingRect().height() / 2
+                selection[0].setTransformOriginPoint(x, y)
+                selection[0].setRotation(selection[0].rotation() + angle)
+            else:
+                group = scene.createItemGroup(selection)
+                br = group.mapToScene(group.boundingRect())
+                x = min([i.x() for i in br]) + group.boundingRect().width() / 2
+                y = min([i.y() for i in br]) + group.boundingRect().height() / 2
+                group.setTransformOriginPoint(x, y)
+                group.setRotation(group.rotation() + angle)
+                scene.destroyItemGroup(group)
         # L, left align
         elif e.key() == Qt.Key_L:
             left = min([item.scenePos().x() for item in selection])

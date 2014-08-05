@@ -4,7 +4,7 @@
 from math import atan2, pi, pow, sqrt
 from PySide.QtCore import QPointF, QRectF, Qt
 from PySide.QtGui import (
-    QBrush, QColor, QCursor, QFont, QGraphicsItem, QGraphicsPathItem, 
+    QBrush, QColor, QCursor, QFont, QGraphicsItem, QGraphicsPathItem,
     QGraphicsSimpleTextItem, QImage, QPainterPath, QPen, QStyle)
 from .util import filePath
 from engine.simulator import Circuit, Plug
@@ -94,6 +94,7 @@ class WireItem(QGraphicsPathItem):
             self.addPoint()
             self.setupPaint()
             scene.addItem(self)
+
 
 class PlugItem(QGraphicsPathItem):
     """Graphical wrapper around the engine Plug class."""
@@ -306,7 +307,7 @@ class CircuitItem(QGraphicsItem):
             painter.setPen(QPen(QColor('green')))
             painter.drawText(
                 QPointF(0, self.maxH + 2 * self.textH), (
-                    self.item.category if self.item.category 
+                    self.item.category if self.item.category
                     else self.item.__class__.__name__))
         # Default selection box doesn't work; simple reimplementation.
         if option.state & QStyle.State_Selected:

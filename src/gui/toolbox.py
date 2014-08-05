@@ -42,6 +42,7 @@ class ToolBox(QTreeWidget):
     def addUserCircuit(self, name):
         QTreeWidgetItem(self.userheader, [name, 'user'])
 
+
 class ToolBoxDockWidget(QDockWidget):
     """A dock widget containing our toolbox."""
 
