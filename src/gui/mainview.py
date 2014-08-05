@@ -108,6 +108,26 @@ class MainView(QGraphicsView):
             item.setupPaint()
             item.setPos(item.mapFromScene(self.mapToScene(e.pos())))
 
+    def fillIO(self):
+        for item in self.scene().items():
+            if isinstance(item, CircuitItem):
+                pos = item.pos()
+                circuit = item.item
+                off = 0
+                for input in circuit.inputList:
+                    if not input.sourcePlug:
+                        i = PlugItem(True, self.mainCircuit)
+                        self.scene().addItem(i)
+                        i.setPos(pos.x() - 30, pos.y() + off)
+                        off += 30
+                off = 0
+                for output in circuit.outputList:
+                    if not len(output.destinationPlugs):
+                        i = PlugItem(False, self.mainCircuit)
+                        self.scene().addItem(i)
+                        i.setPos(pos.x() + 100, pos.y() + off)
+                        off += 30
+
     def getNewName(self, item):
         """Shows a dialog, and sets item name to user input."""
         # ret = tuple string, bool

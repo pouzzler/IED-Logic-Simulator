@@ -60,6 +60,7 @@ class MainWindow(QMainWindow):
             lambda: SettingsDialog(self, self.config).exec_())
         editMenu.addAction(self.str_menuClearLogs, self.logDock.widget().clear)
         editMenu.addAction(self.str_menuClearCircuit, self.view.clearCircuit)
+        editMenu.addAction("TEST TEST", self.view.fillIO)
 
         docksMenu = QMenu(self.str_menuDocks)
         docksMenu.addAction(self.boxDock.toggleViewAction())
