@@ -8,7 +8,6 @@
 
 from engine.simulator import log  # le log
 from engine.gates import *        # portes logiques de base
-from engine.circuits import *     # circuits logiques avancés
 from engine.clock import *        # horloge
 from os.path import dirname, realpath
 
@@ -78,7 +77,7 @@ from time import sleep
 if __name__ == '__main__':
     strFile = (
         dirname(realpath(__file__))
-        + '/../lang/strings_' + 'en' + '.txt')
+        + '/../lang/strings_' + 'en')
     f = open(strFile, 'r')
     for _, line in enumerate(f):
         if line.startswith('Plug') or line.startswith('Circuit'):
@@ -135,9 +134,9 @@ if __name__ == '__main__':
     #~ O = FA.outputList[0]
     #~ COUT = FA.outputList[1]
     
-    NOT = TC.add_circuit(NotGate)
-    GIN = TC.add_input()
-    GOUT = TC.add_output()
+    NOT = TC.add_circuit(NotGate, )
+    GIN = Plug(True, None, TC)
+    GOUT = Plug(False, None, TC)
     I = NOT.inputList[0]
     O = NOT.outputList[0]
     GIN.connect(I)
