@@ -4,7 +4,7 @@
 from math import atan2, pi, pow, sqrt
 from PySide.QtCore import QPointF, QRectF, Qt
 from PySide.QtGui import (
-    QBrush, QColor, QFont, QGraphicsItem, QGraphicsPathItem, 
+    QBrush, QColor, QCursor, QFont, QGraphicsItem, QGraphicsPathItem, 
     QGraphicsSimpleTextItem, QImage, QPainterPath, QPen, QStyle)
 from .util import filePath
 from engine.simulator import Circuit, Plug
@@ -112,16 +112,22 @@ class PlugItem(QGraphicsPathItem):
         self.setFlag(QGraphicsItem.ItemSendsGeometryChanges)
         self.setAcceptsHoverEvents(True)
         self.oldPos = QPointF(0, 0)
-        self.ignoreChange = False
         # This path is needed at each mouse over event, to check if
         # the mouse is over a pin. We save it as an instance field,
         # rather than recreate it at each event.
         self.pinPath = QPainterPath()
-        self.pinPath.addEllipse(
-            self.LARGE_DIAMETER - self.SMALL_DIAMETER,
-            self.LARGE_DIAMETER / 2 - self.SMALL_DIAMETER,
-            self.SMALL_DIAMETER * 2,
-            self.SMALL_DIAMETER * 2)
+        if isInput:
+            self.pinPath.addEllipse(
+                self.LARGE_DIAMETER - self.SMALL_DIAMETER,
+                self.LARGE_DIAMETER / 2 - self.SMALL_DIAMETER,
+                self.SMALL_DIAMETER * 2,
+                self.SMALL_DIAMETER * 2)
+        else:
+            self.pinPath.addEllipse(
+                0,
+                (self.LARGE_DIAMETER - self.SMALL_DIAMETER) / 2,
+                self.SMALL_DIAMETER,
+                self.SMALL_DIAMETER)
         f = QFont('Times', 12, 75)
         # Won't rotate when we rotate our PlugItem.
         self.name = QGraphicsSimpleTextItem(self)
@@ -141,18 +147,24 @@ class PlugItem(QGraphicsPathItem):
         """
         return self.item if self.pinPath.contains(pos) else None
 
-    def itemChange(self, change, value):
-        if change == QGraphicsItem.ItemPositionHasChanged:
-            p = value - self.oldPos
-            if (p.manhattanLength() > 10):
-                if self.ignoreChange:
-                    self.ignoreChange = False
-                    return
-                else:
-                    self.ignoreChange = True
-                self.oldPos = value
-                #~ self.setPos(300, 300)
-        return QGraphicsItem.itemChange(self, change, value)
+    #~ def itemChange(self, change, value):
+        #~ """Implementing sticky positions for items, by steps of 10px."""
+        #~ if change == QGraphicsItem.ItemPositionChange:
+            #~ p = value - self.oldPos
+            #~ if (p.manhattanLength() > 30):
+                #~ newPos = QPointF(
+                    #~ int(20 * round(value.x() / 20)),
+                    #~ int(20 * round(value.y() / 20)))
+                #~ self.oldPos = newPos
+                #~ print(newPos)
+                #~ c = QCursor()
+                #~ c.setPos(
+                    #~ self.scene().views()[0].mapToGlobal(
+                        #~ self.scene().views()[0].mapFromScene(
+                            #~ newPos)))
+                #~ self.scene().views()[0].parent().setCursor(c)
+                #~ return newPos
+        #~ return QGraphicsItem.itemChange(self, change, value)
 
     def setCategoryVisibility(self, isVisible):
         """MainView requires PlugItems to function like CircuitItems."""
@@ -168,13 +180,20 @@ class PlugItem(QGraphicsPathItem):
         path = QPainterPath()
         if self.item.isInput:
             path.addEllipse(0, 0, self.LARGE_DIAMETER, self.LARGE_DIAMETER)
+            path.addEllipse(
+                self.LARGE_DIAMETER + 1,
+                (self.LARGE_DIAMETER - self.SMALL_DIAMETER) / 2,
+                self.SMALL_DIAMETER,
+                self.SMALL_DIAMETER)
         else:
-            path.addRect(0, 0, self.LARGE_DIAMETER, self.LARGE_DIAMETER)
-        path.addEllipse(
-            self.LARGE_DIAMETER + 1,
-            (self.LARGE_DIAMETER - self.SMALL_DIAMETER) / 2,
-            self.SMALL_DIAMETER,
-            self.SMALL_DIAMETER)
+            path.addRect(
+                self.SMALL_DIAMETER + 1, 0,
+                self.LARGE_DIAMETER, self.LARGE_DIAMETER)
+            path.addEllipse(
+                0,
+                (self.LARGE_DIAMETER - self.SMALL_DIAMETER) / 2,
+                self.SMALL_DIAMETER,
+                self.SMALL_DIAMETER)
         self.setPath(path)
         br = self.mapToScene(self.boundingRect())
         realX = min([item.x() for item in br])

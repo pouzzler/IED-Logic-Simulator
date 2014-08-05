@@ -34,11 +34,13 @@ class ToolBox(QTreeWidget):
         [
             QTreeWidgetItem(ioheader, [name])
             for name in [self.str_I, self.str_O, self.str_Clock]]
-        userheader = QTreeWidgetItem(self, [self.str_userCircuits])
-        [QTreeWidgetItem(userheader, [name[:-4], 'user'])
+        self.userheader = QTreeWidgetItem(self, [self.str_userCircuits])
+        [QTreeWidgetItem(self.userheader, [name[:-4], 'user'])
             for name in listdir(filePath('user/'))]
-        userheader.setExpanded(True)
+        self.userheader.setExpanded(True)
 
+    def addUserCircuit(self, name):
+        QTreeWidgetItem(self.userheader, [name, 'user'])
 
 class ToolBoxDockWidget(QDockWidget):
     """A dock widget containing our toolbox."""

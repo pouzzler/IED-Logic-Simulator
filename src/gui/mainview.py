@@ -85,22 +85,20 @@ class MainView(QGraphicsView):
             item = PlugItem(False, self.mainCircuit)
         elif model.item(0, 1).text() == 'user':
             item = CircuitItem(Circuit, self.mainCircuit)
-            circuit = Circuit(None, self.mainCircuit, name)
             f = open(filePath('user/') + name + '.crc', 'rb')
             children = pickle.load(f)
             f.close()
             for child in children:
                 if isinstance(child[0], Plug):
-                    child[0].owner = circuit
+                    child[0].owner = item.item
                     if child[0].isInput:
-                        circuit.inputList.append(child[0])
+                        item.item.inputList.append(child[0])
                     else:
-                        circuit.outputList.append(child[0])
+                        item.item.outputList.append(child[0])
                 elif isinstance(child[0], Circuit):
-                    child[0].owner = circuit
-                    circuit.circuitList.append(child[0])
-            circuit.category = name
-            item.item = circuit
+                    child[0].owner = item.item
+                    item.item.circuitList.append(child[0])
+            item.item.category = name
         if item:
             # Fixes the default behavious of centering the first
             # item added to scene.
@@ -109,6 +107,26 @@ class MainView(QGraphicsView):
             self.scene().addItem(item)
             item.setupPaint()
             item.setPos(item.mapFromScene(self.mapToScene(e.pos())))
+
+    def fillIO(self):
+        for item in self.scene().items():
+            if isinstance(item, CircuitItem):
+                pos = item.pos()
+                circuit = item.item
+                off = 0
+                for input in circuit.inputList:
+                    if not input.sourcePlug:
+                        i = PlugItem(True, self.mainCircuit)
+                        self.scene().addItem(i)
+                        i.setPos(pos.x() - 30, pos.y() + off)
+                        off += 30
+                off = 0
+                for output in circuit.outputList:
+                    if not len(output.destinationPlugs):
+                        i = PlugItem(False, self.mainCircuit)
+                        self.scene().addItem(i)
+                        i.setPos(pos.x() + 100, pos.y() + off)
+                        off += 30
 
     def getNewName(self, item):
         """Shows a dialog, and sets item name to user input."""
@@ -204,7 +222,7 @@ class MainView(QGraphicsView):
                     self.setCursor(Qt.CursorShape.UpArrowCursor)
                     return
                 elif isCircuit:
-                    item.setToolTip(None)
+                    item.setToolTip(item.item.name)
             elif (isinstance(item, WireItem) and item.handleAtPos(pos) and
                     not self.isDrawing):
                 self.setCursor(Qt.CursorShape.UpArrowCursor)
