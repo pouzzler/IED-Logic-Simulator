@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # coding=utf-8
 
+from os.path import basename
 import pickle
 import time
 from PySide.QtCore import Qt
@@ -118,6 +119,7 @@ class MainWindow(QMainWindow):
                     i.item = item[0]
                 else:           # Wire item
                     i = WireItem(item[0][0], item[0][1], item[0][1])
+                #~ i.setRotation(item[2])
                 i.setPos(item[1])
                 i.setupPaint()
                 self.view.scene().addItem(i)
@@ -132,13 +134,15 @@ class MainWindow(QMainWindow):
                 if (
                         isinstance(item, PlugItem)
                         or isinstance(item, CircuitItem)):
-                    items.append([item.item, item.pos()])
+                    items.append([item.item, item.pos(), item.rotation()])
                 elif isinstance(item, WireItem):
                     items.append([
-                        [item.startIO, item.points, item.endIO], item.pos()])
+                        [item.startIO, item.points, item.endIO],
+                        item.pos(), item.rotation()])
             f = open(ret[0] + '.crc', 'wb')
             pickle.dump(items, f, pickle.HIGHEST_PROTOCOL)
             f.close()
+            self.boxDock.widget().addUserCircuit(basename(ret[0]))
 
     def setLang(self, lang):
         """Sets the UI language. Warns a restart is required."""
