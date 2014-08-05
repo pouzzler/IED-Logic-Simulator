@@ -12,7 +12,6 @@ It's easy to connect this output to inputs so that they force the evaluation
 of the circuit at each clock tick.
 """
 
-from .circuits import *
 from threading import Thread
 import time
 
