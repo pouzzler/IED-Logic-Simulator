@@ -5,7 +5,7 @@ import inspect
 from PySide.QtGui import (
     QCheckBox, QComboBox, QDockWidget, QGridLayout, QLabel, QLineEdit,
     QPushButton, QRadioButton, QSizePolicy, QWidget)
-from .graphicitem import CircuitItem
+from .graphicitem import CircuitItem, WireItem
 from .util import boolToCheckState
 from engine.gates import *
 

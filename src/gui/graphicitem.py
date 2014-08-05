@@ -116,11 +116,18 @@ class PlugItem(QGraphicsPathItem):
         # the mouse is over a pin. We save it as an instance field,
         # rather than recreate it at each event.
         self.pinPath = QPainterPath()
-        self.pinPath.addEllipse(
-            self.LARGE_DIAMETER - self.SMALL_DIAMETER,
-            self.LARGE_DIAMETER / 2 - self.SMALL_DIAMETER,
-            self.SMALL_DIAMETER * 2,
-            self.SMALL_DIAMETER * 2)
+        if isInput:
+            self.pinPath.addEllipse(
+                self.LARGE_DIAMETER - self.SMALL_DIAMETER,
+                self.LARGE_DIAMETER / 2 - self.SMALL_DIAMETER,
+                self.SMALL_DIAMETER * 2,
+                self.SMALL_DIAMETER * 2)
+        else:
+            self.pinPath.addEllipse(
+                0,
+                (self.LARGE_DIAMETER - self.SMALL_DIAMETER) / 2,
+                self.SMALL_DIAMETER,
+                self.SMALL_DIAMETER)
         f = QFont('Times', 12, 75)
         # Won't rotate when we rotate our PlugItem.
         self.name = QGraphicsSimpleTextItem(self)
@@ -173,13 +180,20 @@ class PlugItem(QGraphicsPathItem):
         path = QPainterPath()
         if self.item.isInput:
             path.addEllipse(0, 0, self.LARGE_DIAMETER, self.LARGE_DIAMETER)
+            path.addEllipse(
+                self.LARGE_DIAMETER + 1,
+                (self.LARGE_DIAMETER - self.SMALL_DIAMETER) / 2,
+                self.SMALL_DIAMETER,
+                self.SMALL_DIAMETER)
         else:
-            path.addRect(0, 0, self.LARGE_DIAMETER, self.LARGE_DIAMETER)
-        path.addEllipse(
-            self.LARGE_DIAMETER + 1,
-            (self.LARGE_DIAMETER - self.SMALL_DIAMETER) / 2,
-            self.SMALL_DIAMETER,
-            self.SMALL_DIAMETER)
+            path.addRect(
+                self.SMALL_DIAMETER + 1, 0,
+                self.LARGE_DIAMETER, self.LARGE_DIAMETER)
+            path.addEllipse(
+                0,
+                (self.LARGE_DIAMETER - self.SMALL_DIAMETER) / 2,
+                self.SMALL_DIAMETER,
+                self.SMALL_DIAMETER)
         self.setPath(path)
         br = self.mapToScene(self.boundingRect())
         realX = min([item.x() for item in br])
