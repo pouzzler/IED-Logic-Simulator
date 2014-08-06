@@ -164,13 +164,13 @@ class MainView(QGraphicsView):
                 selection[0].setTransformOriginPoint(x, y)
                 selection[0].setRotation(selection[0].rotation() + angle)
             else:
-                group = scene.createItemGroup(selection)
-                br = group.mapToScene(group.boundingRect())
-                x = min([i.x() for i in br]) + group.boundingRect().width() / 2
-                y = min([i.y() for i in br]) + group.boundingRect().height() / 2
-                group.setTransformOriginPoint(x, y)
-                group.setRotation(group.rotation() + angle)
-                scene.destroyItemGroup(group)
+                grp = scene.createItemGroup(selection)
+                br = grp.mapToScene(grp.boundingRect())
+                x = min([i.x() for i in br]) + grp.boundingRect().width() / 2
+                y = min([i.y() for i in br]) + grp.boundingRect().height() / 2
+                grp.setTransformOriginPoint(x, y)
+                grp.setRotation(grp.rotation() + angle)
+                scene.destroyItemGroup(grp)
         # L, left align
         elif e.key() == Qt.Key_L:
             left = min([item.scenePos().x() for item in selection])
