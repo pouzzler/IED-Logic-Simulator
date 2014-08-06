@@ -134,7 +134,9 @@ if __name__ == '__main__':
     #~ O = FA.outputList[0]
     #~ COUT = FA.outputList[1]
     
-    NOT = TC.add_circuit(NotGate, )
+    NOT = NotGate(None, TC)
+    #~ NOT = TC.add_circuit(NotGate)
+    print(TC.circuitList)
     GIN = Plug(True, None, TC)
     GOUT = Plug(False, None, TC)
     I = NOT.inputList[0]

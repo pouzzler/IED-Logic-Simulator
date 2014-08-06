@@ -197,16 +197,12 @@ class Circuit:
         self.outputList = []
         self.circuitList = []
         log.info(self.str_circuitCreated % (self.class_name(), self.name,))
-
-    def add_circuit(self, circuitClass, name=None):
-        """Add a subcircuit to this circuit."""
-        circuit = circuitClass(name, self)  # also pass inputs using kwargs
-        self.circuitList.append(circuit)
-        if Circuit.addCircuitVerbose:
-            log.info(
-                self.str_circuitAdded
-                % (circuit.class_name(), circuit.name, self.name,))
-        return self.circuitList[-1]
+        if owner:
+            owner.circuitList.append(self)
+            if Circuit.addCircuitVerbose:
+                log.info(
+                    self.str_circuitAdded
+                    % (self.class_name(), self.name, self.owner.name,))
 
     def class_name(self):
         """Return the class name of this circuit."""

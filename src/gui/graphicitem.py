@@ -199,7 +199,7 @@ class CircuitItem(QGraphicsItem):
         self.showName = True
         self.showCategory = False
         imgDir = filePath('icons/')
-        self.item = owner.add_circuit(circuitClass)
+        self.item = circuitClass(None, owner)
         self.image = QImage(imgDir + circuitClass.__name__ + '.png')
         if not self.image:
             self.image = QImage(imgDir + 'Default.png')
