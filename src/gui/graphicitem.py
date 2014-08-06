@@ -2,7 +2,7 @@
 # coding=utf-8
 
 from math import atan2, pi, pow, sqrt
-from PySide.QtCore import QPointF, QRectF, Qt
+from PySide.QtCore import QPointF, QRectF, Qt, QTimer
 from PySide.QtGui import (
     QBrush, QColor, QCursor, QFont, QGraphicsItem, QGraphicsPathItem,
     QGraphicsSimpleTextItem, QImage, QPainterPath, QPen, QStyle)
@@ -13,28 +13,21 @@ from engine.simulator import Circuit, Plug
 class WireItem(QGraphicsPathItem):
     """Represents an electrical wire connecting two items."""
 
-    RADIUS = 2.5
+    radius = 5
 
-    def __init__(self, startIO, points, endIO=None):
-        """Handles two use cases:
-        __init__(self, startIO, onePoint, None) to create a Wire.
-        __init__(self, startIO, pointList, endIO) to load from file.
-        """
+    def __init__(self, startIO, pts, endIO=None):
         super(WireItem, self).__init__()
         self.setFlag(QGraphicsItem.ItemIsMovable)
         self.setFlag(QGraphicsItem.ItemIsSelectable)
-        # Remembering the Plug where the WireItem starts, for creating the
-        # connection, when the last segment is drawn over another IO.
+        self.setPen(QPen(QBrush(QColor(QColor('black'))), 2))
         self.startIO = startIO
         self.endIO = endIO
-        # The first point of our segments. The "moving point" used to
-        # redraw during mouseMove events.
-        self.points = (
-            points if isinstance(points, list) else [points, points])
-        # We dont want't to catch the WireItem handle when it is connected
-        # to a Plug, this puts our item under the Plug, and itemAt()
-        # will grab the Plug.
+        # Duplicate the origin, for redraws during mouse moves
+        self.points = (pts if isinstance(pts, list) else [pts, pts])
+        # Wire handle hovering over a Plug, MainView.mouseMove will detect
+        # correctly the Plug, not the wire handle.
         self.setZValue(-1)
+        # Can the wire be modified (not complete)?
         self.complete = True if endIO else False
 
     def addPoint(self):
@@ -43,21 +36,19 @@ class WireItem(QGraphicsPathItem):
 
     def connect(self, endIO):
         """Try to connect the end points of the Wire."""
-        if not self.startIO.connect(endIO):
-            return False
-        else:
+        if self.startIO.connect(endIO):
             self.endIO = endIO
-            self.complete = True
+            self.complete = True    # Wire can't be modified anymore.
             self.setupPaint()
             return True
+        return False
 
     def handleAtPos(self, pos):
         """Is there an interactive handle where the mouse is?"""
-        if self.complete:
-            return
-        path = QPainterPath()
-        path.addEllipse(self.points[-1], self.RADIUS, self.RADIUS)
-        return path.contains(pos)
+        if not self.complete:
+            path = QPainterPath()
+            path.addEllipse(self.points[-1], self.radius, self.radius)
+            return path.contains(pos)
 
     def moveLastPoint(self, endPoint):
         """Redraw the last, unfinished segment while the mouse moves."""
@@ -74,35 +65,31 @@ class WireItem(QGraphicsPathItem):
 
     def setupPaint(self):
         """Draw the wire segments and handle."""
-        self.setPen(QPen(QBrush(QColor(QColor('black'))), 2))
         path = QPainterPath()
         path.moveTo(self.points[0])
         for p in self.points[1:]:
             path.lineTo(p)
-        if not self.complete:
-            path.addEllipse(self.points[-1], self.RADIUS, self.RADIUS)
+        if not self.complete:   # An incomplete wire needs a handle
+            path.addEllipse(self.points[-1], self.radius, self.radius)
         self.setPath(path)
+        self.update()
 
     def removeLast(self):
         """Remove the last segment (user corrects user errors)."""
-        if self.complete:
-            return
-        scene = self.scene()
-        scene.removeItem(self)
-        self.points = self.points[0:-2]
-        if len(self.points) > 1:
-            self.addPoint()
-            self.setupPaint()
-            scene.addItem(self)
+        if not self.complete:
+            self.points = self.points[0:-2]
+            if len(self.points) > 1:
+                self.addPoint()
+                self.setupPaint()
+            else:
+                self.scene().removeItem(self)
 
 
 class PlugItem(QGraphicsPathItem):
     """Graphical wrapper around the engine Plug class."""
 
-    LARGE_DIAMETER = 30
-    SMALL_DIAMETER = 10
-    VALUE_OFFSET = 8
-    NAME_OFFSET = LARGE_DIAMETER + 1
+    bodyW = 30
+    piNW = 10
 
     def __init__(self, isInput, owner):
         super(PlugItem, self).__init__()
@@ -111,7 +98,12 @@ class PlugItem(QGraphicsPathItem):
         self.setFlag(QGraphicsItem.ItemIsMovable)
         self.setFlag(QGraphicsItem.ItemIsSelectable)
         self.setFlag(QGraphicsItem.ItemSendsGeometryChanges)
+        self.timer = QTimer()
+        self.timer.setInterval(200)
+        self.timer.setSingleShot(True)
+        self.timer.timeout.connect(self.itemHasStopped)
         self.setAcceptsHoverEvents(True)
+        self.setPen(QPen(QBrush(QColor(QColor('black'))), 2))
         self.oldPos = QPointF(0, 0)
         # This path is needed at each mouse over event, to check if
         # the mouse is over a pin. We save it as an instance field,
@@ -119,25 +111,21 @@ class PlugItem(QGraphicsPathItem):
         self.pinPath = QPainterPath()
         if isInput:
             self.pinPath.addEllipse(
-                self.LARGE_DIAMETER + 1,
-                (self.LARGE_DIAMETER - self.SMALL_DIAMETER) / 2,
-                self.SMALL_DIAMETER,
-                self.SMALL_DIAMETER)
+                self.bodyW + 1, (self.bodyW - self.piNW) / 2,
+                self.piNW, self.piNW)
         else:
             self.pinPath.addEllipse(
-                0,
-                (self.LARGE_DIAMETER - self.SMALL_DIAMETER) / 2,
-                self.SMALL_DIAMETER,
-                self.SMALL_DIAMETER)
+                0, (self.bodyW - self.piNW) / 2, self.piNW, self.piNW)
         f = QFont('Times', 12, 75)
-        # Won't rotate when we rotate our PlugItem.
+        # Name and value text labels.
         self.name = QGraphicsSimpleTextItem(self)
+        # that won't rotate when the PlugItem is rotated by the user.
         self.name.setFlag(QGraphicsItem.ItemIgnoresTransformations)
         self.name.setText(self.item.name)
         self.name.setFont(f)
         self.value = QGraphicsSimpleTextItem(self)
         self.value.setFlag(QGraphicsItem.ItemIgnoresTransformations)
-        self.value.setPos(self.VALUE_OFFSET, self.VALUE_OFFSET)
+        # Or else value would get the clicks, instead of the PlugItem.
         self.value.setFlag(QGraphicsItem.ItemStacksBehindParent)
         self.value.setFont(f)
         self.setupPaint()
@@ -148,24 +136,23 @@ class PlugItem(QGraphicsPathItem):
         """
         return self.item if self.pinPath.contains(pos) else None
 
-    #~ def itemChange(self, change, value):
-        #~ """Implementing sticky positions for items, by steps of 10px."""
-        #~ if change == QGraphicsItem.ItemPositionChange:
-            #~ p = value - self.oldPos
-            #~ if (p.manhattanLength() > 30):
-                #~ newPos = QPointF(
-                    #~ int(20 * round(value.x() / 20)),
-                    #~ int(20 * round(value.y() / 20)))
-                #~ self.oldPos = newPos
-                #~ print(newPos)
-                #~ c = QCursor()
-                #~ c.setPos(
-                    #~ self.scene().views()[0].mapToGlobal(
-                        #~ self.scene().views()[0].mapFromScene(
-                            #~ newPos)))
-                #~ self.scene().views()[0].parent().setCursor(c)
-                #~ return newPos
-        #~ return QGraphicsItem.itemChange(self, change, value)
+    def itemChange(self, change, value):
+        """Implementing sticky positions for items, by steps of 10px."""
+        if change == QGraphicsItem.ItemPositionHasChanged:
+            self.timer.start()  # Restart till we stop moving.
+        return QGraphicsItem.itemChange(self, change, value)
+
+    def itemHasStopped(self):
+        newPos = QPointF(
+            int(20 * round(self.pos().x() / 20)),
+            int(20 * round(self.pos().y() / 20)))
+        #~ c = QCursor()
+        #~ c.setPos(
+            #~ self.scene().views()[0].mapToGlobal(
+                #~ self.scene().views()[0].mapFromScene(
+                    #~ newPos)))
+        #~ self.scene().views()[0].parent().setCursor(c)
+        self.setPos(newPos)
 
     def setCategoryVisibility(self, isVisible):
         """MainView requires PlugItems to function like CircuitItems."""
@@ -180,21 +167,24 @@ class PlugItem(QGraphicsPathItem):
         """Offscreen rather than onscreen redraw (few changes)."""
         path = QPainterPath()
         if self.item.isInput:
-            path.addEllipse(0, 0, self.LARGE_DIAMETER, self.LARGE_DIAMETER)
+            path.addEllipse(0, 0, self.bodyW, self.bodyW)
         else:
             path.addRect(
-                self.SMALL_DIAMETER + 1, 0,
-                self.LARGE_DIAMETER, self.LARGE_DIAMETER)
+                self.piNW + 1, 0,
+                self.bodyW, self.bodyW)
         path.addPath(self.pinPath)
         self.setPath(path)
         self.name.setVisible(self.showName)
         self.name.setText(self.item.name)
         br = self.mapToScene(self.boundingRect())
-        realX = min([i.x() for i in br]) + self.boundingRect().width() / 3
-        realY = min([i.y() for i in br]) + self.boundingRect().height() / 3
-        self.name.setPos(self.mapFromScene(realX, realY + self.NAME_OFFSET))
+        w = self.boundingRect().width()
+        h = self.boundingRect().height()
+        realX = min([i.x() for i in br])
+        realY = min([i.y() for i in br])
+        self.name.setPos(self.mapFromScene(
+            realX, realY + (w if self.rotation() % 180 else h) + 1))
         self.value.setText(str(int(self.item.value)))
-        self.value.setPos(self.mapFromScene(realX, realY))
+        self.value.setPos(self.mapFromScene(realX + w / 3, realY + h / 3))
         self.value.setBrush(QColor('green' if self.item.value else 'red'))
         self.update()       # Force onscreen redraw after changes.
 
@@ -232,9 +222,7 @@ class CircuitItem(QGraphicsItem):
         return QRectF(0, 0, W, H)
 
     def handleAtPos(self, pos):
-        """Is there an interactive handle where the mouse is?
-        Also return the Plug under this handle.
-        """
+        """Is there an interactive handle where the mouse is? Return it."""
         for i in range(self.nIn):
             if self.inputPaths[i].contains(pos):
                 return self.item.inputList[i]
@@ -244,6 +232,7 @@ class CircuitItem(QGraphicsItem):
 
     def paint(self, painter, option, widget):
         """Draws the item."""
+        # TEST CODE FOR FUTURE REWRITE
         #~ painter.drawImage(QRectF(0, 0, self.imgW, self.imgH), self.image)
         #~ self.ioH = 20
         #~ self.ioW = 15
