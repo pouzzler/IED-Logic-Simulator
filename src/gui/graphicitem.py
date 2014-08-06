@@ -137,21 +137,16 @@ class PlugItem(QGraphicsPathItem):
         return self.item if self.pinPath.contains(pos) else None
 
     def itemChange(self, change, value):
-        """Implementing sticky positions for items, by steps of 10px."""
+        """Telling self to correct pos after timer expires."""
         if change == QGraphicsItem.ItemPositionHasChanged:
             self.timer.start()  # Restart till we stop moving.
         return QGraphicsItem.itemChange(self, change, value)
 
     def itemHasStopped(self):
+        """Correcting pos to fit on the grid."""
         newPos = QPointF(
-            int(20 * round(self.pos().x() / 20)),
-            int(20 * round(self.pos().y() / 20)))
-        #~ c = QCursor()
-        #~ c.setPos(
-            #~ self.scene().views()[0].mapToGlobal(
-                #~ self.scene().views()[0].mapFromScene(
-                    #~ newPos)))
-        #~ self.scene().views()[0].parent().setCursor(c)
+            int(10 * round(self.pos().x() / 10)),
+            int(10 * round(self.pos().y() / 10)))
         self.setPos(newPos)
 
     def setCategoryVisibility(self, isVisible):
