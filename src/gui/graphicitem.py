@@ -19,6 +19,7 @@ class WireItem(QGraphicsPathItem):
         super(WireItem, self).__init__()
         self.setFlag(QGraphicsItem.ItemIsMovable)
         self.setFlag(QGraphicsItem.ItemIsSelectable)
+        self.setFlag(QGraphicsItem.ItemSendsGeometryChanges)
         self.setPen(QPen(QBrush(QColor(QColor('black'))), 2))
         self.startIO = startIO
         self.endIO = endIO
@@ -49,6 +50,13 @@ class WireItem(QGraphicsPathItem):
             path = QPainterPath()
             path.addEllipse(self.points[-1], self.radius, self.radius)
             return path.contains(pos)
+
+    def itemChange(self, change, value):
+        """Warning view it will soon have to correct pos."""
+        if change == QGraphicsItem.ItemPositionHasChanged:
+            # Restart till we stop moving.
+            self.scene().views()[0].timer.start()
+        return QGraphicsItem.itemChange(self, change, value)
 
     def moveLastPoint(self, endPoint):
         """Redraw the last, unfinished segment while the mouse moves."""
@@ -89,7 +97,7 @@ class PlugItem(QGraphicsPathItem):
     """Graphical wrapper around the engine Plug class."""
 
     bodyW = 30
-    piNW = 10
+    pinW = 10
 
     def __init__(self, isInput, owner):
         super(PlugItem, self).__init__()
@@ -98,10 +106,6 @@ class PlugItem(QGraphicsPathItem):
         self.setFlag(QGraphicsItem.ItemIsMovable)
         self.setFlag(QGraphicsItem.ItemIsSelectable)
         self.setFlag(QGraphicsItem.ItemSendsGeometryChanges)
-        self.timer = QTimer()
-        self.timer.setInterval(200)
-        self.timer.setSingleShot(True)
-        self.timer.timeout.connect(self.itemHasStopped)
         self.setAcceptsHoverEvents(True)
         self.setPen(QPen(QBrush(QColor(QColor('black'))), 2))
         self.oldPos = QPointF(0, 0)
@@ -111,11 +115,11 @@ class PlugItem(QGraphicsPathItem):
         self.pinPath = QPainterPath()
         if isInput:
             self.pinPath.addEllipse(
-                self.bodyW + 1, (self.bodyW - self.piNW) / 2,
-                self.piNW, self.piNW)
+                self.bodyW + 1, (self.bodyW - self.pinW) / 2,
+                self.pinW, self.pinW)
         else:
             self.pinPath.addEllipse(
-                0, (self.bodyW - self.piNW) / 2, self.piNW, self.piNW)
+                0, (self.bodyW - self.pinW) / 2, self.pinW, self.pinW)
         f = QFont('Times', 12, 75)
         # Name and value text labels.
         self.name = QGraphicsSimpleTextItem(self)
@@ -137,17 +141,12 @@ class PlugItem(QGraphicsPathItem):
         return self.item if self.pinPath.contains(pos) else None
 
     def itemChange(self, change, value):
-        """Telling self to correct pos after timer expires."""
+        """Warning view it will soon have to correct pos."""
         if change == QGraphicsItem.ItemPositionHasChanged:
-            self.timer.start()  # Restart till we stop moving.
+            # Restart till we stop moving.
+            self.scene().views()[0].timer.start()
         return QGraphicsItem.itemChange(self, change, value)
 
-    def itemHasStopped(self):
-        """Correcting pos to fit on the grid."""
-        newPos = QPointF(
-            int(10 * round(self.pos().x() / 10)),
-            int(10 * round(self.pos().y() / 10)))
-        self.setPos(newPos)
 
     def setCategoryVisibility(self, isVisible):
         """MainView requires PlugItems to function like CircuitItems."""
@@ -165,7 +164,7 @@ class PlugItem(QGraphicsPathItem):
             path.addEllipse(0, 0, self.bodyW, self.bodyW)
         else:
             path.addRect(
-                self.piNW + 1, 0,
+                self.pinW + 1, 0,
                 self.bodyW, self.bodyW)
         path.addPath(self.pinPath)
         self.setPath(path)
@@ -196,6 +195,7 @@ class CircuitItem(QGraphicsItem):
         super(CircuitItem, self).__init__()
         self.setFlag(QGraphicsItem.ItemIsMovable)
         self.setFlag(QGraphicsItem.ItemIsSelectable)
+        self.setFlag(QGraphicsItem.ItemSendsGeometryChanges)
         self.showName = True
         self.showCategory = False
         imgDir = filePath('icons/')
@@ -224,6 +224,13 @@ class CircuitItem(QGraphicsItem):
         for i in range(self.nOut):
             if self.outputPaths[i].contains(pos):
                 return self.item.outputList[i]
+
+    def itemChange(self, change, value):
+        """Warning view it will soon have to correct pos."""
+        if change == QGraphicsItem.ItemPositionHasChanged:
+            # Restart till we stop moving.
+            self.scene().views()[0].timer.start()
+        return QGraphicsItem.itemChange(self, change, value)
 
     def paint(self, painter, option, widget):
         """Draws the item."""

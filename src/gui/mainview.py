@@ -2,7 +2,7 @@
 # coding=utf-8
 
 import pickle
-from PySide.QtCore import QModelIndex, QPoint, Qt, QTimer
+from PySide.QtCore import QModelIndex, QPoint, QPointF, Qt, QTimer
 from PySide.QtGui import (
     QCursor, QImage, QInputDialog, QGraphicsItem, QGraphicsScene,
     QGraphicsView, QMenu, QStandardItemModel)
@@ -24,6 +24,10 @@ class MainView(QGraphicsView):
         self.setScene(QGraphicsScene(parent))
         self.isDrawing = False          # user currently not drawing
         self.mainCircuit = Circuit("Main", None)
+        self.timer = QTimer()
+        self.timer.setInterval(200)
+        self.timer.setSingleShot(True)
+        self.timer.timeout.connect(self.setItemsInGrid)
 
     def clearCircuit(self):
         """Clears every item from the circuit designer."""
@@ -277,6 +281,14 @@ class MainView(QGraphicsView):
         for i in self.scene().items():
             if isinstance(i, PlugItem):
                 i.setupPaint()
+
+    def setItemsInGrid(self):
+        """Correcting items pos to fit on the grid."""
+        for item in self.scene().selectedItems():
+            newPos = QPointF(
+                int(10 * round(item.pos().x() / 10)),
+                int(10 * round(item.pos().y() / 10)))
+            item.setPos(newPos)
 
     def write(self, message):
         """Briefly display a log WARNING."""
