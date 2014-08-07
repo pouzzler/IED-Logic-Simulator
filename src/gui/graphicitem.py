@@ -17,9 +17,9 @@ class WireItem(QGraphicsPathItem):
 
     def __init__(self, startIO, pts, endIO=None):
         super(WireItem, self).__init__()
-        self.setFlag(QGraphicsItem.ItemIsMovable)
-        self.setFlag(QGraphicsItem.ItemIsSelectable)
-        self.setFlag(QGraphicsItem.ItemSendsGeometryChanges)
+        self.setFlags(
+            QGraphicsItem.ItemIsMovable | QGraphicsItem.ItemIsSelectable
+            | QGraphicsItem.ItemSendsGeometryChanges)
         self.setPen(QPen(QBrush(QColor(QColor('black'))), 2))
         self.startIO = startIO
         self.endIO = endIO
@@ -147,6 +147,11 @@ class PlugItem(QGraphicsPathItem):
             self.scene().views()[0].timer.start()
         return QGraphicsItem.itemChange(self, change, value)
 
+    def setAndUpdate(self):
+        self.item.set(not self.item.value)
+        for i in self.scene().items():
+            if isinstance(i, PlugItem):
+                i.setupPaint()
 
     def setCategoryVisibility(self, isVisible):
         """MainView requires PlugItems to function like CircuitItems."""
@@ -187,7 +192,7 @@ class CircuitItem(QGraphicsItem):
     """Graphical wrapper around the engine Circuit class."""
 
     textH = 12
-    ioH = 10
+    ioH = 15
     ioW = 20
     radius = 2.5
 
@@ -196,24 +201,27 @@ class CircuitItem(QGraphicsItem):
         self.setFlag(QGraphicsItem.ItemIsMovable)
         self.setFlag(QGraphicsItem.ItemIsSelectable)
         self.setFlag(QGraphicsItem.ItemSendsGeometryChanges)
-        self.showName = True
-        self.showCategory = False
         imgDir = filePath('icons/')
         self.item = circuitClass(None, owner)
         self.image = QImage(imgDir + circuitClass.__name__ + '.png')
         if not self.image:
             self.image = QImage(imgDir + 'Default.png')
             self.showCategory = True
+        self.showName = True        # Name and category text labels.
+        self.showCategory = False
+        self.name = QGraphicsSimpleTextItem(self)
+        # that won't rotate when the PlugItem is rotated by the user.
+        self.name.setFlag(QGraphicsItem.ItemIgnoresTransformations)
+        self.name.setText(self.item.name)
+        self.category = QGraphicsSimpleTextItem(self)
+        self.category.setFlag(QGraphicsItem.ItemIgnoresTransformations)
+        self.category.setText(self.item.category)
         self.setupPaint()
 
     def boundingRect(self):
         """Qt requires overloading this when overloading QGraphicsItem."""
         H = self.maxH
         W = 4 * self.radius + 2 * self.ioW + self.imgW
-        if self.showCategory:
-            H = H + 2 * self.textH
-        elif self.showName:
-            H = H + self.textH
         return QRectF(0, 0, W, H)
 
     def handleAtPos(self, pos):
@@ -286,20 +294,6 @@ class CircuitItem(QGraphicsItem):
                 self.imgW,
                 self.imgH),
             self.image)                 # Body drawn from a png.
-        f = QFont('Times')              # Draw name & category.
-        f.setPixelSize(self.textH)
-        painter.setFont(f)
-        if self.showName:
-            painter.setPen(QPen(QColor('red')))
-            painter.drawText(
-                QPointF(0, self.maxH + self.textH),
-                self.item.name)
-        if self.showCategory:
-            painter.setPen(QPen(QColor('green')))
-            painter.drawText(
-                QPointF(0, self.maxH + 2 * self.textH), (
-                    self.item.category if self.item.category
-                    else self.item.__class__.__name__))
         # Default selection box doesn't work; simple reimplementation.
         if option.state & QStyle.State_Selected:
             pen = QPen(Qt.black, 1, Qt.DashLine)
@@ -362,5 +356,26 @@ class CircuitItem(QGraphicsItem):
                 2 * self.radius,
                 2 * self.radius)
             self.outputPaths.append(path)
-        self.prepareGeometryChange()
+        br = self.mapToScene(self.boundingRect())
+        w = self.boundingRect().width()
+        h = self.boundingRect().height()
+        realX = min([i.x() for i in br])
+        realY = min([i.y() for i in br])
+        self.name.setVisible(self.showName)
+        self.category.setVisible(self.showCategory)
+        if self.showName or self.showCategory:
+            firstY = realY + (w if self.rotation() % 180 else h) + 1
+            secondY = firstY + self.textH
+            if self.showName:
+                self.name.setBrush(QColor('red'))
+                self.name.setText(self.item.name)
+                self.name.setPos(self.mapFromScene(realX, firstY))
+            if self.showCategory:
+                self.category.setBrush(QColor('green'))
+                self.category.setText(
+                    self.item.category if self.item.category
+                    else self.item.__class__.__name__)
+                self.category.setPos(self.mapFromScene(
+                    realX, secondY if self.showName else firstY))
+        self.prepareGeometryChange()    # Must be called (cf Qt doc)
         self.update()       # Force onscreen redraw after changes.
