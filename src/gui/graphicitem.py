@@ -33,7 +33,12 @@ class WireItem(QGraphicsPathItem):
 
     def addPoint(self):
         """Duplicates the end point, for use as a moving point during moves."""
+        newPos = QPointF(
+            int(10 * round(self.points[-1].x() / 10)),
+            int(10 * round(self.points[-1].y() / 10)))
+        self.points[-1] = newPos
         self.points.append(self.points[-1])
+        self.setupPaint()
 
     def connect(self, endIO):
         """Try to connect the end points of the Wire."""
