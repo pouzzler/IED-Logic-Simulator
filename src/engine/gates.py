@@ -46,7 +46,7 @@ class OrGate(Circuit):
 
 class NorGate(Circuit):
     """Any number of inputs. Output false unless every input false."""
-    
+
     def __init__(self, name, owner, inputs=2):
         Circuit.__init__(self, name, owner)
         for i in range(inputs):
@@ -65,11 +65,8 @@ class XorGate(Circuit):
         Plug(False, None, self)
 
     def evalfun(self):
-        c = 0
-        for inp in self.inputList:
-            if inp.value is True:
-                c += 1
-        self.outputList[0].set(c % 2)
+        valuesList = [input.value for input in self.inputList]
+        self.outputList[0].set(valuesList.count(1) % 2)
 
 
 class XnorGate(Circuit):
