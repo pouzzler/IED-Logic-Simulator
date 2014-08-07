@@ -1,0 +1,403 @@
+.\" Man page generated from reStructuredText.
+.
+.TH "MAGIC_CIRCUIT_SIMULATOR" "1" "August 07, 2014" "0.0.1" "magic_circuit_simulator"
+.SH NAME
+magic_circuit_simulator \- magic_circuit_simulator Documentation
+.
+.nr rst2man-indent-level 0
+.
+.de1 rstReportMargin
+\\$1 \\n[an-margin]
+level \\n[rst2man-indent-level]
+level margin: \\n[rst2man-indent\\n[rst2man-indent-level]]
+-
+\\n[rst2man-indent0]
+\\n[rst2man-indent1]
+\\n[rst2man-indent2]
+..
+.de1 INDENT
+.\" .rstReportMargin pre:
+. RS \\$1
+. nr rst2man-indent\\n[rst2man-indent-level] \\n[an-margin]
+. nr rst2man-indent-level +1
+.\" .rstReportMargin post:
+..
+.de UNINDENT
+. RE
+.\" indent \\n[an-margin]
+.\" old: \\n[rst2man-indent\\n[rst2man-indent-level]]
+.nr rst2man-indent-level -1
+.\" new: \\n[rst2man-indent\\n[rst2man-indent-level]]
+.in \\n[rst2man-indent\\n[rst2man-indent-level]]u
+..
+.sp
+Contents:
+.SH ENGINE CLASSES AND METHODS
+.SS Plug methods list
+.nf
+\fIPlug.connect\-section\fP
+\fIPlug.disconnect\-section\fP
+\fIPlug.generate_name\-section\fP
+\fIPlug.set\-section\fP
+.fi
+.sp
+.SS Circuit methods list
+.nf
+\fICircuit.class_name\-section\fP
+\fICircuit.evalfun\-section\fP
+\fICircuit.generate_name\-section\fP
+\fICircuit.nb_inputs\-section\fP
+\fICircuit.nb_outputs\-section\fP
+\fICircuit.remove\-section\fP
+\fICircuit.setName\-section\fP
+.fi
+.sp
+.SS Plug methods descriptions
+.SS Plug.connect(other)
+.INDENT 0.0
+.TP
+.B Plug.connect(other)
+Connects two plugs, or logs a warning message if the connection isn\(aqt valid.
+.INDENT 7.0
+.TP
+.B Parameters
+\fBother\fP (\fIPlug\fP) \-\- the second plug of the connection
+.TP
+.B Returns
+True if the connection has been established, False otherwise
+.TP
+.B Return type
+bool
+.UNINDENT
+.sp
+exemple:
+.INDENT 7.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+plugA.connect(plugB)
+=> True if plugA has been connected to plugB
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.UNINDENT
+.SS Plug.disconnect(other)
+.INDENT 0.0
+.TP
+.B Plug.disconnect(other)
+Disconnects two plugs, or logs a warning message if the disconnection isn\(aqt valid.
+.INDENT 7.0
+.TP
+.B Parameters
+\fBother\fP (\fIPlug\fP) \-\- the second plug of the disconnection
+.TP
+.B Returns
+True if the has been successfully disconnected, False otherwise
+.TP
+.B Return type
+bool
+.UNINDENT
+.sp
+exemple:
+.INDENT 7.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+plugA.disconnect(plugB)
+=> True if plugB has been disconnected from plugA
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.UNINDENT
+.SS Plug.generate_name()
+.INDENT 0.0
+.TP
+.B Plug.generate_name()
+Generate a name for the object.
+This method is called in the Plug constructor if no name was given to it. The generated name begin with \(aqin\(aq or \(aqout\(aq whether the Plug is an input or an output and ends with a number so that there cannot be two identical Plug names belonging to the same parent Circuit.
+.INDENT 7.0
+.TP
+.B Returns
+The generated name
+.TP
+.B Return type
+str
+.UNINDENT
+.sp
+exemple:
+.INDENT 7.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+plugA.generate_name()
+=> out3
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.UNINDENT
+.SS Plug.set(value)
+.INDENT 0.0
+.TP
+.B Plug.set(value)
+Sets the boolean value of a Plug.
+True or 1 means that the power applied to the Plug is high. False or 0 means that the power is Low.
+.INDENT 7.0
+.TP
+.B Parameters
+\fBvalue\fP (\fIbool\fP) \-\- The plug electric power value
+.UNINDENT
+.sp
+exemple:
+.INDENT 7.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+plugA.set(1)
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.UNINDENT
+.SS Plug.setName(name)
+.INDENT 0.0
+.TP
+.B Plug.setName(name)
+Sets the object\(aqs name.
+The name cannot be empty or used by another Plug of the parent Circuit.
+.INDENT 7.0
+.TP
+.B Parameters
+\fBname\fP (\fIstr\fP) \-\- The object\(aqs name
+.TP
+.B Returns
+True if the object\(aqs name has been successfully set, False otherwise
+.TP
+.B Return type
+bool
+.UNINDENT
+.sp
+exemple:
+.INDENT 7.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+plugA.setName(\(aqmyInputPlug\(aq)
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.UNINDENT
+.SS Circuit methods descriptions
+.SS Circuit.class_name()
+.INDENT 0.0
+.TP
+.B Circuit.class_name()
+Retrieve the class name of the object.
+It is usefull to get the name of a Circuit subclass (gates).
+.INDENT 7.0
+.TP
+.B Returns
+The object class name
+.TP
+.B Return type
+str
+.UNINDENT
+.sp
+exemple:
+.INDENT 7.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+circuitA.class_name()
+=> AndGate
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.UNINDENT
+.SS Circuit.evalfun()
+.INDENT 0.0
+.TP
+.B Circuit.evalfun()
+The evalfun method contains a function which must compute and set the object\(aqs output(s) value(s) based on the object input(s) value(s).
+.INDENT 7.0
+.TP
+.B Returns
+The object class name
+.TP
+.B Return type
+str
+.UNINDENT
+.sp
+\fBNOTE:\fP
+.INDENT 7.0
+.INDENT 3.5
+Only Circuit subclass (gates) have an evalfun method. For instance, the NotGate Circuit subclass have an evalfun method which sets its output to be the logic negation of its input.
+.UNINDENT
+.UNINDENT
+.UNINDENT
+.SS Circuit.generate_name()
+.INDENT 0.0
+.TP
+.B Circuit.generate_name()
+Generate a name for the Circuit.
+This method is called in the Circuit constructor if no name was given to it. The generated name begin with the object class name and ends with a number so that there cannot be two identical Circuit names belonging to the same parent Circuit.
+.INDENT 7.0
+.TP
+.B Returns
+The generated name
+.TP
+.B Return type
+str
+.UNINDENT
+.sp
+exemple:
+.INDENT 7.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+circuitA.generate_name()
+=> XorGate2
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.UNINDENT
+.SS Circuit.nb_inputs()
+.INDENT 0.0
+.TP
+.B Circuit.nb_inputs()
+Get the inputs number of the Circuit.
+.INDENT 7.0
+.TP
+.B Returns
+The inputs number
+.TP
+.B Return type
+int
+.UNINDENT
+.sp
+exemple:
+.INDENT 7.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+circuitA.nb_inputs()
+=> 6
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.UNINDENT
+.SS Circuit.nb_outputs()
+.INDENT 0.0
+.TP
+.B Circuit.nb_outputs()
+Get the outputs number of the Circuit.
+.INDENT 7.0
+.TP
+.B Returns
+The outputs number
+.TP
+.B Return type
+int
+.UNINDENT
+.sp
+exemple:
+.INDENT 7.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+circuitA.nb_outputs()
+=> 2
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.UNINDENT
+.SS Circuit.remove(component)
+.INDENT 0.0
+.TP
+.B Circuit.remove(component)
+Remove a component from the object.
+The component can be a Plug or a Circuit. If it is a Plug the method will operate Plugs disconnections before removing the Plug so that it is fully removd from anywhere.
+.INDENT 7.0
+.TP
+.B Parameters
+\fBcomponent\fP (\fIPlug or Circuit\fP) \-\- The component to remove from the object
+.TP
+.B Returns
+True if the component has been successfully removed from the object
+.TP
+.B Return type
+bool
+.UNINDENT
+.sp
+exemple:
+.INDENT 7.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+circuitA.remove(plugA)
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.UNINDENT
+.SS Circuit.setName(name)
+.INDENT 0.0
+.TP
+.B Circuit.setName(name)
+Sets the object\(aqs name.
+The name cannot be empty or used by another Plug of the parent Circuit.
+.INDENT 7.0
+.TP
+.B Parameters
+\fBname\fP (\fIstr\fP) \-\- The object\(aqs name
+.TP
+.B Returns
+True if the object\(aqs name has been successfully set, False otherwise
+.TP
+.B Return type
+bool
+.UNINDENT
+.sp
+exemple:
+.INDENT 7.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+circuitA.setName(\(aqAND_1\(aq)
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.UNINDENT
+.INDENT 0.0
+.IP \(bu 2
+\fIgenindex\fP
+.IP \(bu 2
+\fImodindex\fP
+.IP \(bu 2
+\fIsearch\fP
+.UNINDENT
+.SH AUTHOR
+Sebastien Magnien & Mathieu Fourcroy
+.SH COPYRIGHT
+2014, Sebastien Magnien & Mathieu Fourcroy
+.\" Generated by docutils manpage writer.
+.

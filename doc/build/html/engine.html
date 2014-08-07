@@ -1,0 +1,452 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Engine classes and methods &mdash; magic_circuit_simulator 0.0.1 documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="magic_circuit_simulator 0.0.1 documentation" href="index.html" />
+    <link rel="prev" title="Welcome to magic_circuit_simulator’s documentation!" href="index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="index.html" title="Welcome to magic_circuit_simulator’s documentation!"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">magic_circuit_simulator 0.0.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="engine-classes-and-methods">
+<h1>Engine classes and methods<a class="headerlink" href="#engine-classes-and-methods" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="plug-methods-list">
+<h2>Plug methods list<a class="headerlink" href="#plug-methods-list" title="Permalink to this headline">¶</a></h2>
+<div class="line-block">
+<div class="line"><a class="reference internal" href="#plug-connect-section"><em>Plug.connect(other)</em></a></div>
+<div class="line"><a class="reference internal" href="#plug-disconnect-section"><em>Plug.disconnect(other)</em></a></div>
+<div class="line"><a class="reference internal" href="#plug-generate-name-section"><em>Plug.generate_name()</em></a></div>
+<div class="line"><a class="reference internal" href="#plug-set-section"><em>Plug.set(value)</em></a></div>
+</div>
+</div>
+<div class="section" id="circuit-methods-list">
+<h2>Circuit methods list<a class="headerlink" href="#circuit-methods-list" title="Permalink to this headline">¶</a></h2>
+<div class="line-block">
+<div class="line"><a class="reference internal" href="#circuit-class-name-section"><em>Circuit.class_name()</em></a></div>
+<div class="line"><a class="reference internal" href="#circuit-evalfun-section"><em>Circuit.evalfun()</em></a></div>
+<div class="line"><a class="reference internal" href="#circuit-generate-name-section"><em>Circuit.generate_name()</em></a></div>
+<div class="line"><a class="reference internal" href="#circuit-nb-inputs-section"><em>Circuit.nb_inputs()</em></a></div>
+<div class="line"><a class="reference internal" href="#circuit-nb-outputs-section"><em>Circuit.nb_outputs()</em></a></div>
+<div class="line"><a class="reference internal" href="#circuit-remove-section"><em>Circuit.remove(component)</em></a></div>
+<div class="line"><a class="reference internal" href="#circuit-setname-section"><em>Circuit.setName(name)</em></a></div>
+</div>
+</div>
+<div class="section" id="plug-methods-descriptions">
+<h2>Plug methods descriptions<a class="headerlink" href="#plug-methods-descriptions" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="plug-connect-other">
+<span id="plug-connect-section"></span><h3>Plug.connect(other)<a class="headerlink" href="#plug-connect-other" title="Permalink to this headline">¶</a></h3>
+<dl class="method">
+<dt id="Plug.connect">
+<tt class="descclassname">Plug.</tt><tt class="descname">connect</tt><big>(</big><em>other</em><big>)</big><a class="headerlink" href="#Plug.connect" title="Permalink to this definition">¶</a></dt>
+<dd><p>Connects two plugs, or logs a warning message if the connection isn&#8217;t valid.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>other</strong> (<em>Plug</em>) &#8211; the second plug of the connection</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">True if the connection has been established, False otherwise</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">bool</td>
+</tr>
+</tbody>
+</table>
+<p>exemple:</p>
+<div class="highlight-python"><div class="highlight"><pre>plugA.connect(plugB)
+=&gt; True if plugA has been connected to plugB
+</pre></div>
+</div>
+</dd></dl>
+
+</div>
+<div class="section" id="plug-disconnect-other">
+<span id="plug-disconnect-section"></span><h3>Plug.disconnect(other)<a class="headerlink" href="#plug-disconnect-other" title="Permalink to this headline">¶</a></h3>
+<dl class="method">
+<dt id="Plug.disconnect">
+<tt class="descclassname">Plug.</tt><tt class="descname">disconnect</tt><big>(</big><em>other</em><big>)</big><a class="headerlink" href="#Plug.disconnect" title="Permalink to this definition">¶</a></dt>
+<dd><p>Disconnects two plugs, or logs a warning message if the disconnection isn&#8217;t valid.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>other</strong> (<em>Plug</em>) &#8211; the second plug of the disconnection</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">True if the has been successfully disconnected, False otherwise</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">bool</td>
+</tr>
+</tbody>
+</table>
+<p>exemple:</p>
+<div class="highlight-python"><div class="highlight"><pre>plugA.disconnect(plugB)
+=&gt; True if plugB has been disconnected from plugA
+</pre></div>
+</div>
+</dd></dl>
+
+</div>
+<div class="section" id="plug-generate-name">
+<span id="plug-generate-name-section"></span><h3>Plug.generate_name()<a class="headerlink" href="#plug-generate-name" title="Permalink to this headline">¶</a></h3>
+<dl class="method">
+<dt id="Plug.generate_name">
+<tt class="descclassname">Plug.</tt><tt class="descname">generate_name</tt><big>(</big><big>)</big><a class="headerlink" href="#Plug.generate_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate a name for the object.
+This method is called in the Plug constructor if no name was given to it. The generated name begin with &#8216;in&#8217; or &#8216;out&#8217; whether the Plug is an input or an output and ends with a number so that there cannot be two identical Plug names belonging to the same parent Circuit.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">The generated name</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">str</td>
+</tr>
+</tbody>
+</table>
+<p>exemple:</p>
+<div class="highlight-python"><div class="highlight"><pre>plugA.generate_name()
+=&gt; out3
+</pre></div>
+</div>
+</dd></dl>
+
+</div>
+<div class="section" id="plug-set-value">
+<span id="plug-set-section"></span><h3>Plug.set(value)<a class="headerlink" href="#plug-set-value" title="Permalink to this headline">¶</a></h3>
+<dl class="method">
+<dt id="Plug.set">
+<tt class="descclassname">Plug.</tt><tt class="descname">set</tt><big>(</big><em>value</em><big>)</big><a class="headerlink" href="#Plug.set" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets the boolean value of a Plug.
+True or 1 means that the power applied to the Plug is high. False or 0 means that the power is Low.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>value</strong> (<em>bool</em>) &#8211; The plug electric power value</td>
+</tr>
+</tbody>
+</table>
+<p>exemple:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">plugA</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</div>
+<div class="section" id="plug-setname-name">
+<span id="plug-setname-section"></span><h3>Plug.setName(name)<a class="headerlink" href="#plug-setname-name" title="Permalink to this headline">¶</a></h3>
+<dl class="method">
+<dt id="Plug.setName">
+<tt class="descclassname">Plug.</tt><tt class="descname">setName</tt><big>(</big><em>name</em><big>)</big><a class="headerlink" href="#Plug.setName" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets the object&#8217;s name.
+The name cannot be empty or used by another Plug of the parent Circuit.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>name</strong> (<em>str</em>) &#8211; The object&#8217;s name</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">True if the object&#8217;s name has been successfully set, False otherwise</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">bool</td>
+</tr>
+</tbody>
+</table>
+<p>exemple:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">plugA</span><span class="o">.</span><span class="n">setName</span><span class="p">(</span><span class="s">&#39;myInputPlug&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</div>
+</div>
+<div class="section" id="circuit-methods-descriptions">
+<h2>Circuit methods descriptions<a class="headerlink" href="#circuit-methods-descriptions" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="circuit-class-name">
+<span id="circuit-class-name-section"></span><h3>Circuit.class_name()<a class="headerlink" href="#circuit-class-name" title="Permalink to this headline">¶</a></h3>
+<dl class="method">
+<dt id="Circuit.class_name">
+<tt class="descclassname">Circuit.</tt><tt class="descname">class_name</tt><big>(</big><big>)</big><a class="headerlink" href="#Circuit.class_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrieve the class name of the object.
+It is usefull to get the name of a Circuit subclass (gates).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">The object class name</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">str</td>
+</tr>
+</tbody>
+</table>
+<p>exemple:</p>
+<div class="highlight-python"><div class="highlight"><pre>circuitA.class_name()
+=&gt; AndGate
+</pre></div>
+</div>
+</dd></dl>
+
+</div>
+<div class="section" id="circuit-evalfun">
+<span id="circuit-evalfun-section"></span><h3>Circuit.evalfun()<a class="headerlink" href="#circuit-evalfun" title="Permalink to this headline">¶</a></h3>
+<dl class="method">
+<dt id="Circuit.evalfun">
+<tt class="descclassname">Circuit.</tt><tt class="descname">evalfun</tt><big>(</big><big>)</big><a class="headerlink" href="#Circuit.evalfun" title="Permalink to this definition">¶</a></dt>
+<dd><p>The evalfun method contains a function which must compute and set the object&#8217;s output(s) value(s) based on the object input(s) value(s).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">The object class name</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">str</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Only Circuit subclass (gates) have an evalfun method. For instance, the NotGate Circuit subclass have an evalfun method which sets its output to be the logic negation of its input.</p>
+</div>
+</dd></dl>
+
+</div>
+<div class="section" id="circuit-generate-name">
+<span id="circuit-generate-name-section"></span><h3>Circuit.generate_name()<a class="headerlink" href="#circuit-generate-name" title="Permalink to this headline">¶</a></h3>
+<dl class="method">
+<dt id="Circuit.generate_name">
+<tt class="descclassname">Circuit.</tt><tt class="descname">generate_name</tt><big>(</big><big>)</big><a class="headerlink" href="#Circuit.generate_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate a name for the Circuit.
+This method is called in the Circuit constructor if no name was given to it. The generated name begin with the object class name and ends with a number so that there cannot be two identical Circuit names belonging to the same parent Circuit.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">The generated name</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">str</td>
+</tr>
+</tbody>
+</table>
+<p>exemple:</p>
+<div class="highlight-python"><div class="highlight"><pre>circuitA.generate_name()
+=&gt; XorGate2
+</pre></div>
+</div>
+</dd></dl>
+
+</div>
+<div class="section" id="circuit-nb-inputs">
+<span id="circuit-nb-inputs-section"></span><h3>Circuit.nb_inputs()<a class="headerlink" href="#circuit-nb-inputs" title="Permalink to this headline">¶</a></h3>
+<dl class="method">
+<dt id="Circuit.nb_inputs">
+<tt class="descclassname">Circuit.</tt><tt class="descname">nb_inputs</tt><big>(</big><big>)</big><a class="headerlink" href="#Circuit.nb_inputs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the inputs number of the Circuit.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">The inputs number</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">int</td>
+</tr>
+</tbody>
+</table>
+<p>exemple:</p>
+<div class="highlight-python"><div class="highlight"><pre>circuitA.nb_inputs()
+=&gt; 6
+</pre></div>
+</div>
+</dd></dl>
+
+</div>
+<div class="section" id="circuit-nb-outputs">
+<span id="circuit-nb-outputs-section"></span><h3>Circuit.nb_outputs()<a class="headerlink" href="#circuit-nb-outputs" title="Permalink to this headline">¶</a></h3>
+<dl class="method">
+<dt id="Circuit.nb_outputs">
+<tt class="descclassname">Circuit.</tt><tt class="descname">nb_outputs</tt><big>(</big><big>)</big><a class="headerlink" href="#Circuit.nb_outputs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the outputs number of the Circuit.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">The outputs number</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">int</td>
+</tr>
+</tbody>
+</table>
+<p>exemple:</p>
+<div class="highlight-python"><div class="highlight"><pre>circuitA.nb_outputs()
+=&gt; 2
+</pre></div>
+</div>
+</dd></dl>
+
+</div>
+<div class="section" id="circuit-remove-component">
+<span id="circuit-remove-section"></span><h3>Circuit.remove(component)<a class="headerlink" href="#circuit-remove-component" title="Permalink to this headline">¶</a></h3>
+<dl class="method">
+<dt id="Circuit.remove">
+<tt class="descclassname">Circuit.</tt><tt class="descname">remove</tt><big>(</big><em>component</em><big>)</big><a class="headerlink" href="#Circuit.remove" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remove a component from the object.
+The component can be a Plug or a Circuit. If it is a Plug the method will operate Plugs disconnections before removing the Plug so that it is fully removd from anywhere.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>component</strong> (<em>Plug or Circuit</em>) &#8211; The component to remove from the object</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">True if the component has been successfully removed from the object</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">bool</td>
+</tr>
+</tbody>
+</table>
+<p>exemple:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">circuitA</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">plugA</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</div>
+<div class="section" id="circuit-setname-name">
+<span id="circuit-setname-section"></span><h3>Circuit.setName(name)<a class="headerlink" href="#circuit-setname-name" title="Permalink to this headline">¶</a></h3>
+<dl class="method">
+<dt id="Circuit.setName">
+<tt class="descclassname">Circuit.</tt><tt class="descname">setName</tt><big>(</big><em>name</em><big>)</big><a class="headerlink" href="#Circuit.setName" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets the object&#8217;s name.
+The name cannot be empty or used by another Plug of the parent Circuit.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>name</strong> (<em>str</em>) &#8211; The object&#8217;s name</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">True if the object&#8217;s name has been successfully set, False otherwise</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">bool</td>
+</tr>
+</tbody>
+</table>
+<p>exemple:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">circuitA</span><span class="o">.</span><span class="n">setName</span><span class="p">(</span><span class="s">&#39;AND_1&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Engine classes and methods</a><ul>
+<li><a class="reference internal" href="#plug-methods-list">Plug methods list</a></li>
+<li><a class="reference internal" href="#circuit-methods-list">Circuit methods list</a></li>
+<li><a class="reference internal" href="#plug-methods-descriptions">Plug methods descriptions</a><ul>
+<li><a class="reference internal" href="#plug-connect-other">Plug.connect(other)</a></li>
+<li><a class="reference internal" href="#plug-disconnect-other">Plug.disconnect(other)</a></li>
+<li><a class="reference internal" href="#plug-generate-name">Plug.generate_name()</a></li>
+<li><a class="reference internal" href="#plug-set-value">Plug.set(value)</a></li>
+<li><a class="reference internal" href="#plug-setname-name">Plug.setName(name)</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#circuit-methods-descriptions">Circuit methods descriptions</a><ul>
+<li><a class="reference internal" href="#circuit-class-name">Circuit.class_name()</a></li>
+<li><a class="reference internal" href="#circuit-evalfun">Circuit.evalfun()</a></li>
+<li><a class="reference internal" href="#circuit-generate-name">Circuit.generate_name()</a></li>
+<li><a class="reference internal" href="#circuit-nb-inputs">Circuit.nb_inputs()</a></li>
+<li><a class="reference internal" href="#circuit-nb-outputs">Circuit.nb_outputs()</a></li>
+<li><a class="reference internal" href="#circuit-remove-component">Circuit.remove(component)</a></li>
+<li><a class="reference internal" href="#circuit-setname-name">Circuit.setName(name)</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="index.html"
+                        title="previous chapter">Welcome to magic_circuit_simulator&#8217;s documentation!</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/engine.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="index.html" title="Welcome to magic_circuit_simulator’s documentation!"
+             >previous</a> |</li>
+        <li><a href="index.html">magic_circuit_simulator 0.0.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2014, Sebastien Magnien &amp; Mathieu Fourcroy.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+    </div>
+  </body>
+</html>
