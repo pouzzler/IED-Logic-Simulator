@@ -22,8 +22,9 @@ AUTO = '\033[0m'
 
 def print_plug_info(plug):
     COLOR = GREEN if plug.value else RED
-    print('%s: %s\n\tsourcePlug: %s\n\tdestinationPlugs: %s'
-            % (plug.name, COLOR + str(plug.value) + AUTO,
+    ownerName = plug.owner.name if plug.owner else 'None'
+    print('%s.%s: %s\n\tsourcePlug: %s\n\tdestinationPlugs: %s'
+            % (ownerName, plug.name, COLOR + str(plug.value) + AUTO,
                 str(plug.sourcePlug.name if plug.sourcePlug else ''),
                 str([conn.name for conn in plug.destinationPlugs])))
 
@@ -83,7 +84,45 @@ if __name__ == '__main__':
         if line.startswith('Plug') or line.startswith('Circuit'):
             exec(line)
 
+    # circuit principal
     TC = Circuit("Main_Circuit", None)
+    # circuit's inputs
+    A = Plug(True, 'A', TC)    # inputList[0]
+    B = Plug(True, 'B', TC)    # inputList[1]
+    # circuit's outputs
+    S = Plug(False, 'S', TC)   # outputList[0]
+    C = Plug(False, 'C', TC)   # outputList[1]
+    # circuit's components
+    XOR = XorGate('XOR', TC)
+    AND = AndGate('AND', TC)
+    # retrieve gates I/O
+    XOR_IN0 = XOR.inputList[0]
+    XOR_IN1 = XOR.inputList[1]
+    XOR_OUT = XOR.outputList[0]
+    AND_IN0 = AND.inputList[0]
+    AND_IN1 = AND.inputList[1]
+    AND_OUT = AND.outputList[0]
+    # connections between circuit's components
+    A.connect(XOR_IN0)
+    A.connect(AND_IN0)
+    B.connect(XOR_IN1)
+    B.connect(AND_IN1)
+    XOR_OUT.connect(S)
+    AND_OUT.connect(C)
+    #
+    A.set(1)
+    B.set(1)
+
+    print('\n______________________________________________________________\n')
+    for plug in [A, B, XOR_IN0, XOR_IN1, XOR_OUT, AND_IN0, AND_IN1, AND_OUT, S, C]:
+        print_plug_info(plug)
+
+    #~ B.set(0)
+#~ 
+    #~ print('\n______________________________________________________________\n')
+    #~ for plug in [A, B, S, C]:
+        #~ print_plug_info(plug)
+    
     
     #~ clk = TC.add_input('CLOCK')        # l'horloge est une simple sortie du TL
     #~ bgClockThread = ClockThread(clk)   # mais elle est simulée dans un thread
@@ -119,12 +158,12 @@ if __name__ == '__main__':
     #~ print('COUT: ' + str(COUT.value))
     #~ 
     #~ print('________________________________________________________________\n')
-    #~ for plug in [A, B, HA.XOR1.inputList[0], HA.XOR1.inputList[1], HA.XOR1.outputList[0], HA.AND1.inputList[0], HA.AND1.inputList[1], HA.AND1.outputList[0], O, COUT]:
+    #~ for plug in [A, B, HA.NOR1.inputList[0], HA.NOR1.inputList[1], HA.NOR1.outputList[0], HA.AND1.inputList[0], HA.AND1.inputList[1], HA.AND1.outputList[0], O, COUT]:
         #~ print_plug_info(plug)
         #~ 
     #~ HA.remove(COUT)
     #~ print('________________________________________________________________\n')
-    #~ for plug in [A, B, HA.XOR1.inputList[0], HA.XOR1.inputList[1], HA.XOR1.outputList[0], HA.AND1.inputList[0], HA.AND1.inputList[1], HA.AND1.outputList[0], O, COUT]:
+    #~ for plug in [A, B, HA.NOR1.inputList[0], HA.NOR1.inputList[1], HA.NOR1.outputList[0], HA.AND1.inputList[0], HA.AND1.inputList[1], HA.AND1.outputList[0], O, COUT]:
         #~ print_plug_info(plug)
     
     #~ FA = TC.add_circuit(FullAdder)
@@ -134,24 +173,23 @@ if __name__ == '__main__':
     #~ O = FA.outputList[0]
     #~ COUT = FA.outputList[1]
     
-    NOT = NotGate(None, TC)
-    #~ NOT = TC.add_circuit(NotGate)
-    print(TC.circuitList)
-    GIN = Plug(True, None, TC)
-    GOUT = Plug(False, None, TC)
-    I = NOT.inputList[0]
-    O = NOT.outputList[0]
-    GIN.connect(I)
-    O.connect(GOUT)
-    GIN.set(False)
-
-    print('________________________________________________________________\n')
-    for plug in [GIN, I, O, GOUT]:
-        print_plug_info(plug)
-    
-    O.disconnect(GOUT)
-    print('\n___________________DISCONNECTED GOUT AND O____________________\n')
-    for plug in [GIN, I, O, GOUT]:
-        print_plug_info(plug)
+    #~ NOT = NotGate(None, TC)
+    #~ print(TC.circuitList)
+    #~ GIN = Plug(True, None, TC)
+    #~ GOUT = Plug(False, None, TC)
+    #~ I = NOT.inputList[0]
+    #~ O = NOT.outputList[0]
+    #~ GIN.connect(I)
+    #~ O.connect(GOUT)
+    #~ GIN.set(False)
+#~ 
+    #~ print('________________________________________________________________\n')
+    #~ for plug in [GIN, I, O, GOUT]:
+        #~ print_plug_info(plug)
+    #~ 
+    #~ O.disconnect(GOUT)
+    #~ print('\n___________________DISCONNECTED GOUT AND O____________________\n')
+    #~ for plug in [GIN, I, O, GOUT]:
+        #~ print_plug_info(plug)
 
 
