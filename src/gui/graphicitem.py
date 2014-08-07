@@ -356,14 +356,14 @@ class CircuitItem(QGraphicsItem):
                 2 * self.radius,
                 2 * self.radius)
             self.outputPaths.append(path)
-        br = self.mapToScene(self.boundingRect())
-        w = self.boundingRect().width()
-        h = self.boundingRect().height()
-        realX = min([i.x() for i in br])
-        realY = min([i.y() for i in br])
         self.name.setVisible(self.showName)
         self.category.setVisible(self.showCategory)
         if self.showName or self.showCategory:
+            br = self.mapToScene(self.boundingRect())
+            w = self.boundingRect().width()
+            h = self.boundingRect().height()
+            realX = min([i.x() for i in br])
+            realY = min([i.y() for i in br])
             firstY = realY + (w if self.rotation() % 180 else h) + 1
             secondY = firstY + self.textH
             if self.showName:

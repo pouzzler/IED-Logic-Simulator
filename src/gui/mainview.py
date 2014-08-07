@@ -10,10 +10,11 @@ from .graphicitem import CircuitItem, PlugItem, WireItem
 from .selectionoptions import SelectionOptions
 from .toolbox import ToolBox
 from .util import filePath
+from engine.clock import ClockThread
 from engine.simulator import Circuit, Plug
 import engine
 
-
+  
 class MainView(QGraphicsView):
     """Graphic representation of a user created circuit schematic."""
 
@@ -28,6 +29,9 @@ class MainView(QGraphicsView):
         self.timer.setInterval(200)
         self.timer.setSingleShot(True)
         self.timer.timeout.connect(self.setItemsInGrid)
+        self.clockTimer = QTimer()
+        self.clockTimer.setInterval(1000)
+        self.clockTimer.timeout.connect(self.clockUpdate)
 
     def clearCircuit(self):
         """Clears every item from the circuit designer."""
@@ -35,6 +39,10 @@ class MainView(QGraphicsView):
             if isinstance(item, PlugItem) or isinstance(item, CircuitItem):
                 self.mainCircuit.remove(item.item)
             self.scene().removeItem(item)
+
+    def clockUpdate(self):
+        """Updates the view at each clock tick."""
+        [item.setupPaint() for item in self.scene().items() if isinstance(item, PlugItem)]
 
     def contextMenuEvent(self, e):
         """Pops a contextual menu up on right-clicks"""
@@ -87,6 +95,11 @@ class MainView(QGraphicsView):
             item = PlugItem(True, self.mainCircuit)
         elif name == self.str_O:
             item = PlugItem(False, self.mainCircuit)
+        elif name == self.str_Clock:
+            item = PlugItem(True, self.mainCircuit)
+            bgClockThread = ClockThread(item.item)
+            bgClockThread.start()
+            self.clockTimer.start()
         elif model.item(0, 1).text() == 'user':
             item = CircuitItem(Circuit, self.mainCircuit)
             f = open(filePath('user/') + name + '.crc', 'rb')
