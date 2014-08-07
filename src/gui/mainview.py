@@ -2,7 +2,7 @@
 # coding=utf-8
 
 import pickle
-from PySide.QtCore import QModelIndex, QPoint, Qt, QTimer
+from PySide.QtCore import QModelIndex, QPoint, QPointF, Qt, QTimer
 from PySide.QtGui import (
     QCursor, QImage, QInputDialog, QGraphicsItem, QGraphicsScene,
     QGraphicsView, QMenu, QStandardItemModel)
@@ -10,10 +10,11 @@ from .graphicitem import CircuitItem, PlugItem, WireItem
 from .selectionoptions import SelectionOptions
 from .toolbox import ToolBox
 from .util import filePath
+from engine.clock import ClockThread
 from engine.simulator import Circuit, Plug
 import engine
 
-
+  
 class MainView(QGraphicsView):
     """Graphic representation of a user created circuit schematic."""
 
@@ -24,6 +25,13 @@ class MainView(QGraphicsView):
         self.setScene(QGraphicsScene(parent))
         self.isDrawing = False          # user currently not drawing
         self.mainCircuit = Circuit("Main", None)
+        self.timer = QTimer()
+        self.timer.setInterval(200)
+        self.timer.setSingleShot(True)
+        self.timer.timeout.connect(self.setItemsInGrid)
+        self.clockTimer = QTimer()
+        self.clockTimer.setInterval(1000)
+        self.clockTimer.timeout.connect(self.clockUpdate)
 
     def clearCircuit(self):
         """Clears every item from the circuit designer."""
@@ -31,6 +39,10 @@ class MainView(QGraphicsView):
             if isinstance(item, PlugItem) or isinstance(item, CircuitItem):
                 self.mainCircuit.remove(item.item)
             self.scene().removeItem(item)
+
+    def clockUpdate(self):
+        """Updates the view at each clock tick."""
+        [item.setupPaint() for item in self.scene().items() if isinstance(item, PlugItem)]
 
     def contextMenuEvent(self, e):
         """Pops a contextual menu up on right-clicks"""
@@ -46,7 +58,7 @@ class MainView(QGraphicsView):
                 menu.addAction(self.str_setName, lambda: self.getNewName(item))
                 if item.item.isInput:
                     menu.addAction(
-                        str(item.item.value), lambda: self.setAndUpdate(item))
+                        str(item.item.value), item.setAndUpdate)
             elif isinstance(item, WireItem):
                 pos = item.mapFromScene(self.mapToScene(e.pos()))
                 if item.handleAtPos(pos):
@@ -83,6 +95,11 @@ class MainView(QGraphicsView):
             item = PlugItem(True, self.mainCircuit)
         elif name == self.str_O:
             item = PlugItem(False, self.mainCircuit)
+        elif name == self.str_Clock:
+            item = PlugItem(True, self.mainCircuit)
+            bgClockThread = ClockThread(item.item)
+            bgClockThread.start()
+            self.clockTimer.start()
         elif model.item(0, 1).text() == 'user':
             item = CircuitItem(Circuit, self.mainCircuit)
             f = open(filePath('user/') + name + '.crc', 'rb')
@@ -238,7 +255,7 @@ class MainView(QGraphicsView):
                 elif (
                         isinstance(item, PlugItem) and item.item.isInput
                         and e.modifiers() & Qt.AltModifier):
-                    self.setAndUpdate(item)
+                    item.setAndUpdate()
                     return
             elif isinstance(item, WireItem):
                 if item.handleAtPos(pos):
@@ -272,11 +289,13 @@ class MainView(QGraphicsView):
             self.currentWire = None
         super(MainView, self).mouseReleaseEvent(e)
 
-    def setAndUpdate(self, item):
-        item.item.set(not item.item.value)
-        for i in self.scene().items():
-            if isinstance(i, PlugItem):
-                i.setupPaint()
+    def setItemsInGrid(self):
+        """Correcting items pos to fit on the grid."""
+        for item in self.scene().selectedItems():
+            newPos = QPointF(
+                int(10 * round(item.pos().x() / 10)),
+                int(10 * round(item.pos().y() / 10)))
+            item.setPos(newPos)
 
     def write(self, message):
         """Briefly display a log WARNING."""
