@@ -113,20 +113,19 @@ class MainWindow(QMainWindow):
             f.close()
             for item in items:
                 if isinstance(item[0], Plug):
-                    i = PlugItem(None, self.view.mainCircuit)
-                    i.item = item[0]
+                    i = PlugItem(item[0])
                 elif isinstance(item[0], Circuit):
-                    i = CircuitItem(item[0].__class__, self.view.mainCircuit)
-                    i.item = item[0]
+                    item[0].owner = self.view.mainCircuit
+                    i = CircuitItem(item[0])
                 else:           # Wire item
                     i = WireItem(item[0][0], item[0][1], item[0][1])
+                self.view.scene().addItem(i)
                 i.setPos(item[1])
                 i.setTransformOriginPoint(
                     i.boundingRect().width() / 2,
                     i.boundingRect().height() / 2)
                 i.setRotation(item[2])
                 i.setupPaint()
-                self.view.scene().addItem(i)
 
     def saveCircuit(self):
         """Save a user circuit."""
@@ -138,7 +137,7 @@ class MainWindow(QMainWindow):
                 if (
                         isinstance(item, PlugItem)
                         or isinstance(item, CircuitItem)):
-                    items.append([item.item, item.pos(), item.rotation()])
+                    items.append([item.data, item.pos(), item.rotation()])
                 elif isinstance(item, WireItem):
                     items.append([
                         [item.startIO, item.points, item.endIO],

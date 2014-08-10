@@ -104,9 +104,9 @@ class PlugItem(QGraphicsPathItem):
     bodyW = 30
     pinW = 10
 
-    def __init__(self, isInput, owner):
+    def __init__(self, plug):
         super(PlugItem, self).__init__()
-        self.item = Plug(isInput, None, owner)
+        self.data = plug
         self.showName = False
         self.setFlag(QGraphicsItem.ItemIsMovable)
         self.setFlag(QGraphicsItem.ItemIsSelectable)
@@ -118,7 +118,7 @@ class PlugItem(QGraphicsPathItem):
         # the mouse is over a pin. We save it as an instance field,
         # rather than recreate it at each event.
         self.pinPath = QPainterPath()
-        if isInput:
+        if self.data.isInput:
             self.pinPath.addEllipse(
                 self.bodyW + 1, (self.bodyW - self.pinW) / 2,
                 self.pinW, self.pinW)
@@ -130,7 +130,7 @@ class PlugItem(QGraphicsPathItem):
         self.name = QGraphicsSimpleTextItem(self)
         # that won't rotate when the PlugItem is rotated by the user.
         self.name.setFlag(QGraphicsItem.ItemIgnoresTransformations)
-        self.name.setText(self.item.name)
+        self.name.setText(self.data.name)
         self.name.setFont(f)
         self.value = QGraphicsSimpleTextItem(self)
         self.value.setFlag(QGraphicsItem.ItemIgnoresTransformations)
@@ -143,7 +143,7 @@ class PlugItem(QGraphicsPathItem):
         """Is there an interactive handle where the mouse is?
         Also return the Plug under this handle.
         """
-        return self.item if self.pinPath.contains(pos) else None
+        return self.data if self.pinPath.contains(pos) else None
 
     def itemChange(self, change, value):
         """Warning view it will soon have to correct pos."""
@@ -153,7 +153,7 @@ class PlugItem(QGraphicsPathItem):
         return QGraphicsItem.itemChange(self, change, value)
 
     def setAndUpdate(self):
-        self.item.set(not self.item.value)
+        self.data.set(not self.data.value)
         for i in self.scene().items():
             if isinstance(i, PlugItem):
                 i.setupPaint()
@@ -170,7 +170,7 @@ class PlugItem(QGraphicsPathItem):
     def setupPaint(self):
         """Offscreen rather than onscreen redraw (few changes)."""
         path = QPainterPath()
-        if self.item.isInput:
+        if self.data.isInput:
             path.addEllipse(0, 0, self.bodyW, self.bodyW)
         else:
             path.addRect(
@@ -179,7 +179,7 @@ class PlugItem(QGraphicsPathItem):
         path.addPath(self.pinPath)
         self.setPath(path)
         self.name.setVisible(self.showName)
-        self.name.setText(self.item.name)
+        self.name.setText(self.data.name)
         br = self.mapToScene(self.boundingRect())
         w = self.boundingRect().width()
         h = self.boundingRect().height()
@@ -187,9 +187,9 @@ class PlugItem(QGraphicsPathItem):
         realY = min([i.y() for i in br])
         self.name.setPos(self.mapFromScene(
             realX, realY + (w if self.rotation() % 180 else h) + 1))
-        self.value.setText(str(int(self.item.value)))
+        self.value.setText(str(int(self.data.value)))
         self.value.setPos(self.mapFromScene(realX + w / 3, realY + h / 3))
-        self.value.setBrush(QColor('green' if self.item.value else 'red'))
+        self.value.setBrush(QColor('green' if self.data.value else 'red'))
         self.update()       # Force onscreen redraw after changes.
 
 
@@ -201,14 +201,14 @@ class CircuitItem(QGraphicsItem):
     ioW = 20
     radius = 2.5
 
-    def __init__(self, circuitClass, owner):
+    def __init__(self, circuit):
         super(CircuitItem, self).__init__()
         self.setFlag(QGraphicsItem.ItemIsMovable)
         self.setFlag(QGraphicsItem.ItemIsSelectable)
         self.setFlag(QGraphicsItem.ItemSendsGeometryChanges)
         imgDir = filePath('icons/')
-        self.item = circuitClass(None, owner)
-        self.image = QImage(imgDir + circuitClass.__name__ + '.png')
+        self.data = circuit
+        self.image = QImage(imgDir + circuit.__class__.__name__ + '.png')
         if not self.image:
             self.image = QImage(imgDir + 'Default.png')
             self.showCategory = True
@@ -217,10 +217,10 @@ class CircuitItem(QGraphicsItem):
         self.name = QGraphicsSimpleTextItem(self)
         # that won't rotate when the PlugItem is rotated by the user.
         self.name.setFlag(QGraphicsItem.ItemIgnoresTransformations)
-        self.name.setText(self.item.name)
+        self.name.setText(self.data.name)
         self.category = QGraphicsSimpleTextItem(self)
         self.category.setFlag(QGraphicsItem.ItemIgnoresTransformations)
-        self.category.setText(self.item.category)
+        self.category.setText(self.data.category)
         self.setupPaint()
 
     def boundingRect(self):
@@ -233,10 +233,10 @@ class CircuitItem(QGraphicsItem):
         """Is there an interactive handle where the mouse is? Return it."""
         for i in range(self.nIn):
             if self.inputPaths[i].contains(pos):
-                return self.item.inputList[i]
+                return self.data.inputList[i]
         for i in range(self.nOut):
             if self.outputPaths[i].contains(pos):
-                return self.item.outputList[i]
+                return self.data.outputList[i]
 
     def itemChange(self, change, value):
         """Warning view it will soon have to correct pos."""
@@ -252,14 +252,14 @@ class CircuitItem(QGraphicsItem):
         #~ self.ioH = 20
         #~ self.ioW = 15
         #~ self.radius = 5
-        #~ n = self.item.nb_inputs()
+        #~ n = data.nb_inputs()
         #~ for i in range(1 - int(n / 2), 2 + int(n / 2)):
             #~ if i != 1 or n % 2:
                 #~ painter.drawLine(-self.ioW, i * self.ioH, 0, i * self.ioH)
                 #~ painter.drawEllipse(
                     #~ -self.ioW - self.radius, i * self.ioH - self.radius / 2,
                     #~ self.radius, self.radius)
-        #~ n = self.item.nb_outputs()
+        #~ n = self.data.nb_outputs()
         #~ for i in range(1 - int(n / 2), 2 + int(n / 2)):
             #~ if i != 1 or n % 2:
                 #~ painter.drawLine(
@@ -317,18 +317,18 @@ class CircuitItem(QGraphicsItem):
 
     def setNbInputs(self, nb):
         """Add/Remove inputs (for logical gates)."""
-        if nb > self.item.nb_inputs():
-            for x in range(nb - self.item.nb_inputs()):
-                Plug(True, None, self.item)
-        elif nb < self.item.nb_inputs():
-            for x in range(self.item.nb_inputs() - nb):
-                self.item.remove_input(self.item.inputList[0])
+        if nb > self.data.nb_inputs():
+            for x in range(nb - self.data.nb_inputs()):
+                Plug(True, None, self.data)
+        elif nb < self.data.nb_inputs():
+            for x in range(self.data.nb_inputs() - nb):
+                self.data.remove_input(self.data.inputList[0])
         self.setupPaint()
 
     def setupPaint(self):
         """Offscreen rather than onscreen redraw (few changes)."""
-        self.nIn = self.item.nb_inputs()
-        self.nOut = self.item.nb_outputs()
+        self.nIn = self.data.nb_inputs()
+        self.nOut = self.data.nb_outputs()
         # 3 sections with different heights must be aligned :
         self.imgH = self.image.size().height()   # central (png image)
         self.imgW = self.image.size().width()
@@ -373,13 +373,13 @@ class CircuitItem(QGraphicsItem):
             secondY = firstY + self.textH
             if self.showName:
                 self.name.setBrush(QColor('red'))
-                self.name.setText(self.item.name)
+                self.name.setText(self.data.name)
                 self.name.setPos(self.mapFromScene(realX, firstY))
             if self.showCategory:
                 self.category.setBrush(QColor('green'))
                 self.category.setText(
-                    self.item.category if self.item.category
-                    else self.item.__class__.__name__)
+                    self.data.category if self.data.category
+                    else self.data.__class__.__name__)
                 self.category.setPos(self.mapFromScene(
                     realX, secondY if self.showName else firstY))
         self.prepareGeometryChange()    # Must be called (cf Qt doc)

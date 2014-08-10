@@ -91,7 +91,7 @@ class SelectionOptions(QWidget):
                 for item in selection:
                     if (
                         not isinstance(item, CircuitItem)
-                        or item.item.__class__ not in [
+                        or item.data.__class__ not in [
                             AndGate, NandGate, OrGate,
                             NorGate, XorGate, XnorGate]):
                         break
@@ -107,7 +107,7 @@ class SelectionOptions(QWidget):
             self.nameLE.setHidden(True)
         if size == 1:
             self.nameLE.blockSignals(True)
-            self.nameLE.setText(selection[0].item.name)
+            self.nameLE.setText(selection[0].data.name)
             self.nameLE.blockSignals(False)
         if size >= 1:
             self.showNameCB.blockSignals(True)
@@ -122,7 +122,7 @@ class SelectionOptions(QWidget):
             if not self.nbInputsCB.isHidden():
                 self.nbInputsCB.blockSignals(True)
                 self.nbInputsCB.setCurrentIndex(
-                    selection[0].item.nb_inputs() - 2)
+                    selection[0].data.nb_inputs() - 2)
                 self.nbInputsCB.blockSignals(False)
 
     def setCategoryVisibility(self, state):
@@ -133,11 +133,11 @@ class SelectionOptions(QWidget):
     def setItemName(self):
         """Show/Hide the category of an item in the main view."""
         item = self.view.scene().selectedItems()[0]
-        item.item.setName(self.nameLE.text())
+        item.data.setName(self.nameLE.text())
         item.setupPaint()
 
     def setNameVisibility(self, state):
-        """Show/Hide the name of an item in the main view."""
+        """Show/Hide the name of items in the main view."""
         for item in self.view.scene().selectedItems():
             item.setNameVisibility(True if state else False)
 

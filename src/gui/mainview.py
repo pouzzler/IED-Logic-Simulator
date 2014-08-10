@@ -37,7 +37,7 @@ class MainView(QGraphicsView):
         """Clears every item from the circuit designer."""
         for item in self.scene().items():
             if isinstance(item, PlugItem) or isinstance(item, CircuitItem):
-                self.mainCircuit.remove(item.item)
+                self.mainCircuit.remove(item.data)
             self.scene().removeItem(item)
 
     def clockUpdate(self):
@@ -56,9 +56,9 @@ class MainView(QGraphicsView):
                 menu.addAction(self.str_setName, lambda: self.getNewName(item))
             elif isinstance(item, PlugItem):
                 menu.addAction(self.str_setName, lambda: self.getNewName(item))
-                if item.item.isInput:
+                if item.data.isInput:
                     menu.addAction(
-                        str(item.item.value), item.setAndUpdate)
+                        str(item.data.value), item.setAndUpdate)
             elif isinstance(item, WireItem):
                 pos = item.mapFromScene(self.mapToScene(e.pos()))
                 if item.handleAtPos(pos):
@@ -90,32 +90,33 @@ class MainView(QGraphicsView):
         item = None
         if name in ['And', 'Or', 'Nand', 'Nor', 'Not', 'Xor', 'Xnor']:
             item = CircuitItem(
-                getattr(engine.gates, name + 'Gate'), self.mainCircuit)
+                getattr(engine.gates, name + 'Gate')(None, self.mainCircuit))
         elif name == self.str_I:
-            item = PlugItem(True, self.mainCircuit)
+            item = PlugItem(Plug(True, None, self.mainCircuit))
         elif name == self.str_O:
-            item = PlugItem(False, self.mainCircuit)
+            item = PlugItem(Plug(False, None, self.mainCircuit))
         elif name == self.str_Clock:
-            item = PlugItem(True, self.mainCircuit)
-            bgClockThread = ClockThread(item.item)
+            item = PlugItem(Plug(True, None, self.mainCircuit))
+            bgClockThread = ClockThread(item.data)
             bgClockThread.start()
             self.clockTimer.start()
         elif model.item(0, 1).text() == 'user':
-            item = CircuitItem(Circuit, self.mainCircuit)
+            c = Circuit(None, self.mainCircuit)
             f = open(filePath('user/') + name + '.crc', 'rb')
             children = pickle.load(f)
             f.close()
             for child in children:
                 if isinstance(child[0], Plug):
-                    child[0].owner = item.item
+                    child[0].owner = c
                     if child[0].isInput:
-                        item.item.inputList.append(child[0])
+                        c.inputList.append(child[0])
                     else:
-                        item.item.outputList.append(child[0])
+                        c.outputList.append(child[0])
                 elif isinstance(child[0], Circuit):
-                    child[0].owner = item.item
-                    item.item.circuitList.append(child[0])
-            item.item.category = name
+                    child[0].owner = c
+                    c.circuitList.append(child[0])
+            c.category = name
+            item = CircuitItem(c)
         if item:
             # Fixes the default behavious of centering the first
             # item added to scene.
@@ -130,18 +131,18 @@ class MainView(QGraphicsView):
         for item in self.scene().items():
             if isinstance(item, CircuitItem):
                 pos = item.pos()
-                circuit = item.item
+                circuit = item.data
                 off = 0
                 for input in circuit.inputList:
                     if not input.sourcePlug:
-                        i = PlugItem(True, self.mainCircuit)
+                        i = PlugItem(Plug(True, None, self.mainCircuit))
                         self.scene().addItem(i)
                         i.setPos(pos.x() - 30, pos.y() + off)
                         off += 30
                 off = 0
                 for output in circuit.outputList:
                     if not len(output.destinationPlugs):
-                        i = PlugItem(False, self.mainCircuit)
+                        i = PlugItem(Plug(False, None, self.mainCircuit))
                         self.scene().addItem(i)
                         i.setPos(pos.x() + 100, pos.y() + off)
                         off += 30
@@ -150,7 +151,7 @@ class MainView(QGraphicsView):
         """Shows a dialog, and sets item name to user input."""
         # ret = tuple string, bool
         ret = QInputDialog.getText(self, self.str_setName, self.str_name)
-        if ret[1] and item.item.setName(ret[0]):    # Not canceled.
+        if ret[1] and item.data.setName(ret[0]):    # Not canceled.
             item.update()
 
     def keyPressEvent(self, e):
@@ -165,7 +166,7 @@ class MainView(QGraphicsView):
         elif e.key() == Qt.Key_Delete:
             for item in selection:
                 if isinstance(item, CircuitItem):
-                    self.mainCircuit.remove(item.item)
+                    self.mainCircuit.remove(item.data)
                     item.circuit = None
                 elif isinstance(item, Plug):
                     self.mainCircuit.remove(item)
@@ -228,7 +229,7 @@ class MainView(QGraphicsView):
                     self.setCursor(Qt.CursorShape.UpArrowCursor)
                     return
                 elif isCircuit:
-                    item.setToolTip(item.item.name)
+                    item.setToolTip(item.data.name)
             elif (isinstance(item, WireItem) and item.handleAtPos(pos) and
                     not self.isDrawing):
                 self.setCursor(Qt.CursorShape.UpArrowCursor)
@@ -253,7 +254,7 @@ class MainView(QGraphicsView):
                     self.scene().addItem(self.currentWire)
                     return   # no super(), prevents dragging/selecting
                 elif (
-                        isinstance(item, PlugItem) and item.item.isInput
+                        isinstance(item, PlugItem) and item.data.isInput
                         and e.modifiers() & Qt.AltModifier):
                     item.setAndUpdate()
                     return
