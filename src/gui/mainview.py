@@ -36,6 +36,7 @@ class MainView(QGraphicsView):
     def clearCircuit(self):
         """Clears every item from the circuit designer."""
         [self.scene().removeItem(i) for i in self.scene().items()
+            # https://bugreports.qt-project.org/browse/PYSIDE-252
             if not isinstance(i, QGraphicsSimpleTextItem)]
         self.mainCircuit.clear()
 
@@ -168,9 +169,8 @@ class MainView(QGraphicsView):
             for item in selection:
                 if isinstance(item, CircuitItem):
                     self.mainCircuit.remove(item.data)
-                    item.circuit = None
                 elif isinstance(item, Plug):
-                    self.mainCircuit.remove(item)
+                    self.mainCircuit.remove(item.data)
                 elif isinstance(item, WireItem) and item.endIO is not None:
                     item.startIO.disconnect(item.endIO)
                 scene.removeItem(item)

@@ -202,7 +202,7 @@ class Circuit:
             if Circuit.addCircuitVerbose:
                 log.info(
                     self.str_circuitAdded
-                    % (self.class_name(), self.name, self.owner.name,))
+                    % (self.class_name(), self.name, self.owner.name,))        
 
     def class_name(self):
         """Return the class name of this circuit."""

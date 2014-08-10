@@ -114,9 +114,14 @@ class MainWindow(QMainWindow):
             for item in items:
                 if isinstance(item[0], Plug):
                     item[0].owner = self.view.mainCircuit
+                    if item[0].isInput:
+                        self.view.mainCircuit.inputList.append(item[0])
+                    else:
+                        self.view.mainCircuit.outputList.append(item[0])
                     i = PlugItem(item[0])
                 elif isinstance(item[0], Circuit):
                     item[0].owner = self.view.mainCircuit
+                    self.view.mainCircuit.circuitList.append(item[0])
                     i = CircuitItem(item[0])
                 else:           # Wire item
                     i = WireItem(item[0][0], item[0][1], item[0][1])
