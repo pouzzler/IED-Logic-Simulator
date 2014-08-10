@@ -5,7 +5,7 @@ import pickle
 from PySide.QtCore import QModelIndex, QPoint, QPointF, Qt, QTimer
 from PySide.QtGui import (
     QCursor, QImage, QInputDialog, QGraphicsItem, QGraphicsScene,
-    QGraphicsView, QMenu, QStandardItemModel)
+    QGraphicsSimpleTextItem, QGraphicsView, QMenu, QStandardItemModel)
 from .graphicitem import CircuitItem, PlugItem, WireItem
 from .selectionoptions import SelectionOptions
 from .toolbox import ToolBox
@@ -14,7 +14,7 @@ from engine.clock import ClockThread
 from engine.simulator import Circuit, Plug
 import engine
 
-  
+
 class MainView(QGraphicsView):
     """Graphic representation of a user created circuit schematic."""
 
@@ -35,14 +35,15 @@ class MainView(QGraphicsView):
 
     def clearCircuit(self):
         """Clears every item from the circuit designer."""
-        for item in self.scene().items():
-            if isinstance(item, PlugItem) or isinstance(item, CircuitItem):
-                self.mainCircuit.remove(item.data)
-            self.scene().removeItem(item)
+        [self.scene().removeItem(i) for i in self.scene().items()
+            if not isinstance(i, QGraphicsSimpleTextItem)]
+        self.mainCircuit.clear()
 
     def clockUpdate(self):
         """Updates the view at each clock tick."""
-        [item.setupPaint() for item in self.scene().items() if isinstance(item, PlugItem)]
+        [
+            item.setupPaint() for item in self.scene().items()
+            if isinstance(item, PlugItem)]
 
     def contextMenuEvent(self, e):
         """Pops a contextual menu up on right-clicks"""

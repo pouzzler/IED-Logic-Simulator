@@ -208,6 +208,12 @@ class Circuit:
         """Return the class name of this circuit."""
         return self.__class__.__name__
 
+    def clear(self):
+        """Empties the circuit of all components."""
+        self.inputList = []
+        self.outputList = []
+        self.circuitList = []
+
     def evalfun(self):
         """Only builtin gates have an evalfun."""
         pass
@@ -247,7 +253,6 @@ class Circuit:
             log.warning(self.str_invalidComponent)
             return False
         if component not in componentList:
-            print(component.name)
             log.warning(self.str_invalidRem)
             return False
         if isinstance(component, Plug):     # Remove the item.

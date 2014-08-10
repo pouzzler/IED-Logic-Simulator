@@ -113,6 +113,7 @@ class MainWindow(QMainWindow):
             f.close()
             for item in items:
                 if isinstance(item[0], Plug):
+                    item[0].owner = self.view.mainCircuit
                     i = PlugItem(item[0])
                 elif isinstance(item[0], Circuit):
                     item[0].owner = self.view.mainCircuit
