@@ -204,6 +204,16 @@ class Circuit:
                     self.str_circuitAdded
                     % (self.class_name(), self.name, self.owner.name,))        
 
+    def add(self, component):
+        """Used when loading circuits, to add pre-existing components."""
+        component.owner = self
+        if isinstance(component, Circuit):
+            self.circuitList.append(component)
+        elif component.isInput:
+            self.inputList.append(component)
+        else:
+            self.outputList.append(component)
+
     def class_name(self):
         """Return the class name of this circuit."""
         return self.__class__.__name__

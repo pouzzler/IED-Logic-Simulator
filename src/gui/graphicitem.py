@@ -21,10 +21,10 @@ class WireItem(QGraphicsPathItem):
             QGraphicsItem.ItemIsMovable | QGraphicsItem.ItemIsSelectable
             | QGraphicsItem.ItemSendsGeometryChanges)
         self.setPen(QPen(QBrush(QColor(QColor('black'))), 2))
-        self.startIO = startIO
-        self.endIO = endIO
-        # Duplicate the origin, for redraws during mouse moves
-        self.points = (pts if isinstance(pts, list) else [pts, pts])
+        self.data = {
+            'startIO': startIO,
+            'points': (pts if isinstance(pts, list) else [pts, pts]),
+            'endIO': endIO}
         # Wire handle hovering over a Plug, MainView.mouseMove will detect
         # correctly the Plug, not the wire handle.
         self.setZValue(-1)
@@ -34,16 +34,16 @@ class WireItem(QGraphicsPathItem):
     def addPoint(self):
         """Duplicates the end point, for use as a moving point during moves."""
         newPos = QPointF(
-            int(10 * round(self.points[-1].x() / 10)),
-            int(10 * round(self.points[-1].y() / 10)))
-        self.points[-1] = newPos
-        self.points.append(self.points[-1])
+            int(10 * round(self.data['points'][-1].x() / 10)),
+            int(10 * round(self.data['points'][-1].y() / 10)))
+        self.data['points'][-1] = newPos
+        self.data['points'].append(self.data['points'][-1])
         self.setupPaint()
 
     def connect(self, endIO):
         """Try to connect the end points of the Wire."""
-        if self.startIO.connect(endIO):
-            self.endIO = endIO
+        if self.data['startIO'].connect(endIO):
+            self.data['endIO'] = endIO
             self.complete = True    # Wire can't be modified anymore.
             self.setupPaint()
             return True
@@ -53,7 +53,7 @@ class WireItem(QGraphicsPathItem):
         """Is there an interactive handle where the mouse is?"""
         if not self.complete:
             path = QPainterPath()
-            path.addEllipse(self.points[-1], self.radius, self.radius)
+            path.addEllipse(self.data['points'][-1], self.radius, self.radius)
             return path.contains(pos)
 
     def itemChange(self, change, value):
@@ -68,30 +68,30 @@ class WireItem(QGraphicsPathItem):
         sq2 = sqrt(2) / 2
         A = [[0, 1], [sq2, sq2], [1, 0], [sq2, -sq2],
             [0, -1], [-sq2, -sq2], [-1, 0], [-sq2, sq2]]
-        x = self.points[-2].x()
-        y = self.points[-2].y()
+        x = self.data['points'][-2].x()
+        y = self.data['points'][-2].y()
         L = sqrt(pow(endPoint.x() - x, 2) + pow(endPoint.y() - y, 2))
         angle = atan2(endPoint.x() - x, endPoint.y() - y)
         a = round(8 * angle / (2 * pi)) % 8
-        self.points[-1] = QPointF(x + A[a][0] * L, y + A[a][1] * L)
+        self.data['points'][-1] = QPointF(x + A[a][0] * L, y + A[a][1] * L)
         self.setupPaint()
 
     def setupPaint(self):
         """Draw the wire segments and handle."""
         path = QPainterPath()
-        path.moveTo(self.points[0])
-        for p in self.points[1:]:
+        path.moveTo(self.data['points'][0])
+        for p in self.data['points'][1:]:
             path.lineTo(p)
         if not self.complete:   # An incomplete wire needs a handle
-            path.addEllipse(self.points[-1], self.radius, self.radius)
+            path.addEllipse(self.data['points'][-1], self.radius, self.radius)
         self.setPath(path)
         self.update()
 
     def removeLast(self):
         """Remove the last segment (user corrects user errors)."""
         if not self.complete:
-            self.points = self.points[0:-2]
-            if len(self.points) > 1:
+            self.data['points'] = self.data['points'][0:-2]
+            if len(self.data['points']) > 1:
                 self.addPoint()
                 self.setupPaint()
             else:

@@ -7,7 +7,8 @@ import time
 from PySide.QtCore import Qt
 from PySide.QtGui import (
     QAction, QBrush, QColor, QDesktopWidget, QDockWidget, QFileDialog,
-    QMainWindow, QMenu, QMessageBox, QPalette, QPixmap, QImage)
+    QGraphicsSimpleTextItem, QMainWindow, QMenu, QMessageBox, QPalette,
+    QPixmap, QImage)
 from .docu import HelpDockWidget
 from .graphicitem import *
 from .logwidgets import LogDockWidget
@@ -112,19 +113,16 @@ class MainWindow(QMainWindow):
             items = pickle.load(f)
             f.close()
             for item in items:
-                if isinstance(item[0], Plug):
-                    item[0].owner = self.view.mainCircuit
-                    if item[0].isInput:
-                        self.view.mainCircuit.inputList.append(item[0])
+                if isinstance(item[0], dict):
+                    i = WireItem(
+                        item[0]['startIO'], item[0]['points'],
+                        item[0]['endIO'])
+                else:
+                    self.view.mainCircuit.add(item[0])
+                    if isinstance(item[0], Plug):
+                        i = PlugItem(item[0])
                     else:
-                        self.view.mainCircuit.outputList.append(item[0])
-                    i = PlugItem(item[0])
-                elif isinstance(item[0], Circuit):
-                    item[0].owner = self.view.mainCircuit
-                    self.view.mainCircuit.circuitList.append(item[0])
-                    i = CircuitItem(item[0])
-                else:           # Wire item
-                    i = WireItem(item[0][0], item[0][1], item[0][1])
+                        i = CircuitItem(item[0])
                 self.view.scene().addItem(i)
                 i.setPos(item[1])
                 i.setTransformOriginPoint(
@@ -140,14 +138,8 @@ class MainWindow(QMainWindow):
         if len(ret[0]):
             items = []
             for item in self.view.scene().items():
-                if (
-                        isinstance(item, PlugItem)
-                        or isinstance(item, CircuitItem)):
+                if not isinstance(item, QGraphicsSimpleTextItem):
                     items.append([item.data, item.pos(), item.rotation()])
-                elif isinstance(item, WireItem):
-                    items.append([
-                        [item.startIO, item.points, item.endIO],
-                        item.pos(), item.rotation()])
             f = open(ret[0] + '.crc', 'wb')
             pickle.dump(items, f, pickle.HIGHEST_PROTOCOL)
             f.close()
