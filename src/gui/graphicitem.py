@@ -113,7 +113,6 @@ class PlugItem(QGraphicsPathItem):
         self.setFlag(QGraphicsItem.ItemSendsGeometryChanges)
         self.setAcceptsHoverEvents(True)
         self.setPen(QPen(QBrush(QColor(QColor('black'))), 2))
-        self.oldPos = QPointF(0, 0)
         # This path is needed at each mouse over event, to check if
         # the mouse is over a pin. We save it as an instance field,
         # rather than recreate it at each event.
