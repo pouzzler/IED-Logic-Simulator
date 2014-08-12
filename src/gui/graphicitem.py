@@ -120,11 +120,11 @@ class PlugItem(QGraphicsPathItem):
         self.pinPath = QPainterPath()
         if self.data.isInput:
             self.pinPath.addEllipse(
-                self.bodyW + 1, (self.bodyW - self.pinW) / 2,
+                self.bodyW + self.pinW / 2, self.bodyW / 2,
                 self.pinW, self.pinW)
         else:
             self.pinPath.addEllipse(
-                0, (self.bodyW - self.pinW) / 2, self.pinW, self.pinW)
+                self.pinW / 2, self.bodyW / 2, self.pinW, self.pinW)
         f = QFont('Times', 12, 75)
         # Name and value text labels.
         self.name = QGraphicsSimpleTextItem(self)
@@ -171,11 +171,14 @@ class PlugItem(QGraphicsPathItem):
         """Offscreen rather than onscreen redraw (few changes)."""
         path = QPainterPath()
         if self.data.isInput:
-            path.addEllipse(0, 0, self.bodyW, self.bodyW)
+            #~ path.addEllipse(0, 0, self.bodyW, self.bodyW)
+            path.addEllipse(self.pinW / 2, self.pinW / 2, self.bodyW, self.bodyW)
         else:
+            #~ path.addRect(
+                #~ self.pinW + 1, 0,
+                #~ self.bodyW, self.bodyW)
             path.addRect(
-                self.pinW + 1, 0,
-                self.bodyW, self.bodyW)
+                3 * self.pinW / 2 + 1, self.pinW / 2, self.bodyW, self.bodyW)
         path.addPath(self.pinPath)
         self.setPath(path)
         self.name.setVisible(self.showName)

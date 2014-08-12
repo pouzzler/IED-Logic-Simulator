@@ -127,6 +127,7 @@ class MainView(QGraphicsView):
             self.scene().addItem(item)
             item.setupPaint()
             item.setPos(item.mapFromScene(self.mapToScene(e.pos())))
+            self.timer.start()
 
     def fillIO(self):
         """Add as many global I/Os as still needed by the main circuit."""
@@ -293,7 +294,7 @@ class MainView(QGraphicsView):
 
     def setItemsInGrid(self):
         """Correcting items pos to fit on the grid."""
-        for item in self.scene().selectedItems():
+        for item in self.scene().items():
             newPos = QPointF(
                 int(10 * round(item.pos().x() / 10)),
                 int(10 * round(item.pos().y() / 10)))

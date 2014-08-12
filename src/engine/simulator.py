@@ -43,47 +43,48 @@ class Plug:
 
     def connect(self, other):
         """Connects two plugs, or logs the reason why not."""
-        if self == other:   # Invalid connections.
+        if self == other:
             log.warning(self.str_connectOnItself)
             return False
-        elif (
+        elif (  # local input and local input
                 self.owner.owner == other.owner.owner
                 and self.isInput and other.isInput):
             log.warning(self.str_connectInOnIn)
             return False
-        elif (
+        elif (  # local output and local output
                 self.owner.owner == other.owner.owner
                 and not self.isInput and not other.isInput):
             log.warning(self.str_connectOutOnOut)
             return False
-        elif (other == self.sourcePlug or self == other.sourcePlug):
+        elif (  # these two plus are already connected
+                other == self.sourcePlug or self == other.sourcePlug):
             log.warning(self.str_connectAlreadyExists)
             return False
-        elif (
+        elif (  # global input and local output
                 not self.isInput and other.isInput and
                 self.owner.owner == other.owner):
             log.warning(self.str_connectGlobInLocOut)
             return False
-        elif (
+        elif (  # global output and local input
                 self.isInput and not other.isInput and
                 self.owner.owner == other.owner):
             log.warning(self.str_connectGlobOutLocIn)
             return False
-        elif (
+        elif (  # global input and local output
                 not self.isInput and other.isInput and
                 self.owner == other.owner.owner):
             log.warning(self.str_connectGlobInLocOut)
             return False
-        elif (
+        elif (  # global output and local input
                 self.isInput and not other.isInput and
                 self.owner == other.owner.owner):
             log.warning(self.str_connectGlobOutLocIn)
             return False
         else:
-            if ((
+            if ((   # origin is self
                     self.owner.owner and not self.isInput) or
                     (not self.owner.owner and self.isInput)):
-                if other.sourcePlug:
+                if other.sourcePlug:    # but other is already connected
                     log.warning(
                         self.str_connectHasConnection
                         % (other.owner.name, other.name,))
@@ -91,8 +92,8 @@ class Plug:
                 else:
                     self.destinationPlugs.append(other)
                     other.sourcePlug = self
-            else:
-                if self.sourcePlug:
+            else:   # origin is other
+                if self.sourcePlug:    # but self is already connected
                     log.warning(
                         self.str_connectHasConnection
                         % (self.owner.name, self.name,))
@@ -101,7 +102,7 @@ class Plug:
                     other.destinationPlugs.append(self)
                     self.sourcePlug = other
             if Plug.connectVerbose:
-                log.info(
+                log.warning(    # We want it to appear in MainView
                     self.str_connect % (
                         other.owner.name, other.name, self.owner.name,
                         self.name,))
