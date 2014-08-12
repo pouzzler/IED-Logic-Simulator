@@ -128,7 +128,8 @@ class SelectionOptions(QWidget):
     def setCategoryVisibility(self, state):
         """Show/Hide the category of an item in the main view."""
         for item in self.view.scene().selectedItems():
-            item.setCategoryVisibility(True if state else False)
+            if isinstance(item, CircuitItem):
+                item.setCategoryVisibility(True if state else False)
 
     def setItemName(self):
         """Show/Hide the category of an item in the main view."""

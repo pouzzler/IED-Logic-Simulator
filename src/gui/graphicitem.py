@@ -158,10 +158,6 @@ class PlugItem(QGraphicsPathItem):
             if isinstance(i, PlugItem):
                 i.setupPaint()
 
-    def setCategoryVisibility(self, isVisible):
-        """MainView requires PlugItems to function like CircuitItems."""
-        pass
-
     def setNameVisibility(self, isVisible):
         """Shows/Hide the item name in the graphical view."""
         self.showName = isVisible

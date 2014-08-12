@@ -35,16 +35,17 @@ class MainView(QGraphicsView):
 
     def clearCircuit(self):
         """Clears every item from the circuit designer."""
-        [self.scene().removeItem(i) for i in self.scene().items()
+        for i in self.scene().items():
             # https://bugreports.qt-project.org/browse/PYSIDE-252
-            if not isinstance(i, QGraphicsSimpleTextItem)]
+            if not isinstance(i, QGraphicsSimpleTextItem):
+                self.scene().removeItem(i) 
         self.mainCircuit.clear()
 
     def clockUpdate(self):
         """Updates the view at each clock tick."""
-        [
-            item.setupPaint() for item in self.scene().items()
-            if isinstance(item, PlugItem)]
+        for item in self.scene().items():
+            if isinstance(item, PlugItem):
+                item.setupPaint() 
 
     def contextMenuEvent(self, e):
         """Pops a contextual menu up on right-clicks"""
