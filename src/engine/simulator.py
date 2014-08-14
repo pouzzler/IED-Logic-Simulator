@@ -2,7 +2,6 @@
 # coding: utf-8
 
 import logging
-from PySide.QtCore import QObject, Signal
 
 
 log = logging.getLogger(__name__)
@@ -17,18 +16,15 @@ fileHandler.setFormatter(formatter)
 stdoutHandler.setFormatter(formatter)
 
 
-class Plug(QObject):
+class Plug:
     """Represents an input or output."""
     # Verbosity options :
     addPlugVerbose = True       # Log self.__init__()?
     setInputVerbose = True      # Log input.set()?
     setOutputVerbose = True     # Log output.set()?
-    connect_plugsVerbose = True       # Log i/o.connect_plugs()?
-    
-    plugValueChanged = Signal()
+    connectVerbose = True       # Log i/o.connect()?
 
     def __init__(self, isInput, name, owner):
-        QObject.__init__(self)
         self.isInput = isInput
         self.owner = owner
         self.name = self.generate_name() if name is None else name
@@ -45,81 +41,81 @@ class Plug(QObject):
             if Plug.addPlugVerbose:
                 log.info(self.str_outputAdded % (self.name, owner.name,))
 
-    def connect_plugs(self, other):
+    def connect(self, other):
         """Connects two plugs, or logs the reason why not."""
         if self == other:
-            log.warning(self.str_connect_plugsOnItself)
+            log.warning(self.str_connectOnItself)
             return False
         elif (  # local input and local input
                 self.owner.owner == other.owner.owner
                 and self.isInput and other.isInput):
-            log.warning(self.str_connect_plugsInOnIn)
+            log.warning(self.str_connectInOnIn)
             return False
         elif (  # local output and local output
                 self.owner.owner == other.owner.owner
                 and not self.isInput and not other.isInput):
-            log.warning(self.str_connect_plugsOutOnOut)
+            log.warning(self.str_connectOutOnOut)
             return False
-        elif (  # these two plus are already connect_plugsed
+        elif (  # these two plus are already connected
                 other == self.sourcePlug or self == other.sourcePlug):
-            log.warning(self.str_connect_plugsAlreadyExists)
+            log.warning(self.str_connectAlreadyExists)
             return False
         elif (  # global input and local output
                 not self.isInput and other.isInput and
                 self.owner.owner == other.owner):
-            log.warning(self.str_connect_plugsGlobInLocOut)
+            log.warning(self.str_connectGlobInLocOut)
             return False
         elif (  # global output and local input
                 self.isInput and not other.isInput and
                 self.owner.owner == other.owner):
-            log.warning(self.str_connect_plugsGlobOutLocIn)
+            log.warning(self.str_connectGlobOutLocIn)
             return False
         elif (  # global input and local output
                 not self.isInput and other.isInput and
                 self.owner == other.owner.owner):
-            log.warning(self.str_connect_plugsGlobInLocOut)
+            log.warning(self.str_connectGlobInLocOut)
             return False
         elif (  # global output and local input
                 self.isInput and not other.isInput and
                 self.owner == other.owner.owner):
-            log.warning(self.str_connect_plugsGlobOutLocIn)
+            log.warning(self.str_connectGlobOutLocIn)
             return False
         else:
             if ((   # origin is self
                     self.owner.owner and not self.isInput) or
                     (not self.owner.owner and self.isInput)):
-                if other.sourcePlug:    # but other is already connect_plugsed
+                if other.sourcePlug:    # but other is already connected
                     log.warning(
-                        self.str_connect_plugsHasConnection
+                        self.str_connectHasConnection
                         % (other.owner.name, other.name,))
                     return False
                 else:
                     self.destinationPlugs.append(other)
                     other.sourcePlug = self
             else:   # origin is other
-                if self.sourcePlug:    # but self is already connect_plugsed
+                if self.sourcePlug:    # but self is already connected
                     log.warning(
-                        self.str_connect_plugsHasConnection
+                        self.str_connectHasConnection
                         % (self.owner.name, self.name,))
                     return False
                 else:
                     other.destinationPlugs.append(self)
                     self.sourcePlug = other
-            if Plug.connect_plugsVerbose:
+            if Plug.connectVerbose:
                 log.warning(    # We want it to appear in MainView
-                    self.str_connect_plugs % (
+                    self.str_connect % (
                         other.owner.name, other.name, self.owner.name,
                         self.name,))
             return True
 
-    def disconnect_plugs(self, other):
-        """Disconnect_plugs two plugs."""
-        # Invalid disconnect_plugsion.
+    def disconnect(self, other):
+        """Disconnect two plugs."""
+        # Invalid disconnection.
         if not (
                 other in self.destinationPlugs
                 or self in other.destinationPlugs):
             log.info(
-                self.str_invalidDisconnect_plugs
+                self.str_invalidDisconnect
                 % (self.owner.name, self.name, other.owner.name, other.name,))
             return
         elif other in self.destinationPlugs:     # source = self
@@ -131,7 +127,7 @@ class Plug(QObject):
             self.sourcePlug = None
             self.set(0)
         log.info(
-            self.str_disconnect_plugs
+            self.str_disconnect
             % (self.owner.name, self.name, other.owner.name, other.name,))
 
     def generate_name(self):
@@ -168,8 +164,6 @@ class Plug(QObject):
         # then, all plugs in the destination list are set to this value
         for dest in self.destinationPlugs:
             dest.set(value)
-        
-        self.plugValueChanged.emit()
 
     def setName(self, name):
         """Set the name of the plug."""
@@ -274,9 +268,9 @@ class Circuit:
             return False
         if isinstance(component, Plug):     # Remove the item.
             if component.sourcePlug:
-                component.sourcePlug.disconnect_plugs(component)
+                component.sourcePlug.disconnect(component)
             for i in range(len(component.destinationPlugs)):
-                component.disconnect_plugs(component.destinationPlugs[0])
+                component.disconnect(component.destinationPlugs[0])
         else:
             for plug in component.inputList + component.outputList:
                 component.remove(plug)

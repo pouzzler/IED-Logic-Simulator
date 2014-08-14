@@ -2,7 +2,7 @@
 # coding=utf-8
 
 from math import atan2, pi, pow, sqrt
-from PySide.QtCore import QPointF, QRectF, Qt, QTimer, Slot
+from PySide.QtCore import QPointF, QRectF, Qt, QTimer
 from PySide.QtGui import (
     QBrush, QColor, QCursor, QFont, QGraphicsItem, QGraphicsPathItem,
     QGraphicsSimpleTextItem, QImage, QPainterPath, QPen, QStyle)
@@ -30,17 +30,6 @@ class WireItem(QGraphicsPathItem):
         self.setZValue(-1)
         # Can the wire be modified (not complete)?
         self.complete = True if endIO else False
-        
-        self.data['startIO'].plugValueChanged.connect(self.setColor)
-
-    @Slot()
-    def setColor(self):
-        if not self.data['startIO'] or not self.data['endIO']:
-            self.setPen(QPen(QBrush(QColor(QColor('black'))), 2))
-        elif self.data['startIO'].value:
-            self.setPen(QPen(QBrush(QColor(QColor('green'))), 2))
-        else:
-            self.setPen(QPen(QBrush(QColor(QColor('red'))), 2))
 
     def addPoint(self):
         """Duplicates the end point, for use as a moving point during moves."""
@@ -53,7 +42,7 @@ class WireItem(QGraphicsPathItem):
 
     def connect(self, endIO):
         """Try to connect the end points of the Wire."""
-        if self.data['startIO'].connect_plugs(endIO):
+        if self.data['startIO'].connect(endIO):
             self.data['endIO'] = endIO
             self.complete = True    # Wire can't be modified anymore.
             self.setupPaint()

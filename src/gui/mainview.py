@@ -295,23 +295,10 @@ class MainView(QGraphicsView):
 
     def setItemsInGrid(self):
         """Correcting items pos to fit on the grid."""
-        objectPosDict = {}
-        wirePosDict = {}
         for item in self.scene().items():
-            newPos = QPointF(
+            item.setPos(QPointF(
                 int(10 * round(item.pos().x() / 10)),
-                int(10 * round(item.pos().y() / 10)))
-            item.setPos(newPos)
-            if isinstance(item, PlugItem) or isinstance(item, CircuitItem):
-                objectPosDict[item] = item.pos()
-            if isinstance(item, WireItem):
-                wirePosDict[item] = (item.data['startIO'])
-        for item in objectPosDict:
-            print('item:', item.__class__.__name__)
-            print('pos:', item.pos())
-        print('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
-        
-        
+                int(10 * round(item.pos().y() / 10))))
 
     def write(self, message):
         """Briefly display a log WARNING."""
