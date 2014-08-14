@@ -201,7 +201,7 @@ class CircuitItem(QGraphicsItem):
     textH = 12
     ioH = 15
     ioW = 20
-    radius = 2.5
+    radius = 5
 
     def __init__(self, circuit):
         super(CircuitItem, self).__init__()
