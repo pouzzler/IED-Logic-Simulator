@@ -176,8 +176,10 @@ class MainView(QGraphicsView):
                     self.mainCircuit.remove(item.data)
                 elif isinstance(item, Plug):
                     self.mainCircuit.remove(item.data)
-                elif isinstance(item, WireItem) and item.endIO is not None:
-                    item.startIO.disconnect(item.endIO)
+                elif (
+                        isinstance(item, WireItem)
+                        and item.data['endIO'] is not None):
+                    item.data['startIO'].disconnect(item.data['endIO'])
                 scene.removeItem(item)
         # <- ->, item rotation.
         elif e.key() == Qt.Key_Left or e.key() == Qt.Key_Right:

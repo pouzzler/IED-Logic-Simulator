@@ -228,13 +228,14 @@ class CircuitItem(QGraphicsItem):
 
     def boundingRect(self):
         """Qt requires overloading this when overloading QGraphicsItem."""
-        H = self.maxH
         W = 2 * self.radius + 2 * self.ioW + self.imgW
         ni = self.data.nb_inputs()
         no = self.data.nb_outputs()
         t = (1 - int(max(ni, no) / 2)) * self.ioH - self.radius / 2
         b = (1 + int(max(ni, no) / 2)) * self.ioH + self.radius / 2
-        return QRectF(-self.ioW - self.radius, t, W, b - t)
+        return (
+            QRectF(-self.ioW - self.radius, t, W, b - t) if max(ni, no) > 1
+            else QRectF(-self.ioW - self.radius, 0, W, self.image.height()))
 
     def handleAtPos(self, pos):
         """Is there an interactive handle where the mouse is? Return it."""
