@@ -277,9 +277,7 @@ class MainView(QGraphicsView):
             return
         if self.isDrawing:
             self.isDrawing = False
-            self.currentWire.setZValue(-2)
             item = self.itemAt(e.pos())
-            self.currentWire.setZValue(-1)
             if item:
                 pos = item.mapFromScene(self.mapToScene(e.pos()))
                 if isinstance(item, CircuitItem) or isinstance(item, PlugItem):
@@ -290,16 +288,6 @@ class MainView(QGraphicsView):
                                     self.mapToScene(e.pos())))):
                         if not self.currentWire.connect(plug):
                             self.scene().removeItem(self.currentWire)
-                        return
-                elif isinstance(item, WireItem) and item != self.currentWire:
-                    if not self.currentWire.connect(item.data['startIO']):
-                        self.scene().removeItem(self.currentWire)
-                    else:
-                        item.data['points'].reverse()
-                        self.currentWire.data['points'].extend(
-                            item.data['points'])
-                        self.scene().removeItem(item)
-                        self.currentWire.setupPaint()
                         return
             self.currentWire.addPoint()
             self.currentWire = None
