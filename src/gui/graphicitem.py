@@ -76,14 +76,13 @@ class WireItem(QGraphicsPathItem):
 
     def setupPaint(self):
         """Draw the wire segments and handle."""
-        
+
         if not self.data['startIO'] or not self.data['endIO']:
             self.setPen(QPen(QBrush(QColor(QColor('black'))), 2))
         elif self.data['startIO'].value:
             self.setPen(QPen(QBrush(QColor(QColor('green'))), 2))
         else:
             self.setPen(QPen(QBrush(QColor(QColor('red'))), 2))
-            
         path = QPainterPath()
         path.moveTo(self.data['points'][0])
         for p in self.data['points'][1:]:
@@ -172,7 +171,8 @@ class PlugItem(QGraphicsPathItem):
         """Offscreen rather than onscreen redraw (few changes)."""
         path = QPainterPath()
         if self.data.isInput:
-            path.addEllipse(self.pinW / 2, self.pinW / 2, self.bodyW, self.bodyW)
+            path.addEllipse(
+                self.pinW / 2, self.pinW / 2, self.bodyW, self.bodyW)
         else:
             path.addRect(
                 3 * self.pinW / 2 + 1, self.pinW / 2, self.bodyW, self.bodyW)
@@ -197,9 +197,12 @@ class CircuitItem(QGraphicsItem):
     """Graphical wrapper around the engine Circuit class."""
 
     textH = 12
-    ioH = 15
-    ioW = 20
-    radius = 2.5
+    #~ ioH = 15
+    #~ ioW = 20
+    #~ radius = 2.5
+    ioH = 20
+    ioW = 15
+    radius = 10
 
     def __init__(self, circuit):
         super(CircuitItem, self).__init__()
@@ -226,8 +229,12 @@ class CircuitItem(QGraphicsItem):
     def boundingRect(self):
         """Qt requires overloading this when overloading QGraphicsItem."""
         H = self.maxH
-        W = 4 * self.radius + 2 * self.ioW + self.imgW
-        return QRectF(0, 0, W, H)
+        W = 2 * self.radius + 2 * self.ioW + self.imgW
+        ni = self.data.nb_inputs()
+        no = self.data.nb_outputs()
+        t = (1 - int(max(ni, no) / 2)) * self.ioH - self.radius / 2
+        b = (1 + int(max(ni, no) / 2)) * self.ioH + self.radius / 2
+        return QRectF(-self.ioW - self.radius, t, W, b - t)
 
     def handleAtPos(self, pos):
         """Is there an interactive handle where the mouse is? Return it."""
@@ -247,58 +254,32 @@ class CircuitItem(QGraphicsItem):
 
     def paint(self, painter, option, widget):
         """Draws the item."""
-        # TEST CODE FOR FUTURE REWRITE
-        #~ painter.drawImage(QRectF(0, 0, self.imgW, self.imgH), self.image)
-        #~ self.ioH = 20
-        #~ self.ioW = 15
-        #~ self.radius = 5
-        #~ n = data.nb_inputs()
-        #~ for i in range(1 - int(n / 2), 2 + int(n / 2)):
-            #~ if i != 1 or n % 2:
-                #~ painter.drawLine(-self.ioW, i * self.ioH, 0, i * self.ioH)
-                #~ painter.drawEllipse(
-                    #~ -self.ioW - self.radius, i * self.ioH - self.radius / 2,
-                    #~ self.radius, self.radius)
-        #~ n = self.data.nb_outputs()
-        #~ for i in range(1 - int(n / 2), 2 + int(n / 2)):
-            #~ if i != 1 or n % 2:
-                #~ painter.drawLine(
-                    #~ self.imgW, i * self.ioH, self.imgW + self.ioW, i * self.ioH)
-                #~ painter.drawEllipse(
-                    #~ self.imgW + self.ioW, i * self.ioH - self.radius / 2,
-                    #~ self.radius, self.radius)
-        painter.setPen(QPen(QColor('black'), 2))
-        for i in range(self.nIn):   # Handles drawn 'by hand'.
+        ni = self.data.nb_inputs()
+        no = self.data.nb_outputs()
+        for i in range(1 - int(ni / 2), 2 + int(ni / 2)):
+            if i != 1 or ni % 2:
+                painter.drawLine(-self.ioW, i * self.ioH, 0, i * self.ioH)
+        for i in range(1 - int(no / 2), 2 + int(no / 2)):
+            if i != 1 or no % 2:
+                painter.drawLine(
+                    self.imgW, i * self.ioH, self.imgW + self.ioW,
+                    i * self.ioH)
+        painter.drawImage(QRectF(0, 0, self.imgW, self.imgH), self.image)
+        #~ painter.setPen(QPen(QColor('black'), 2))
+        for i in range(ni):
             painter.drawPath(self.inputPaths[i])
-            painter.drawLine(
-                2 * self.radius,
-                i * self.ioH + self.inOff + self.radius,
-                2 * self.radius + self.ioW,
-                i * self.ioH + self.inOff + self.radius)
-        painter.drawLine(
-            2 * self.radius + self.ioW,
-            self.inOff + self.radius,
-            2 * self.radius + self.ioW,
-            (self.nIn - 1) * self.ioH + self.inOff + self.radius)
-        for i in range(self.nOut):
+        #~ painter.drawLine(
+            #~ 2 * self.radius + self.ioW,
+            #~ self.inOff + self.radius,
+            #~ 2 * self.radius + self.ioW,
+            #~ (self.nIn - 1) * self.ioH + self.inOff + self.radius)
+        for i in range(no):
             painter.drawPath(self.outputPaths[i])
-            painter.drawLine(
-                2 * self.radius + self.ioW + self.imgW,
-                i * self.ioH + self.outOff + self.radius,
-                2 * self.radius + 2 * self.ioW + self.imgW,
-                i * self.ioH + self.outOff + self.radius)
-        painter.drawLine(
-            2 * self.radius + self.ioW + self.imgW,
-            self.outOff + self.radius,
-            2 * self.radius + self.ioW + self.imgW,
-            (self.nOut - 1) * self.ioH + self.outOff + self.radius)
-        painter.drawImage(
-            QRectF(
-                2 * self.radius + self.ioW,
-                self.imgOff,
-                self.imgW,
-                self.imgH),
-            self.image)                 # Body drawn from a png.
+        #~ painter.drawLine(
+            #~ 2 * self.radius + self.ioW + self.imgW,
+            #~ self.outOff + self.radius,
+            #~ 2 * self.radius + self.ioW + self.imgW,
+            #~ (self.nOut - 1) * self.ioH + self.outOff + self.radius)
         # Default selection box doesn't work; simple reimplementation.
         if option.state & QStyle.State_Selected:
             pen = QPen(Qt.black, 1, Qt.DashLine)
@@ -345,22 +326,22 @@ class CircuitItem(QGraphicsItem):
         # i/o mouseover detection. Create once, use on each mouseMoveEvent.
         self.inputPaths = []
         self.outputPaths = []
-        for i in range(self.nIn):
-            path = QPainterPath()
-            path.addEllipse(
-                0,
-                i * self.ioH + self.inOff,
-                2 * self.radius,
-                2 * self.radius)
-            self.inputPaths.append(path)
-        for i in range(self.nOut):
-            path = QPainterPath()
-            path.addEllipse(
-                2 * self.radius + 2 * self.ioW + self.imgW,
-                i * self.ioH + self.outOff,
-                2 * self.radius,
-                2 * self.radius)
-            self.outputPaths.append(path)
+        ni = self.data.nb_inputs()
+        no = self.data.nb_outputs()
+        for i in range(1 - int(ni / 2), 2 + int(ni / 2)):
+            if i != 1 or ni % 2:
+                path = QPainterPath()
+                path.addEllipse(
+                    -self.ioW - self.radius, i * self.ioH - self.radius / 2,
+                    self.radius, self.radius)   
+                self.inputPaths.append(path)
+        for i in range(1 - int(no / 2), 2 + int(no / 2)):
+            if i != 1 or no % 2:
+                path = QPainterPath()
+                path.addEllipse(
+                    self.imgW + self.ioW, i * self.ioH - self.radius / 2,
+                    self.radius, self.radius)
+                self.outputPaths.append(path)
         self.name.setVisible(self.showName)
         self.category.setVisible(self.showCategory)
         if self.showName or self.showCategory:

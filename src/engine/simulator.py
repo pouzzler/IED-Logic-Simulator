@@ -47,13 +47,13 @@ class Plug:
             log.warning(self.str_connectOnItself)
             return False
         elif (  # same scope input and input
-                self.owner.owner == other.owner.owner
-                and self.isInput and other.isInput):
+                self.isInput and other.isInput
+                and self.owner.owner == other.owner.owner):
             log.warning(self.str_connectInOnIn)
             return False
         elif (  # same scope output and output
-                self.owner.owner == other.owner.owner
-                and not self.isInput and not other.isInput):
+                not self.isInput and not other.isInput
+                and self.owner.owner == other.owner.owner):
             log.warning(self.str_connectOutOnOut)
             return False
         elif (  # these two plus are already connected

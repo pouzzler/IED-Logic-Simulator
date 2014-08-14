@@ -16,6 +16,7 @@ import engine
 
 from engine.gates import *
 
+
 class MainView(QGraphicsView):
     """Graphic representation of a user created circuit schematic."""
 
@@ -39,14 +40,14 @@ class MainView(QGraphicsView):
         for i in self.scene().items():
             # https://bugreports.qt-project.org/browse/PYSIDE-252
             if not isinstance(i, QGraphicsSimpleTextItem):
-                self.scene().removeItem(i) 
+                self.scene().removeItem(i)
         self.mainCircuit.clear()
 
     def clockUpdate(self):
         """Updates the view at each clock tick."""
         for item in self.scene().items():
             if isinstance(item, PlugItem):
-                item.setupPaint() 
+                item.setupPaint()
 
     def contextMenuEvent(self, e):
         """Pops a contextual menu up on right-clicks"""
@@ -128,7 +129,8 @@ class MainView(QGraphicsView):
                 self.scene().setSceneRect(0, 0, 1, 1)
             self.scene().addItem(item)
             item.setupPaint()
-            item.setPos(item.mapFromScene(self.mapToScene(e.pos())))
+            item.setPos(
+                closestGridPoint(item.mapFromScene(self.mapToScene(e.pos()))))
             self.timer.start()
 
     def fillIO(self):
