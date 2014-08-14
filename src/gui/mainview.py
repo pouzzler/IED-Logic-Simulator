@@ -178,14 +178,7 @@ class MainView(QGraphicsView):
                 scene.removeItem(item)
         # <- ->, item rotation.
         elif e.key() == Qt.Key_Left or e.key() == Qt.Key_Right:
-            angle = 90 if e.key() == Qt.Key_Right else -90
-            grp = scene.createItemGroup(selection)
-            br = grp.mapToScene(grp.boundingRect())
-            x = min([i.x() for i in br]) + grp.boundingRect().width() / 2
-            y = min([i.y() for i in br]) + grp.boundingRect().height() / 2
-            grp.setTransformOriginPoint(x, y)
-            grp.setRotation(grp.rotation() + angle)
-            scene.destroyItemGroup(grp)
+            self.rotateItems(90 if e.key() == Qt.Key_Right else -90)
         # L, left align
         elif e.key() == Qt.Key_L:
             left = min([item.scenePos().x() for item in selection])
@@ -286,6 +279,16 @@ class MainView(QGraphicsView):
             self.currentWire.addPoint()
             self.currentWire = None
         super(MainView, self).mouseReleaseEvent(e)
+
+    def rotateItems(self, angle):
+        """Rotates the current selection around its gravity center."""
+        grp = self.scene().createItemGroup(self.scene().selectedItems())
+        br = grp.mapToScene(grp.boundingRect())
+        x = min([i.x() for i in br]) + grp.boundingRect().width() / 2
+        y = min([i.y() for i in br]) + grp.boundingRect().height() / 2
+        grp.setTransformOriginPoint(x, y)
+        grp.setRotation(grp.rotation() + angle)
+        self.scene().destroyItemGroup(grp)
 
     def setItemsInGrid(self):
         """Correcting items pos to fit on the grid."""

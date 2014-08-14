@@ -50,15 +50,19 @@ class SelectionOptions(QWidget):
         self.nbInputsCB.addItems([str(x) for x in range(2, 33)])
         self.gridLayout.addWidget(self.nbInputsCB, 3, 1, 1, 2)
 
-        orientLabel = QLabel(self.str_orientation, self)
-        self.gridLayout.addWidget(orientLabel, 4, 0, 1, 1)
+        self.orientLabel = QLabel(self.str_orientation, self)
+        self.gridLayout.addWidget(self.orientLabel, 4, 0, 1, 1)
 
         self.cwRotationButton = QPushButton(self)
         self.cwRotationButton.setText("↻")
+        self.cwRotationButton.clicked.connect(
+            lambda: self.view.rotateItems(90))
         self.gridLayout.addWidget(self.cwRotationButton, 4, 1, 1, 1)
 
         self.acwRotationButton = QPushButton(self)
         self.acwRotationButton.setText("↺")
+        self.acwRotationButton.clicked.connect(
+            lambda: self.view.rotateItems(-90))
         self.gridLayout.addWidget(self.acwRotationButton, 4, 2, 1, 1)
 
         valueLabel = QLabel('Value:', self)
@@ -83,6 +87,10 @@ class SelectionOptions(QWidget):
         if size == 0 or any([isinstance(i, WireItem) for i in selection]):
             for widget in self.findChildren(QWidget):
                 widget.setHidden(True)
+            if size:
+                self.orientLabel.setHidden(False)
+                self.cwRotationButton.setHidden(False)
+                self.acwRotationButton.setHidden(False)
             return
         elif size >= 1:
             for widget in self.findChildren(QWidget):
