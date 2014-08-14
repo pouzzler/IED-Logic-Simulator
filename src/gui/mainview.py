@@ -14,6 +14,7 @@ from engine.clock import ClockThread
 from engine.simulator import Circuit, Plug
 import engine
 
+from engine.gates import *
 
 class MainView(QGraphicsView):
     """Graphic representation of a user created circuit schematic."""

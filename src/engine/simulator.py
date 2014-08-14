@@ -46,12 +46,12 @@ class Plug:
         if self == other:
             log.warning(self.str_connectOnItself)
             return False
-        elif (  # local input and local input
+        elif (  # same scope input and input
                 self.owner.owner == other.owner.owner
                 and self.isInput and other.isInput):
             log.warning(self.str_connectInOnIn)
             return False
-        elif (  # local output and local output
+        elif (  # same scope output and output
                 self.owner.owner == other.owner.owner
                 and not self.isInput and not other.isInput):
             log.warning(self.str_connectOutOnOut)
@@ -76,7 +76,7 @@ class Plug:
             log.warning(self.str_connectGlobInLocOut)
             return False
         elif (  # global output and local input
-                self.isInput and not other.isInput and
+                not self.isInput and other.isInput and
                 self.owner == other.owner.owner):
             log.warning(self.str_connectGlobOutLocIn)
             return False
