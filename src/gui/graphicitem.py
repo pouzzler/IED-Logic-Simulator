@@ -78,6 +78,14 @@ class WireItem(QGraphicsPathItem):
 
     def setupPaint(self):
         """Draw the wire segments and handle."""
+        
+        if not self.data['startIO'] or not self.data['endIO']:
+            self.setPen(QPen(QBrush(QColor(QColor('black'))), 2))
+        elif self.data['startIO'].value:
+            self.setPen(QPen(QBrush(QColor(QColor('green'))), 2))
+        else:
+            self.setPen(QPen(QBrush(QColor(QColor('red'))), 2))
+            
         path = QPainterPath()
         path.moveTo(self.data['points'][0])
         for p in self.data['points'][1:]:
@@ -154,7 +162,7 @@ class PlugItem(QGraphicsPathItem):
     def setAndUpdate(self):
         self.data.set(not self.data.value)
         for i in self.scene().items():
-            if isinstance(i, PlugItem):
+            if isinstance(i, PlugItem) or isinstance(i, WireItem):
                 i.setupPaint()
 
     def setNameVisibility(self, isVisible):
