@@ -9,7 +9,7 @@ from PySide.QtGui import (
 from .graphicitem import CircuitItem, PlugItem, WireItem
 from .selectionoptions import SelectionOptions
 from .toolbox import ToolBox
-from .util import filePath
+from .util import closestGridPoint, filePath
 from engine.clock import ClockThread
 from engine.simulator import Circuit, Plug
 import engine
@@ -240,7 +240,8 @@ class MainView(QGraphicsView):
                 plug = item.handleAtPos(pos)
                 if plug:
                     self.isDrawing = True
-                    self.currentWire = WireItem(plug, self.mapToScene(e.pos()))
+                    p = closestGridPoint(self.mapToScene(e.pos()))
+                    self.currentWire = WireItem(plug, [p, p])
                     self.scene().addItem(self.currentWire)
                     return   # no super(), prevents dragging/selecting
                 elif (
@@ -293,9 +294,7 @@ class MainView(QGraphicsView):
     def setItemsInGrid(self):
         """Correcting items pos to fit on the grid."""
         for item in self.scene().items():
-            item.setPos(QPointF(
-                int(10 * round(item.pos().x() / 10)),
-                int(10 * round(item.pos().y() / 10))))
+            item.setPos(closestGridPoint(item.pos()))
 
     def write(self, message):
         """Briefly display a log WARNING."""

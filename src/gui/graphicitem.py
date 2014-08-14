@@ -6,7 +6,7 @@ from PySide.QtCore import QPointF, QRectF, Qt, QTimer
 from PySide.QtGui import (
     QBrush, QColor, QCursor, QFont, QGraphicsItem, QGraphicsPathItem,
     QGraphicsSimpleTextItem, QImage, QPainterPath, QPen, QStyle)
-from .util import filePath
+from .util import closestGridPoint, filePath
 from engine.simulator import Circuit, Plug
 
 
@@ -23,7 +23,7 @@ class WireItem(QGraphicsPathItem):
         self.setPen(QPen(QBrush(QColor(QColor('black'))), 2))
         self.data = {
             'startIO': startIO,
-            'points': (pts if isinstance(pts, list) else [pts, pts]),
+            'points': pts,
             'endIO': endIO}
         # Wire handle hovering over a Plug, MainView.mouseMove will detect
         # correctly the Plug, not the wire handle.
@@ -33,9 +33,7 @@ class WireItem(QGraphicsPathItem):
 
     def addPoint(self):
         """Duplicates the end point, for use as a moving point during moves."""
-        newPos = QPointF(
-            int(10 * round(self.data['points'][-1].x() / 10)),
-            int(10 * round(self.data['points'][-1].y() / 10)))
+        newPos = closestGridPoint(self.data['points'][-1])
         self.data['points'][-1] = newPos
         self.data['points'].append(self.data['points'][-1])
         self.setupPaint()
