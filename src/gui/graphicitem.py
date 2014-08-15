@@ -255,6 +255,7 @@ class CircuitItem(QGraphicsItem):
 
     def paint(self, painter, option, widget):
         """Draws the item."""
+        painter.setPen(QPen(QColor('black'), 2))
         ni = self.data.nb_inputs()
         no = self.data.nb_outputs()
         for i in range(1 - int(ni / 2), 2 + int(ni / 2)):
@@ -266,7 +267,6 @@ class CircuitItem(QGraphicsItem):
                     self.imgW, i * self.ioH, self.imgW + self.ioW,
                     i * self.ioH)
         painter.drawImage(QRectF(0, 0, self.imgW, self.imgH), self.image)
-        #~ painter.setPen(QPen(QColor('black'), 2))
         for i in range(ni):
             painter.drawPath(self.inputPaths[i])
         #~ painter.drawLine(

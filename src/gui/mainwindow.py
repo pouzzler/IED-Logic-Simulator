@@ -125,9 +125,6 @@ class MainWindow(QMainWindow):
                         i = CircuitItem(item[0])
                 self.view.scene().addItem(i)
                 i.setPos(item[1])
-                i.setTransformOriginPoint(
-                    i.boundingRect().width() / 2,
-                    i.boundingRect().height() / 2)
                 i.setRotation(item[2])
                 i.setupPaint()
 
@@ -140,10 +137,16 @@ class MainWindow(QMainWindow):
             for item in self.view.scene().items():
                 if not isinstance(item, QGraphicsSimpleTextItem):
                     items.append([item.data, item.pos(), item.rotation()])
-            f = open(ret[0] + '.crc', 'wb')
+            name = ret[0] if ret[0][-4:] != '.crc' else ret[0][:-4]
+            f = open(name + '.crc', 'wb')
             pickle.dump(items, f, pickle.HIGHEST_PROTOCOL)
             f.close()
-            self.boxDock.widget().addUserCircuit(basename(ret[0]))
+            for i in range(self.boxDock.widget().userheader.childCount()):
+                if (
+                        self.boxDock.widget().userheader.child(i).text(0)
+                        == basename(name)):
+                    return
+            self.boxDock.widget().addUserCircuit(basename(name))
 
     def setLang(self, lang):
         """Sets the UI language. Warns a restart is required."""

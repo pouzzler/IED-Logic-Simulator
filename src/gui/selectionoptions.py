@@ -64,18 +64,6 @@ class SelectionOptions(QWidget):
         self.acwRotationButton.clicked.connect(
             lambda: self.view.rotateItems(-90))
         self.gridLayout.addWidget(self.acwRotationButton, 4, 2, 1, 1)
-
-        valueLabel = QLabel('Value:', self)
-        self.gridLayout.addWidget(valueLabel, 5, 0, 1, 1)
-
-        self.lowRadioButton = QRadioButton(self)
-        self.lowRadioButton.setText('Low')
-        self.gridLayout.addWidget(self.lowRadioButton, 5, 1, 1, 1)
-
-        self.highRadioButton = QRadioButton(self)
-        self.highRadioButton.setText('High')
-        self.gridLayout.addWidget(self.highRadioButton, 5, 2, 1, 1)
-
         self.updateOptions()
 
     def updateOptions(self):

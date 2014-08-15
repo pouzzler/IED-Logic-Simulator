@@ -123,7 +123,7 @@ class MainView(QGraphicsView):
             c.category = name
             item = CircuitItem(c)
         if item:
-            # Fixes the default behavious of centering the first
+            # Fixes the default behaviour of centering the first
             # item added to scene.
             if not len(self.scene().items()):
                 self.scene().setSceneRect(0, 0, 1, 1)
@@ -131,6 +131,7 @@ class MainView(QGraphicsView):
             item.setupPaint()
             item.setPos(
                 closestGridPoint(item.mapFromScene(self.mapToScene(e.pos()))))
+            #~ item.setSelected(True)
             self.timer.start()
 
     def fillIO(self):
@@ -289,13 +290,19 @@ class MainView(QGraphicsView):
     def rotateItems(self, angle):
         """Rotates the current selection around its gravity center."""
         grp = self.scene().createItemGroup(self.scene().selectedItems())
-        br = grp.mapToScene(grp.boundingRect())
-        x = min([i.x() for i in br]) + grp.boundingRect().width() / 2
-        y = min([i.y() for i in br]) + grp.boundingRect().height() / 2
-        grp.setTransformOriginPoint(x, y)
+        br = grp.sceneBoundingRect()
+        grp.setTransformOriginPoint(
+            br.left() + br.width() / 2, br.top() + br.height() / 2)
         grp.setRotation(grp.rotation() + angle)
         self.scene().destroyItemGroup(grp)
-
+        # The item group doesn't transfer its rotation to its children
+        # .setRotation() sets it correctly but rotates the item
+        # .rotate() rotates the item back without setting it
+        # rotate is deprecated, so this is far from ideal
+        for item in self.scene().selectedItems():
+            item.setRotation((item.rotation() + angle) % 360)
+            item.rotate(-angle)
+            
     def setItemsInGrid(self):
         """Correcting items pos to fit on the grid."""
         for item in self.scene().items():
