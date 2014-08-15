@@ -92,6 +92,7 @@ class Plug:
                 else:
                     self.destinationPlugs.append(other)
                     other.sourcePlug = self
+                    other.set(self.value)
             else:   # origin is other
                 if self.sourcePlug:    # but self is already connected
                     log.warning(
@@ -101,6 +102,7 @@ class Plug:
                 else:
                     other.destinationPlugs.append(self)
                     self.sourcePlug = other
+                    self.set(other.value)
             if Plug.connectVerbose:
                 log.warning(    # We want it to appear in MainView
                     self.str_connect % (
