@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # coding=utf-8
 
+from copy import copy
 import pickle
 from PySide.QtCore import QModelIndex, QPoint, QPointF, Qt, QTimer
 from PySide.QtGui import (
@@ -9,7 +10,7 @@ from PySide.QtGui import (
 from .graphicitem import CircuitItem, PlugItem, WireItem
 from .selectionoptions import SelectionOptions
 from .toolbox import ToolBox
-from .util import closestGridPoint, filePath
+from .util import closestGridPoint, filePath, GRIDSIZE
 from engine.clock import ClockThread
 from engine.simulator import Circuit, Plug
 import engine
@@ -186,26 +187,40 @@ class MainView(QGraphicsView):
         # <- ->, item rotation.
         elif e.key() == Qt.Key_Left or e.key() == Qt.Key_Right:
             self.rotateItems(90 if e.key() == Qt.Key_Right else -90)
-        # L, left align
+        # L, left align and even spacing
         elif e.key() == Qt.Key_L:
             left = min([item.scenePos().x() for item in selection])
-            for item in selection:
-                item.setPos(left, item.scenePos().y())
-        # R, right align
+            sel = sorted(selection, key=lambda i: i.scenePos().y())
+            sel[0].setPos(left, sel[0].scenePos().y())
+            for i in range(1, len(sel)):
+                sel[i].setPos(left,
+                    sel[i - 1].sceneBoundingRect().bottom() + 2 * GRIDSIZE)
+        # R, right align and even spacing
         elif e.key() == Qt.Key_R:
             right = max([item.scenePos().x() for item in selection])
-            for item in selection:
-                item.setPos(right, item.scenePos().y())
-        # T, top align
+            sel = sorted(selection, key=lambda i: i.scenePos().y())
+            sel[0].setPos(right, sel[0].scenePos().y())
+            for i in range(1, len(sel)):
+                sel[i].setPos(right,
+                    sel[i - 1].sceneBoundingRect().bottom() + 2 * GRIDSIZE)
+        # T, top align and even spacing
         elif e.key() == Qt.Key_T:
             top = min([item.scenePos().y() for item in selection])
-            for item in selection:
-                item.setPos(item.scenePos().x(), top)
-        # B, bottom align
+            sel = sorted(selection, key=lambda i: i.scenePos().x())
+            sel[0].setPos(sel[0].scenePos().x(), top)
+            for i in range(1, len(sel)):
+                sel[i].setPos(
+                    sel[i - 1].sceneBoundingRect().right() + 2 * GRIDSIZE,
+                    top)
+        # B, bottom align and even spacing
         elif e.key() == Qt.Key_B:
             bottom = max([item.scenePos().y() for item in selection])
-            for item in selection:
-                item.setPos(item.scenePos().x(), bottom)
+            sel = sorted(selection, key=lambda i: i.scenePos().x())
+            sel[0].setPos(sel[0].scenePos().x(), bottom)
+            for i in range(1, len(sel)):
+                sel[i].setPos(
+                    sel[i - 1].sceneBoundingRect().right() + 2 * GRIDSIZE,
+                    bottom)
         for item in selection:
             item.setupPaint()
 
