@@ -38,6 +38,7 @@ class ToolBox(QTreeWidget):
         [QTreeWidgetItem(self.userheader, [name[:-4], 'user'])
             for name in listdir(filePath('user/'))]
         self.userheader.setExpanded(True)
+        self.setColumnWidth(0, 300)
 
     def addUserCircuit(self, name):
         QTreeWidgetItem(self.userheader, [name, 'user'])

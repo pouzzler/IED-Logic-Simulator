@@ -269,18 +269,15 @@ class CircuitItem(QGraphicsItem):
         painter.drawImage(QRectF(0, 0, self.imgW, self.imgH), self.image)
         for i in range(ni):
             painter.drawPath(self.inputPaths[i])
-        #~ painter.drawLine(
-            #~ 2 * self.radius + self.ioW,
-            #~ self.inOff + self.radius,
-            #~ 2 * self.radius + self.ioW,
-            #~ (self.nIn - 1) * self.ioH + self.inOff + self.radius)
+        painter.drawLine(
+            0, (1 - int(ni / 2)) * self.ioH, 0, (1 + int(ni / 2)) * self.ioH)
         for i in range(no):
             painter.drawPath(self.outputPaths[i])
-        #~ painter.drawLine(
-            #~ 2 * self.radius + self.ioW + self.imgW,
-            #~ self.outOff + self.radius,
-            #~ 2 * self.radius + self.ioW + self.imgW,
-            #~ (self.nOut - 1) * self.ioH + self.outOff + self.radius)
+        painter.drawLine(
+            self.imgW,
+            (1 - int(no / 2)) * self.ioH,
+            self.imgW,
+            (1 + int(no / 2)) * self.ioH)
         # Default selection box doesn't work; simple reimplementation.
         if option.state & QStyle.State_Selected:
             pen = QPen(Qt.black, 1, Qt.DashLine)

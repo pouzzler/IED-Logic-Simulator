@@ -129,11 +129,15 @@ class MainView(QGraphicsView):
             # item added to scene.
             if not len(self.scene().items()):
                 self.scene().setSceneRect(0, 0, 1, 1)
+            else:
+                self.scene().setSceneRect(0, 0, 0, 0)
             self.scene().addItem(item)
             item.setupPaint()
             item.setPos(
                 closestGridPoint(item.mapFromScene(self.mapToScene(e.pos()))))
-            #~ item.setSelected(True)
+            for i in self.scene().selectedItems():
+                i.setSelected(False)
+            item.setSelected(True)
             self.timer.start()
 
     def fillIO(self):
