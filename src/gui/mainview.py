@@ -24,6 +24,7 @@ class MainView(QGraphicsView):
         super(MainView, self).__init__(parent)
         self.setAcceptDrops(True)       # Accept dragged items.
         self.setMouseTracking(True)     # Allow mouseover effects.
+        self.setDragMode(QGraphicsView.RubberBandDrag)  # rubber select
         self.setScene(QGraphicsScene(parent))
         self.isDrawing = False          # user currently not drawing
         self.mainCircuit = Circuit("Main", None)
