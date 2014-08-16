@@ -21,6 +21,8 @@ class ToolBox(QTreeWidget):
         self.setColumnCount(2)
         self.header().setVisible(False)
         gatesheader = QTreeWidgetItem(self, [self.str_basicGates])
+        gatesheader.setFlags(
+            ~Qt.ItemFlag.ItemIsDragEnabled & ~Qt.ItemFlag.ItemIsSelectable)
         gatesheader.setExpanded(True)
         imgDir = filePath('icons/')
         for name, class_ in inspect.getmembers(
@@ -30,18 +32,28 @@ class ToolBox(QTreeWidget):
             item = QTreeWidgetItem(gatesheader, [name[:-4]])
             item.setIcon(0, QIcon(imgDir + name + '.png'))
         ioheader = QTreeWidgetItem(self, [self.str_IO])
+        ioheader.setFlags(
+            ~Qt.ItemFlag.ItemIsDragEnabled & ~Qt.ItemFlag.ItemIsSelectable)
         ioheader.setExpanded(True)
         [
             QTreeWidgetItem(ioheader, [name])
             for name in [self.str_I, self.str_O, self.str_Clock]]
         self.userheader = QTreeWidgetItem(self, [self.str_userCircuits])
         [QTreeWidgetItem(self.userheader, [name[:-4], 'user'])
-            for name in listdir(filePath('user/'))]
+            for name in sorted(listdir(filePath('user/')))]
+        self.userheader.setFlags(
+            ~Qt.ItemFlag.ItemIsDragEnabled & ~Qt.ItemFlag.ItemIsSelectable)
         self.userheader.setExpanded(True)
         self.setColumnWidth(0, 300)
 
     def addUserCircuit(self, name):
+        """When the user saves a circuit, add it at the correct
+        alphabetical spot, if it is not already present."""
+        for i in range(self.userheader.childCount()):
+            if self.userheader.child(i).text(0) == name:
+                return
         QTreeWidgetItem(self.userheader, [name, 'user'])
+        self.userheader.sortChildren(0, Qt.AscendingOrder)
 
 
 class ToolBoxDockWidget(QDockWidget):

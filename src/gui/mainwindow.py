@@ -137,15 +137,12 @@ class MainWindow(QMainWindow):
             for item in self.view.scene().items():
                 if not isinstance(item, QGraphicsSimpleTextItem):
                     items.append([item.data, item.pos(), item.rotation()])
+            items.sort(     # Abstracted use shows I/Os in the right order
+                key=lambda i: i[0].name if not isinstance(i[0], dict) else '')
             name = ret[0] if ret[0][-4:] != '.crc' else ret[0][:-4]
             f = open(name + '.crc', 'wb')
             pickle.dump(items, f, pickle.HIGHEST_PROTOCOL)
             f.close()
-            for i in range(self.boxDock.widget().userheader.childCount()):
-                if (
-                        self.boxDock.widget().userheader.child(i).text(0)
-                        == basename(name)):
-                    return
             self.boxDock.widget().addUserCircuit(basename(name))
 
     def setLang(self, lang):
