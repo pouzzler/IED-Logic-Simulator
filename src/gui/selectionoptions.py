@@ -71,55 +71,31 @@ class SelectionOptions(QWidget):
         visible options.
         """
         selection = self.view.scene().selectedItems()
-        size = len(selection)
-        if size == 0 or any([isinstance(i, WireItem) for i in selection]):
-            for widget in self.findChildren(QWidget):
-                widget.setHidden(True)
-            if size:
-                self.orientLabel.setHidden(False)
-                self.cwRotationButton.setHidden(False)
-                self.acwRotationButton.setHidden(False)
+        for widget in self.findChildren(QWidget):     # Hide all options
+            widget.setHidden(True)
+        if not len(selection):          # then return if no selection.
             return
-        elif size >= 1:
-            for widget in self.findChildren(QWidget):
-                widget.setHidden(False)
-                notAllGates = True
-                for item in selection:
-                    if (
-                        not isinstance(item, CircuitItem)
-                        or item.data.__class__ not in [
-                            AndGate, NandGate, OrGate,
-                            NorGate, XorGate, XnorGate]):
-                        break
-                    notAllGates = False
-                self.nbInputsLabel.setHidden(notAllGates)
-                self.nbInputsCB.setHidden(notAllGates)
-                for item in selection:
-                    if not isinstance(item, CircuitItem):
-                        self.showCategoryLabel.setHidden(True)
-                        self.showCategoryCB.setHidden(True)
-        if size > 1:
-            self.nameLabel.setHidden(True)
-            self.nameLE.setHidden(True)
-        if size == 1:
+        # The number of entries option only applies to gates (except NOT)
+        notAllGates = any([i.data.__class__ not in [
+            AndGate, NandGate, OrGate, NorGate, XorGate, XnorGate]
+            for i in selection])
+        self.nbInputsLabel.setHidden(notAllGates)
+        self.nbInputsCB.setHidden(notAllGates)
+        # Only circuits may display their category, we only show the
+        # option if at least one circuit is present
+        if any([isinstance(i, CircuitItem) for i in selection]):
+            self.showCategoryLabel.setHidden(False)
+            self.showCategoryCB.setHidden(False)
+        # Wires have no name; no need for name visibility
+        if not all([isinstance(i, WireItem) for i in selection]):
+            self.showNameLabel.setHidden(False)
+            self.showNameCB.setHidden(False)
+        # We only show the name if we have exactly one non-wire item
+        if len(selection) == 1 and not isinstance(selection[0], WireItem):
             self.nameLE.blockSignals(True)
             self.nameLE.setText(selection[0].data.name)
             self.nameLE.blockSignals(False)
-        if size >= 1:
-            self.showNameCB.blockSignals(True)
-            self.showNameCB.setCheckState(
-                boolToCheckState(selection[0].showName))
-            self.showNameCB.blockSignals(False)
-            if not self.showCategoryCB.isHidden():
-                self.showCategoryCB.blockSignals(True)
-                self.showCategoryCB.setCheckState(
-                    boolToCheckState(selection[0].showCategory))
-                self.showCategoryCB.blockSignals(False)
-            if not self.nbInputsCB.isHidden():
-                self.nbInputsCB.blockSignals(True)
-                self.nbInputsCB.setCurrentIndex(
-                    selection[0].data.nb_inputs() - 2)
-                self.nbInputsCB.blockSignals(False)
+            self.nameLE.setHidden(False)
 
     def setCategoryVisibility(self, state):
         """Show/Hide the category of an item in the main view."""
@@ -136,7 +112,8 @@ class SelectionOptions(QWidget):
     def setNameVisibility(self, state):
         """Show/Hide the name of items in the main view."""
         for item in self.view.scene().selectedItems():
-            item.setNameVisibility(True if state else False)
+            if not isinstance(item, WireItem):
+                item.setNameVisibility(True if state else False)
 
     def setNbInputs(self, index):
         """Add/Remove inputs from basic gates."""
