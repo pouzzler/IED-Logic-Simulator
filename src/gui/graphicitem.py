@@ -108,7 +108,7 @@ class PlugItem(QGraphicsPathItem):
 
     bodyW = 30
     pinW = 10
-
+        
     def __init__(self, plug):
         super(PlugItem, self).__init__()
         self.data = plug

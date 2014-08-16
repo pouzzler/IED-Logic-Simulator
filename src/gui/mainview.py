@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # coding=utf-8
 
-from copy import copy
+from copy import copy, deepcopy
 import pickle
 from PySide.QtCore import QModelIndex, QPoint, QPointF, Qt, QTimer
 from PySide.QtGui import (
@@ -36,6 +36,7 @@ class MainView(QGraphicsView):
         self.clockTimer = QTimer()
         self.clockTimer.setInterval(1000)
         self.clockTimer.timeout.connect(self.clockUpdate)
+        self.copyBuffer = None
 
     def clearCircuit(self):
         """Clears every item from the circuit designer."""
@@ -221,10 +222,31 @@ class MainView(QGraphicsView):
             bottom = max([item.scenePos().y() for item in selection])
             sel = sorted(selection, key=lambda i: i.scenePos().x())
             sel[0].setPos(sel[0].scenePos().x(), bottom)
-            for i in range(1, len(sel)):
-                sel[i].setPos(
-                    sel[i - 1].sceneBoundingRect().right() + 2 * GRIDSIZE,
-                    bottom)
+        # Ctrl-C, copy
+        elif e.key() == Qt.Key_C and e.nativeModifiers() == 4:
+            self.copyBuffer = copy(selection)
+        # Ctrl-V, paste
+        elif e.key() == Qt.Key_V and e.nativeModifiers() == 4:
+            memo = {}
+            for item in self.copyBuffer:
+                if isinstance(item, PlugItem):
+                    dc = deepcopy(item.data, memo)
+                    self.mainCircuit.add(dc)
+                    dc.generate_name()
+                    i = PlugItem(dc)
+                elif isinstance(item, CircuitItem):
+                    dc = deepcopy(item.data, memo)
+                    self.mainCircuit.add(dc)
+                    dc.generate_name()
+                    i = CircuitItem(dc)
+                elif isinstance(item, WireItem):
+                    dc = deepcopy(item.data, memo)
+                    i = WireItem(dc['startIO'], dc['points'], dc['endIO'])   
+                self.scene().addItem(i)
+                # TODO : +100 et pourquoi 100 et pas pi ou 5000?
+                i.setPos(item.pos().x() + 100, item.pos().y() + 100)
+                i.setRotation(item.rotation())
+                i.setupPaint()        
         for item in selection:
             item.setupPaint()
 
