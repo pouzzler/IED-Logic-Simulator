@@ -92,6 +92,7 @@ class SelectionOptions(QWidget):
             self.showNameCB.setHidden(False)
         # We only show the name if we have exactly one non-wire item
         if len(selection) == 1 and not isinstance(selection[0], WireItem):
+            self.nameLabel.setHidden(False)
             self.nameLE.blockSignals(True)
             self.nameLE.setText(selection[0].data.name)
             self.nameLE.blockSignals(False)

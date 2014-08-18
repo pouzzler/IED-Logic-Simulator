@@ -28,7 +28,7 @@ class Plug:
     def __init__(self, isInput, name, owner):
         self.isInput = isInput
         self.owner = owner
-        self.name = self.generate_name() if name is None else name
+        self.generate_name(name)
         self.value = False
         self.__nbEval = 0
         self.sourcePlug = None
@@ -133,15 +133,23 @@ class Plug:
             self.str_disconnect
             % (self.owner.name, self.name, other.owner.name, other.name,))
 
-    def generate_name(self):
+    def generate_name(self, name, prefix=None):
         """Generate a name for a plug."""
         i = 0
         names = [io.name for io in (
             self.owner.inputList if self.isInput else self.owner.outputList)]
+        if name and prefix:
+            name = None
+            # problèmes de doublons si une des plugs s'appele déjà comme ça, je pense
+        if name and name not in names:
+            self.name = name
+            return
+        prefix = prefix if prefix else ('in' if self.isInput else 'out')
         while True:
-            name = ('in' if self.isInput else 'out') + str(i)
+            name =  prefix + str(i)
             if name not in names:
-                return name
+                self.name = name
+                return
             i += 1
 
     def set(self, value):

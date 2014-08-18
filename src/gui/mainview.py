@@ -2,6 +2,7 @@
 # coding=utf-8
 
 from copy import copy, deepcopy
+from functools import reduce
 import pickle
 from PySide.QtCore import QModelIndex, QPoint, QPointF, Qt, QTimer
 from PySide.QtGui import (
@@ -37,6 +38,22 @@ class MainView(QGraphicsView):
         self.clockTimer.setInterval(1000)
         self.clockTimer.timeout.connect(self.clockUpdate)
         self.copyBuffer = None
+
+    def batchRename(self):
+        sel = self.scene().selectedItems()
+        if (
+                not all([isinstance(i, sel[0].__class__) for i in sel])
+                or (isinstance(sel[0].data, Plug)
+                and not all([i.data.isInput == sel[0].data.isInput for i in sel]))):
+            print("tut tut")
+            return
+        ret = QInputDialog.getText(self, "Set prefix", "Prefix :")
+        if ret[1] and len(ret[0]):
+            for i in self.scene().selectedItems():
+                i.data.generate_name(None, ret[0])
+                i.setupPaint()
+        self.parent().optionsDock.widget().updateOptions()
+            
 
     def clearCircuit(self):
         """Clears every item from the circuit designer."""
@@ -146,14 +163,20 @@ class MainView(QGraphicsView):
         for item in self.scene().items():
             if isinstance(item, CircuitItem):
                 pos = item.pos()
+                rot = item.rotation()
                 circuit = item.data
                 off = 0
                 for input in circuit.inputList:
                     if not input.sourcePlug:
                         i = PlugItem(Plug(True, None, self.mainCircuit))
                         self.scene().addItem(i)
-                        i.setPos(pos.x() - 30, pos.y() + off)
-                        off += 30
+                        x = (
+                            (pos.x() if not rot % 180 else pos.y()) 
+                            - 4 * GRIDSIZE * (1 if not rot % 360 else -1))
+                        y = (pos.y() if not rot % 180 else pos.x()) + off
+                        i.setPos(x, y)
+                        i.setRotation(rot)
+                        off += 2 * GRIDSIZE
                 off = 0
                 for output in circuit.outputList:
                     if not len(output.destinationPlugs):
@@ -168,6 +191,7 @@ class MainView(QGraphicsView):
         ret = QInputDialog.getText(self, self.str_setName, self.str_name)
         if ret[1] and item.data.setName(ret[0]):    # Not canceled.
             item.update()
+        self.parent().optionsDock.widget().updateOptions()
 
     def keyPressEvent(self, e):
         """Manages keyboard events."""
@@ -232,7 +256,7 @@ class MainView(QGraphicsView):
                 if isinstance(item, PlugItem):
                     dc = deepcopy(item.data, memo)
                     self.mainCircuit.add(dc)
-                    dc.generate_name()
+                    dc.generate_name(None)
                     i = PlugItem(dc)
                 elif isinstance(item, CircuitItem):
                     dc = deepcopy(item.data, memo)
@@ -281,6 +305,7 @@ class MainView(QGraphicsView):
         if e.buttons() == Qt.RightButton:
             super(MainView, self).mousePressEvent(e)
             return
+        self.mouseEventStart = None
         item = self.itemAt(e.pos())
         if item:
             pos = item.mapFromScene(self.mapToScene(e.pos()))
@@ -313,7 +338,9 @@ class MainView(QGraphicsView):
             return
         if self.isDrawing:
             self.isDrawing = False
+            self.currentWire.setZValue(-2)  # to detect other wires
             item = self.itemAt(e.pos())
+            self.currentWire.setZValue(-1)
             if item:
                 pos = item.mapFromScene(self.mapToScene(e.pos()))
                 if isinstance(item, CircuitItem) or isinstance(item, PlugItem):
@@ -325,7 +352,25 @@ class MainView(QGraphicsView):
                         if not self.currentWire.connect(plug):
                             self.scene().removeItem(self.currentWire)
                         return
+                elif isinstance(item, WireItem) and item != self.currentWire:
+                    if not self.currentWire.connect(item.data['startIO']):
+                        self.scene().removeItem(self.currentWire)
+                    else:
+                        item.data['points'].reverse()
+                        self.currentWire.data['points'].extend(
+                            item.data['points'])
+                        self.scene().removeItem(item)
+                        self.currentWire.setupPaint()
+                        return
             self.currentWire.addPoint()
+            # Ugly hack to solve selection problems with multiple wireitems
+            # on the same spot : the smallest area is selected.
+            wires = sorted(
+                [i for i in self.scene().items() if isinstance(i, WireItem)],
+                key=lambda i: i.boundingRect().width() * i.boundingRect().height())
+            for i in range(len(wires)):
+                wires[i].setZValue(-i - 1)
+            
             self.currentWire = None
         super(MainView, self).mouseReleaseEvent(e)
 
@@ -344,7 +389,7 @@ class MainView(QGraphicsView):
         for item in self.scene().selectedItems():
             item.setRotation((item.rotation() + angle) % 360)
             item.rotate(-angle)
-            
+
     def setItemsInGrid(self):
         """Correcting items pos to fit on the grid."""
         for item in self.scene().items():
