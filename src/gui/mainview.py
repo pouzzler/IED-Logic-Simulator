@@ -331,7 +331,7 @@ class MainView(QGraphicsView):
         super(MainView, self).mousePressEvent(e)
 
     def mouseReleaseEvent(self, e):
-        """Complete Wire segments."""
+        """Complete Wire segments. Connect Plugs."""
         # Ignore right-clicks.
         if e.buttons() == Qt.RightButton:
             super(MainView, self).mousePressEvent(e)
@@ -339,9 +339,10 @@ class MainView(QGraphicsView):
         if self.isDrawing:
             self.currentWire.addPoint()
             self.isDrawing = False
-            self.currentWire.setZValue(-2)  # to detect other wires
+            old = self.currentWire.zValue()
+            self.currentWire.setZValue(-500000)  # to detect other wires
             item = self.itemAt(e.pos())
-            self.currentWire.setZValue(-1)
+            self.currentWire.setZValue(old)
             if item:
                 pos = item.mapFromScene(self.mapToScene(e.pos()))
                 if isinstance(item, CircuitItem) or isinstance(item, PlugItem):
@@ -375,7 +376,14 @@ class MainView(QGraphicsView):
                         self.scene().removeItem(item)
                         self.currentWire.setupPaint()
                         return
-            #~ self.currentWire.addPoint()
+                elif isinstance(item, WireItem) and item.complete:
+                    p = item.data['startIO']
+                    p1 = item.data['endIO']
+                    source = p if p1.sourcePlug == p else p1
+                    if not self.currentWire.connect(source):
+                        self.currentWire.revert()
+                    else:
+                        print(self.currentWire.data)
             # Ugly hack to solve selection problems with multiple wireitems
             # on the same spot : the smallest area is selected.
             wires = sorted(
