@@ -75,7 +75,8 @@ class WireItem(QGraphicsPathItem):
         self.setupPaint()
 
     def revert(self):
-        self.data['points'][-1] = self.data['points'][-2]
+        self.data['points'][-2] = self.data['points'][-3]
+        self.data['points'] = self.data['points'][:-2]
         self.setupPaint()
 
     def setupPaint(self):
