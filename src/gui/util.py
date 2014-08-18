@@ -1,3 +1,4 @@
+from math import sqrt
 from os.path import dirname, realpath
 from PySide.QtCore import QPointF, Qt
 
@@ -19,6 +20,10 @@ def closestGridPoint(p):
     return QPointF(
         int(GRIDSIZE * round(p.x() / GRIDSIZE)),
         int(GRIDSIZE * round(p.y() / GRIDSIZE)))
+
+
+def distance(a, b):
+    return sqrt((a.x() - b.x()) ** 2 + (a.y() - b.y()) ** 2)
 
 
 def filePath(relPath):

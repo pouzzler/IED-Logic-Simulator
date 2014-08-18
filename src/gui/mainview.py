@@ -11,7 +11,7 @@ from PySide.QtGui import (
 from .graphicitem import CircuitItem, PlugItem, WireItem
 from .selectionoptions import SelectionOptions
 from .toolbox import ToolBox
-from .util import closestGridPoint, filePath, GRIDSIZE
+from .util import closestGridPoint, distance, filePath, GRIDSIZE
 from engine.clock import ClockThread
 from engine.simulator import Circuit, Plug
 import engine
@@ -337,6 +337,7 @@ class MainView(QGraphicsView):
             super(MainView, self).mousePressEvent(e)
             return
         if self.isDrawing:
+            self.currentWire.addPoint()
             self.isDrawing = False
             self.currentWire.setZValue(-2)  # to detect other wires
             item = self.itemAt(e.pos())
@@ -350,19 +351,31 @@ class MainView(QGraphicsView):
                                 self.currentWire.mapFromScene(
                                     self.mapToScene(e.pos())))):
                         if not self.currentWire.connect(plug):
-                            self.scene().removeItem(self.currentWire)
+                            self.currentWire.revert()
                         return
-                elif isinstance(item, WireItem) and item != self.currentWire:
+                elif (
+                        isinstance(item, WireItem)
+                        and item != self.currentWire and not item.complete):
                     if not self.currentWire.connect(item.data['startIO']):
-                        self.scene().removeItem(self.currentWire)
+                        self.currentWire.revert()
                     else:
-                        item.data['points'].reverse()
+                        p = self.currentWire.data['points'][-1]
+                        points = item.data['points']
+                        for i in range(len(points)):
+                            a = points[i]
+                            b = points[i + 1]
+                            if (
+                                    distance(a, p) + distance(p, b)
+                                    == distance(a, b)):
+                                points = points[0:i + 1]
+                                points.reverse()
+                                break
                         self.currentWire.data['points'].extend(
-                            item.data['points'])
+                            points)
                         self.scene().removeItem(item)
                         self.currentWire.setupPaint()
                         return
-            self.currentWire.addPoint()
+            #~ self.currentWire.addPoint()
             # Ugly hack to solve selection problems with multiple wireitems
             # on the same spot : the smallest area is selected.
             wires = sorted(

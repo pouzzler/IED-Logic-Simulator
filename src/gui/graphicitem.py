@@ -74,6 +74,10 @@ class WireItem(QGraphicsPathItem):
         self.data['points'][-1] = QPointF(x + A[a][0] * L, y + A[a][1] * L)
         self.setupPaint()
 
+    def revert(self):
+        self.data['points'][-1] = self.data['points'][-2]
+        self.setupPaint()
+
     def setupPaint(self):
         """Draw the wire segments and handle."""
 
