@@ -44,7 +44,8 @@ class MainView(QGraphicsView):
         if (
                 not all([isinstance(i, sel[0].__class__) for i in sel])
                 or (isinstance(sel[0].data, Plug)
-                and not all([i.data.isInput == sel[0].data.isInput for i in sel]))):
+                    and not all([
+                        i.data.isInput == sel[0].data.isInput for i in sel]))):
             print("tut tut")
             return
         ret = QInputDialog.getText(self, "Set prefix", "Prefix :")
@@ -53,7 +54,6 @@ class MainView(QGraphicsView):
                 i.data.generate_name(None, ret[0])
                 i.setupPaint()
         self.parent().optionsDock.widget().updateOptions()
-            
 
     def clearCircuit(self):
         """Clears every item from the circuit designer."""
@@ -171,7 +171,7 @@ class MainView(QGraphicsView):
                         i = PlugItem(Plug(True, None, self.mainCircuit))
                         self.scene().addItem(i)
                         x = (
-                            (pos.x() if not rot % 180 else pos.y()) 
+                            (pos.x() if not rot % 180 else pos.y())
                             - 4 * GRIDSIZE * (1 if not rot % 360 else -1))
                         y = (pos.y() if not rot % 180 else pos.x()) + off
                         i.setPos(x, y)
@@ -222,7 +222,8 @@ class MainView(QGraphicsView):
             sel = sorted(selection, key=lambda i: i.scenePos().y())
             sel[0].setPos(left, sel[0].scenePos().y())
             for i in range(1, len(sel)):
-                sel[i].setPos(left,
+                sel[i].setPos(
+                    left,
                     sel[i - 1].sceneBoundingRect().bottom() + 2 * GRIDSIZE)
         # R, right align and even spacing
         elif e.key() == Qt.Key_R:
@@ -230,7 +231,8 @@ class MainView(QGraphicsView):
             sel = sorted(selection, key=lambda i: i.scenePos().y())
             sel[0].setPos(right, sel[0].scenePos().y())
             for i in range(1, len(sel)):
-                sel[i].setPos(right,
+                sel[i].setPos(
+                    right,
                     sel[i - 1].sceneBoundingRect().bottom() + 2 * GRIDSIZE)
         # T, top align and even spacing
         elif e.key() == Qt.Key_T:
@@ -265,12 +267,12 @@ class MainView(QGraphicsView):
                     i = CircuitItem(dc)
                 elif isinstance(item, WireItem):
                     dc = deepcopy(item.data, memo)
-                    i = WireItem(dc['startIO'], dc['points'], dc['endIO'])   
+                    i = WireItem(dc['startIO'], dc['points'], dc['endIO'])
                 self.scene().addItem(i)
                 # TODO : +100 et pourquoi 100 et pas pi ou 5000?
                 i.setPos(item.pos().x() + 100, item.pos().y() + 100)
                 i.setRotation(item.rotation())
-                i.setupPaint()        
+                i.setupPaint()
         for item in selection:
             item.setupPaint()
 
@@ -388,10 +390,11 @@ class MainView(QGraphicsView):
             # on the same spot : the smallest area is selected.
             wires = sorted(
                 [i for i in self.scene().items() if isinstance(i, WireItem)],
-                key=lambda i: i.boundingRect().width() * i.boundingRect().height())
+                key=
+                lambda i: i.boundingRect().width() * i.boundingRect().height())
             for i in range(len(wires)):
                 wires[i].setZValue(-i - 1)
-            
+
             self.currentWire = None
         super(MainView, self).mouseReleaseEvent(e)
 

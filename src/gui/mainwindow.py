@@ -61,8 +61,8 @@ class MainWindow(QMainWindow):
             lambda: SettingsDialog(self, self.config).exec_())
         editMenu.addAction(self.str_menuClearLogs, self.logDock.widget().clear)
         editMenu.addAction(self.str_menuClearCircuit, self.view.clearCircuit)
-        editMenu.addAction("(Experimental) add IOs", self.view.fillIO)
-        editMenu.addAction("(Experimental) batch rename", self.view.batchRename)
+        editMenu.addAction("(Exp.) add IOs", self.view.fillIO)
+        editMenu.addAction("(Exp.) batch rename", self.view.batchRename)
 
         docksMenu = QMenu(self.str_menuDocks)
         docksMenu.addAction(self.boxDock.toggleViewAction())

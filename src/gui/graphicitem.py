@@ -113,7 +113,7 @@ class PlugItem(QGraphicsPathItem):
 
     bodyW = 30
     pinW = 10
-        
+
     def __init__(self, plug):
         super(PlugItem, self).__init__()
         self.data = plug
@@ -336,7 +336,7 @@ class CircuitItem(QGraphicsItem):
                 path = QPainterPath()
                 path.addEllipse(
                     -self.ioW - self.radius, i * self.ioH - self.radius / 2,
-                    self.radius, self.radius)   
+                    self.radius, self.radius)
                 self.inputPaths.append(path)
         for i in range(1 - int(no / 2), 2 + int(no / 2)):
             if i != 1 or no % 2:
