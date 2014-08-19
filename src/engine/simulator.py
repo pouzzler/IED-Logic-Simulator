@@ -72,7 +72,7 @@ class Plug:
             log.warning(self.str_connectGlobOutLocIn)
             return False
         elif (  # global input and local output
-                not self.isInput and other.isInput and
+                self.isInput and not other.isInput and
                 self.owner == other.owner.owner):
             log.warning(self.str_connectGlobInLocOut)
             return False
