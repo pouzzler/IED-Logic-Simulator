@@ -18,25 +18,7 @@ import engine
 
 from engine.gates import *
 
-class DFlip(main):
-    
-    def __init__(self, main):
-        enable = Plug(True, 'Enable', main)
-        data = Plug(True, 'Data', main)
-        Q = Plug(False, 'Data', main)
-        notQ = Plug(False, 'Data', main)
-        n1 = NandGate(None, main)
-        n2 = NandGate(None, main)
-        n3 = NandGate(None, main)
-        n4 = NandGate(None, main)
-        not_ = NotGate(None, main)
-        
-        data.connect(not_.inputList[0])
-        data.connect(n1.inputList[0])
-        enable.connect(n1.inputList[1])
-        enable.connect(n2.inputList[0])
-        not_.outputList[0].connect(n2.inputList[1])
-        
+
 class MainView(QGraphicsView):
     """Graphic representation of a user created circuit schematic."""
 
@@ -56,8 +38,6 @@ class MainView(QGraphicsView):
         self.clockTimer.setInterval(1000)
         self.clockTimer.timeout.connect(self.clockUpdate)
         self.copyBuffer = None
-
-        DFlip(self.mainCircuit)
         
     def batchRename(self):
         sel = self.scene().selectedItems()
