@@ -65,8 +65,18 @@ class NandGate(Circuit):
     def evalfun(self):
         val = not all([inp.value for inp in self.inputList])
         for inp in self.inputList:
-            if inp.value is None and not val:
-                val = None
+            if inp.value is None:
+                for inp2 in self.inputList:
+                    if inp2.value is False:
+                        val = True
+                t = True
+                for inp2 in self.inputList:
+                    if inp2 is inp:
+                        pass
+                    elif inp2.value is not True:
+                        t = False
+                if t:
+                    val = None
         agenda_.schedule(self, lambda: self.outputList[0].set(val))
 
 
