@@ -84,10 +84,12 @@ class WireItem(QGraphicsPathItem):
 
         if not self.data['startIO'] or not self.data['endIO']:
             self.setPen(QPen(QBrush(QColor(QColor('black'))), 2))
-        elif self.data['startIO'].value:
+        elif self.data['startIO'].value is True:
             self.setPen(QPen(QBrush(QColor(QColor('green'))), 2))
-        else:
+        elif self.data['startIO'].value is False:
             self.setPen(QPen(QBrush(QColor(QColor('red'))), 2))
+        else:
+            self.setPen(QPen(QBrush(QColor(QColor('orange'))), 2))
         path = QPainterPath()
         path.moveTo(self.data['points'][0])
         for p in self.data['points'][1:]:
