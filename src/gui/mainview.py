@@ -69,27 +69,27 @@ class MainView(QGraphicsView):
             if isinstance(item, PlugItem):
                 item.setupPaint()
 
-    def contextMenuEvent(self, e):
-        """Pops a contextual menu up on right-clicks"""
-        item = self.itemAt(e.pos())
-        if item:
-            menu = QMenu(self)
-            if isinstance(item, CircuitItem):
-                pos = item.mapFromScene(self.mapToScene(e.pos()))
-                plug = item.handleAtPos(pos)
-                item = plug if plug else item
-                menu.addAction(self.str_setName, lambda: self.getNewName(item))
-            elif isinstance(item, PlugItem):
-                menu.addAction(self.str_setName, lambda: self.getNewName(item))
-                if item.data.isInput:
-                    menu.addAction(
-                        str(item.data.value), item.setAndUpdate)
-            elif isinstance(item, WireItem):
-                pos = item.mapFromScene(self.mapToScene(e.pos()))
-                if item.handleAtPos(pos):
-                    menu.addAction(
-                        self.str_removeLast, lambda: item.removeLast())
-            menu.popup(e.globalPos())
+    #~ def contextMenuEvent(self, e):
+        #~ """Pops a contextual menu up on right-clicks"""
+        #~ item = self.itemAt(e.pos())
+        #~ if item:
+            #~ menu = QMenu(self)
+            #~ if isinstance(item, CircuitItem):
+                #~ pos = item.mapFromScene(self.mapToScene(e.pos()))
+                #~ plug = item.handleAtPos(pos)
+                #~ item = plug if plug else item
+                #~ menu.addAction(self.str_setName, lambda: self.getNewName(item))
+            #~ elif isinstance(item, PlugItem):
+                #~ menu.addAction(self.str_setName, lambda: self.getNewName(item))
+                #~ if item.data.isInput:
+                    #~ menu.addAction(
+                        #~ str(item.data.value), item.setAndUpdate)
+            #~ elif isinstance(item, WireItem):
+                #~ pos = item.mapFromScene(self.mapToScene(e.pos()))
+                #~ if item.handleAtPos(pos):
+                    #~ menu.addAction(
+                        #~ self.str_removeLast, lambda: item.removeLast())
+            #~ menu.popup(e.globalPos())
 
     def dragEnterEvent(self, e):
         """Accept drag events coming from ToolBox."""
