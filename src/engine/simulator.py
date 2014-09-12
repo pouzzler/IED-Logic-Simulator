@@ -27,6 +27,8 @@ ORANGE = '\033[93m'
 RED = '\033[91m'
 AUTO = '\033[0m'
 _INDENT_ = ''
+gateList=[]
+exceed_ = False
 
 
 class Agenda:
@@ -43,15 +45,15 @@ class Agenda:
     def add_segment(self, time, action, name):
         self.timeSegments.append((time, action, name))
         self.timeSegments.sort(key=lambda item: item[0])
-        print(_INDENT_ + BLUE + "+ scheduling '%s' at %i" % (name, time) + AUTO)
+        #~ print(_INDENT_ + BLUE + "+ scheduling '%s' at %i" % (name, time) + AUTO)
 
     def propagate(self):
         # the queue is empty: stop!
         if self.is_empty():
-            print(_INDENT_ + GREEN + 'Agenda Propagation Done.' + AUTO)
+            #~ print(_INDENT_ + GREEN + 'Agenda Propagation Done.' + AUTO)
             return 1
-        else:
-            print(_INDENT_ + ORANGE + 'Number of segments: ' +  str(len(self.timeSegments)) + AUTO)
+        #~ else:
+            #~ print(_INDENT_ + ORANGE + 'Number of segments: ' +  str(len(self.timeSegments)) + AUTO)
         # pop first item of the queue and execute its procedure
         proc = self.pop_first_item()
         try:
@@ -67,10 +69,10 @@ class Agenda:
         wait = segment[0] - self.currentTime
         self.currentTime = segment[0]
         self.timeSegments = self.timeSegments[1:]
-        for s in range(wait - 1, -1, -1):
-            print('.' * (len(_INDENT_) - 1) + " %d" % (self.currentTime - s))
-            time.sleep(0.2)
-        print(_INDENT_ + RED + "- executing '%s' at %d" % (segment[2], self.currentTime) + AUTO)
+        #~ for s in range(wait - 1, -1, -1):
+            #~ print('.' * (len(_INDENT_) - 1) + " %d" % (self.currentTime - s))
+            #~ time.sleep(0.2)
+        #~ print(_INDENT_ + RED + "- executing '%s' at %d" % (segment[2], self.currentTime) + AUTO)
         return segment[1]
 
     def schedule(self, gate, proc):
@@ -308,35 +310,64 @@ class Plug:
             i += 1
 
     def set(self, value, forced=False):
+        global exceed_
+        exceed_ = False
+        res = self.do_set(value, forced)
+        if res == 0 or exceed_:
+            print('/!\ ===== RECURSION LIMIT EXCEEDED ===== /!\\')
+            self.do_set(None, False)
+
+    def do_set(self, value, forced=False):
         global _INDENT_
-        # TODO: add try / except RuntimeError
+        global gateList
+        global exceed_
+
         """Sets the boolean value of a Plug."""
-        # No change, nothing to do.
+        # no change, nothing to do.
         if self.value == value and self.__nbEval != 0 and not forced:
-            return
+            return 2
+        # If you reach the recursion limit: return 0
         _INDENT_ += '    '
+        if self.owner not in gateList:
+            gateList.append(self.owner)
+        if (len(_INDENT_) / 4) > (len(gateList) * 10):
+            _INDENT_ = ''
+            gateList = []
+            exceed_ = True
+            return 0
         # else set the new value and update the circuit accordingly
         self.value = value
-        print('%s.%s set to %i' % (self.owner.name, self.name, self.value))
+
+        if value == False:
+            val = RED + 'False' + AUTO
+        elif value == True:
+            val = GREEN + 'True' + AUTO
+        else:
+            val = ORANGE + 'Unknown' + AUTO
+        print(MAGENTA + "'%s.%s' set to " % (self.owner.name, self.name) + val)
+        
         if not forced:
             self.__nbEval += 1
         if Plug.setInputVerbose and self.isInput:
             log.info(
                 self.str_inputV
-                % (self.owner.name, self.name, int(self.value),))
+                % (self.owner.name, self.name, self.value,))
         if Plug.setOutputVerbose and not self.isInput:
             log.info(
                 self.str_outputV
-                % (self.owner.name, self.name, int(self.value),))
+                % (self.owner.name, self.name, self.value,))
+
         # Gate input changed, set outputs values
         if self.isInput:
             self.owner.evalfun()
-        if not agenda_.propagate():    # then propagate them
-            self.set(None)             # if it fail set the signal to None
+        agenda_.propagate()
         # then, all plugs in the destination list are set to this value
         for dest in self.destinationPlugs:
-            dest.set(value)
+            dest.do_set(value, False)
+
         _INDENT_ = _INDENT_[4:]
+        gateList = []
+        return 1
 
     def setName(self, name):
         """Set the name of the plug."""
