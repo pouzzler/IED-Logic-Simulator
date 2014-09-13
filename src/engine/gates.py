@@ -2,14 +2,21 @@
 # coding: utf-8
 
 
-# TODO: increase delay when more than two inputs
-
-
-"""
-Builtin gates. Unlike user circuits, their evalfun() is implemented.
-For scheduling: we compute the output value at present time and schedule the
-change.
-"""
+###############################################################################
+#         ╔╦╗┌─┐┌─┐┬┌─┐  ╔═╗┬┬─┐┌─┐┬ ┬┬┌┬┐  ╔═╗┬┌┬┐┬ ┬┬  ┌─┐┌┬┐┌─┐┬─┐         #
+#         ║║║├─┤│ ┬││    ║  │├┬┘│  │ ││ │   ╚═╗│││││ ││  ├─┤ │ │ │├┬┘         #
+#         ╩ ╩┴ ┴└─┘┴└─┘  ╚═╝┴┴└─└─┘└─┘┴ ┴   ╚═╝┴┴ ┴└─┘┴─┘┴ ┴ ┴ └─┘┴└─         #
+# -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+- #
+#                                                                        2014 #
+#                                                           Sébastien MAGNIEN #
+#                                                            Mathieu FOURCROY #
+# --------------------------------------------------------------------------- #
+# Builtin gates. Unlike user circuits, their evalfun() is implemented.        #
+# For scheduling: we compute the output value at present time and schedule    #
+# the change.                                                                 #
+# --------------------------------------------------------------------------- #
+# TODO: increase delay when more than two inputs                              #
+###############################################################################
 
 
 from .simulator import *
