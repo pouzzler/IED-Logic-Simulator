@@ -2,6 +2,24 @@
 # coding: utf-8
 
 
+###############################################################################
+#         ╔╦╗┌─┐┌─┐┬┌─┐  ╔═╗┬┬─┐┌─┐┬ ┬┬┌┬┐  ╔═╗┬┌┬┐┬ ┬┬  ┌─┐┌┬┐┌─┐┬─┐         #
+#         ║║║├─┤│ ┬││    ║  │├┬┘│  │ ││ │   ╚═╗│││││ ││  ├─┤ │ │ │├┬┘         #
+#         ╩ ╩┴ ┴└─┘┴└─┘  ╚═╝┴┴└─└─┘└─┘┴ ┴   ╚═╝┴┴ ┴└─┘┴─┘┴ ┴ ┴ └─┘┴└─         #
+# -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+- #
+#                                                                        2014 #
+#                                                           Sébastien MAGNIEN #
+#                                                            Mathieu FOURCROY #
+# --------------------------------------------------------------------------- #
+# Contain the engine. It's an event-driven, multi-delayed and three-valued    #
+# engine. It implement the Circuit class for the logic gates (gates.py) and   #
+# the Plug classe for Circuits I/O.                                           #
+# --------------------------------------------------------------------------- #
+# TODO: in set(), clock the unstable connection so that its value change from #
+#       True to False at regular time interval (use a global clock).          #
+###############################################################################
+
+
 import sys
 import time
 from copy import deepcopy
@@ -20,62 +38,60 @@ fileHandler.setFormatter(formatter)
 stdoutHandler.setFormatter(formatter)
 
 
-MAGENTA = '\033[95m'
-BLUE = '\033[94m'
-GREEN = '\033[92m'
-ORANGE = '\033[93m'
-RED = '\033[91m'
-AUTO = '\033[0m'
-_INDENT_ = ''
-gateList=[]
+recursionNb_ = 0
+gateList_ = []
 exceed_ = False
 
 
 class Agenda:
+    """This class handle the propagation of the events. It contain a priority
+    queue of segments wich describe events (delay + operation). Th events
+    are added on the queue so that they're sort from the nearest to the
+    farthest. The agenda can then execute the scheduled events (outputs
+    changes) by propagating them.
+    """
     def __init__(self):
         self.currentTime = 0
         self.timeSegments = []
 
     def is_empty(self):
+        """Return True if there is no scheduled action."""
         return False if self.timeSegments else True
 
     def get_current_time(self):
+        """Return the current time of the agenda."""
         return self.currentTime
 
     def add_segment(self, time, action, name):
+        """Add a segment and sort the queue from nearest to farthest event."""
         self.timeSegments.append((time, action, name))
         self.timeSegments.sort(key=lambda item: item[0])
-        #~ print(_INDENT_ + BLUE + "+ scheduling '%s' at %i" % (name, time) + AUTO)
 
     def propagate(self):
-        # the queue is empty: stop!
+        """Propagate the events of tge queue: pop closest event and execute it
+        then continue until no event remains on the queue.
+        """
         if self.is_empty():
-            #~ print(_INDENT_ + GREEN + 'Agenda Propagation Done.' + AUTO)
             return 1
-        #~ else:
-            #~ print(_INDENT_ + ORANGE + 'Number of segments: ' +  str(len(self.timeSegments)) + AUTO)
-        # pop first item of the queue and execute its procedure
         proc = self.pop_first_item()
         try:
             proc()
         except RuntimeError:
-            print('/!\ ===== MAXIMUM RECURSION DEPTH ===== /!\\')
             return 0
-        # recursion
         return self.propagate()
 
     def pop_first_item(self):
+        """Return the nearest event of the queue."""
         segment = self.timeSegments[0]
-        wait = segment[0] - self.currentTime
         self.currentTime = segment[0]
         self.timeSegments = self.timeSegments[1:]
-        #~ for s in range(wait - 1, -1, -1):
-            #~ print('.' * (len(_INDENT_) - 1) + " %d" % (self.currentTime - s))
-            #~ time.sleep(0.2)
-        #~ print(_INDENT_ + RED + "- executing '%s' at %d" % (segment[2], self.currentTime) + AUTO)
+        # here we can implement simu speed with segment[0] - self.currentTime
         return segment[1]
 
     def schedule(self, gate, proc):
+        """Add an event segment (execution time, function, function name) to
+        the events queue.
+        """
         self.add_segment(
             self.get_current_time() + gate.delay,
             proc,
@@ -130,7 +146,7 @@ class Plug:
                 # connection has been successfuly established
                 if Plug.connectVerbose:
                     log.info(
-                        '%s.%s connected to %s.%s'
+                        self.str_connect
                         % (self.owner.name, self.name, plug.owner.name,
                             plug.name))
                 return True
@@ -160,7 +176,7 @@ class Plug:
                 # connection has been successfuly established
                 if Plug.connectVerbose:
                     log.info(
-                        '%s.%s connected to %s.%s'
+                        self.str_connect
                         % (plug.owner.name, plug.name, self.owner.name,
                             self.name))
                 return True
@@ -170,60 +186,50 @@ class Plug:
         # INVALID connection:
         #   * I/O => same I/O
         if plug is self:
-            log.warning('cannot connect I/O on itself')
+            log.warning(str_connOnItself)
         #   * destination plug already have a source
         elif plug.sourcePlug:
-            log.warning(
-                '%s.%s already have an incoming connection'
-                % (plug.owner.name, plug.name))
-        elif (    #   * child Input => child Input
+            log.warning(str_alreadyHaveSrc % (plug.owner.name, plug.name))
+        elif (    # * child Input => child Input
                 self.isInput and
                 plug.isInput and
                 self.grandparent() is plug.grandparent()):
-                    log.warning(
-                        'cannot connect two Inputs from the same scope')
-        elif (    #   * child Input => parent Output
+                    log.warning(self.str_CICI)
+        elif (    # * child Input => parent Output
                 self.isInput and
                 not plug.isInput and
                 self.grandparent() is plug.parent()):
-                    log.warning(
-                        'cannot connect an Input on its parent Output')
-        elif (    #   * child Output => child Output
+                    log.warning(self.str_CIPO)
+        elif (    # * child Output => child Output
                 not self.isInput and
                 not plug.isInput and
                 self.grandparent() is plug.grandparent()):
-                    log.warning(
-                        'cannot connect two outputs from the same scope')
-        elif (    #   * child Output => parent Input
+                    log.warning(self.str_COCO)
+        elif (    # * child Output => parent Input
                 not self.isInput and
                 plug.isInput and
                 self.grandparent() is plug.parent()):
-                    log.warning(
-                        'cannot connect an Output on its parent Input')
-        elif (    #   * parent Input => child Output
+                    log.warning(self.str_COPI)
+        elif (    # * parent Input => child Output
                 self.isInput and
                 not plug.isInput and
                 self.parent() is plug.grandparent()):
-                    log.warning(
-                        'cannot connect an Input on its child Output')
-        elif (    #   * parent Input => parent Input
+                    log.warning(self.str_PICI)
+        elif (    # * parent Input => parent Input
                 self.isInput and
                 not plug.isInput and
                 self.parent() is plug.parent()):
-                    log.warning(
-                        'cannot connect two Inputs from the same scope')
-        elif (    #   * parent Output => child Input
+                    log.warning(self.str_PIPI)
+        elif (    # * parent Output => child Input
                 not self.isInput and
                 not plug.isInput and
                 self.parent() is plug.grandparent()):
-                    log.warning(
-                        'cannot connect an Output on its child Input')
-        elif (    #   * parent Output => parent Output
+                    log.warning(self.str_POCO)
+        elif (    # * parent Output => parent Output
                 not self.isInput and
                 not plug.isInput and
                 self.parent() is plug.parent()):
-                    log.warning(
-                        'cannot connect two Outputs from the same scope')
+                    log.warning(self.str_POPO)
         else:
             return False
         return True
@@ -247,7 +253,6 @@ class Plug:
                     'connection between %s and %s already exists'
                     % (self.name, plug.name))
                 continue
-            
             # INVALID connections:
             if self.isInvalidConnection(plug):
                 return False
@@ -297,77 +302,63 @@ class Plug:
             self.owner.inputList if self.isInput else self.owner.outputList)]
         if name and prefix:
             name = None
-            # problèmes de doublons si une des plugs s'appele déjà comme ça, je pense
         if name and name not in names:
             self.name = name
             return
         prefix = prefix if prefix else ('in' if self.isInput else 'out')
         while True:
-            name =  prefix + str(i)
+            name = prefix + str(i)
             if name not in names:
                 self.name = name
                 return
             i += 1
 
     def set(self, value, forced=False):
+        """Try to set the value of a Plug. If the connection don't became
+        stable set the value to None.
+        """
         global exceed_
         exceed_ = False
-        res = self.do_set(value, forced)
-        if res == 0 or exceed_:
-            print('/!\ ===== RECURSION LIMIT EXCEEDED ===== /!\\')
-            self.do_set(None, False)
+        self.do_set(value, forced)
+        if exceed_:
+            self.do_set(None)
 
     def do_set(self, value, forced=False):
-        global _INDENT_
-        global gateList
-        global exceed_
-
         """Sets the boolean value of a Plug."""
+        global recursionNb_
+        global gateList_
+        global exceed_
         # no change, nothing to do.
         if self.value == value and self.__nbEval != 0 and not forced:
-            return 2
-        # If you reach the recursion limit: return 0
-        _INDENT_ += '    '
-        if self.owner not in gateList:
-            gateList.append(self.owner)
-        if (len(_INDENT_) / 4) > (len(gateList) * 10):
-            _INDENT_ = ''
-            gateList = []
+            return
+        # If you reach the recursion limit: stop, let set() set it to unstable
+        recursionNb_ += 1
+        if self.owner not in gateList_:
+            gateList_.append(self.owner)
+        if recursionNb_ > len(gateList_) * 10:
+            recursionNb_ = 0
+            gateList_ = []
             exceed_ = True
-            return 0
+            return
         # else set the new value and update the circuit accordingly
         self.value = value
-
-        if value == False:
-            val = RED + 'False' + AUTO
-        elif value == True:
-            val = GREEN + 'True' + AUTO
-        else:
-            val = ORANGE + 'Unknown' + AUTO
-        print(MAGENTA + "'%s.%s' set to " % (self.owner.name, self.name) + val)
-        
         if not forced:
             self.__nbEval += 1
         if Plug.setInputVerbose and self.isInput:
             log.info(
-                self.str_inputV
-                % (self.owner.name, self.name, self.value,))
+                self.str_inputV % (self.owner.name, self.name, self.value,))
         if Plug.setOutputVerbose and not self.isInput:
             log.info(
-                self.str_outputV
-                % (self.owner.name, self.name, self.value,))
-
-        # Gate input changed, set outputs values
+                self.str_outputV % (self.owner.name, self.name, self.value,))
+        # gate input changed: set outputs values
         if self.isInput:
             self.owner.evalfun()
         agenda_.propagate()
-        # then, all plugs in the destination list are set to this value
+        # then, all plugs in the destination list are set to the same value
         for dest in self.destinationPlugs:
-            dest.do_set(value, False)
-
-        _INDENT_ = _INDENT_[4:]
-        gateList = []
-        return 1
+            dest.do_set(value)
+        recursionNb_ -= 1
+        gateList_ = []
 
     def setName(self, name):
         """Set the name of the plug."""
@@ -515,11 +506,11 @@ class Circuit:
             log.error(self.str_unavailableName % (name,))
             return False
         else:
-            log.info(
-                self.str_newName % (self.owner.name, self.name, name,))
+            log.info(self.str_newName % (self.owner.name, self.name, name,))
             self.name = name
             return True
 
 ###############################################################################
 ###############################################################################
+# the main agenda use for the simulation, there should be only one agenda
 agenda_ = Agenda()
