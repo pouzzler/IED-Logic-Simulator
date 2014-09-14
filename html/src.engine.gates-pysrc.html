@@ -1,0 +1,674 @@
+<?xml version="1.0" encoding="ascii"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>src.engine.gates</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css" />
+  <script type="text/javascript" src="epydoc.js"></script>
+</head>
+
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="src-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+      <th class="navbar" width="100%"></th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">
+      <span class="breadcrumbs">
+        <a href="src-module.html">Package&nbsp;src</a> ::
+        <a href="src.engine-module.html">Package&nbsp;engine</a> ::
+        Module&nbsp;gates
+      </span>
+    </td>
+    <td>
+      <table cellpadding="0" cellspacing="0">
+        <!-- hide/show private -->
+        <tr><td align="right"><span class="options">[<a href="javascript:void(0);" class="privatelink"
+    onclick="toggle_private();">hide&nbsp;private</a>]</span></td></tr>
+        <tr><td align="right"><span class="options"
+            >[<a href="frames.html" target="_top">frames</a
+            >]&nbsp;|&nbsp;<a href="src.engine.gates-pysrc.html"
+            target="_top">no&nbsp;frames</a>]</span></td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<h1 class="epydoc">Source Code for <a href="src.engine.gates-module.html">Module src.engine.gates</a></h1>
+<pre class="py-src">
+<a name="L1"></a><tt class="py-lineno">  1</tt>  <tt class="py-line"><tt class="py-comment">#!/usr/bin/env python3</tt> </tt>
+<a name="L2"></a><tt class="py-lineno">  2</tt>  <tt class="py-line"><tt class="py-comment"># coding: utf-8</tt> </tt>
+<a name="L3"></a><tt class="py-lineno">  3</tt>  <tt class="py-line"> </tt>
+<a name="L4"></a><tt class="py-lineno">  4</tt>  <tt class="py-line"> </tt>
+<a name="L5"></a><tt class="py-lineno">  5</tt>  <tt class="py-line"><tt class="py-comment">###############################################################################</tt> </tt>
+<a name="L6"></a><tt class="py-lineno">  6</tt>  <tt class="py-line"><tt class="py-comment">#         &#9556;&#9574;&#9559;&#9484;&#9472;&#9488;&#9484;&#9472;&#9488;&#9516;&#9484;&#9472;&#9488;  &#9556;&#9552;&#9559;&#9516;&#9516;&#9472;&#9488;&#9484;&#9472;&#9488;&#9516; &#9516;&#9516;&#9484;&#9516;&#9488;  &#9556;&#9552;&#9559;&#9516;&#9484;&#9516;&#9488;&#9516; &#9516;&#9516;  &#9484;&#9472;&#9488;&#9484;&#9516;&#9488;&#9484;&#9472;&#9488;&#9516;&#9472;&#9488;         #</tt> </tt>
+<a name="L7"></a><tt class="py-lineno">  7</tt>  <tt class="py-line"><tt class="py-comment">#         &#9553;&#9553;&#9553;&#9500;&#9472;&#9508;&#9474; &#9516;&#9474;&#9474;    &#9553;  &#9474;&#9500;&#9516;&#9496;&#9474;  &#9474; &#9474;&#9474; &#9474;   &#9562;&#9552;&#9559;&#9474;&#9474;&#9474;&#9474;&#9474; &#9474;&#9474;  &#9500;&#9472;&#9508; &#9474; &#9474; &#9474;&#9500;&#9516;&#9496;         #</tt> </tt>
+<a name="L8"></a><tt class="py-lineno">  8</tt>  <tt class="py-line"><tt class="py-comment">#         &#9577; &#9577;&#9524; &#9524;&#9492;&#9472;&#9496;&#9524;&#9492;&#9472;&#9496;  &#9562;&#9552;&#9565;&#9524;&#9524;&#9492;&#9472;&#9492;&#9472;&#9496;&#9492;&#9472;&#9496;&#9524; &#9524;   &#9562;&#9552;&#9565;&#9524;&#9524; &#9524;&#9492;&#9472;&#9496;&#9524;&#9472;&#9496;&#9524; &#9524; &#9524; &#9492;&#9472;&#9496;&#9524;&#9492;&#9472;         #</tt> </tt>
+<a name="L9"></a><tt class="py-lineno">  9</tt>  <tt class="py-line"><tt class="py-comment"># -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+- #</tt> </tt>
+<a name="L10"></a><tt class="py-lineno"> 10</tt>  <tt class="py-line"><tt class="py-comment">#                                                                        2014 #</tt> </tt>
+<a name="L11"></a><tt class="py-lineno"> 11</tt>  <tt class="py-line"><tt class="py-comment">#                                                           S&#233;bastien MAGNIEN #</tt> </tt>
+<a name="L12"></a><tt class="py-lineno"> 12</tt>  <tt class="py-line"><tt class="py-comment">#                                                            Mathieu FOURCROY #</tt> </tt>
+<a name="L13"></a><tt class="py-lineno"> 13</tt>  <tt class="py-line"><tt class="py-comment"># --------------------------------------------------------------------------- #</tt> </tt>
+<a name="L14"></a><tt class="py-lineno"> 14</tt>  <tt class="py-line"><tt class="py-comment"># Builtin gates. Unlike user circuits, their evalfun() is implemented.        #</tt> </tt>
+<a name="L15"></a><tt class="py-lineno"> 15</tt>  <tt class="py-line"><tt class="py-comment"># For scheduling: we compute the output value at present time and schedule    #</tt> </tt>
+<a name="L16"></a><tt class="py-lineno"> 16</tt>  <tt class="py-line"><tt class="py-comment"># the change.                                                                 #</tt> </tt>
+<a name="L17"></a><tt class="py-lineno"> 17</tt>  <tt class="py-line"><tt class="py-comment"># --------------------------------------------------------------------------- #</tt> </tt>
+<a name="L18"></a><tt class="py-lineno"> 18</tt>  <tt class="py-line"><tt class="py-comment"># TODO: increase delay when more than two inputs                              #</tt> </tt>
+<a name="L19"></a><tt class="py-lineno"> 19</tt>  <tt class="py-line"><tt class="py-comment">###############################################################################</tt> </tt>
+<a name="L20"></a><tt class="py-lineno"> 20</tt>  <tt class="py-line"> </tt>
+<a name="L21"></a><tt class="py-lineno"> 21</tt>  <tt class="py-line"> </tt>
+<a name="L22"></a><tt class="py-lineno"> 22</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt class="py-op">.</tt><tt id="link-0" class="py-name" targets="Module src.engine.simulator=src.engine.simulator-module.html"><a title="src.engine.simulator" class="py-name" href="#" onclick="return doclink('link-0', 'simulator', 'link-0');">simulator</a></tt> <tt class="py-keyword">import</tt> <tt class="py-op">*</tt> </tt>
+<a name="L23"></a><tt class="py-lineno"> 23</tt>  <tt class="py-line"> </tt>
+<a name="L24"></a><tt class="py-lineno"> 24</tt>  <tt class="py-line"> </tt>
+<a name="NotGate"></a><div id="NotGate-def"><a name="L25"></a><tt class="py-lineno"> 25</tt> <a class="py-toggle" href="#" id="NotGate-toggle" onclick="return toggle('NotGate');">-</a><tt class="py-line"><tt class="py-keyword">class</tt> <a class="py-def-name" href="src.engine.gates.NotGate-class.html">NotGate</a><tt class="py-op">(</tt><tt class="py-base-class">Circuit</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="NotGate-collapsed" style="display:none;" pad="+++" indent="++++"></div><div id="NotGate-expanded"><a name="L26"></a><tt class="py-lineno"> 26</tt>  <tt class="py-line">    <tt class="py-docstring">"""One input only. Output == not Input."""</tt> </tt>
+<a name="L27"></a><tt class="py-lineno"> 27</tt>  <tt class="py-line">    <tt id="link-1" class="py-name" targets="Variable src.engine.circuits.JKFlipFlop.delay=src.engine.circuits.JKFlipFlop-class.html#delay,Variable src.engine.circuits.RSFlipFlop.delay=src.engine.circuits.RSFlipFlop-class.html#delay,Variable src.engine.gates.AndGate.delay=src.engine.gates.AndGate-class.html#delay,Variable src.engine.gates.NandGate.delay=src.engine.gates.NandGate-class.html#delay,Variable src.engine.gates.NorGate.delay=src.engine.gates.NorGate-class.html#delay,Variable src.engine.gates.NotGate.delay=src.engine.gates.NotGate-class.html#delay,Variable src.engine.gates.OrGate.delay=src.engine.gates.OrGate-class.html#delay,Variable src.engine.gates.XnorGate.delay=src.engine.gates.XnorGate-class.html#delay,Variable src.engine.gates.XorGate.delay=src.engine.gates.XorGate-class.html#delay,Variable src.engine_test.JKFlipFlop.delay=src.engine_test.JKFlipFlop-class.html#delay,Variable src.engine_test.RSFlipFlop.delay=src.engine_test.RSFlipFlop-class.html#delay"><a title="src.engine.circuits.JKFlipFlop.delay
+src.engine.circuits.RSFlipFlop.delay
+src.engine.gates.AndGate.delay
+src.engine.gates.NandGate.delay
+src.engine.gates.NorGate.delay
+src.engine.gates.NotGate.delay
+src.engine.gates.OrGate.delay
+src.engine.gates.XnorGate.delay
+src.engine.gates.XorGate.delay
+src.engine_test.JKFlipFlop.delay
+src.engine_test.RSFlipFlop.delay" class="py-name" href="#" onclick="return doclink('link-1', 'delay', 'link-1');">delay</a></tt> <tt class="py-op">=</tt> <tt class="py-number">2</tt> </tt>
+<a name="L28"></a><tt class="py-lineno"> 28</tt>  <tt class="py-line"> </tt>
+<a name="NotGate.__init__"></a><div id="NotGate.__init__-def"><a name="L29"></a><tt class="py-lineno"> 29</tt> <a class="py-toggle" href="#" id="NotGate.__init__-toggle" onclick="return toggle('NotGate.__init__');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="src.engine.gates.NotGate-class.html#__init__">__init__</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">name</tt><tt class="py-op">,</tt> <tt class="py-param">owner</tt><tt class="py-op">,</tt> <tt class="py-param">category</tt><tt class="py-op">=</tt><tt class="py-name">None</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="NotGate.__init__-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="NotGate.__init__-expanded"><a name="L30"></a><tt class="py-lineno"> 30</tt>  <tt class="py-line">        <tt id="link-2" class="py-name" targets="Class src.engine.simulator.Circuit=src.engine.simulator.Circuit-class.html"><a title="src.engine.simulator.Circuit" class="py-name" href="#" onclick="return doclink('link-2', 'Circuit', 'link-2');">Circuit</a></tt><tt class="py-op">.</tt><tt id="link-3" class="py-name" targets="Method src.engine.circuits.Counter4b.__init__()=src.engine.circuits.Counter4b-class.html#__init__,Method src.engine.circuits.DFlipFlop.__init__()=src.engine.circuits.DFlipFlop-class.html#__init__,Method src.engine.circuits.JKFlipFlop.__init__()=src.engine.circuits.JKFlipFlop-class.html#__init__,Method src.engine.circuits.Mem1b.__init__()=src.engine.circuits.Mem1b-class.html#__init__,Method src.engine.circuits.RSFlipFlop.__init__()=src.engine.circuits.RSFlipFlop-class.html#__init__,Method src.engine.circuits.Register4b.__init__()=src.engine.circuits.Register4b-class.html#__init__,Method src.engine.clock.Clock.__init__()=src.engine.clock.Clock-class.html#__init__,Method src.engine.clock.ClockThread.__init__()=src.engine.clock.ClockThread-class.html#__init__,Method src.engine.gates.AndGate.__init__()=src.engine.gates.AndGate-class.html#__init__,Method src.engine.gates.NandGate.__init__()=src.engine.gates.NandGate-class.html#__init__,Method src.engine.gates.NorGate.__init__()=src.engine.gates.NorGate-class.html#__init__,Method src.engine.gates.NotGate.__init__()=src.engine.gates.NotGate-class.html#__init__,Method src.engine.gates.OrGate.__init__()=src.engine.gates.OrGate-class.html#__init__,Method src.engine.gates.XnorGate.__init__()=src.engine.gates.XnorGate-class.html#__init__,Method src.engine.gates.XorGate.__init__()=src.engine.gates.XorGate-class.html#__init__,Method src.engine.simulator.Agenda.__init__()=src.engine.simulator.Agenda-class.html#__init__,Method src.engine.simulator.Circuit.__init__()=src.engine.simulator.Circuit-class.html#__init__,Method src.engine.simulator.Plug.__init__()=src.engine.simulator.Plug-class.html#__init__,Method src.engine_test.Counter4b.__init__()=src.engine_test.Counter4b-class.html#__init__,Method src.engine_test.DFlipFlop.__init__()=src.engine_test.DFlipFlop-class.html#__init__,Method src.engine_test.Div2.__init__()=src.engine_test.Div2-class.html#__init__,Method src.engine_test.JKFlipFlop.__init__()=src.engine_test.JKFlipFlop-class.html#__init__,Method src.engine_test.Mem1b.__init__()=src.engine_test.Mem1b-class.html#__init__,Method src.engine_test.RSFlipFlop.__init__()=src.engine_test.RSFlipFlop-class.html#__init__,Method src.engine_test.Register4b.__init__()=src.engine_test.Register4b-class.html#__init__,Method src.engine_test.oCounter4b.__init__()=src.engine_test.oCounter4b-class.html#__init__,Method src.engine_test.oJKFlipFlop.__init__()=src.engine_test.oJKFlipFlop-class.html#__init__,Method src.engine_test.ooJKFlipFlop.__init__()=src.engine_test.ooJKFlipFlop-class.html#__init__,Method src.engine_test.sDFlipFlop.__init__()=src.engine_test.sDFlipFlop-class.html#__init__,Method src.gui.circuitdrawing.CustomCircuitCreator.__init__()=src.gui.circuitdrawing.CustomCircuitCreator-class.html#__init__,Method src.gui.circuitdrawing.PaintArea.__init__()=src.gui.circuitdrawing.PaintArea-class.html#__init__,Method src.gui.docu.HelpDockWidget.__init__()=src.gui.docu.HelpDockWidget-class.html#__init__,Method src.gui.docu.HelpTextBrowser.__init__()=src.gui.docu.HelpTextBrowser-class.html#__init__,Method src.gui.graphicitem.CircuitItem.__init__()=src.gui.graphicitem.CircuitItem-class.html#__init__,Method src.gui.graphicitem.PlugItem.__init__()=src.gui.graphicitem.PlugItem-class.html#__init__,Method src.gui.graphicitem.WireItem.__init__()=src.gui.graphicitem.WireItem-class.html#__init__,Method src.gui.logwidgets.LogDockWidget.__init__()=src.gui.logwidgets.LogDockWidget-class.html#__init__,Method src.gui.logwidgets.LoggerTextEdit.__init__()=src.gui.logwidgets.LoggerTextEdit-class.html#__init__,Method src.gui.mainview.MainView.__init__()=src.gui.mainview.MainView-class.html#__init__,Method src.gui.selectionoptions.SelectionOptions.__init__()=src.gui.selectionoptions.SelectionOptions-class.html#__init__,Method src.gui.selectionoptions.SelectionOptionsDockWidget.__init__()=src.gui.selectionoptions.SelectionOptionsDockWidget-class.html#__init__,Method src.gui.settings.Settings.__init__()=src.gui.settings.Settings-class.html#__init__,Method src.gui.settings.SettingsDialog.__init__()=src.gui.settings.SettingsDialog-class.html#__init__,Method src.gui.toolbox.ToolBox.__init__()=src.gui.toolbox.ToolBox-class.html#__init__,Method src.gui.toolbox.ToolBoxDockWidget.__init__()=src.gui.toolbox.ToolBoxDockWidget-class.html#__init__"><a title="src.engine.circuits.Counter4b.__init__
+src.engine.circuits.DFlipFlop.__init__
+src.engine.circuits.JKFlipFlop.__init__
+src.engine.circuits.Mem1b.__init__
+src.engine.circuits.RSFlipFlop.__init__
+src.engine.circuits.Register4b.__init__
+src.engine.clock.Clock.__init__
+src.engine.clock.ClockThread.__init__
+src.engine.gates.AndGate.__init__
+src.engine.gates.NandGate.__init__
+src.engine.gates.NorGate.__init__
+src.engine.gates.NotGate.__init__
+src.engine.gates.OrGate.__init__
+src.engine.gates.XnorGate.__init__
+src.engine.gates.XorGate.__init__
+src.engine.simulator.Agenda.__init__
+src.engine.simulator.Circuit.__init__
+src.engine.simulator.Plug.__init__
+src.engine_test.Counter4b.__init__
+src.engine_test.DFlipFlop.__init__
+src.engine_test.Div2.__init__
+src.engine_test.JKFlipFlop.__init__
+src.engine_test.Mem1b.__init__
+src.engine_test.RSFlipFlop.__init__
+src.engine_test.Register4b.__init__
+src.engine_test.oCounter4b.__init__
+src.engine_test.oJKFlipFlop.__init__
+src.engine_test.ooJKFlipFlop.__init__
+src.engine_test.sDFlipFlop.__init__
+src.gui.circuitdrawing.CustomCircuitCreator.__init__
+src.gui.circuitdrawing.PaintArea.__init__
+src.gui.docu.HelpDockWidget.__init__
+src.gui.docu.HelpTextBrowser.__init__
+src.gui.graphicitem.CircuitItem.__init__
+src.gui.graphicitem.PlugItem.__init__
+src.gui.graphicitem.WireItem.__init__
+src.gui.logwidgets.LogDockWidget.__init__
+src.gui.logwidgets.LoggerTextEdit.__init__
+src.gui.mainview.MainView.__init__
+src.gui.selectionoptions.SelectionOptions.__init__
+src.gui.selectionoptions.SelectionOptionsDockWidget.__init__
+src.gui.settings.Settings.__init__
+src.gui.settings.SettingsDialog.__init__
+src.gui.toolbox.ToolBox.__init__
+src.gui.toolbox.ToolBoxDockWidget.__init__" class="py-name" href="#" onclick="return doclink('link-3', '__init__', 'link-3');">__init__</a></tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">,</tt> <tt class="py-name">name</tt><tt class="py-op">,</tt> <tt class="py-name">owner</tt><tt class="py-op">)</tt> </tt>
+<a name="L31"></a><tt class="py-lineno"> 31</tt>  <tt class="py-line">        <tt id="link-4" class="py-name" targets="Class src.engine.simulator.Plug=src.engine.simulator.Plug-class.html"><a title="src.engine.simulator.Plug" class="py-name" href="#" onclick="return doclink('link-4', 'Plug', 'link-4');">Plug</a></tt><tt class="py-op">(</tt><tt class="py-name">True</tt><tt class="py-op">,</tt> <tt class="py-name">None</tt><tt class="py-op">,</tt> <tt class="py-name">self</tt><tt class="py-op">)</tt> </tt>
+<a name="L32"></a><tt class="py-lineno"> 32</tt>  <tt class="py-line">        <tt id="link-5" class="py-name"><a title="src.engine.simulator.Plug" class="py-name" href="#" onclick="return doclink('link-5', 'Plug', 'link-4');">Plug</a></tt><tt class="py-op">(</tt><tt class="py-name">False</tt><tt class="py-op">,</tt> <tt class="py-name">None</tt><tt class="py-op">,</tt> <tt class="py-name">self</tt><tt class="py-op">)</tt> </tt>
+<a name="L33"></a><tt class="py-lineno"> 33</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-6" class="py-name" targets="Method src.engine.simulator.Circuit.init_inputs()=src.engine.simulator.Circuit-class.html#init_inputs"><a title="src.engine.simulator.Circuit.init_inputs" class="py-name" href="#" onclick="return doclink('link-6', 'init_inputs', 'link-6');">init_inputs</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L34"></a><tt class="py-lineno"> 34</tt>  <tt class="py-line"> </tt>
+<a name="NotGate.evalfun"></a><div id="NotGate.evalfun-def"><a name="L35"></a><tt class="py-lineno"> 35</tt> <a class="py-toggle" href="#" id="NotGate.evalfun-toggle" onclick="return toggle('NotGate.evalfun');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="src.engine.gates.NotGate-class.html#evalfun">evalfun</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="NotGate.evalfun-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="NotGate.evalfun-expanded"><a name="L36"></a><tt class="py-lineno"> 36</tt>  <tt class="py-line">        <tt class="py-name">val</tt> <tt class="py-op">=</tt> <tt class="py-keyword">not</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">inputList</tt><tt class="py-op">[</tt><tt class="py-number">0</tt><tt class="py-op">]</tt><tt class="py-op">.</tt><tt class="py-name">value</tt> </tt>
+<a name="L37"></a><tt class="py-lineno"> 37</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">inputList</tt><tt class="py-op">[</tt><tt class="py-number">0</tt><tt class="py-op">]</tt><tt class="py-op">.</tt><tt class="py-name">value</tt> <tt class="py-keyword">is</tt> <tt class="py-name">None</tt><tt class="py-op">:</tt> </tt>
+<a name="L38"></a><tt class="py-lineno"> 38</tt>  <tt class="py-line">            <tt class="py-name">val</tt> <tt class="py-op">=</tt> <tt class="py-name">None</tt> </tt>
+<a name="L39"></a><tt class="py-lineno"> 39</tt>  <tt class="py-line">        <tt id="link-7" class="py-name" targets="Variable src.engine.circuits.agenda_=src.engine.circuits-module.html#agenda_,Variable src.engine.gates.agenda_=src.engine.gates-module.html#agenda_,Variable src.engine.simulator.agenda_=src.engine.simulator-module.html#agenda_,Variable src.engine_test.agenda_=src.engine_test-module.html#agenda_"><a title="src.engine.circuits.agenda_
+src.engine.gates.agenda_
+src.engine.simulator.agenda_
+src.engine_test.agenda_" class="py-name" href="#" onclick="return doclink('link-7', 'agenda_', 'link-7');">agenda_</a></tt><tt class="py-op">.</tt><tt id="link-8" class="py-name" targets="Method src.engine.simulator.Agenda.schedule()=src.engine.simulator.Agenda-class.html#schedule"><a title="src.engine.simulator.Agenda.schedule" class="py-name" href="#" onclick="return doclink('link-8', 'schedule', 'link-8');">schedule</a></tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">,</tt> <tt class="py-keyword">lambda</tt><tt class="py-op">:</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">outputList</tt><tt class="py-op">[</tt><tt class="py-number">0</tt><tt class="py-op">]</tt><tt class="py-op">.</tt><tt id="link-9" class="py-name" targets="Method src.engine.simulator.Plug.set()=src.engine.simulator.Plug-class.html#set"><a title="src.engine.simulator.Plug.set" class="py-name" href="#" onclick="return doclink('link-9', 'set', 'link-9');">set</a></tt><tt class="py-op">(</tt><tt class="py-name">val</tt><tt class="py-op">)</tt><tt class="py-op">)</tt> </tt>
+</div></div><a name="L40"></a><tt class="py-lineno"> 40</tt>  <tt class="py-line"> </tt>
+<a name="L41"></a><tt class="py-lineno"> 41</tt>  <tt class="py-line"> </tt>
+<a name="AndGate"></a><div id="AndGate-def"><a name="L42"></a><tt class="py-lineno"> 42</tt> <a class="py-toggle" href="#" id="AndGate-toggle" onclick="return toggle('AndGate');">-</a><tt class="py-line"><tt class="py-keyword">class</tt> <a class="py-def-name" href="src.engine.gates.AndGate-class.html">AndGate</a><tt class="py-op">(</tt><tt class="py-base-class">Circuit</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="AndGate-collapsed" style="display:none;" pad="+++" indent="++++"></div><div id="AndGate-expanded"><a name="L43"></a><tt class="py-lineno"> 43</tt>  <tt class="py-line">    <tt class="py-docstring">"""Any number of inputs. Output false unless every input true."""</tt> </tt>
+<a name="L44"></a><tt class="py-lineno"> 44</tt>  <tt class="py-line">    <tt id="link-10" class="py-name"><a title="src.engine.circuits.JKFlipFlop.delay
+src.engine.circuits.RSFlipFlop.delay
+src.engine.gates.AndGate.delay
+src.engine.gates.NandGate.delay
+src.engine.gates.NorGate.delay
+src.engine.gates.NotGate.delay
+src.engine.gates.OrGate.delay
+src.engine.gates.XnorGate.delay
+src.engine.gates.XorGate.delay
+src.engine_test.JKFlipFlop.delay
+src.engine_test.RSFlipFlop.delay" class="py-name" href="#" onclick="return doclink('link-10', 'delay', 'link-1');">delay</a></tt> <tt class="py-op">=</tt> <tt class="py-number">3</tt> </tt>
+<a name="L45"></a><tt class="py-lineno"> 45</tt>  <tt class="py-line"> </tt>
+<a name="AndGate.__init__"></a><div id="AndGate.__init__-def"><a name="L46"></a><tt class="py-lineno"> 46</tt> <a class="py-toggle" href="#" id="AndGate.__init__-toggle" onclick="return toggle('AndGate.__init__');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="src.engine.gates.AndGate-class.html#__init__">__init__</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">name</tt><tt class="py-op">,</tt> <tt class="py-param">owner</tt><tt class="py-op">,</tt> <tt class="py-param">inputs</tt><tt class="py-op">=</tt><tt class="py-number">2</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="AndGate.__init__-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="AndGate.__init__-expanded"><a name="L47"></a><tt class="py-lineno"> 47</tt>  <tt class="py-line">        <tt id="link-11" class="py-name"><a title="src.engine.simulator.Circuit" class="py-name" href="#" onclick="return doclink('link-11', 'Circuit', 'link-2');">Circuit</a></tt><tt class="py-op">.</tt><tt id="link-12" class="py-name"><a title="src.engine.circuits.Counter4b.__init__
+src.engine.circuits.DFlipFlop.__init__
+src.engine.circuits.JKFlipFlop.__init__
+src.engine.circuits.Mem1b.__init__
+src.engine.circuits.RSFlipFlop.__init__
+src.engine.circuits.Register4b.__init__
+src.engine.clock.Clock.__init__
+src.engine.clock.ClockThread.__init__
+src.engine.gates.AndGate.__init__
+src.engine.gates.NandGate.__init__
+src.engine.gates.NorGate.__init__
+src.engine.gates.NotGate.__init__
+src.engine.gates.OrGate.__init__
+src.engine.gates.XnorGate.__init__
+src.engine.gates.XorGate.__init__
+src.engine.simulator.Agenda.__init__
+src.engine.simulator.Circuit.__init__
+src.engine.simulator.Plug.__init__
+src.engine_test.Counter4b.__init__
+src.engine_test.DFlipFlop.__init__
+src.engine_test.Div2.__init__
+src.engine_test.JKFlipFlop.__init__
+src.engine_test.Mem1b.__init__
+src.engine_test.RSFlipFlop.__init__
+src.engine_test.Register4b.__init__
+src.engine_test.oCounter4b.__init__
+src.engine_test.oJKFlipFlop.__init__
+src.engine_test.ooJKFlipFlop.__init__
+src.engine_test.sDFlipFlop.__init__
+src.gui.circuitdrawing.CustomCircuitCreator.__init__
+src.gui.circuitdrawing.PaintArea.__init__
+src.gui.docu.HelpDockWidget.__init__
+src.gui.docu.HelpTextBrowser.__init__
+src.gui.graphicitem.CircuitItem.__init__
+src.gui.graphicitem.PlugItem.__init__
+src.gui.graphicitem.WireItem.__init__
+src.gui.logwidgets.LogDockWidget.__init__
+src.gui.logwidgets.LoggerTextEdit.__init__
+src.gui.mainview.MainView.__init__
+src.gui.selectionoptions.SelectionOptions.__init__
+src.gui.selectionoptions.SelectionOptionsDockWidget.__init__
+src.gui.settings.Settings.__init__
+src.gui.settings.SettingsDialog.__init__
+src.gui.toolbox.ToolBox.__init__
+src.gui.toolbox.ToolBoxDockWidget.__init__" class="py-name" href="#" onclick="return doclink('link-12', '__init__', 'link-3');">__init__</a></tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">,</tt> <tt class="py-name">name</tt><tt class="py-op">,</tt> <tt class="py-name">owner</tt><tt class="py-op">)</tt> </tt>
+<a name="L48"></a><tt class="py-lineno"> 48</tt>  <tt class="py-line">        <tt class="py-keyword">for</tt> <tt class="py-name">i</tt> <tt class="py-keyword">in</tt> <tt class="py-name">range</tt><tt class="py-op">(</tt><tt class="py-name">inputs</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L49"></a><tt class="py-lineno"> 49</tt>  <tt class="py-line">            <tt id="link-13" class="py-name"><a title="src.engine.simulator.Plug" class="py-name" href="#" onclick="return doclink('link-13', 'Plug', 'link-4');">Plug</a></tt><tt class="py-op">(</tt><tt class="py-name">True</tt><tt class="py-op">,</tt> <tt class="py-name">None</tt><tt class="py-op">,</tt> <tt class="py-name">self</tt><tt class="py-op">)</tt> </tt>
+<a name="L50"></a><tt class="py-lineno"> 50</tt>  <tt class="py-line">        <tt id="link-14" class="py-name"><a title="src.engine.simulator.Plug" class="py-name" href="#" onclick="return doclink('link-14', 'Plug', 'link-4');">Plug</a></tt><tt class="py-op">(</tt><tt class="py-name">False</tt><tt class="py-op">,</tt> <tt class="py-name">None</tt><tt class="py-op">,</tt> <tt class="py-name">self</tt><tt class="py-op">)</tt> </tt>
+<a name="L51"></a><tt class="py-lineno"> 51</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-15" class="py-name"><a title="src.engine.simulator.Circuit.init_inputs" class="py-name" href="#" onclick="return doclink('link-15', 'init_inputs', 'link-6');">init_inputs</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L52"></a><tt class="py-lineno"> 52</tt>  <tt class="py-line"> </tt>
+<a name="AndGate.evalfun"></a><div id="AndGate.evalfun-def"><a name="L53"></a><tt class="py-lineno"> 53</tt> <a class="py-toggle" href="#" id="AndGate.evalfun-toggle" onclick="return toggle('AndGate.evalfun');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="src.engine.gates.AndGate-class.html#evalfun">evalfun</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="AndGate.evalfun-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="AndGate.evalfun-expanded"><a name="L54"></a><tt class="py-lineno"> 54</tt>  <tt class="py-line">        <tt class="py-name">val</tt> <tt class="py-op">=</tt> <tt class="py-name">all</tt><tt class="py-op">(</tt><tt class="py-op">[</tt><tt class="py-name">inp</tt><tt class="py-op">.</tt><tt class="py-name">value</tt> <tt class="py-keyword">for</tt> <tt class="py-name">inp</tt> <tt class="py-keyword">in</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">inputList</tt><tt class="py-op">]</tt><tt class="py-op">)</tt> </tt>
+<a name="L55"></a><tt class="py-lineno"> 55</tt>  <tt class="py-line">        <tt class="py-keyword">for</tt> <tt class="py-name">inp</tt> <tt class="py-keyword">in</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">inputList</tt><tt class="py-op">:</tt> </tt>
+<a name="L56"></a><tt class="py-lineno"> 56</tt>  <tt class="py-line">            <tt class="py-keyword">if</tt> <tt class="py-name">inp</tt><tt class="py-op">.</tt><tt class="py-name">value</tt> <tt class="py-keyword">is</tt> <tt class="py-name">None</tt> <tt class="py-keyword">and</tt> <tt class="py-name">val</tt><tt class="py-op">:</tt> </tt>
+<a name="L57"></a><tt class="py-lineno"> 57</tt>  <tt class="py-line">                <tt class="py-name">val</tt> <tt class="py-op">=</tt> <tt class="py-name">None</tt> </tt>
+<a name="L58"></a><tt class="py-lineno"> 58</tt>  <tt class="py-line">        <tt id="link-16" class="py-name"><a title="src.engine.circuits.agenda_
+src.engine.gates.agenda_
+src.engine.simulator.agenda_
+src.engine_test.agenda_" class="py-name" href="#" onclick="return doclink('link-16', 'agenda_', 'link-7');">agenda_</a></tt><tt class="py-op">.</tt><tt id="link-17" class="py-name"><a title="src.engine.simulator.Agenda.schedule" class="py-name" href="#" onclick="return doclink('link-17', 'schedule', 'link-8');">schedule</a></tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">,</tt> <tt class="py-keyword">lambda</tt><tt class="py-op">:</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">outputList</tt><tt class="py-op">[</tt><tt class="py-number">0</tt><tt class="py-op">]</tt><tt class="py-op">.</tt><tt id="link-18" class="py-name"><a title="src.engine.simulator.Plug.set" class="py-name" href="#" onclick="return doclink('link-18', 'set', 'link-9');">set</a></tt><tt class="py-op">(</tt><tt class="py-name">val</tt><tt class="py-op">)</tt><tt class="py-op">)</tt> </tt>
+</div></div><a name="L59"></a><tt class="py-lineno"> 59</tt>  <tt class="py-line"> </tt>
+<a name="L60"></a><tt class="py-lineno"> 60</tt>  <tt class="py-line"> </tt>
+<a name="NandGate"></a><div id="NandGate-def"><a name="L61"></a><tt class="py-lineno"> 61</tt> <a class="py-toggle" href="#" id="NandGate-toggle" onclick="return toggle('NandGate');">-</a><tt class="py-line"><tt class="py-keyword">class</tt> <a class="py-def-name" href="src.engine.gates.NandGate-class.html">NandGate</a><tt class="py-op">(</tt><tt class="py-base-class">Circuit</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="NandGate-collapsed" style="display:none;" pad="+++" indent="++++"></div><div id="NandGate-expanded"><a name="L62"></a><tt class="py-lineno"> 62</tt>  <tt class="py-line">    <tt class="py-docstring">"""Any number of inputs. Output true unless every input true."""</tt> </tt>
+<a name="L63"></a><tt class="py-lineno"> 63</tt>  <tt class="py-line">    <tt id="link-19" class="py-name"><a title="src.engine.circuits.JKFlipFlop.delay
+src.engine.circuits.RSFlipFlop.delay
+src.engine.gates.AndGate.delay
+src.engine.gates.NandGate.delay
+src.engine.gates.NorGate.delay
+src.engine.gates.NotGate.delay
+src.engine.gates.OrGate.delay
+src.engine.gates.XnorGate.delay
+src.engine.gates.XorGate.delay
+src.engine_test.JKFlipFlop.delay
+src.engine_test.RSFlipFlop.delay" class="py-name" href="#" onclick="return doclink('link-19', 'delay', 'link-1');">delay</a></tt> <tt class="py-op">=</tt> <tt class="py-number">5</tt> </tt>
+<a name="L64"></a><tt class="py-lineno"> 64</tt>  <tt class="py-line"> </tt>
+<a name="NandGate.__init__"></a><div id="NandGate.__init__-def"><a name="L65"></a><tt class="py-lineno"> 65</tt> <a class="py-toggle" href="#" id="NandGate.__init__-toggle" onclick="return toggle('NandGate.__init__');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="src.engine.gates.NandGate-class.html#__init__">__init__</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">name</tt><tt class="py-op">,</tt> <tt class="py-param">owner</tt><tt class="py-op">,</tt> <tt class="py-param">inputs</tt><tt class="py-op">=</tt><tt class="py-number">2</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="NandGate.__init__-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="NandGate.__init__-expanded"><a name="L66"></a><tt class="py-lineno"> 66</tt>  <tt class="py-line">        <tt id="link-20" class="py-name"><a title="src.engine.simulator.Circuit" class="py-name" href="#" onclick="return doclink('link-20', 'Circuit', 'link-2');">Circuit</a></tt><tt class="py-op">.</tt><tt id="link-21" class="py-name"><a title="src.engine.circuits.Counter4b.__init__
+src.engine.circuits.DFlipFlop.__init__
+src.engine.circuits.JKFlipFlop.__init__
+src.engine.circuits.Mem1b.__init__
+src.engine.circuits.RSFlipFlop.__init__
+src.engine.circuits.Register4b.__init__
+src.engine.clock.Clock.__init__
+src.engine.clock.ClockThread.__init__
+src.engine.gates.AndGate.__init__
+src.engine.gates.NandGate.__init__
+src.engine.gates.NorGate.__init__
+src.engine.gates.NotGate.__init__
+src.engine.gates.OrGate.__init__
+src.engine.gates.XnorGate.__init__
+src.engine.gates.XorGate.__init__
+src.engine.simulator.Agenda.__init__
+src.engine.simulator.Circuit.__init__
+src.engine.simulator.Plug.__init__
+src.engine_test.Counter4b.__init__
+src.engine_test.DFlipFlop.__init__
+src.engine_test.Div2.__init__
+src.engine_test.JKFlipFlop.__init__
+src.engine_test.Mem1b.__init__
+src.engine_test.RSFlipFlop.__init__
+src.engine_test.Register4b.__init__
+src.engine_test.oCounter4b.__init__
+src.engine_test.oJKFlipFlop.__init__
+src.engine_test.ooJKFlipFlop.__init__
+src.engine_test.sDFlipFlop.__init__
+src.gui.circuitdrawing.CustomCircuitCreator.__init__
+src.gui.circuitdrawing.PaintArea.__init__
+src.gui.docu.HelpDockWidget.__init__
+src.gui.docu.HelpTextBrowser.__init__
+src.gui.graphicitem.CircuitItem.__init__
+src.gui.graphicitem.PlugItem.__init__
+src.gui.graphicitem.WireItem.__init__
+src.gui.logwidgets.LogDockWidget.__init__
+src.gui.logwidgets.LoggerTextEdit.__init__
+src.gui.mainview.MainView.__init__
+src.gui.selectionoptions.SelectionOptions.__init__
+src.gui.selectionoptions.SelectionOptionsDockWidget.__init__
+src.gui.settings.Settings.__init__
+src.gui.settings.SettingsDialog.__init__
+src.gui.toolbox.ToolBox.__init__
+src.gui.toolbox.ToolBoxDockWidget.__init__" class="py-name" href="#" onclick="return doclink('link-21', '__init__', 'link-3');">__init__</a></tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">,</tt> <tt class="py-name">name</tt><tt class="py-op">,</tt> <tt class="py-name">owner</tt><tt class="py-op">)</tt> </tt>
+<a name="L67"></a><tt class="py-lineno"> 67</tt>  <tt class="py-line">        <tt class="py-keyword">for</tt> <tt class="py-name">i</tt> <tt class="py-keyword">in</tt> <tt class="py-name">range</tt><tt class="py-op">(</tt><tt class="py-name">inputs</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L68"></a><tt class="py-lineno"> 68</tt>  <tt class="py-line">            <tt id="link-22" class="py-name"><a title="src.engine.simulator.Plug" class="py-name" href="#" onclick="return doclink('link-22', 'Plug', 'link-4');">Plug</a></tt><tt class="py-op">(</tt><tt class="py-name">True</tt><tt class="py-op">,</tt> <tt class="py-name">None</tt><tt class="py-op">,</tt> <tt class="py-name">self</tt><tt class="py-op">)</tt> </tt>
+<a name="L69"></a><tt class="py-lineno"> 69</tt>  <tt class="py-line">        <tt id="link-23" class="py-name"><a title="src.engine.simulator.Plug" class="py-name" href="#" onclick="return doclink('link-23', 'Plug', 'link-4');">Plug</a></tt><tt class="py-op">(</tt><tt class="py-name">False</tt><tt class="py-op">,</tt> <tt class="py-name">None</tt><tt class="py-op">,</tt> <tt class="py-name">self</tt><tt class="py-op">)</tt> </tt>
+<a name="L70"></a><tt class="py-lineno"> 70</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-24" class="py-name"><a title="src.engine.simulator.Circuit.init_inputs" class="py-name" href="#" onclick="return doclink('link-24', 'init_inputs', 'link-6');">init_inputs</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L71"></a><tt class="py-lineno"> 71</tt>  <tt class="py-line"> </tt>
+<a name="NandGate.evalfun"></a><div id="NandGate.evalfun-def"><a name="L72"></a><tt class="py-lineno"> 72</tt> <a class="py-toggle" href="#" id="NandGate.evalfun-toggle" onclick="return toggle('NandGate.evalfun');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="src.engine.gates.NandGate-class.html#evalfun">evalfun</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="NandGate.evalfun-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="NandGate.evalfun-expanded"><a name="L73"></a><tt class="py-lineno"> 73</tt>  <tt class="py-line">        <tt class="py-name">val</tt> <tt class="py-op">=</tt> <tt class="py-keyword">not</tt> <tt class="py-name">all</tt><tt class="py-op">(</tt><tt class="py-op">[</tt><tt class="py-name">inp</tt><tt class="py-op">.</tt><tt class="py-name">value</tt> <tt class="py-keyword">for</tt> <tt class="py-name">inp</tt> <tt class="py-keyword">in</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">inputList</tt><tt class="py-op">]</tt><tt class="py-op">)</tt> </tt>
+<a name="L74"></a><tt class="py-lineno"> 74</tt>  <tt class="py-line">        <tt class="py-keyword">for</tt> <tt class="py-name">inp</tt> <tt class="py-keyword">in</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">inputList</tt><tt class="py-op">:</tt> </tt>
+<a name="L75"></a><tt class="py-lineno"> 75</tt>  <tt class="py-line">            <tt class="py-keyword">if</tt> <tt class="py-name">inp</tt><tt class="py-op">.</tt><tt class="py-name">value</tt> <tt class="py-keyword">is</tt> <tt class="py-name">None</tt><tt class="py-op">:</tt> </tt>
+<a name="L76"></a><tt class="py-lineno"> 76</tt>  <tt class="py-line">                <tt class="py-keyword">for</tt> <tt class="py-name">inp2</tt> <tt class="py-keyword">in</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">inputList</tt><tt class="py-op">:</tt> </tt>
+<a name="L77"></a><tt class="py-lineno"> 77</tt>  <tt class="py-line">                    <tt class="py-keyword">if</tt> <tt class="py-name">inp2</tt><tt class="py-op">.</tt><tt class="py-name">value</tt> <tt class="py-keyword">is</tt> <tt class="py-name">False</tt><tt class="py-op">:</tt> </tt>
+<a name="L78"></a><tt class="py-lineno"> 78</tt>  <tt class="py-line">                        <tt class="py-name">val</tt> <tt class="py-op">=</tt> <tt class="py-name">True</tt> </tt>
+<a name="L79"></a><tt class="py-lineno"> 79</tt>  <tt class="py-line">                <tt class="py-name">t</tt> <tt class="py-op">=</tt> <tt class="py-name">True</tt> </tt>
+<a name="L80"></a><tt class="py-lineno"> 80</tt>  <tt class="py-line">                <tt class="py-keyword">for</tt> <tt class="py-name">inp2</tt> <tt class="py-keyword">in</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">inputList</tt><tt class="py-op">:</tt> </tt>
+<a name="L81"></a><tt class="py-lineno"> 81</tt>  <tt class="py-line">                    <tt class="py-keyword">if</tt> <tt class="py-name">inp2</tt> <tt class="py-keyword">is</tt> <tt class="py-name">inp</tt><tt class="py-op">:</tt> </tt>
+<a name="L82"></a><tt class="py-lineno"> 82</tt>  <tt class="py-line">                        <tt class="py-keyword">pass</tt> </tt>
+<a name="L83"></a><tt class="py-lineno"> 83</tt>  <tt class="py-line">                    <tt class="py-keyword">elif</tt> <tt class="py-name">inp2</tt><tt class="py-op">.</tt><tt class="py-name">value</tt> <tt class="py-keyword">is</tt> <tt class="py-keyword">not</tt> <tt class="py-name">True</tt><tt class="py-op">:</tt> </tt>
+<a name="L84"></a><tt class="py-lineno"> 84</tt>  <tt class="py-line">                        <tt class="py-name">t</tt> <tt class="py-op">=</tt> <tt class="py-name">False</tt> </tt>
+<a name="L85"></a><tt class="py-lineno"> 85</tt>  <tt class="py-line">                <tt class="py-keyword">if</tt> <tt class="py-name">t</tt><tt class="py-op">:</tt> </tt>
+<a name="L86"></a><tt class="py-lineno"> 86</tt>  <tt class="py-line">                    <tt class="py-name">val</tt> <tt class="py-op">=</tt> <tt class="py-name">None</tt> </tt>
+<a name="L87"></a><tt class="py-lineno"> 87</tt>  <tt class="py-line">        <tt id="link-25" class="py-name"><a title="src.engine.circuits.agenda_
+src.engine.gates.agenda_
+src.engine.simulator.agenda_
+src.engine_test.agenda_" class="py-name" href="#" onclick="return doclink('link-25', 'agenda_', 'link-7');">agenda_</a></tt><tt class="py-op">.</tt><tt id="link-26" class="py-name"><a title="src.engine.simulator.Agenda.schedule" class="py-name" href="#" onclick="return doclink('link-26', 'schedule', 'link-8');">schedule</a></tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">,</tt> <tt class="py-keyword">lambda</tt><tt class="py-op">:</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">outputList</tt><tt class="py-op">[</tt><tt class="py-number">0</tt><tt class="py-op">]</tt><tt class="py-op">.</tt><tt id="link-27" class="py-name"><a title="src.engine.simulator.Plug.set" class="py-name" href="#" onclick="return doclink('link-27', 'set', 'link-9');">set</a></tt><tt class="py-op">(</tt><tt class="py-name">val</tt><tt class="py-op">)</tt><tt class="py-op">)</tt> </tt>
+</div></div><a name="L88"></a><tt class="py-lineno"> 88</tt>  <tt class="py-line"> </tt>
+<a name="L89"></a><tt class="py-lineno"> 89</tt>  <tt class="py-line"> </tt>
+<a name="OrGate"></a><div id="OrGate-def"><a name="L90"></a><tt class="py-lineno"> 90</tt> <a class="py-toggle" href="#" id="OrGate-toggle" onclick="return toggle('OrGate');">-</a><tt class="py-line"><tt class="py-keyword">class</tt> <a class="py-def-name" href="src.engine.gates.OrGate-class.html">OrGate</a><tt class="py-op">(</tt><tt class="py-base-class">Circuit</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="OrGate-collapsed" style="display:none;" pad="+++" indent="++++"></div><div id="OrGate-expanded"><a name="L91"></a><tt class="py-lineno"> 91</tt>  <tt class="py-line">    <tt class="py-docstring">"""Any number of inputs. Output true unless every input false."""</tt> </tt>
+<a name="L92"></a><tt class="py-lineno"> 92</tt>  <tt class="py-line">    <tt id="link-28" class="py-name"><a title="src.engine.circuits.JKFlipFlop.delay
+src.engine.circuits.RSFlipFlop.delay
+src.engine.gates.AndGate.delay
+src.engine.gates.NandGate.delay
+src.engine.gates.NorGate.delay
+src.engine.gates.NotGate.delay
+src.engine.gates.OrGate.delay
+src.engine.gates.XnorGate.delay
+src.engine.gates.XorGate.delay
+src.engine_test.JKFlipFlop.delay
+src.engine_test.RSFlipFlop.delay" class="py-name" href="#" onclick="return doclink('link-28', 'delay', 'link-1');">delay</a></tt> <tt class="py-op">=</tt> <tt class="py-number">5</tt> </tt>
+<a name="L93"></a><tt class="py-lineno"> 93</tt>  <tt class="py-line"> </tt>
+<a name="OrGate.__init__"></a><div id="OrGate.__init__-def"><a name="L94"></a><tt class="py-lineno"> 94</tt> <a class="py-toggle" href="#" id="OrGate.__init__-toggle" onclick="return toggle('OrGate.__init__');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="src.engine.gates.OrGate-class.html#__init__">__init__</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">name</tt><tt class="py-op">,</tt> <tt class="py-param">owner</tt><tt class="py-op">,</tt> <tt class="py-param">inputs</tt><tt class="py-op">=</tt><tt class="py-number">2</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="OrGate.__init__-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="OrGate.__init__-expanded"><a name="L95"></a><tt class="py-lineno"> 95</tt>  <tt class="py-line">        <tt id="link-29" class="py-name"><a title="src.engine.simulator.Circuit" class="py-name" href="#" onclick="return doclink('link-29', 'Circuit', 'link-2');">Circuit</a></tt><tt class="py-op">.</tt><tt id="link-30" class="py-name"><a title="src.engine.circuits.Counter4b.__init__
+src.engine.circuits.DFlipFlop.__init__
+src.engine.circuits.JKFlipFlop.__init__
+src.engine.circuits.Mem1b.__init__
+src.engine.circuits.RSFlipFlop.__init__
+src.engine.circuits.Register4b.__init__
+src.engine.clock.Clock.__init__
+src.engine.clock.ClockThread.__init__
+src.engine.gates.AndGate.__init__
+src.engine.gates.NandGate.__init__
+src.engine.gates.NorGate.__init__
+src.engine.gates.NotGate.__init__
+src.engine.gates.OrGate.__init__
+src.engine.gates.XnorGate.__init__
+src.engine.gates.XorGate.__init__
+src.engine.simulator.Agenda.__init__
+src.engine.simulator.Circuit.__init__
+src.engine.simulator.Plug.__init__
+src.engine_test.Counter4b.__init__
+src.engine_test.DFlipFlop.__init__
+src.engine_test.Div2.__init__
+src.engine_test.JKFlipFlop.__init__
+src.engine_test.Mem1b.__init__
+src.engine_test.RSFlipFlop.__init__
+src.engine_test.Register4b.__init__
+src.engine_test.oCounter4b.__init__
+src.engine_test.oJKFlipFlop.__init__
+src.engine_test.ooJKFlipFlop.__init__
+src.engine_test.sDFlipFlop.__init__
+src.gui.circuitdrawing.CustomCircuitCreator.__init__
+src.gui.circuitdrawing.PaintArea.__init__
+src.gui.docu.HelpDockWidget.__init__
+src.gui.docu.HelpTextBrowser.__init__
+src.gui.graphicitem.CircuitItem.__init__
+src.gui.graphicitem.PlugItem.__init__
+src.gui.graphicitem.WireItem.__init__
+src.gui.logwidgets.LogDockWidget.__init__
+src.gui.logwidgets.LoggerTextEdit.__init__
+src.gui.mainview.MainView.__init__
+src.gui.selectionoptions.SelectionOptions.__init__
+src.gui.selectionoptions.SelectionOptionsDockWidget.__init__
+src.gui.settings.Settings.__init__
+src.gui.settings.SettingsDialog.__init__
+src.gui.toolbox.ToolBox.__init__
+src.gui.toolbox.ToolBoxDockWidget.__init__" class="py-name" href="#" onclick="return doclink('link-30', '__init__', 'link-3');">__init__</a></tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">,</tt> <tt class="py-name">name</tt><tt class="py-op">,</tt> <tt class="py-name">owner</tt><tt class="py-op">)</tt> </tt>
+<a name="L96"></a><tt class="py-lineno"> 96</tt>  <tt class="py-line">        <tt class="py-keyword">for</tt> <tt class="py-name">i</tt> <tt class="py-keyword">in</tt> <tt class="py-name">range</tt><tt class="py-op">(</tt><tt class="py-name">inputs</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L97"></a><tt class="py-lineno"> 97</tt>  <tt class="py-line">            <tt id="link-31" class="py-name"><a title="src.engine.simulator.Plug" class="py-name" href="#" onclick="return doclink('link-31', 'Plug', 'link-4');">Plug</a></tt><tt class="py-op">(</tt><tt class="py-name">True</tt><tt class="py-op">,</tt> <tt class="py-name">None</tt><tt class="py-op">,</tt> <tt class="py-name">self</tt><tt class="py-op">)</tt> </tt>
+<a name="L98"></a><tt class="py-lineno"> 98</tt>  <tt class="py-line">        <tt id="link-32" class="py-name"><a title="src.engine.simulator.Plug" class="py-name" href="#" onclick="return doclink('link-32', 'Plug', 'link-4');">Plug</a></tt><tt class="py-op">(</tt><tt class="py-name">False</tt><tt class="py-op">,</tt> <tt class="py-name">None</tt><tt class="py-op">,</tt> <tt class="py-name">self</tt><tt class="py-op">)</tt> </tt>
+<a name="L99"></a><tt class="py-lineno"> 99</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-33" class="py-name"><a title="src.engine.simulator.Circuit.init_inputs" class="py-name" href="#" onclick="return doclink('link-33', 'init_inputs', 'link-6');">init_inputs</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L100"></a><tt class="py-lineno">100</tt>  <tt class="py-line"> </tt>
+<a name="OrGate.evalfun"></a><div id="OrGate.evalfun-def"><a name="L101"></a><tt class="py-lineno">101</tt> <a class="py-toggle" href="#" id="OrGate.evalfun-toggle" onclick="return toggle('OrGate.evalfun');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="src.engine.gates.OrGate-class.html#evalfun">evalfun</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="OrGate.evalfun-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="OrGate.evalfun-expanded"><a name="L102"></a><tt class="py-lineno">102</tt>  <tt class="py-line">        <tt class="py-name">val</tt> <tt class="py-op">=</tt> <tt class="py-name">any</tt><tt class="py-op">(</tt><tt class="py-op">[</tt><tt class="py-name">inp</tt><tt class="py-op">.</tt><tt class="py-name">value</tt> <tt class="py-keyword">for</tt> <tt class="py-name">inp</tt> <tt class="py-keyword">in</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">inputList</tt><tt class="py-op">]</tt><tt class="py-op">)</tt> </tt>
+<a name="L103"></a><tt class="py-lineno">103</tt>  <tt class="py-line">        <tt class="py-keyword">for</tt> <tt class="py-name">inp</tt> <tt class="py-keyword">in</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">inputList</tt><tt class="py-op">:</tt> </tt>
+<a name="L104"></a><tt class="py-lineno">104</tt>  <tt class="py-line">            <tt class="py-keyword">if</tt> <tt class="py-name">inp</tt><tt class="py-op">.</tt><tt class="py-name">value</tt> <tt class="py-keyword">is</tt> <tt class="py-name">None</tt> <tt class="py-keyword">and</tt> <tt class="py-keyword">not</tt> <tt class="py-name">val</tt><tt class="py-op">:</tt> </tt>
+<a name="L105"></a><tt class="py-lineno">105</tt>  <tt class="py-line">                <tt class="py-name">val</tt> <tt class="py-op">=</tt> <tt class="py-name">None</tt> </tt>
+<a name="L106"></a><tt class="py-lineno">106</tt>  <tt class="py-line">        <tt id="link-34" class="py-name"><a title="src.engine.circuits.agenda_
+src.engine.gates.agenda_
+src.engine.simulator.agenda_
+src.engine_test.agenda_" class="py-name" href="#" onclick="return doclink('link-34', 'agenda_', 'link-7');">agenda_</a></tt><tt class="py-op">.</tt><tt id="link-35" class="py-name"><a title="src.engine.simulator.Agenda.schedule" class="py-name" href="#" onclick="return doclink('link-35', 'schedule', 'link-8');">schedule</a></tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">,</tt> <tt class="py-keyword">lambda</tt><tt class="py-op">:</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">outputList</tt><tt class="py-op">[</tt><tt class="py-number">0</tt><tt class="py-op">]</tt><tt class="py-op">.</tt><tt id="link-36" class="py-name"><a title="src.engine.simulator.Plug.set" class="py-name" href="#" onclick="return doclink('link-36', 'set', 'link-9');">set</a></tt><tt class="py-op">(</tt><tt class="py-name">val</tt><tt class="py-op">)</tt><tt class="py-op">)</tt> </tt>
+</div></div><a name="L107"></a><tt class="py-lineno">107</tt>  <tt class="py-line"> </tt>
+<a name="L108"></a><tt class="py-lineno">108</tt>  <tt class="py-line"> </tt>
+<a name="NorGate"></a><div id="NorGate-def"><a name="L109"></a><tt class="py-lineno">109</tt> <a class="py-toggle" href="#" id="NorGate-toggle" onclick="return toggle('NorGate');">-</a><tt class="py-line"><tt class="py-keyword">class</tt> <a class="py-def-name" href="src.engine.gates.NorGate-class.html">NorGate</a><tt class="py-op">(</tt><tt class="py-base-class">Circuit</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="NorGate-collapsed" style="display:none;" pad="+++" indent="++++"></div><div id="NorGate-expanded"><a name="L110"></a><tt class="py-lineno">110</tt>  <tt class="py-line">    <tt class="py-docstring">"""Any number of inputs. Output false unless every input false."""</tt> </tt>
+<a name="L111"></a><tt class="py-lineno">111</tt>  <tt class="py-line">    <tt id="link-37" class="py-name"><a title="src.engine.circuits.JKFlipFlop.delay
+src.engine.circuits.RSFlipFlop.delay
+src.engine.gates.AndGate.delay
+src.engine.gates.NandGate.delay
+src.engine.gates.NorGate.delay
+src.engine.gates.NotGate.delay
+src.engine.gates.OrGate.delay
+src.engine.gates.XnorGate.delay
+src.engine.gates.XorGate.delay
+src.engine_test.JKFlipFlop.delay
+src.engine_test.RSFlipFlop.delay" class="py-name" href="#" onclick="return doclink('link-37', 'delay', 'link-1');">delay</a></tt> <tt class="py-op">=</tt> <tt class="py-number">7</tt> </tt>
+<a name="L112"></a><tt class="py-lineno">112</tt>  <tt class="py-line"> </tt>
+<a name="NorGate.__init__"></a><div id="NorGate.__init__-def"><a name="L113"></a><tt class="py-lineno">113</tt> <a class="py-toggle" href="#" id="NorGate.__init__-toggle" onclick="return toggle('NorGate.__init__');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="src.engine.gates.NorGate-class.html#__init__">__init__</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">name</tt><tt class="py-op">,</tt> <tt class="py-param">owner</tt><tt class="py-op">,</tt> <tt class="py-param">inputs</tt><tt class="py-op">=</tt><tt class="py-number">2</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="NorGate.__init__-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="NorGate.__init__-expanded"><a name="L114"></a><tt class="py-lineno">114</tt>  <tt class="py-line">        <tt id="link-38" class="py-name"><a title="src.engine.simulator.Circuit" class="py-name" href="#" onclick="return doclink('link-38', 'Circuit', 'link-2');">Circuit</a></tt><tt class="py-op">.</tt><tt id="link-39" class="py-name"><a title="src.engine.circuits.Counter4b.__init__
+src.engine.circuits.DFlipFlop.__init__
+src.engine.circuits.JKFlipFlop.__init__
+src.engine.circuits.Mem1b.__init__
+src.engine.circuits.RSFlipFlop.__init__
+src.engine.circuits.Register4b.__init__
+src.engine.clock.Clock.__init__
+src.engine.clock.ClockThread.__init__
+src.engine.gates.AndGate.__init__
+src.engine.gates.NandGate.__init__
+src.engine.gates.NorGate.__init__
+src.engine.gates.NotGate.__init__
+src.engine.gates.OrGate.__init__
+src.engine.gates.XnorGate.__init__
+src.engine.gates.XorGate.__init__
+src.engine.simulator.Agenda.__init__
+src.engine.simulator.Circuit.__init__
+src.engine.simulator.Plug.__init__
+src.engine_test.Counter4b.__init__
+src.engine_test.DFlipFlop.__init__
+src.engine_test.Div2.__init__
+src.engine_test.JKFlipFlop.__init__
+src.engine_test.Mem1b.__init__
+src.engine_test.RSFlipFlop.__init__
+src.engine_test.Register4b.__init__
+src.engine_test.oCounter4b.__init__
+src.engine_test.oJKFlipFlop.__init__
+src.engine_test.ooJKFlipFlop.__init__
+src.engine_test.sDFlipFlop.__init__
+src.gui.circuitdrawing.CustomCircuitCreator.__init__
+src.gui.circuitdrawing.PaintArea.__init__
+src.gui.docu.HelpDockWidget.__init__
+src.gui.docu.HelpTextBrowser.__init__
+src.gui.graphicitem.CircuitItem.__init__
+src.gui.graphicitem.PlugItem.__init__
+src.gui.graphicitem.WireItem.__init__
+src.gui.logwidgets.LogDockWidget.__init__
+src.gui.logwidgets.LoggerTextEdit.__init__
+src.gui.mainview.MainView.__init__
+src.gui.selectionoptions.SelectionOptions.__init__
+src.gui.selectionoptions.SelectionOptionsDockWidget.__init__
+src.gui.settings.Settings.__init__
+src.gui.settings.SettingsDialog.__init__
+src.gui.toolbox.ToolBox.__init__
+src.gui.toolbox.ToolBoxDockWidget.__init__" class="py-name" href="#" onclick="return doclink('link-39', '__init__', 'link-3');">__init__</a></tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">,</tt> <tt class="py-name">name</tt><tt class="py-op">,</tt> <tt class="py-name">owner</tt><tt class="py-op">)</tt> </tt>
+<a name="L115"></a><tt class="py-lineno">115</tt>  <tt class="py-line">        <tt class="py-keyword">for</tt> <tt class="py-name">i</tt> <tt class="py-keyword">in</tt> <tt class="py-name">range</tt><tt class="py-op">(</tt><tt class="py-name">inputs</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L116"></a><tt class="py-lineno">116</tt>  <tt class="py-line">            <tt id="link-40" class="py-name"><a title="src.engine.simulator.Plug" class="py-name" href="#" onclick="return doclink('link-40', 'Plug', 'link-4');">Plug</a></tt><tt class="py-op">(</tt><tt class="py-name">True</tt><tt class="py-op">,</tt> <tt class="py-name">None</tt><tt class="py-op">,</tt> <tt class="py-name">self</tt><tt class="py-op">)</tt> </tt>
+<a name="L117"></a><tt class="py-lineno">117</tt>  <tt class="py-line">        <tt id="link-41" class="py-name"><a title="src.engine.simulator.Plug" class="py-name" href="#" onclick="return doclink('link-41', 'Plug', 'link-4');">Plug</a></tt><tt class="py-op">(</tt><tt class="py-name">False</tt><tt class="py-op">,</tt> <tt class="py-name">None</tt><tt class="py-op">,</tt> <tt class="py-name">self</tt><tt class="py-op">)</tt> </tt>
+<a name="L118"></a><tt class="py-lineno">118</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-42" class="py-name"><a title="src.engine.simulator.Circuit.init_inputs" class="py-name" href="#" onclick="return doclink('link-42', 'init_inputs', 'link-6');">init_inputs</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L119"></a><tt class="py-lineno">119</tt>  <tt class="py-line"> </tt>
+<a name="NorGate.evalfun"></a><div id="NorGate.evalfun-def"><a name="L120"></a><tt class="py-lineno">120</tt> <a class="py-toggle" href="#" id="NorGate.evalfun-toggle" onclick="return toggle('NorGate.evalfun');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="src.engine.gates.NorGate-class.html#evalfun">evalfun</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="NorGate.evalfun-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="NorGate.evalfun-expanded"><a name="L121"></a><tt class="py-lineno">121</tt>  <tt class="py-line">        <tt class="py-name">val</tt> <tt class="py-op">=</tt> <tt class="py-keyword">not</tt> <tt class="py-name">any</tt><tt class="py-op">(</tt><tt class="py-op">[</tt><tt class="py-name">inp</tt><tt class="py-op">.</tt><tt class="py-name">value</tt> <tt class="py-keyword">for</tt> <tt class="py-name">inp</tt> <tt class="py-keyword">in</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">inputList</tt><tt class="py-op">]</tt><tt class="py-op">)</tt> </tt>
+<a name="L122"></a><tt class="py-lineno">122</tt>  <tt class="py-line">        <tt class="py-keyword">for</tt> <tt class="py-name">inp</tt> <tt class="py-keyword">in</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">inputList</tt><tt class="py-op">:</tt> </tt>
+<a name="L123"></a><tt class="py-lineno">123</tt>  <tt class="py-line">            <tt class="py-keyword">if</tt> <tt class="py-name">inp</tt><tt class="py-op">.</tt><tt class="py-name">value</tt> <tt class="py-keyword">is</tt> <tt class="py-name">None</tt> <tt class="py-keyword">and</tt> <tt class="py-keyword">not</tt> <tt class="py-name">val</tt><tt class="py-op">:</tt> </tt>
+<a name="L124"></a><tt class="py-lineno">124</tt>  <tt class="py-line">                <tt class="py-name">val</tt> <tt class="py-op">=</tt> <tt class="py-name">None</tt> </tt>
+<a name="L125"></a><tt class="py-lineno">125</tt>  <tt class="py-line">        <tt id="link-43" class="py-name"><a title="src.engine.circuits.agenda_
+src.engine.gates.agenda_
+src.engine.simulator.agenda_
+src.engine_test.agenda_" class="py-name" href="#" onclick="return doclink('link-43', 'agenda_', 'link-7');">agenda_</a></tt><tt class="py-op">.</tt><tt id="link-44" class="py-name"><a title="src.engine.simulator.Agenda.schedule" class="py-name" href="#" onclick="return doclink('link-44', 'schedule', 'link-8');">schedule</a></tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">,</tt> <tt class="py-keyword">lambda</tt><tt class="py-op">:</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">outputList</tt><tt class="py-op">[</tt><tt class="py-number">0</tt><tt class="py-op">]</tt><tt class="py-op">.</tt><tt id="link-45" class="py-name"><a title="src.engine.simulator.Plug.set" class="py-name" href="#" onclick="return doclink('link-45', 'set', 'link-9');">set</a></tt><tt class="py-op">(</tt><tt class="py-name">val</tt><tt class="py-op">)</tt><tt class="py-op">)</tt> </tt>
+</div></div><a name="L126"></a><tt class="py-lineno">126</tt>  <tt class="py-line"> </tt>
+<a name="L127"></a><tt class="py-lineno">127</tt>  <tt class="py-line"> </tt>
+<a name="XorGate"></a><div id="XorGate-def"><a name="L128"></a><tt class="py-lineno">128</tt> <a class="py-toggle" href="#" id="XorGate-toggle" onclick="return toggle('XorGate');">-</a><tt class="py-line"><tt class="py-keyword">class</tt> <a class="py-def-name" href="src.engine.gates.XorGate-class.html">XorGate</a><tt class="py-op">(</tt><tt class="py-base-class">Circuit</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="XorGate-collapsed" style="display:none;" pad="+++" indent="++++"></div><div id="XorGate-expanded"><a name="L129"></a><tt class="py-lineno">129</tt>  <tt class="py-line">    <tt id="link-46" class="py-name"><a title="src.engine.circuits.JKFlipFlop.delay
+src.engine.circuits.RSFlipFlop.delay
+src.engine.gates.AndGate.delay
+src.engine.gates.NandGate.delay
+src.engine.gates.NorGate.delay
+src.engine.gates.NotGate.delay
+src.engine.gates.OrGate.delay
+src.engine.gates.XnorGate.delay
+src.engine.gates.XorGate.delay
+src.engine_test.JKFlipFlop.delay
+src.engine_test.RSFlipFlop.delay" class="py-name" href="#" onclick="return doclink('link-46', 'delay', 'link-1');">delay</a></tt> <tt class="py-op">=</tt> <tt class="py-number">15</tt> </tt>
+<a name="L130"></a><tt class="py-lineno">130</tt>  <tt class="py-line"> </tt>
+<a name="XorGate.__init__"></a><div id="XorGate.__init__-def"><a name="L131"></a><tt class="py-lineno">131</tt> <a class="py-toggle" href="#" id="XorGate.__init__-toggle" onclick="return toggle('XorGate.__init__');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="src.engine.gates.XorGate-class.html#__init__">__init__</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">name</tt><tt class="py-op">,</tt> <tt class="py-param">owner</tt><tt class="py-op">,</tt> <tt class="py-param">inputs</tt><tt class="py-op">=</tt><tt class="py-number">2</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="XorGate.__init__-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="XorGate.__init__-expanded"><a name="L132"></a><tt class="py-lineno">132</tt>  <tt class="py-line">        <tt id="link-47" class="py-name"><a title="src.engine.simulator.Circuit" class="py-name" href="#" onclick="return doclink('link-47', 'Circuit', 'link-2');">Circuit</a></tt><tt class="py-op">.</tt><tt id="link-48" class="py-name"><a title="src.engine.circuits.Counter4b.__init__
+src.engine.circuits.DFlipFlop.__init__
+src.engine.circuits.JKFlipFlop.__init__
+src.engine.circuits.Mem1b.__init__
+src.engine.circuits.RSFlipFlop.__init__
+src.engine.circuits.Register4b.__init__
+src.engine.clock.Clock.__init__
+src.engine.clock.ClockThread.__init__
+src.engine.gates.AndGate.__init__
+src.engine.gates.NandGate.__init__
+src.engine.gates.NorGate.__init__
+src.engine.gates.NotGate.__init__
+src.engine.gates.OrGate.__init__
+src.engine.gates.XnorGate.__init__
+src.engine.gates.XorGate.__init__
+src.engine.simulator.Agenda.__init__
+src.engine.simulator.Circuit.__init__
+src.engine.simulator.Plug.__init__
+src.engine_test.Counter4b.__init__
+src.engine_test.DFlipFlop.__init__
+src.engine_test.Div2.__init__
+src.engine_test.JKFlipFlop.__init__
+src.engine_test.Mem1b.__init__
+src.engine_test.RSFlipFlop.__init__
+src.engine_test.Register4b.__init__
+src.engine_test.oCounter4b.__init__
+src.engine_test.oJKFlipFlop.__init__
+src.engine_test.ooJKFlipFlop.__init__
+src.engine_test.sDFlipFlop.__init__
+src.gui.circuitdrawing.CustomCircuitCreator.__init__
+src.gui.circuitdrawing.PaintArea.__init__
+src.gui.docu.HelpDockWidget.__init__
+src.gui.docu.HelpTextBrowser.__init__
+src.gui.graphicitem.CircuitItem.__init__
+src.gui.graphicitem.PlugItem.__init__
+src.gui.graphicitem.WireItem.__init__
+src.gui.logwidgets.LogDockWidget.__init__
+src.gui.logwidgets.LoggerTextEdit.__init__
+src.gui.mainview.MainView.__init__
+src.gui.selectionoptions.SelectionOptions.__init__
+src.gui.selectionoptions.SelectionOptionsDockWidget.__init__
+src.gui.settings.Settings.__init__
+src.gui.settings.SettingsDialog.__init__
+src.gui.toolbox.ToolBox.__init__
+src.gui.toolbox.ToolBoxDockWidget.__init__" class="py-name" href="#" onclick="return doclink('link-48', '__init__', 'link-3');">__init__</a></tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">,</tt> <tt class="py-name">name</tt><tt class="py-op">,</tt> <tt class="py-name">owner</tt><tt class="py-op">)</tt> </tt>
+<a name="L133"></a><tt class="py-lineno">133</tt>  <tt class="py-line">        <tt class="py-keyword">for</tt> <tt class="py-name">i</tt> <tt class="py-keyword">in</tt> <tt class="py-name">range</tt><tt class="py-op">(</tt><tt class="py-name">inputs</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L134"></a><tt class="py-lineno">134</tt>  <tt class="py-line">            <tt id="link-49" class="py-name"><a title="src.engine.simulator.Plug" class="py-name" href="#" onclick="return doclink('link-49', 'Plug', 'link-4');">Plug</a></tt><tt class="py-op">(</tt><tt class="py-name">True</tt><tt class="py-op">,</tt> <tt class="py-name">None</tt><tt class="py-op">,</tt> <tt class="py-name">self</tt><tt class="py-op">)</tt> </tt>
+<a name="L135"></a><tt class="py-lineno">135</tt>  <tt class="py-line">        <tt id="link-50" class="py-name"><a title="src.engine.simulator.Plug" class="py-name" href="#" onclick="return doclink('link-50', 'Plug', 'link-4');">Plug</a></tt><tt class="py-op">(</tt><tt class="py-name">False</tt><tt class="py-op">,</tt> <tt class="py-name">None</tt><tt class="py-op">,</tt> <tt class="py-name">self</tt><tt class="py-op">)</tt> </tt>
+<a name="L136"></a><tt class="py-lineno">136</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-51" class="py-name"><a title="src.engine.simulator.Circuit.init_inputs" class="py-name" href="#" onclick="return doclink('link-51', 'init_inputs', 'link-6');">init_inputs</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L137"></a><tt class="py-lineno">137</tt>  <tt class="py-line"> </tt>
+<a name="XorGate.evalfun"></a><div id="XorGate.evalfun-def"><a name="L138"></a><tt class="py-lineno">138</tt> <a class="py-toggle" href="#" id="XorGate.evalfun-toggle" onclick="return toggle('XorGate.evalfun');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="src.engine.gates.XorGate-class.html#evalfun">evalfun</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="XorGate.evalfun-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="XorGate.evalfun-expanded"><a name="L139"></a><tt class="py-lineno">139</tt>  <tt class="py-line">        <tt class="py-name">valuesList</tt> <tt class="py-op">=</tt> <tt class="py-op">[</tt><tt class="py-name">input</tt><tt class="py-op">.</tt><tt class="py-name">value</tt> <tt class="py-keyword">for</tt> <tt class="py-name">input</tt> <tt class="py-keyword">in</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">inputList</tt><tt class="py-op">]</tt> </tt>
+<a name="L140"></a><tt class="py-lineno">140</tt>  <tt class="py-line">        <tt class="py-name">val</tt> <tt class="py-op">=</tt> <tt class="py-name">valuesList</tt><tt class="py-op">.</tt><tt class="py-name">count</tt><tt class="py-op">(</tt><tt class="py-name">True</tt><tt class="py-op">)</tt> <tt class="py-op">%</tt> <tt class="py-number">2</tt> </tt>
+<a name="L141"></a><tt class="py-lineno">141</tt>  <tt class="py-line">        <tt class="py-keyword">for</tt> <tt class="py-name">inp</tt> <tt class="py-keyword">in</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">inputList</tt><tt class="py-op">:</tt> </tt>
+<a name="L142"></a><tt class="py-lineno">142</tt>  <tt class="py-line">            <tt class="py-keyword">if</tt> <tt class="py-name">inp</tt> <tt class="py-keyword">is</tt> <tt class="py-name">None</tt><tt class="py-op">:</tt> </tt>
+<a name="L143"></a><tt class="py-lineno">143</tt>  <tt class="py-line">                <tt class="py-name">val</tt> <tt class="py-op">=</tt> <tt class="py-name">None</tt> </tt>
+<a name="L144"></a><tt class="py-lineno">144</tt>  <tt class="py-line">        <tt id="link-52" class="py-name"><a title="src.engine.circuits.agenda_
+src.engine.gates.agenda_
+src.engine.simulator.agenda_
+src.engine_test.agenda_" class="py-name" href="#" onclick="return doclink('link-52', 'agenda_', 'link-7');">agenda_</a></tt><tt class="py-op">.</tt><tt id="link-53" class="py-name"><a title="src.engine.simulator.Agenda.schedule" class="py-name" href="#" onclick="return doclink('link-53', 'schedule', 'link-8');">schedule</a></tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">,</tt> <tt class="py-keyword">lambda</tt><tt class="py-op">:</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">outputList</tt><tt class="py-op">[</tt><tt class="py-number">0</tt><tt class="py-op">]</tt><tt class="py-op">.</tt><tt id="link-54" class="py-name"><a title="src.engine.simulator.Plug.set" class="py-name" href="#" onclick="return doclink('link-54', 'set', 'link-9');">set</a></tt><tt class="py-op">(</tt><tt class="py-name">val</tt><tt class="py-op">)</tt><tt class="py-op">)</tt> </tt>
+</div></div><a name="L145"></a><tt class="py-lineno">145</tt>  <tt class="py-line"> </tt>
+<a name="L146"></a><tt class="py-lineno">146</tt>  <tt class="py-line"> </tt>
+<a name="XnorGate"></a><div id="XnorGate-def"><a name="L147"></a><tt class="py-lineno">147</tt> <a class="py-toggle" href="#" id="XnorGate-toggle" onclick="return toggle('XnorGate');">-</a><tt class="py-line"><tt class="py-keyword">class</tt> <a class="py-def-name" href="src.engine.gates.XnorGate-class.html">XnorGate</a><tt class="py-op">(</tt><tt class="py-base-class">Circuit</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="XnorGate-collapsed" style="display:none;" pad="+++" indent="++++"></div><div id="XnorGate-expanded"><a name="L148"></a><tt class="py-lineno">148</tt>  <tt class="py-line">    <tt id="link-55" class="py-name"><a title="src.engine.circuits.JKFlipFlop.delay
+src.engine.circuits.RSFlipFlop.delay
+src.engine.gates.AndGate.delay
+src.engine.gates.NandGate.delay
+src.engine.gates.NorGate.delay
+src.engine.gates.NotGate.delay
+src.engine.gates.OrGate.delay
+src.engine.gates.XnorGate.delay
+src.engine.gates.XorGate.delay
+src.engine_test.JKFlipFlop.delay
+src.engine_test.RSFlipFlop.delay" class="py-name" href="#" onclick="return doclink('link-55', 'delay', 'link-1');">delay</a></tt> <tt class="py-op">=</tt> <tt class="py-number">15</tt> </tt>
+<a name="L149"></a><tt class="py-lineno">149</tt>  <tt class="py-line"> </tt>
+<a name="XnorGate.__init__"></a><div id="XnorGate.__init__-def"><a name="L150"></a><tt class="py-lineno">150</tt> <a class="py-toggle" href="#" id="XnorGate.__init__-toggle" onclick="return toggle('XnorGate.__init__');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="src.engine.gates.XnorGate-class.html#__init__">__init__</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">name</tt><tt class="py-op">,</tt> <tt class="py-param">owner</tt><tt class="py-op">,</tt> <tt class="py-param">inputs</tt><tt class="py-op">=</tt><tt class="py-number">2</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="XnorGate.__init__-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="XnorGate.__init__-expanded"><a name="L151"></a><tt class="py-lineno">151</tt>  <tt class="py-line">        <tt id="link-56" class="py-name"><a title="src.engine.simulator.Circuit" class="py-name" href="#" onclick="return doclink('link-56', 'Circuit', 'link-2');">Circuit</a></tt><tt class="py-op">.</tt><tt id="link-57" class="py-name"><a title="src.engine.circuits.Counter4b.__init__
+src.engine.circuits.DFlipFlop.__init__
+src.engine.circuits.JKFlipFlop.__init__
+src.engine.circuits.Mem1b.__init__
+src.engine.circuits.RSFlipFlop.__init__
+src.engine.circuits.Register4b.__init__
+src.engine.clock.Clock.__init__
+src.engine.clock.ClockThread.__init__
+src.engine.gates.AndGate.__init__
+src.engine.gates.NandGate.__init__
+src.engine.gates.NorGate.__init__
+src.engine.gates.NotGate.__init__
+src.engine.gates.OrGate.__init__
+src.engine.gates.XnorGate.__init__
+src.engine.gates.XorGate.__init__
+src.engine.simulator.Agenda.__init__
+src.engine.simulator.Circuit.__init__
+src.engine.simulator.Plug.__init__
+src.engine_test.Counter4b.__init__
+src.engine_test.DFlipFlop.__init__
+src.engine_test.Div2.__init__
+src.engine_test.JKFlipFlop.__init__
+src.engine_test.Mem1b.__init__
+src.engine_test.RSFlipFlop.__init__
+src.engine_test.Register4b.__init__
+src.engine_test.oCounter4b.__init__
+src.engine_test.oJKFlipFlop.__init__
+src.engine_test.ooJKFlipFlop.__init__
+src.engine_test.sDFlipFlop.__init__
+src.gui.circuitdrawing.CustomCircuitCreator.__init__
+src.gui.circuitdrawing.PaintArea.__init__
+src.gui.docu.HelpDockWidget.__init__
+src.gui.docu.HelpTextBrowser.__init__
+src.gui.graphicitem.CircuitItem.__init__
+src.gui.graphicitem.PlugItem.__init__
+src.gui.graphicitem.WireItem.__init__
+src.gui.logwidgets.LogDockWidget.__init__
+src.gui.logwidgets.LoggerTextEdit.__init__
+src.gui.mainview.MainView.__init__
+src.gui.selectionoptions.SelectionOptions.__init__
+src.gui.selectionoptions.SelectionOptionsDockWidget.__init__
+src.gui.settings.Settings.__init__
+src.gui.settings.SettingsDialog.__init__
+src.gui.toolbox.ToolBox.__init__
+src.gui.toolbox.ToolBoxDockWidget.__init__" class="py-name" href="#" onclick="return doclink('link-57', '__init__', 'link-3');">__init__</a></tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">,</tt> <tt class="py-name">name</tt><tt class="py-op">,</tt> <tt class="py-name">owner</tt><tt class="py-op">)</tt> </tt>
+<a name="L152"></a><tt class="py-lineno">152</tt>  <tt class="py-line">        <tt class="py-keyword">for</tt> <tt class="py-name">i</tt> <tt class="py-keyword">in</tt> <tt class="py-name">range</tt><tt class="py-op">(</tt><tt class="py-name">inputs</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L153"></a><tt class="py-lineno">153</tt>  <tt class="py-line">            <tt id="link-58" class="py-name"><a title="src.engine.simulator.Plug" class="py-name" href="#" onclick="return doclink('link-58', 'Plug', 'link-4');">Plug</a></tt><tt class="py-op">(</tt><tt class="py-name">True</tt><tt class="py-op">,</tt> <tt class="py-name">None</tt><tt class="py-op">,</tt> <tt class="py-name">self</tt><tt class="py-op">)</tt> </tt>
+<a name="L154"></a><tt class="py-lineno">154</tt>  <tt class="py-line">        <tt id="link-59" class="py-name"><a title="src.engine.simulator.Plug" class="py-name" href="#" onclick="return doclink('link-59', 'Plug', 'link-4');">Plug</a></tt><tt class="py-op">(</tt><tt class="py-name">False</tt><tt class="py-op">,</tt> <tt class="py-name">None</tt><tt class="py-op">,</tt> <tt class="py-name">self</tt><tt class="py-op">)</tt> </tt>
+<a name="L155"></a><tt class="py-lineno">155</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-60" class="py-name"><a title="src.engine.simulator.Circuit.init_inputs" class="py-name" href="#" onclick="return doclink('link-60', 'init_inputs', 'link-6');">init_inputs</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L156"></a><tt class="py-lineno">156</tt>  <tt class="py-line"> </tt>
+<a name="XnorGate.evalfun"></a><div id="XnorGate.evalfun-def"><a name="L157"></a><tt class="py-lineno">157</tt> <a class="py-toggle" href="#" id="XnorGate.evalfun-toggle" onclick="return toggle('XnorGate.evalfun');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="src.engine.gates.XnorGate-class.html#evalfun">evalfun</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="XnorGate.evalfun-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="XnorGate.evalfun-expanded"><a name="L158"></a><tt class="py-lineno">158</tt>  <tt class="py-line">        <tt class="py-name">valuesList</tt> <tt class="py-op">=</tt> <tt class="py-op">[</tt><tt class="py-name">inp</tt><tt class="py-op">.</tt><tt class="py-name">value</tt> <tt class="py-keyword">for</tt> <tt class="py-name">inp</tt> <tt class="py-keyword">in</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">inputList</tt><tt class="py-op">]</tt> </tt>
+<a name="L159"></a><tt class="py-lineno">159</tt>  <tt class="py-line">        <tt class="py-name">val</tt> <tt class="py-op">=</tt> <tt class="py-name">all</tt><tt class="py-op">(</tt><tt class="py-name">valuesList</tt><tt class="py-op">)</tt> <tt class="py-keyword">or</tt> <tt class="py-keyword">not</tt> <tt class="py-name">any</tt><tt class="py-op">(</tt><tt class="py-name">valuesList</tt><tt class="py-op">)</tt> </tt>
+<a name="L160"></a><tt class="py-lineno">160</tt>  <tt class="py-line">        <tt class="py-keyword">for</tt> <tt class="py-name">inp</tt> <tt class="py-keyword">in</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">inputList</tt><tt class="py-op">:</tt> </tt>
+<a name="L161"></a><tt class="py-lineno">161</tt>  <tt class="py-line">            <tt class="py-keyword">if</tt> <tt class="py-name">inp</tt> <tt class="py-keyword">is</tt> <tt class="py-name">None</tt> <tt class="py-keyword">and</tt> <tt class="py-name">val</tt><tt class="py-op">:</tt> </tt>
+<a name="L162"></a><tt class="py-lineno">162</tt>  <tt class="py-line">                <tt class="py-name">val</tt> <tt class="py-op">=</tt> <tt class="py-name">None</tt> </tt>
+<a name="L163"></a><tt class="py-lineno">163</tt>  <tt class="py-line">        <tt id="link-61" class="py-name"><a title="src.engine.circuits.agenda_
+src.engine.gates.agenda_
+src.engine.simulator.agenda_
+src.engine_test.agenda_" class="py-name" href="#" onclick="return doclink('link-61', 'agenda_', 'link-7');">agenda_</a></tt><tt class="py-op">.</tt><tt id="link-62" class="py-name"><a title="src.engine.simulator.Agenda.schedule" class="py-name" href="#" onclick="return doclink('link-62', 'schedule', 'link-8');">schedule</a></tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">,</tt> <tt class="py-keyword">lambda</tt><tt class="py-op">:</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">outputList</tt><tt class="py-op">[</tt><tt class="py-number">0</tt><tt class="py-op">]</tt><tt class="py-op">.</tt><tt id="link-63" class="py-name"><a title="src.engine.simulator.Plug.set" class="py-name" href="#" onclick="return doclink('link-63', 'set', 'link-9');">set</a></tt><tt class="py-op">(</tt><tt class="py-name">val</tt><tt class="py-op">)</tt><tt class="py-op">)</tt> </tt>
+</div></div><a name="L164"></a><tt class="py-lineno">164</tt>  <tt class="py-line"> </tt><script type="text/javascript">
+<!--
+expandto(location.href);
+// -->
+</script>
+</pre>
+<br />
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="src-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+      <th class="navbar" width="100%"></th>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%%">
+  <tr>
+    <td align="left" class="footer">
+    Generated by Epydoc 3.0.1 on Sun Sep 14 16:43:36 2014
+    </td>
+    <td align="right" class="footer">
+      <a target="mainFrame" href="http://epydoc.sourceforge.net"
+        >http://epydoc.sourceforge.net</a>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+  <!--
+  // Private objects are initially displayed (because if
+  // javascript is turned off then we want them to be
+  // visible); but by default, we want to hide them.  So hide
+  // them unless we have a cookie that says to show them.
+  checkCookie();
+  // -->
+</script>
+</body>
+</html>

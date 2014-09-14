@@ -1,0 +1,670 @@
+<?xml version="1.0" encoding="ascii"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>src.engine.circuits</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css" />
+  <script type="text/javascript" src="epydoc.js"></script>
+</head>
+
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="src-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+      <th class="navbar" width="100%"></th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">
+      <span class="breadcrumbs">
+        <a href="src-module.html">Package&nbsp;src</a> ::
+        <a href="src.engine-module.html">Package&nbsp;engine</a> ::
+        Module&nbsp;circuits
+      </span>
+    </td>
+    <td>
+      <table cellpadding="0" cellspacing="0">
+        <!-- hide/show private -->
+        <tr><td align="right"><span class="options">[<a href="javascript:void(0);" class="privatelink"
+    onclick="toggle_private();">hide&nbsp;private</a>]</span></td></tr>
+        <tr><td align="right"><span class="options"
+            >[<a href="frames.html" target="_top">frames</a
+            >]&nbsp;|&nbsp;<a href="src.engine.circuits-pysrc.html"
+            target="_top">no&nbsp;frames</a>]</span></td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<h1 class="epydoc">Source Code for <a href="src.engine.circuits-module.html">Module src.engine.circuits</a></h1>
+<pre class="py-src">
+<a name="L1"></a><tt class="py-lineno">  1</tt>  <tt class="py-line"><tt class="py-comment">#!/usr/bin/env python3</tt> </tt>
+<a name="L2"></a><tt class="py-lineno">  2</tt>  <tt class="py-line"><tt class="py-comment"># coding: utf-8</tt> </tt>
+<a name="L3"></a><tt class="py-lineno">  3</tt>  <tt class="py-line"> </tt>
+<a name="L4"></a><tt class="py-lineno">  4</tt>  <tt class="py-line"> </tt>
+<a name="L5"></a><tt class="py-lineno">  5</tt>  <tt class="py-line"><tt class="py-comment">###############################################################################</tt> </tt>
+<a name="L6"></a><tt class="py-lineno">  6</tt>  <tt class="py-line"><tt class="py-comment">#         &#9556;&#9574;&#9559;&#9484;&#9472;&#9488;&#9484;&#9472;&#9488;&#9516;&#9484;&#9472;&#9488;  &#9556;&#9552;&#9559;&#9516;&#9516;&#9472;&#9488;&#9484;&#9472;&#9488;&#9516; &#9516;&#9516;&#9484;&#9516;&#9488;  &#9556;&#9552;&#9559;&#9516;&#9484;&#9516;&#9488;&#9516; &#9516;&#9516;  &#9484;&#9472;&#9488;&#9484;&#9516;&#9488;&#9484;&#9472;&#9488;&#9516;&#9472;&#9488;         #</tt> </tt>
+<a name="L7"></a><tt class="py-lineno">  7</tt>  <tt class="py-line"><tt class="py-comment">#         &#9553;&#9553;&#9553;&#9500;&#9472;&#9508;&#9474; &#9516;&#9474;&#9474;    &#9553;  &#9474;&#9500;&#9516;&#9496;&#9474;  &#9474; &#9474;&#9474; &#9474;   &#9562;&#9552;&#9559;&#9474;&#9474;&#9474;&#9474;&#9474; &#9474;&#9474;  &#9500;&#9472;&#9508; &#9474; &#9474; &#9474;&#9500;&#9516;&#9496;         #</tt> </tt>
+<a name="L8"></a><tt class="py-lineno">  8</tt>  <tt class="py-line"><tt class="py-comment">#         &#9577; &#9577;&#9524; &#9524;&#9492;&#9472;&#9496;&#9524;&#9492;&#9472;&#9496;  &#9562;&#9552;&#9565;&#9524;&#9524;&#9492;&#9472;&#9492;&#9472;&#9496;&#9492;&#9472;&#9496;&#9524; &#9524;   &#9562;&#9552;&#9565;&#9524;&#9524; &#9524;&#9492;&#9472;&#9496;&#9524;&#9472;&#9496;&#9524; &#9524; &#9524; &#9492;&#9472;&#9496;&#9524;&#9492;&#9472;         #</tt> </tt>
+<a name="L9"></a><tt class="py-lineno">  9</tt>  <tt class="py-line"><tt class="py-comment"># -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+- #</tt> </tt>
+<a name="L10"></a><tt class="py-lineno"> 10</tt>  <tt class="py-line"><tt class="py-comment">#                                                                        2014 #</tt> </tt>
+<a name="L11"></a><tt class="py-lineno"> 11</tt>  <tt class="py-line"><tt class="py-comment">#                                                           S&#233;bastien MAGNIEN #</tt> </tt>
+<a name="L12"></a><tt class="py-lineno"> 12</tt>  <tt class="py-line"><tt class="py-comment">#                                                            Mathieu FOURCROY #</tt> </tt>
+<a name="L13"></a><tt class="py-lineno"> 13</tt>  <tt class="py-line"><tt class="py-comment"># --------------------------------------------------------------------------- #</tt> </tt>
+<a name="L14"></a><tt class="py-lineno"> 14</tt>  <tt class="py-line"><tt class="py-comment"># Contain some predefined circuits such as adder, memory, register and        #</tt> </tt>
+<a name="L15"></a><tt class="py-lineno"> 15</tt>  <tt class="py-line"><tt class="py-comment"># flip-flops                                                                  #</tt> </tt>
+<a name="L16"></a><tt class="py-lineno"> 16</tt>  <tt class="py-line"><tt class="py-comment"># --------------------------------------------------------------------------- #</tt> </tt>
+<a name="L17"></a><tt class="py-lineno"> 17</tt>  <tt class="py-line"><tt class="py-comment"># TODO: add more circuits                                                     #</tt> </tt>
+<a name="L18"></a><tt class="py-lineno"> 18</tt>  <tt class="py-line"><tt class="py-comment">###############################################################################</tt> </tt>
+<a name="L19"></a><tt class="py-lineno"> 19</tt>  <tt class="py-line"> </tt>
+<a name="L20"></a><tt class="py-lineno"> 20</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt class="py-op">.</tt><tt id="link-0" class="py-name" targets="Module src.engine.simulator=src.engine.simulator-module.html"><a title="src.engine.simulator" class="py-name" href="#" onclick="return doclink('link-0', 'simulator', 'link-0');">simulator</a></tt> <tt class="py-keyword">import</tt> <tt class="py-op">*</tt> </tt>
+<a name="L21"></a><tt class="py-lineno"> 21</tt>  <tt class="py-line"> </tt>
+<a name="Mem1b"></a><div id="Mem1b-def"><a name="L22"></a><tt class="py-lineno"> 22</tt> <a class="py-toggle" href="#" id="Mem1b-toggle" onclick="return toggle('Mem1b');">-</a><tt class="py-line"><tt class="py-keyword">class</tt> <a class="py-def-name" href="src.engine.circuits.Mem1b-class.html">Mem1b</a><tt class="py-op">(</tt><tt class="py-base-class">Circuit</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="Mem1b-collapsed" style="display:none;" pad="+++" indent="++++"></div><div id="Mem1b-expanded"><a name="Mem1b.__init__"></a><div id="Mem1b.__init__-def"><a name="L23"></a><tt class="py-lineno"> 23</tt> <a class="py-toggle" href="#" id="Mem1b.__init__-toggle" onclick="return toggle('Mem1b.__init__');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="src.engine.circuits.Mem1b-class.html#__init__">__init__</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">name</tt><tt class="py-op">,</tt> <tt class="py-param">owner</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="Mem1b.__init__-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="Mem1b.__init__-expanded"><a name="L24"></a><tt class="py-lineno"> 24</tt>  <tt class="py-line">        <tt id="link-1" class="py-name" targets="Class src.engine.simulator.Circuit=src.engine.simulator.Circuit-class.html"><a title="src.engine.simulator.Circuit" class="py-name" href="#" onclick="return doclink('link-1', 'Circuit', 'link-1');">Circuit</a></tt><tt class="py-op">.</tt><tt id="link-2" class="py-name" targets="Method src.engine.circuits.Counter4b.__init__()=src.engine.circuits.Counter4b-class.html#__init__,Method src.engine.circuits.DFlipFlop.__init__()=src.engine.circuits.DFlipFlop-class.html#__init__,Method src.engine.circuits.JKFlipFlop.__init__()=src.engine.circuits.JKFlipFlop-class.html#__init__,Method src.engine.circuits.Mem1b.__init__()=src.engine.circuits.Mem1b-class.html#__init__,Method src.engine.circuits.RSFlipFlop.__init__()=src.engine.circuits.RSFlipFlop-class.html#__init__,Method src.engine.circuits.Register4b.__init__()=src.engine.circuits.Register4b-class.html#__init__,Method src.engine.clock.Clock.__init__()=src.engine.clock.Clock-class.html#__init__,Method src.engine.clock.ClockThread.__init__()=src.engine.clock.ClockThread-class.html#__init__,Method src.engine.gates.AndGate.__init__()=src.engine.gates.AndGate-class.html#__init__,Method src.engine.gates.NandGate.__init__()=src.engine.gates.NandGate-class.html#__init__,Method src.engine.gates.NorGate.__init__()=src.engine.gates.NorGate-class.html#__init__,Method src.engine.gates.NotGate.__init__()=src.engine.gates.NotGate-class.html#__init__,Method src.engine.gates.OrGate.__init__()=src.engine.gates.OrGate-class.html#__init__,Method src.engine.gates.XnorGate.__init__()=src.engine.gates.XnorGate-class.html#__init__,Method src.engine.gates.XorGate.__init__()=src.engine.gates.XorGate-class.html#__init__,Method src.engine.simulator.Agenda.__init__()=src.engine.simulator.Agenda-class.html#__init__,Method src.engine.simulator.Circuit.__init__()=src.engine.simulator.Circuit-class.html#__init__,Method src.engine.simulator.Plug.__init__()=src.engine.simulator.Plug-class.html#__init__,Method src.engine_test.Counter4b.__init__()=src.engine_test.Counter4b-class.html#__init__,Method src.engine_test.DFlipFlop.__init__()=src.engine_test.DFlipFlop-class.html#__init__,Method src.engine_test.Div2.__init__()=src.engine_test.Div2-class.html#__init__,Method src.engine_test.JKFlipFlop.__init__()=src.engine_test.JKFlipFlop-class.html#__init__,Method src.engine_test.Mem1b.__init__()=src.engine_test.Mem1b-class.html#__init__,Method src.engine_test.RSFlipFlop.__init__()=src.engine_test.RSFlipFlop-class.html#__init__,Method src.engine_test.Register4b.__init__()=src.engine_test.Register4b-class.html#__init__,Method src.engine_test.oCounter4b.__init__()=src.engine_test.oCounter4b-class.html#__init__,Method src.engine_test.oJKFlipFlop.__init__()=src.engine_test.oJKFlipFlop-class.html#__init__,Method src.engine_test.ooJKFlipFlop.__init__()=src.engine_test.ooJKFlipFlop-class.html#__init__,Method src.engine_test.sDFlipFlop.__init__()=src.engine_test.sDFlipFlop-class.html#__init__,Method src.gui.circuitdrawing.CustomCircuitCreator.__init__()=src.gui.circuitdrawing.CustomCircuitCreator-class.html#__init__,Method src.gui.circuitdrawing.PaintArea.__init__()=src.gui.circuitdrawing.PaintArea-class.html#__init__,Method src.gui.docu.HelpDockWidget.__init__()=src.gui.docu.HelpDockWidget-class.html#__init__,Method src.gui.docu.HelpTextBrowser.__init__()=src.gui.docu.HelpTextBrowser-class.html#__init__,Method src.gui.graphicitem.CircuitItem.__init__()=src.gui.graphicitem.CircuitItem-class.html#__init__,Method src.gui.graphicitem.PlugItem.__init__()=src.gui.graphicitem.PlugItem-class.html#__init__,Method src.gui.graphicitem.WireItem.__init__()=src.gui.graphicitem.WireItem-class.html#__init__,Method src.gui.logwidgets.LogDockWidget.__init__()=src.gui.logwidgets.LogDockWidget-class.html#__init__,Method src.gui.logwidgets.LoggerTextEdit.__init__()=src.gui.logwidgets.LoggerTextEdit-class.html#__init__,Method src.gui.mainview.MainView.__init__()=src.gui.mainview.MainView-class.html#__init__,Method src.gui.selectionoptions.SelectionOptions.__init__()=src.gui.selectionoptions.SelectionOptions-class.html#__init__,Method src.gui.selectionoptions.SelectionOptionsDockWidget.__init__()=src.gui.selectionoptions.SelectionOptionsDockWidget-class.html#__init__,Method src.gui.settings.Settings.__init__()=src.gui.settings.Settings-class.html#__init__,Method src.gui.settings.SettingsDialog.__init__()=src.gui.settings.SettingsDialog-class.html#__init__,Method src.gui.toolbox.ToolBox.__init__()=src.gui.toolbox.ToolBox-class.html#__init__,Method src.gui.toolbox.ToolBoxDockWidget.__init__()=src.gui.toolbox.ToolBoxDockWidget-class.html#__init__"><a title="src.engine.circuits.Counter4b.__init__
+src.engine.circuits.DFlipFlop.__init__
+src.engine.circuits.JKFlipFlop.__init__
+src.engine.circuits.Mem1b.__init__
+src.engine.circuits.RSFlipFlop.__init__
+src.engine.circuits.Register4b.__init__
+src.engine.clock.Clock.__init__
+src.engine.clock.ClockThread.__init__
+src.engine.gates.AndGate.__init__
+src.engine.gates.NandGate.__init__
+src.engine.gates.NorGate.__init__
+src.engine.gates.NotGate.__init__
+src.engine.gates.OrGate.__init__
+src.engine.gates.XnorGate.__init__
+src.engine.gates.XorGate.__init__
+src.engine.simulator.Agenda.__init__
+src.engine.simulator.Circuit.__init__
+src.engine.simulator.Plug.__init__
+src.engine_test.Counter4b.__init__
+src.engine_test.DFlipFlop.__init__
+src.engine_test.Div2.__init__
+src.engine_test.JKFlipFlop.__init__
+src.engine_test.Mem1b.__init__
+src.engine_test.RSFlipFlop.__init__
+src.engine_test.Register4b.__init__
+src.engine_test.oCounter4b.__init__
+src.engine_test.oJKFlipFlop.__init__
+src.engine_test.ooJKFlipFlop.__init__
+src.engine_test.sDFlipFlop.__init__
+src.gui.circuitdrawing.CustomCircuitCreator.__init__
+src.gui.circuitdrawing.PaintArea.__init__
+src.gui.docu.HelpDockWidget.__init__
+src.gui.docu.HelpTextBrowser.__init__
+src.gui.graphicitem.CircuitItem.__init__
+src.gui.graphicitem.PlugItem.__init__
+src.gui.graphicitem.WireItem.__init__
+src.gui.logwidgets.LogDockWidget.__init__
+src.gui.logwidgets.LoggerTextEdit.__init__
+src.gui.mainview.MainView.__init__
+src.gui.selectionoptions.SelectionOptions.__init__
+src.gui.selectionoptions.SelectionOptionsDockWidget.__init__
+src.gui.settings.Settings.__init__
+src.gui.settings.SettingsDialog.__init__
+src.gui.toolbox.ToolBox.__init__
+src.gui.toolbox.ToolBoxDockWidget.__init__" class="py-name" href="#" onclick="return doclink('link-2', '__init__', 'link-2');">__init__</a></tt> <tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">,</tt> <tt class="py-name">name</tt><tt class="py-op">,</tt> <tt class="py-name">owner</tt><tt class="py-op">)</tt> </tt>
+<a name="L25"></a><tt class="py-lineno"> 25</tt>  <tt class="py-line">        <tt class="py-comment"># I/O</tt> </tt>
+<a name="L26"></a><tt class="py-lineno"> 26</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">ON</tt> <tt class="py-op">=</tt> <tt id="link-3" class="py-name" targets="Class src.engine.simulator.Plug=src.engine.simulator.Plug-class.html"><a title="src.engine.simulator.Plug" class="py-name" href="#" onclick="return doclink('link-3', 'Plug', 'link-3');">Plug</a></tt><tt class="py-op">(</tt><tt class="py-name">True</tt><tt class="py-op">,</tt> <tt class="py-string">'ON'</tt><tt class="py-op">,</tt> <tt class="py-name">self</tt><tt class="py-op">)</tt> </tt>
+<a name="L27"></a><tt class="py-lineno"> 27</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">OFF</tt> <tt class="py-op">=</tt> <tt id="link-4" class="py-name"><a title="src.engine.simulator.Plug" class="py-name" href="#" onclick="return doclink('link-4', 'Plug', 'link-3');">Plug</a></tt><tt class="py-op">(</tt><tt class="py-name">True</tt><tt class="py-op">,</tt> <tt class="py-string">'OFF'</tt><tt class="py-op">,</tt> <tt class="py-name">self</tt><tt class="py-op">)</tt> </tt>
+<a name="L28"></a><tt class="py-lineno"> 28</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">Q</tt> <tt class="py-op">=</tt> <tt id="link-5" class="py-name"><a title="src.engine.simulator.Plug" class="py-name" href="#" onclick="return doclink('link-5', 'Plug', 'link-3');">Plug</a></tt><tt class="py-op">(</tt><tt class="py-name">False</tt><tt class="py-op">,</tt> <tt class="py-string">'Q'</tt><tt class="py-op">,</tt> <tt class="py-name">self</tt><tt class="py-op">)</tt> </tt>
+<a name="L29"></a><tt class="py-lineno"> 29</tt>  <tt class="py-line">        <tt class="py-comment"># components</tt> </tt>
+<a name="L30"></a><tt class="py-lineno"> 30</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">NOT</tt> <tt class="py-op">=</tt> <tt id="link-6" class="py-name" targets="Class src.engine.gates.NotGate=src.engine.gates.NotGate-class.html"><a title="src.engine.gates.NotGate" class="py-name" href="#" onclick="return doclink('link-6', 'NotGate', 'link-6');">NotGate</a></tt><tt class="py-op">(</tt><tt class="py-string">'NOT'</tt><tt class="py-op">,</tt> <tt class="py-name">self</tt><tt class="py-op">)</tt> </tt>
+<a name="L31"></a><tt class="py-lineno"> 31</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">AND</tt> <tt class="py-op">=</tt> <tt id="link-7" class="py-name" targets="Class src.engine.gates.AndGate=src.engine.gates.AndGate-class.html"><a title="src.engine.gates.AndGate" class="py-name" href="#" onclick="return doclink('link-7', 'AndGate', 'link-7');">AndGate</a></tt><tt class="py-op">(</tt><tt class="py-string">'AND'</tt><tt class="py-op">,</tt> <tt class="py-name">self</tt><tt class="py-op">)</tt> </tt>
+<a name="L32"></a><tt class="py-lineno"> 32</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">OR</tt> <tt class="py-op">=</tt> <tt id="link-8" class="py-name" targets="Class src.engine.gates.OrGate=src.engine.gates.OrGate-class.html"><a title="src.engine.gates.OrGate" class="py-name" href="#" onclick="return doclink('link-8', 'OrGate', 'link-8');">OrGate</a></tt><tt class="py-op">(</tt><tt class="py-string">'OR'</tt><tt class="py-op">,</tt> <tt class="py-name">self</tt><tt class="py-op">)</tt> </tt>
+<a name="L33"></a><tt class="py-lineno"> 33</tt>  <tt class="py-line">        <tt class="py-comment"># connections between components</tt> </tt>
+<a name="L34"></a><tt class="py-lineno"> 34</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">ON</tt><tt class="py-op">.</tt><tt id="link-9" class="py-name" targets="Method src.engine.simulator.Plug.connect()=src.engine.simulator.Plug-class.html#connect,Method src.gui.graphicitem.WireItem.connect()=src.gui.graphicitem.WireItem-class.html#connect"><a title="src.engine.simulator.Plug.connect
+src.gui.graphicitem.WireItem.connect" class="py-name" href="#" onclick="return doclink('link-9', 'connect', 'link-9');">connect</a></tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">OR</tt><tt class="py-op">.</tt><tt class="py-name">inputList</tt><tt class="py-op">[</tt><tt class="py-number">0</tt><tt class="py-op">]</tt><tt class="py-op">)</tt> </tt>
+<a name="L35"></a><tt class="py-lineno"> 35</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">OFF</tt><tt class="py-op">.</tt><tt id="link-10" class="py-name"><a title="src.engine.simulator.Plug.connect
+src.gui.graphicitem.WireItem.connect" class="py-name" href="#" onclick="return doclink('link-10', 'connect', 'link-9');">connect</a></tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">NOT</tt><tt class="py-op">.</tt><tt class="py-name">inputList</tt><tt class="py-op">[</tt><tt class="py-number">0</tt><tt class="py-op">]</tt><tt class="py-op">)</tt> </tt>
+<a name="L36"></a><tt class="py-lineno"> 36</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">NOT</tt><tt class="py-op">.</tt><tt class="py-name">outputList</tt><tt class="py-op">[</tt><tt class="py-number">0</tt><tt class="py-op">]</tt><tt class="py-op">.</tt><tt id="link-11" class="py-name"><a title="src.engine.simulator.Plug.connect
+src.gui.graphicitem.WireItem.connect" class="py-name" href="#" onclick="return doclink('link-11', 'connect', 'link-9');">connect</a></tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">AND</tt><tt class="py-op">.</tt><tt class="py-name">inputList</tt><tt class="py-op">[</tt><tt class="py-number">0</tt><tt class="py-op">]</tt><tt class="py-op">)</tt> </tt>
+<a name="L37"></a><tt class="py-lineno"> 37</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">AND</tt><tt class="py-op">.</tt><tt class="py-name">outputList</tt><tt class="py-op">[</tt><tt class="py-number">0</tt><tt class="py-op">]</tt><tt class="py-op">.</tt><tt id="link-12" class="py-name"><a title="src.engine.simulator.Plug.connect
+src.gui.graphicitem.WireItem.connect" class="py-name" href="#" onclick="return doclink('link-12', 'connect', 'link-9');">connect</a></tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">OR</tt><tt class="py-op">.</tt><tt class="py-name">inputList</tt><tt class="py-op">[</tt><tt class="py-number">1</tt><tt class="py-op">]</tt><tt class="py-op">)</tt> </tt>
+<a name="L38"></a><tt class="py-lineno"> 38</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">OR</tt><tt class="py-op">.</tt><tt class="py-name">outputList</tt><tt class="py-op">[</tt><tt class="py-number">0</tt><tt class="py-op">]</tt><tt class="py-op">.</tt><tt id="link-13" class="py-name"><a title="src.engine.simulator.Plug.connect
+src.gui.graphicitem.WireItem.connect" class="py-name" href="#" onclick="return doclink('link-13', 'connect', 'link-9');">connect</a></tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">AND</tt><tt class="py-op">.</tt><tt class="py-name">inputList</tt><tt class="py-op">[</tt><tt class="py-number">1</tt><tt class="py-op">]</tt><tt class="py-op">)</tt> </tt>
+<a name="L39"></a><tt class="py-lineno"> 39</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">OR</tt><tt class="py-op">.</tt><tt class="py-name">outputList</tt><tt class="py-op">[</tt><tt class="py-number">0</tt><tt class="py-op">]</tt><tt class="py-op">.</tt><tt id="link-14" class="py-name"><a title="src.engine.simulator.Plug.connect
+src.gui.graphicitem.WireItem.connect" class="py-name" href="#" onclick="return doclink('link-14', 'connect', 'link-9');">connect</a></tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">Q</tt><tt class="py-op">)</tt> </tt>
+</div></div><a name="L40"></a><tt class="py-lineno"> 40</tt>  <tt class="py-line">  </tt>
+<a name="L41"></a><tt class="py-lineno"> 41</tt>  <tt class="py-line">  </tt>
+<a name="RSFlipFlop"></a><div id="RSFlipFlop-def"><a name="L42"></a><tt class="py-lineno"> 42</tt> <a class="py-toggle" href="#" id="RSFlipFlop-toggle" onclick="return toggle('RSFlipFlop');">-</a><tt class="py-line"><tt class="py-keyword">class</tt> <a class="py-def-name" href="src.engine.circuits.RSFlipFlop-class.html">RSFlipFlop</a><tt class="py-op">(</tt><tt class="py-base-class">Circuit</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="RSFlipFlop-collapsed" style="display:none;" pad="+++" indent="++++"></div><div id="RSFlipFlop-expanded"><a name="L43"></a><tt class="py-lineno"> 43</tt>  <tt class="py-line">    <tt id="link-15" class="py-name" targets="Variable src.engine.circuits.JKFlipFlop.delay=src.engine.circuits.JKFlipFlop-class.html#delay,Variable src.engine.circuits.RSFlipFlop.delay=src.engine.circuits.RSFlipFlop-class.html#delay,Variable src.engine.gates.AndGate.delay=src.engine.gates.AndGate-class.html#delay,Variable src.engine.gates.NandGate.delay=src.engine.gates.NandGate-class.html#delay,Variable src.engine.gates.NorGate.delay=src.engine.gates.NorGate-class.html#delay,Variable src.engine.gates.NotGate.delay=src.engine.gates.NotGate-class.html#delay,Variable src.engine.gates.OrGate.delay=src.engine.gates.OrGate-class.html#delay,Variable src.engine.gates.XnorGate.delay=src.engine.gates.XnorGate-class.html#delay,Variable src.engine.gates.XorGate.delay=src.engine.gates.XorGate-class.html#delay,Variable src.engine_test.JKFlipFlop.delay=src.engine_test.JKFlipFlop-class.html#delay,Variable src.engine_test.RSFlipFlop.delay=src.engine_test.RSFlipFlop-class.html#delay"><a title="src.engine.circuits.JKFlipFlop.delay
+src.engine.circuits.RSFlipFlop.delay
+src.engine.gates.AndGate.delay
+src.engine.gates.NandGate.delay
+src.engine.gates.NorGate.delay
+src.engine.gates.NotGate.delay
+src.engine.gates.OrGate.delay
+src.engine.gates.XnorGate.delay
+src.engine.gates.XorGate.delay
+src.engine_test.JKFlipFlop.delay
+src.engine_test.RSFlipFlop.delay" class="py-name" href="#" onclick="return doclink('link-15', 'delay', 'link-15');">delay</a></tt> <tt class="py-op">=</tt> <tt class="py-number">10</tt> </tt>
+<a name="L44"></a><tt class="py-lineno"> 44</tt>  <tt class="py-line">    </tt>
+<a name="RSFlipFlop.__init__"></a><div id="RSFlipFlop.__init__-def"><a name="L45"></a><tt class="py-lineno"> 45</tt> <a class="py-toggle" href="#" id="RSFlipFlop.__init__-toggle" onclick="return toggle('RSFlipFlop.__init__');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="src.engine.circuits.RSFlipFlop-class.html#__init__">__init__</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">name</tt><tt class="py-op">,</tt> <tt class="py-param">owner</tt><tt class="py-op">,</tt> <tt class="py-param">category</tt><tt class="py-op">=</tt><tt class="py-name">None</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="RSFlipFlop.__init__-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="RSFlipFlop.__init__-expanded"><a name="L46"></a><tt class="py-lineno"> 46</tt>  <tt class="py-line">        <tt id="link-16" class="py-name"><a title="src.engine.simulator.Circuit" class="py-name" href="#" onclick="return doclink('link-16', 'Circuit', 'link-1');">Circuit</a></tt><tt class="py-op">.</tt><tt id="link-17" class="py-name"><a title="src.engine.circuits.Counter4b.__init__
+src.engine.circuits.DFlipFlop.__init__
+src.engine.circuits.JKFlipFlop.__init__
+src.engine.circuits.Mem1b.__init__
+src.engine.circuits.RSFlipFlop.__init__
+src.engine.circuits.Register4b.__init__
+src.engine.clock.Clock.__init__
+src.engine.clock.ClockThread.__init__
+src.engine.gates.AndGate.__init__
+src.engine.gates.NandGate.__init__
+src.engine.gates.NorGate.__init__
+src.engine.gates.NotGate.__init__
+src.engine.gates.OrGate.__init__
+src.engine.gates.XnorGate.__init__
+src.engine.gates.XorGate.__init__
+src.engine.simulator.Agenda.__init__
+src.engine.simulator.Circuit.__init__
+src.engine.simulator.Plug.__init__
+src.engine_test.Counter4b.__init__
+src.engine_test.DFlipFlop.__init__
+src.engine_test.Div2.__init__
+src.engine_test.JKFlipFlop.__init__
+src.engine_test.Mem1b.__init__
+src.engine_test.RSFlipFlop.__init__
+src.engine_test.Register4b.__init__
+src.engine_test.oCounter4b.__init__
+src.engine_test.oJKFlipFlop.__init__
+src.engine_test.ooJKFlipFlop.__init__
+src.engine_test.sDFlipFlop.__init__
+src.gui.circuitdrawing.CustomCircuitCreator.__init__
+src.gui.circuitdrawing.PaintArea.__init__
+src.gui.docu.HelpDockWidget.__init__
+src.gui.docu.HelpTextBrowser.__init__
+src.gui.graphicitem.CircuitItem.__init__
+src.gui.graphicitem.PlugItem.__init__
+src.gui.graphicitem.WireItem.__init__
+src.gui.logwidgets.LogDockWidget.__init__
+src.gui.logwidgets.LoggerTextEdit.__init__
+src.gui.mainview.MainView.__init__
+src.gui.selectionoptions.SelectionOptions.__init__
+src.gui.selectionoptions.SelectionOptionsDockWidget.__init__
+src.gui.settings.Settings.__init__
+src.gui.settings.SettingsDialog.__init__
+src.gui.toolbox.ToolBox.__init__
+src.gui.toolbox.ToolBoxDockWidget.__init__" class="py-name" href="#" onclick="return doclink('link-17', '__init__', 'link-2');">__init__</a></tt> <tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">,</tt> <tt class="py-name">name</tt><tt class="py-op">,</tt> <tt class="py-name">owner</tt><tt class="py-op">)</tt> </tt>
+<a name="L47"></a><tt class="py-lineno"> 47</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">R</tt> <tt class="py-op">=</tt> <tt id="link-18" class="py-name"><a title="src.engine.simulator.Plug" class="py-name" href="#" onclick="return doclink('link-18', 'Plug', 'link-3');">Plug</a></tt><tt class="py-op">(</tt><tt class="py-name">True</tt><tt class="py-op">,</tt> <tt class="py-string">'R'</tt><tt class="py-op">,</tt> <tt class="py-name">self</tt><tt class="py-op">)</tt> </tt>
+<a name="L48"></a><tt class="py-lineno"> 48</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">S</tt> <tt class="py-op">=</tt> <tt id="link-19" class="py-name"><a title="src.engine.simulator.Plug" class="py-name" href="#" onclick="return doclink('link-19', 'Plug', 'link-3');">Plug</a></tt><tt class="py-op">(</tt><tt class="py-name">True</tt><tt class="py-op">,</tt> <tt class="py-string">'S'</tt><tt class="py-op">,</tt> <tt class="py-name">self</tt><tt class="py-op">)</tt> </tt>
+<a name="L49"></a><tt class="py-lineno"> 49</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">Q</tt> <tt class="py-op">=</tt> <tt id="link-20" class="py-name"><a title="src.engine.simulator.Plug" class="py-name" href="#" onclick="return doclink('link-20', 'Plug', 'link-3');">Plug</a></tt><tt class="py-op">(</tt><tt class="py-name">False</tt><tt class="py-op">,</tt> <tt class="py-string">'Q'</tt><tt class="py-op">,</tt> <tt class="py-name">self</tt><tt class="py-op">)</tt> </tt>
+<a name="L50"></a><tt class="py-lineno"> 50</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">NQ</tt> <tt class="py-op">=</tt> <tt id="link-21" class="py-name"><a title="src.engine.simulator.Plug" class="py-name" href="#" onclick="return doclink('link-21', 'Plug', 'link-3');">Plug</a></tt><tt class="py-op">(</tt><tt class="py-name">False</tt><tt class="py-op">,</tt> <tt class="py-string">'NQ'</tt><tt class="py-op">,</tt> <tt class="py-name">self</tt><tt class="py-op">)</tt> </tt>
+<a name="L51"></a><tt class="py-lineno"> 51</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-22" class="py-name" targets="Method src.engine.simulator.Circuit.init_inputs()=src.engine.simulator.Circuit-class.html#init_inputs"><a title="src.engine.simulator.Circuit.init_inputs" class="py-name" href="#" onclick="return doclink('link-22', 'init_inputs', 'link-22');">init_inputs</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L52"></a><tt class="py-lineno"> 52</tt>  <tt class="py-line">    </tt>
+<a name="RSFlipFlop.evalfun"></a><div id="RSFlipFlop.evalfun-def"><a name="L53"></a><tt class="py-lineno"> 53</tt> <a class="py-toggle" href="#" id="RSFlipFlop.evalfun-toggle" onclick="return toggle('RSFlipFlop.evalfun');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="src.engine.circuits.RSFlipFlop-class.html#evalfun">evalfun</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="RSFlipFlop.evalfun-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="RSFlipFlop.evalfun-expanded"><a name="L54"></a><tt class="py-lineno"> 54</tt>  <tt class="py-line">        <tt class="py-name">valQ</tt> <tt class="py-op">=</tt> <tt class="py-name">None</tt> </tt>
+<a name="L55"></a><tt class="py-lineno"> 55</tt>  <tt class="py-line">        <tt class="py-name">valNQ</tt> <tt class="py-op">=</tt> <tt class="py-name">None</tt> </tt>
+<a name="L56"></a><tt class="py-lineno"> 56</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">S</tt><tt class="py-op">.</tt><tt class="py-name">value</tt> <tt class="py-op">==</tt> <tt class="py-name">False</tt> <tt class="py-keyword">and</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">R</tt><tt class="py-op">.</tt><tt class="py-name">value</tt> <tt class="py-op">==</tt> <tt class="py-name">True</tt><tt class="py-op">:</tt> </tt>
+<a name="L57"></a><tt class="py-lineno"> 57</tt>  <tt class="py-line">            <tt class="py-name">valQ</tt> <tt class="py-op">=</tt> <tt class="py-name">True</tt> </tt>
+<a name="L58"></a><tt class="py-lineno"> 58</tt>  <tt class="py-line">            <tt class="py-name">valNQ</tt> <tt class="py-op">=</tt> <tt class="py-keyword">not</tt> <tt class="py-name">valQ</tt> </tt>
+<a name="L59"></a><tt class="py-lineno"> 59</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">S</tt><tt class="py-op">.</tt><tt class="py-name">value</tt> <tt class="py-op">==</tt> <tt class="py-name">True</tt> <tt class="py-keyword">and</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">R</tt><tt class="py-op">.</tt><tt class="py-name">value</tt> <tt class="py-op">==</tt> <tt class="py-name">False</tt><tt class="py-op">:</tt> </tt>
+<a name="L60"></a><tt class="py-lineno"> 60</tt>  <tt class="py-line">            <tt class="py-name">valQ</tt> <tt class="py-op">=</tt> <tt class="py-name">False</tt> </tt>
+<a name="L61"></a><tt class="py-lineno"> 61</tt>  <tt class="py-line">            <tt class="py-name">valNQ</tt> <tt class="py-op">=</tt> <tt class="py-keyword">not</tt> <tt class="py-name">valQ</tt> </tt>
+<a name="L62"></a><tt class="py-lineno"> 62</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">S</tt><tt class="py-op">.</tt><tt class="py-name">value</tt> <tt class="py-op">==</tt> <tt class="py-name">False</tt> <tt class="py-keyword">and</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">R</tt><tt class="py-op">.</tt><tt class="py-name">value</tt> <tt class="py-op">==</tt> <tt class="py-name">False</tt><tt class="py-op">:</tt> </tt>
+<a name="L63"></a><tt class="py-lineno"> 63</tt>  <tt class="py-line">            <tt class="py-name">valQ</tt> <tt class="py-op">=</tt> <tt class="py-name">None</tt> </tt>
+<a name="L64"></a><tt class="py-lineno"> 64</tt>  <tt class="py-line">            <tt class="py-name">valNQ</tt> <tt class="py-op">=</tt> <tt class="py-name">None</tt> </tt>
+<a name="L65"></a><tt class="py-lineno"> 65</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">S</tt><tt class="py-op">.</tt><tt class="py-name">value</tt> <tt class="py-op">==</tt> <tt class="py-name">True</tt> <tt class="py-keyword">and</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">R</tt><tt class="py-op">.</tt><tt class="py-name">value</tt> <tt class="py-op">==</tt> <tt class="py-name">True</tt><tt class="py-op">:</tt> </tt>
+<a name="L66"></a><tt class="py-lineno"> 66</tt>  <tt class="py-line">            <tt class="py-name">valQ</tt> <tt class="py-op">=</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">Q</tt><tt class="py-op">.</tt><tt class="py-name">value</tt> </tt>
+<a name="L67"></a><tt class="py-lineno"> 67</tt>  <tt class="py-line">            <tt class="py-name">valNQ</tt> <tt class="py-op">=</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">NQ</tt><tt class="py-op">.</tt><tt class="py-name">value</tt> </tt>
+<a name="L68"></a><tt class="py-lineno"> 68</tt>  <tt class="py-line">        <tt id="link-23" class="py-name" targets="Variable src.engine.circuits.agenda_=src.engine.circuits-module.html#agenda_,Variable src.engine.gates.agenda_=src.engine.gates-module.html#agenda_,Variable src.engine.simulator.agenda_=src.engine.simulator-module.html#agenda_,Variable src.engine_test.agenda_=src.engine_test-module.html#agenda_"><a title="src.engine.circuits.agenda_
+src.engine.gates.agenda_
+src.engine.simulator.agenda_
+src.engine_test.agenda_" class="py-name" href="#" onclick="return doclink('link-23', 'agenda_', 'link-23');">agenda_</a></tt><tt class="py-op">.</tt><tt id="link-24" class="py-name" targets="Method src.engine.simulator.Agenda.schedule()=src.engine.simulator.Agenda-class.html#schedule"><a title="src.engine.simulator.Agenda.schedule" class="py-name" href="#" onclick="return doclink('link-24', 'schedule', 'link-24');">schedule</a></tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">,</tt> <tt class="py-keyword">lambda</tt><tt class="py-op">:</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">Q</tt><tt class="py-op">.</tt><tt id="link-25" class="py-name" targets="Method src.engine.simulator.Plug.set()=src.engine.simulator.Plug-class.html#set"><a title="src.engine.simulator.Plug.set" class="py-name" href="#" onclick="return doclink('link-25', 'set', 'link-25');">set</a></tt><tt class="py-op">(</tt><tt class="py-name">valQ</tt><tt class="py-op">)</tt><tt class="py-op">)</tt> </tt>
+<a name="L69"></a><tt class="py-lineno"> 69</tt>  <tt class="py-line">        <tt id="link-26" class="py-name"><a title="src.engine.circuits.agenda_
+src.engine.gates.agenda_
+src.engine.simulator.agenda_
+src.engine_test.agenda_" class="py-name" href="#" onclick="return doclink('link-26', 'agenda_', 'link-23');">agenda_</a></tt><tt class="py-op">.</tt><tt id="link-27" class="py-name"><a title="src.engine.simulator.Agenda.schedule" class="py-name" href="#" onclick="return doclink('link-27', 'schedule', 'link-24');">schedule</a></tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">,</tt> <tt class="py-keyword">lambda</tt><tt class="py-op">:</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">NQ</tt><tt class="py-op">.</tt><tt id="link-28" class="py-name"><a title="src.engine.simulator.Plug.set" class="py-name" href="#" onclick="return doclink('link-28', 'set', 'link-25');">set</a></tt><tt class="py-op">(</tt><tt class="py-name">valNQ</tt><tt class="py-op">)</tt><tt class="py-op">)</tt> </tt>
+</div></div><a name="L70"></a><tt class="py-lineno"> 70</tt>  <tt class="py-line">  </tt>
+<a name="L71"></a><tt class="py-lineno"> 71</tt>  <tt class="py-line">  </tt>
+<a name="DFlipFlop"></a><div id="DFlipFlop-def"><a name="L72"></a><tt class="py-lineno"> 72</tt> <a class="py-toggle" href="#" id="DFlipFlop-toggle" onclick="return toggle('DFlipFlop');">-</a><tt class="py-line"><tt class="py-keyword">class</tt> <a class="py-def-name" href="src.engine.circuits.DFlipFlop-class.html">DFlipFlop</a><tt class="py-op">(</tt><tt class="py-base-class">Circuit</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="DFlipFlop-collapsed" style="display:none;" pad="+++" indent="++++"></div><div id="DFlipFlop-expanded"><a name="DFlipFlop.__init__"></a><div id="DFlipFlop.__init__-def"><a name="L73"></a><tt class="py-lineno"> 73</tt> <a class="py-toggle" href="#" id="DFlipFlop.__init__-toggle" onclick="return toggle('DFlipFlop.__init__');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="src.engine.circuits.DFlipFlop-class.html#__init__">__init__</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">name</tt><tt class="py-op">,</tt> <tt class="py-param">owner</tt><tt class="py-op">,</tt> <tt class="py-param">category</tt><tt class="py-op">=</tt><tt class="py-name">None</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="DFlipFlop.__init__-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="DFlipFlop.__init__-expanded"><a name="L74"></a><tt class="py-lineno"> 74</tt>  <tt class="py-line">        <tt id="link-29" class="py-name"><a title="src.engine.simulator.Circuit" class="py-name" href="#" onclick="return doclink('link-29', 'Circuit', 'link-1');">Circuit</a></tt><tt class="py-op">.</tt><tt id="link-30" class="py-name"><a title="src.engine.circuits.Counter4b.__init__
+src.engine.circuits.DFlipFlop.__init__
+src.engine.circuits.JKFlipFlop.__init__
+src.engine.circuits.Mem1b.__init__
+src.engine.circuits.RSFlipFlop.__init__
+src.engine.circuits.Register4b.__init__
+src.engine.clock.Clock.__init__
+src.engine.clock.ClockThread.__init__
+src.engine.gates.AndGate.__init__
+src.engine.gates.NandGate.__init__
+src.engine.gates.NorGate.__init__
+src.engine.gates.NotGate.__init__
+src.engine.gates.OrGate.__init__
+src.engine.gates.XnorGate.__init__
+src.engine.gates.XorGate.__init__
+src.engine.simulator.Agenda.__init__
+src.engine.simulator.Circuit.__init__
+src.engine.simulator.Plug.__init__
+src.engine_test.Counter4b.__init__
+src.engine_test.DFlipFlop.__init__
+src.engine_test.Div2.__init__
+src.engine_test.JKFlipFlop.__init__
+src.engine_test.Mem1b.__init__
+src.engine_test.RSFlipFlop.__init__
+src.engine_test.Register4b.__init__
+src.engine_test.oCounter4b.__init__
+src.engine_test.oJKFlipFlop.__init__
+src.engine_test.ooJKFlipFlop.__init__
+src.engine_test.sDFlipFlop.__init__
+src.gui.circuitdrawing.CustomCircuitCreator.__init__
+src.gui.circuitdrawing.PaintArea.__init__
+src.gui.docu.HelpDockWidget.__init__
+src.gui.docu.HelpTextBrowser.__init__
+src.gui.graphicitem.CircuitItem.__init__
+src.gui.graphicitem.PlugItem.__init__
+src.gui.graphicitem.WireItem.__init__
+src.gui.logwidgets.LogDockWidget.__init__
+src.gui.logwidgets.LoggerTextEdit.__init__
+src.gui.mainview.MainView.__init__
+src.gui.selectionoptions.SelectionOptions.__init__
+src.gui.selectionoptions.SelectionOptionsDockWidget.__init__
+src.gui.settings.Settings.__init__
+src.gui.settings.SettingsDialog.__init__
+src.gui.toolbox.ToolBox.__init__
+src.gui.toolbox.ToolBoxDockWidget.__init__" class="py-name" href="#" onclick="return doclink('link-30', '__init__', 'link-2');">__init__</a></tt> <tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">,</tt> <tt class="py-name">name</tt><tt class="py-op">,</tt> <tt class="py-name">owner</tt><tt class="py-op">)</tt> </tt>
+<a name="L75"></a><tt class="py-lineno"> 75</tt>  <tt class="py-line">        <tt class="py-comment"># I/O</tt> </tt>
+<a name="L76"></a><tt class="py-lineno"> 76</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">D</tt> <tt class="py-op">=</tt> <tt id="link-31" class="py-name"><a title="src.engine.simulator.Plug" class="py-name" href="#" onclick="return doclink('link-31', 'Plug', 'link-3');">Plug</a></tt><tt class="py-op">(</tt><tt class="py-name">True</tt><tt class="py-op">,</tt> <tt class="py-string">'D'</tt><tt class="py-op">,</tt> <tt class="py-name">self</tt><tt class="py-op">)</tt> </tt>
+<a name="L77"></a><tt class="py-lineno"> 77</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">CLK</tt> <tt class="py-op">=</tt> <tt id="link-32" class="py-name"><a title="src.engine.simulator.Plug" class="py-name" href="#" onclick="return doclink('link-32', 'Plug', 'link-3');">Plug</a></tt><tt class="py-op">(</tt><tt class="py-name">True</tt><tt class="py-op">,</tt> <tt class="py-string">'CLK'</tt><tt class="py-op">,</tt> <tt class="py-name">self</tt><tt class="py-op">)</tt> </tt>
+<a name="L78"></a><tt class="py-lineno"> 78</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">Q</tt> <tt class="py-op">=</tt> <tt id="link-33" class="py-name"><a title="src.engine.simulator.Plug" class="py-name" href="#" onclick="return doclink('link-33', 'Plug', 'link-3');">Plug</a></tt><tt class="py-op">(</tt><tt class="py-name">False</tt><tt class="py-op">,</tt> <tt class="py-string">'Q'</tt><tt class="py-op">,</tt> <tt class="py-name">self</tt><tt class="py-op">)</tt> </tt>
+<a name="L79"></a><tt class="py-lineno"> 79</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">NQ</tt> <tt class="py-op">=</tt> <tt id="link-34" class="py-name"><a title="src.engine.simulator.Plug" class="py-name" href="#" onclick="return doclink('link-34', 'Plug', 'link-3');">Plug</a></tt><tt class="py-op">(</tt><tt class="py-name">False</tt><tt class="py-op">,</tt> <tt class="py-string">'NQ'</tt><tt class="py-op">,</tt> <tt class="py-name">self</tt><tt class="py-op">)</tt> </tt>
+<a name="L80"></a><tt class="py-lineno"> 80</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-35" class="py-name"><a title="src.engine.simulator.Circuit.init_inputs" class="py-name" href="#" onclick="return doclink('link-35', 'init_inputs', 'link-22');">init_inputs</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L81"></a><tt class="py-lineno"> 81</tt>  <tt class="py-line">        <tt class="py-comment"># components</tt> </tt>
+<a name="L82"></a><tt class="py-lineno"> 82</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">NOT</tt> <tt class="py-op">=</tt> <tt id="link-36" class="py-name"><a title="src.engine.gates.NotGate" class="py-name" href="#" onclick="return doclink('link-36', 'NotGate', 'link-6');">NotGate</a></tt><tt class="py-op">(</tt><tt class="py-string">'NOT'</tt><tt class="py-op">,</tt> <tt class="py-name">self</tt><tt class="py-op">)</tt> </tt>
+<a name="L83"></a><tt class="py-lineno"> 83</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">NAND0</tt> <tt class="py-op">=</tt> <tt id="link-37" class="py-name" targets="Class src.engine.gates.NandGate=src.engine.gates.NandGate-class.html"><a title="src.engine.gates.NandGate" class="py-name" href="#" onclick="return doclink('link-37', 'NandGate', 'link-37');">NandGate</a></tt><tt class="py-op">(</tt><tt class="py-string">'NAND0'</tt><tt class="py-op">,</tt> <tt class="py-name">self</tt><tt class="py-op">)</tt> </tt>
+<a name="L84"></a><tt class="py-lineno"> 84</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">NAND1</tt> <tt class="py-op">=</tt> <tt id="link-38" class="py-name"><a title="src.engine.gates.NandGate" class="py-name" href="#" onclick="return doclink('link-38', 'NandGate', 'link-37');">NandGate</a></tt><tt class="py-op">(</tt><tt class="py-string">'NAND1'</tt><tt class="py-op">,</tt> <tt class="py-name">self</tt><tt class="py-op">)</tt> </tt>
+<a name="L85"></a><tt class="py-lineno"> 85</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">RSFF</tt> <tt class="py-op">=</tt> <tt id="link-39" class="py-name" targets="Class src.engine.circuits.RSFlipFlop=src.engine.circuits.RSFlipFlop-class.html,Class src.engine_test.RSFlipFlop=src.engine_test.RSFlipFlop-class.html"><a title="src.engine.circuits.RSFlipFlop
+src.engine_test.RSFlipFlop" class="py-name" href="#" onclick="return doclink('link-39', 'RSFlipFlop', 'link-39');">RSFlipFlop</a></tt><tt class="py-op">(</tt><tt class="py-string">'RSFF'</tt><tt class="py-op">,</tt> <tt class="py-name">self</tt><tt class="py-op">)</tt> </tt>
+<a name="L86"></a><tt class="py-lineno"> 86</tt>  <tt class="py-line">        <tt class="py-comment"># connections between components</tt> </tt>
+<a name="L87"></a><tt class="py-lineno"> 87</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">D</tt><tt class="py-op">.</tt><tt id="link-40" class="py-name"><a title="src.engine.simulator.Plug.connect
+src.gui.graphicitem.WireItem.connect" class="py-name" href="#" onclick="return doclink('link-40', 'connect', 'link-9');">connect</a></tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">NOT</tt><tt class="py-op">.</tt><tt class="py-name">inputList</tt><tt class="py-op">[</tt><tt class="py-number">0</tt><tt class="py-op">]</tt><tt class="py-op">)</tt> </tt>
+<a name="L88"></a><tt class="py-lineno"> 88</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">D</tt><tt class="py-op">.</tt><tt id="link-41" class="py-name"><a title="src.engine.simulator.Plug.connect
+src.gui.graphicitem.WireItem.connect" class="py-name" href="#" onclick="return doclink('link-41', 'connect', 'link-9');">connect</a></tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">NAND0</tt><tt class="py-op">.</tt><tt class="py-name">inputList</tt><tt class="py-op">[</tt><tt class="py-number">0</tt><tt class="py-op">]</tt><tt class="py-op">)</tt> </tt>
+<a name="L89"></a><tt class="py-lineno"> 89</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">CLK</tt><tt class="py-op">.</tt><tt id="link-42" class="py-name"><a title="src.engine.simulator.Plug.connect
+src.gui.graphicitem.WireItem.connect" class="py-name" href="#" onclick="return doclink('link-42', 'connect', 'link-9');">connect</a></tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">NAND1</tt><tt class="py-op">.</tt><tt class="py-name">inputList</tt><tt class="py-op">[</tt><tt class="py-number">1</tt><tt class="py-op">]</tt><tt class="py-op">)</tt> </tt>
+<a name="L90"></a><tt class="py-lineno"> 90</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">CLK</tt><tt class="py-op">.</tt><tt id="link-43" class="py-name"><a title="src.engine.simulator.Plug.connect
+src.gui.graphicitem.WireItem.connect" class="py-name" href="#" onclick="return doclink('link-43', 'connect', 'link-9');">connect</a></tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">NAND0</tt><tt class="py-op">.</tt><tt class="py-name">inputList</tt><tt class="py-op">[</tt><tt class="py-number">1</tt><tt class="py-op">]</tt><tt class="py-op">)</tt> </tt>
+<a name="L91"></a><tt class="py-lineno"> 91</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">NOT</tt><tt class="py-op">.</tt><tt class="py-name">outputList</tt><tt class="py-op">[</tt><tt class="py-number">0</tt><tt class="py-op">]</tt><tt class="py-op">.</tt><tt id="link-44" class="py-name"><a title="src.engine.simulator.Plug.connect
+src.gui.graphicitem.WireItem.connect" class="py-name" href="#" onclick="return doclink('link-44', 'connect', 'link-9');">connect</a></tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">NAND1</tt><tt class="py-op">.</tt><tt class="py-name">inputList</tt><tt class="py-op">[</tt><tt class="py-number">0</tt><tt class="py-op">]</tt><tt class="py-op">)</tt> </tt>
+<a name="L92"></a><tt class="py-lineno"> 92</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">NAND0</tt><tt class="py-op">.</tt><tt class="py-name">outputList</tt><tt class="py-op">[</tt><tt class="py-number">0</tt><tt class="py-op">]</tt><tt class="py-op">.</tt><tt id="link-45" class="py-name"><a title="src.engine.simulator.Plug.connect
+src.gui.graphicitem.WireItem.connect" class="py-name" href="#" onclick="return doclink('link-45', 'connect', 'link-9');">connect</a></tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">RSFF</tt><tt class="py-op">.</tt><tt class="py-name">S</tt><tt class="py-op">)</tt> </tt>
+<a name="L93"></a><tt class="py-lineno"> 93</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">NAND1</tt><tt class="py-op">.</tt><tt class="py-name">outputList</tt><tt class="py-op">[</tt><tt class="py-number">0</tt><tt class="py-op">]</tt><tt class="py-op">.</tt><tt id="link-46" class="py-name"><a title="src.engine.simulator.Plug.connect
+src.gui.graphicitem.WireItem.connect" class="py-name" href="#" onclick="return doclink('link-46', 'connect', 'link-9');">connect</a></tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">RSFF</tt><tt class="py-op">.</tt><tt class="py-name">R</tt><tt class="py-op">)</tt> </tt>
+<a name="L94"></a><tt class="py-lineno"> 94</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">RSFF</tt><tt class="py-op">.</tt><tt class="py-name">Q</tt><tt class="py-op">.</tt><tt id="link-47" class="py-name"><a title="src.engine.simulator.Plug.connect
+src.gui.graphicitem.WireItem.connect" class="py-name" href="#" onclick="return doclink('link-47', 'connect', 'link-9');">connect</a></tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">Q</tt><tt class="py-op">)</tt> </tt>
+<a name="L95"></a><tt class="py-lineno"> 95</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">RSFF</tt><tt class="py-op">.</tt><tt class="py-name">NQ</tt><tt class="py-op">.</tt><tt id="link-48" class="py-name"><a title="src.engine.simulator.Plug.connect
+src.gui.graphicitem.WireItem.connect" class="py-name" href="#" onclick="return doclink('link-48', 'connect', 'link-9');">connect</a></tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">NQ</tt><tt class="py-op">)</tt> </tt>
+</div></div><a name="L96"></a><tt class="py-lineno"> 96</tt>  <tt class="py-line">  </tt>
+<a name="L97"></a><tt class="py-lineno"> 97</tt>  <tt class="py-line">  </tt>
+<a name="JKFlipFlop"></a><div id="JKFlipFlop-def"><a name="L98"></a><tt class="py-lineno"> 98</tt> <a class="py-toggle" href="#" id="JKFlipFlop-toggle" onclick="return toggle('JKFlipFlop');">-</a><tt class="py-line"><tt class="py-keyword">class</tt> <a class="py-def-name" href="src.engine.circuits.JKFlipFlop-class.html">JKFlipFlop</a><tt class="py-op">(</tt><tt class="py-base-class">Circuit</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="JKFlipFlop-collapsed" style="display:none;" pad="+++" indent="++++"></div><div id="JKFlipFlop-expanded"><a name="L99"></a><tt class="py-lineno"> 99</tt>  <tt class="py-line">    <tt id="link-49" class="py-name"><a title="src.engine.circuits.JKFlipFlop.delay
+src.engine.circuits.RSFlipFlop.delay
+src.engine.gates.AndGate.delay
+src.engine.gates.NandGate.delay
+src.engine.gates.NorGate.delay
+src.engine.gates.NotGate.delay
+src.engine.gates.OrGate.delay
+src.engine.gates.XnorGate.delay
+src.engine.gates.XorGate.delay
+src.engine_test.JKFlipFlop.delay
+src.engine_test.RSFlipFlop.delay" class="py-name" href="#" onclick="return doclink('link-49', 'delay', 'link-15');">delay</a></tt> <tt class="py-op">=</tt> <tt class="py-number">42</tt> </tt>
+<a name="L100"></a><tt class="py-lineno">100</tt>  <tt class="py-line">    </tt>
+<a name="JKFlipFlop.__init__"></a><div id="JKFlipFlop.__init__-def"><a name="L101"></a><tt class="py-lineno">101</tt> <a class="py-toggle" href="#" id="JKFlipFlop.__init__-toggle" onclick="return toggle('JKFlipFlop.__init__');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="src.engine.circuits.JKFlipFlop-class.html#__init__">__init__</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">name</tt><tt class="py-op">,</tt> <tt class="py-param">owner</tt><tt class="py-op">,</tt> <tt class="py-param">category</tt><tt class="py-op">=</tt><tt class="py-name">None</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="JKFlipFlop.__init__-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="JKFlipFlop.__init__-expanded"><a name="L102"></a><tt class="py-lineno">102</tt>  <tt class="py-line">        <tt id="link-50" class="py-name"><a title="src.engine.simulator.Circuit" class="py-name" href="#" onclick="return doclink('link-50', 'Circuit', 'link-1');">Circuit</a></tt><tt class="py-op">.</tt><tt id="link-51" class="py-name"><a title="src.engine.circuits.Counter4b.__init__
+src.engine.circuits.DFlipFlop.__init__
+src.engine.circuits.JKFlipFlop.__init__
+src.engine.circuits.Mem1b.__init__
+src.engine.circuits.RSFlipFlop.__init__
+src.engine.circuits.Register4b.__init__
+src.engine.clock.Clock.__init__
+src.engine.clock.ClockThread.__init__
+src.engine.gates.AndGate.__init__
+src.engine.gates.NandGate.__init__
+src.engine.gates.NorGate.__init__
+src.engine.gates.NotGate.__init__
+src.engine.gates.OrGate.__init__
+src.engine.gates.XnorGate.__init__
+src.engine.gates.XorGate.__init__
+src.engine.simulator.Agenda.__init__
+src.engine.simulator.Circuit.__init__
+src.engine.simulator.Plug.__init__
+src.engine_test.Counter4b.__init__
+src.engine_test.DFlipFlop.__init__
+src.engine_test.Div2.__init__
+src.engine_test.JKFlipFlop.__init__
+src.engine_test.Mem1b.__init__
+src.engine_test.RSFlipFlop.__init__
+src.engine_test.Register4b.__init__
+src.engine_test.oCounter4b.__init__
+src.engine_test.oJKFlipFlop.__init__
+src.engine_test.ooJKFlipFlop.__init__
+src.engine_test.sDFlipFlop.__init__
+src.gui.circuitdrawing.CustomCircuitCreator.__init__
+src.gui.circuitdrawing.PaintArea.__init__
+src.gui.docu.HelpDockWidget.__init__
+src.gui.docu.HelpTextBrowser.__init__
+src.gui.graphicitem.CircuitItem.__init__
+src.gui.graphicitem.PlugItem.__init__
+src.gui.graphicitem.WireItem.__init__
+src.gui.logwidgets.LogDockWidget.__init__
+src.gui.logwidgets.LoggerTextEdit.__init__
+src.gui.mainview.MainView.__init__
+src.gui.selectionoptions.SelectionOptions.__init__
+src.gui.selectionoptions.SelectionOptionsDockWidget.__init__
+src.gui.settings.Settings.__init__
+src.gui.settings.SettingsDialog.__init__
+src.gui.toolbox.ToolBox.__init__
+src.gui.toolbox.ToolBoxDockWidget.__init__" class="py-name" href="#" onclick="return doclink('link-51', '__init__', 'link-2');">__init__</a></tt> <tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">,</tt> <tt class="py-name">name</tt><tt class="py-op">,</tt> <tt class="py-name">owner</tt><tt class="py-op">)</tt> </tt>
+<a name="L103"></a><tt class="py-lineno">103</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">J</tt> <tt class="py-op">=</tt> <tt id="link-52" class="py-name"><a title="src.engine.simulator.Plug" class="py-name" href="#" onclick="return doclink('link-52', 'Plug', 'link-3');">Plug</a></tt><tt class="py-op">(</tt><tt class="py-name">True</tt><tt class="py-op">,</tt> <tt class="py-string">'J'</tt><tt class="py-op">,</tt> <tt class="py-name">self</tt><tt class="py-op">)</tt> </tt>
+<a name="L104"></a><tt class="py-lineno">104</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">K</tt> <tt class="py-op">=</tt> <tt id="link-53" class="py-name"><a title="src.engine.simulator.Plug" class="py-name" href="#" onclick="return doclink('link-53', 'Plug', 'link-3');">Plug</a></tt><tt class="py-op">(</tt><tt class="py-name">True</tt><tt class="py-op">,</tt> <tt class="py-string">'K'</tt><tt class="py-op">,</tt> <tt class="py-name">self</tt><tt class="py-op">)</tt> </tt>
+<a name="L105"></a><tt class="py-lineno">105</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">CLK</tt> <tt class="py-op">=</tt> <tt id="link-54" class="py-name"><a title="src.engine.simulator.Plug" class="py-name" href="#" onclick="return doclink('link-54', 'Plug', 'link-3');">Plug</a></tt><tt class="py-op">(</tt><tt class="py-name">True</tt><tt class="py-op">,</tt> <tt class="py-string">'CLK'</tt><tt class="py-op">,</tt> <tt class="py-name">self</tt><tt class="py-op">)</tt> </tt>
+<a name="L106"></a><tt class="py-lineno">106</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">Q</tt> <tt class="py-op">=</tt> <tt id="link-55" class="py-name"><a title="src.engine.simulator.Plug" class="py-name" href="#" onclick="return doclink('link-55', 'Plug', 'link-3');">Plug</a></tt><tt class="py-op">(</tt><tt class="py-name">False</tt><tt class="py-op">,</tt> <tt class="py-string">'Q'</tt><tt class="py-op">,</tt> <tt class="py-name">self</tt><tt class="py-op">)</tt> </tt>
+<a name="L107"></a><tt class="py-lineno">107</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">NQ</tt> <tt class="py-op">=</tt> <tt id="link-56" class="py-name"><a title="src.engine.simulator.Plug" class="py-name" href="#" onclick="return doclink('link-56', 'Plug', 'link-3');">Plug</a></tt><tt class="py-op">(</tt><tt class="py-name">False</tt><tt class="py-op">,</tt> <tt class="py-string">'NQ'</tt><tt class="py-op">,</tt> <tt class="py-name">self</tt><tt class="py-op">)</tt> </tt>
+<a name="L108"></a><tt class="py-lineno">108</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">prevClock</tt> <tt class="py-op">=</tt> <tt class="py-name">False</tt> </tt>
+<a name="L109"></a><tt class="py-lineno">109</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-57" class="py-name"><a title="src.engine.simulator.Circuit.init_inputs" class="py-name" href="#" onclick="return doclink('link-57', 'init_inputs', 'link-22');">init_inputs</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L110"></a><tt class="py-lineno">110</tt>  <tt class="py-line">  </tt>
+<a name="JKFlipFlop.evalfun"></a><div id="JKFlipFlop.evalfun-def"><a name="L111"></a><tt class="py-lineno">111</tt> <a class="py-toggle" href="#" id="JKFlipFlop.evalfun-toggle" onclick="return toggle('JKFlipFlop.evalfun');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="src.engine.circuits.JKFlipFlop-class.html#evalfun">evalfun</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="JKFlipFlop.evalfun-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="JKFlipFlop.evalfun-expanded"><a name="L112"></a><tt class="py-lineno">112</tt>  <tt class="py-line">        <tt class="py-name">valQ</tt> <tt class="py-op">=</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">Q</tt><tt class="py-op">.</tt><tt class="py-name">value</tt> </tt>
+<a name="L113"></a><tt class="py-lineno">113</tt>  <tt class="py-line">        <tt class="py-name">valNQ</tt> <tt class="py-op">=</tt> <tt class="py-keyword">not</tt> <tt class="py-name">valQ</tt> </tt>
+<a name="L114"></a><tt class="py-lineno">114</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-op">(</tt><tt class="py-keyword">not</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">CLK</tt><tt class="py-op">.</tt><tt class="py-name">value</tt> <tt class="py-keyword">and</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">prevClock</tt> <tt class="py-keyword">and</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">J</tt><tt class="py-op">.</tt><tt class="py-name">value</tt> <tt class="py-keyword">is</tt> <tt class="py-name">True</tt> <tt class="py-keyword">and</tt> </tt>
+<a name="L115"></a><tt class="py-lineno">115</tt>  <tt class="py-line">            <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">K</tt><tt class="py-op">.</tt><tt class="py-name">value</tt> <tt class="py-keyword">is</tt> <tt class="py-name">True</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L116"></a><tt class="py-lineno">116</tt>  <tt class="py-line">                <tt class="py-comment">#~ print('case 1')</tt> </tt>
+<a name="L117"></a><tt class="py-lineno">117</tt>  <tt class="py-line">                <tt class="py-name">valQ</tt> <tt class="py-op">=</tt> <tt class="py-keyword">not</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">Q</tt><tt class="py-op">.</tt><tt class="py-name">value</tt> </tt>
+<a name="L118"></a><tt class="py-lineno">118</tt>  <tt class="py-line">                <tt class="py-name">valNQ</tt> <tt class="py-op">=</tt> <tt class="py-keyword">not</tt> <tt class="py-name">valQ</tt> </tt>
+<a name="L119"></a><tt class="py-lineno">119</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">J</tt><tt class="py-op">.</tt><tt class="py-name">value</tt> <tt class="py-keyword">is</tt> <tt class="py-name">False</tt> <tt class="py-keyword">and</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">K</tt><tt class="py-op">.</tt><tt class="py-name">value</tt> <tt class="py-keyword">is</tt> <tt class="py-name">False</tt><tt class="py-op">:</tt> </tt>
+<a name="L120"></a><tt class="py-lineno">120</tt>  <tt class="py-line">            <tt class="py-comment">#~ print('case 2')</tt> </tt>
+<a name="L121"></a><tt class="py-lineno">121</tt>  <tt class="py-line">            <tt class="py-name">valQ</tt> <tt class="py-op">=</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">Q</tt><tt class="py-op">.</tt><tt class="py-name">value</tt> </tt>
+<a name="L122"></a><tt class="py-lineno">122</tt>  <tt class="py-line">            <tt class="py-name">valNQ</tt> <tt class="py-op">=</tt> <tt class="py-keyword">not</tt> <tt class="py-name">valQ</tt> </tt>
+<a name="L123"></a><tt class="py-lineno">123</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">CLK</tt><tt class="py-op">.</tt><tt class="py-name">value</tt> <tt class="py-keyword">and</tt> <tt class="py-keyword">not</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">prevClock</tt> <tt class="py-keyword">and</tt> </tt>
+<a name="L124"></a><tt class="py-lineno">124</tt>  <tt class="py-line">            <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">J</tt><tt class="py-op">.</tt><tt class="py-name">value</tt> <tt class="py-op">!=</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">K</tt><tt class="py-op">.</tt><tt class="py-name">value</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L125"></a><tt class="py-lineno">125</tt>  <tt class="py-line">                <tt class="py-comment">#~ print('case 3')</tt> </tt>
+<a name="L126"></a><tt class="py-lineno">126</tt>  <tt class="py-line">                <tt class="py-name">valQ</tt> <tt class="py-op">=</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">J</tt><tt class="py-op">.</tt><tt class="py-name">value</tt> </tt>
+<a name="L127"></a><tt class="py-lineno">127</tt>  <tt class="py-line">                <tt class="py-name">valNQ</tt> <tt class="py-op">=</tt> <tt class="py-keyword">not</tt> <tt class="py-name">valQ</tt> </tt>
+<a name="L128"></a><tt class="py-lineno">128</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">prevClock</tt> <tt class="py-op">=</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">CLK</tt><tt class="py-op">.</tt><tt class="py-name">value</tt> </tt>
+<a name="L129"></a><tt class="py-lineno">129</tt>  <tt class="py-line">        <tt id="link-58" class="py-name"><a title="src.engine.circuits.agenda_
+src.engine.gates.agenda_
+src.engine.simulator.agenda_
+src.engine_test.agenda_" class="py-name" href="#" onclick="return doclink('link-58', 'agenda_', 'link-23');">agenda_</a></tt><tt class="py-op">.</tt><tt id="link-59" class="py-name"><a title="src.engine.simulator.Agenda.schedule" class="py-name" href="#" onclick="return doclink('link-59', 'schedule', 'link-24');">schedule</a></tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">,</tt> <tt class="py-keyword">lambda</tt><tt class="py-op">:</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">Q</tt><tt class="py-op">.</tt><tt id="link-60" class="py-name"><a title="src.engine.simulator.Plug.set" class="py-name" href="#" onclick="return doclink('link-60', 'set', 'link-25');">set</a></tt><tt class="py-op">(</tt><tt class="py-name">valQ</tt><tt class="py-op">)</tt><tt class="py-op">)</tt> </tt>
+<a name="L130"></a><tt class="py-lineno">130</tt>  <tt class="py-line">        <tt id="link-61" class="py-name"><a title="src.engine.circuits.agenda_
+src.engine.gates.agenda_
+src.engine.simulator.agenda_
+src.engine_test.agenda_" class="py-name" href="#" onclick="return doclink('link-61', 'agenda_', 'link-23');">agenda_</a></tt><tt class="py-op">.</tt><tt id="link-62" class="py-name"><a title="src.engine.simulator.Agenda.schedule" class="py-name" href="#" onclick="return doclink('link-62', 'schedule', 'link-24');">schedule</a></tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">,</tt> <tt class="py-keyword">lambda</tt><tt class="py-op">:</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">NQ</tt><tt class="py-op">.</tt><tt id="link-63" class="py-name"><a title="src.engine.simulator.Plug.set" class="py-name" href="#" onclick="return doclink('link-63', 'set', 'link-25');">set</a></tt><tt class="py-op">(</tt><tt class="py-name">valNQ</tt><tt class="py-op">)</tt><tt class="py-op">)</tt> </tt>
+</div></div><a name="L131"></a><tt class="py-lineno">131</tt>  <tt class="py-line">  </tt>
+<a name="L132"></a><tt class="py-lineno">132</tt>  <tt class="py-line">  </tt>
+<a name="Counter4b"></a><div id="Counter4b-def"><a name="L133"></a><tt class="py-lineno">133</tt> <a class="py-toggle" href="#" id="Counter4b-toggle" onclick="return toggle('Counter4b');">-</a><tt class="py-line"><tt class="py-keyword">class</tt> <a class="py-def-name" href="src.engine.circuits.Counter4b-class.html">Counter4b</a><tt class="py-op">(</tt><tt class="py-base-class">Circuit</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="Counter4b-collapsed" style="display:none;" pad="+++" indent="++++"></div><div id="Counter4b-expanded"><a name="Counter4b.__init__"></a><div id="Counter4b.__init__-def"><a name="L134"></a><tt class="py-lineno">134</tt> <a class="py-toggle" href="#" id="Counter4b.__init__-toggle" onclick="return toggle('Counter4b.__init__');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="src.engine.circuits.Counter4b-class.html#__init__">__init__</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">name</tt><tt class="py-op">,</tt> <tt class="py-param">owner</tt><tt class="py-op">,</tt> <tt class="py-param">category</tt><tt class="py-op">=</tt><tt class="py-name">None</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="Counter4b.__init__-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="Counter4b.__init__-expanded"><a name="L135"></a><tt class="py-lineno">135</tt>  <tt class="py-line">        <tt id="link-64" class="py-name"><a title="src.engine.simulator.Circuit" class="py-name" href="#" onclick="return doclink('link-64', 'Circuit', 'link-1');">Circuit</a></tt><tt class="py-op">.</tt><tt id="link-65" class="py-name"><a title="src.engine.circuits.Counter4b.__init__
+src.engine.circuits.DFlipFlop.__init__
+src.engine.circuits.JKFlipFlop.__init__
+src.engine.circuits.Mem1b.__init__
+src.engine.circuits.RSFlipFlop.__init__
+src.engine.circuits.Register4b.__init__
+src.engine.clock.Clock.__init__
+src.engine.clock.ClockThread.__init__
+src.engine.gates.AndGate.__init__
+src.engine.gates.NandGate.__init__
+src.engine.gates.NorGate.__init__
+src.engine.gates.NotGate.__init__
+src.engine.gates.OrGate.__init__
+src.engine.gates.XnorGate.__init__
+src.engine.gates.XorGate.__init__
+src.engine.simulator.Agenda.__init__
+src.engine.simulator.Circuit.__init__
+src.engine.simulator.Plug.__init__
+src.engine_test.Counter4b.__init__
+src.engine_test.DFlipFlop.__init__
+src.engine_test.Div2.__init__
+src.engine_test.JKFlipFlop.__init__
+src.engine_test.Mem1b.__init__
+src.engine_test.RSFlipFlop.__init__
+src.engine_test.Register4b.__init__
+src.engine_test.oCounter4b.__init__
+src.engine_test.oJKFlipFlop.__init__
+src.engine_test.ooJKFlipFlop.__init__
+src.engine_test.sDFlipFlop.__init__
+src.gui.circuitdrawing.CustomCircuitCreator.__init__
+src.gui.circuitdrawing.PaintArea.__init__
+src.gui.docu.HelpDockWidget.__init__
+src.gui.docu.HelpTextBrowser.__init__
+src.gui.graphicitem.CircuitItem.__init__
+src.gui.graphicitem.PlugItem.__init__
+src.gui.graphicitem.WireItem.__init__
+src.gui.logwidgets.LogDockWidget.__init__
+src.gui.logwidgets.LoggerTextEdit.__init__
+src.gui.mainview.MainView.__init__
+src.gui.selectionoptions.SelectionOptions.__init__
+src.gui.selectionoptions.SelectionOptionsDockWidget.__init__
+src.gui.settings.Settings.__init__
+src.gui.settings.SettingsDialog.__init__
+src.gui.toolbox.ToolBox.__init__
+src.gui.toolbox.ToolBoxDockWidget.__init__" class="py-name" href="#" onclick="return doclink('link-65', '__init__', 'link-2');">__init__</a></tt> <tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">,</tt> <tt class="py-name">name</tt><tt class="py-op">,</tt> <tt class="py-name">owner</tt><tt class="py-op">)</tt> </tt>
+<a name="L136"></a><tt class="py-lineno">136</tt>  <tt class="py-line">        <tt class="py-comment"># I/O</tt> </tt>
+<a name="L137"></a><tt class="py-lineno">137</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">A</tt> <tt class="py-op">=</tt> <tt id="link-66" class="py-name"><a title="src.engine.simulator.Plug" class="py-name" href="#" onclick="return doclink('link-66', 'Plug', 'link-3');">Plug</a></tt><tt class="py-op">(</tt><tt class="py-name">True</tt><tt class="py-op">,</tt> <tt class="py-string">'A'</tt><tt class="py-op">,</tt> <tt class="py-name">self</tt><tt class="py-op">)</tt> </tt>
+<a name="L138"></a><tt class="py-lineno">138</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">CLK</tt> <tt class="py-op">=</tt> <tt id="link-67" class="py-name"><a title="src.engine.simulator.Plug" class="py-name" href="#" onclick="return doclink('link-67', 'Plug', 'link-3');">Plug</a></tt><tt class="py-op">(</tt><tt class="py-name">True</tt><tt class="py-op">,</tt> <tt class="py-string">'CLK'</tt><tt class="py-op">,</tt> <tt class="py-name">self</tt><tt class="py-op">)</tt> </tt>
+<a name="L139"></a><tt class="py-lineno">139</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">Q0</tt> <tt class="py-op">=</tt> <tt id="link-68" class="py-name"><a title="src.engine.simulator.Plug" class="py-name" href="#" onclick="return doclink('link-68', 'Plug', 'link-3');">Plug</a></tt><tt class="py-op">(</tt><tt class="py-name">False</tt><tt class="py-op">,</tt> <tt class="py-string">'Q0'</tt><tt class="py-op">,</tt> <tt class="py-name">self</tt><tt class="py-op">)</tt> </tt>
+<a name="L140"></a><tt class="py-lineno">140</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">Q1</tt> <tt class="py-op">=</tt> <tt id="link-69" class="py-name"><a title="src.engine.simulator.Plug" class="py-name" href="#" onclick="return doclink('link-69', 'Plug', 'link-3');">Plug</a></tt><tt class="py-op">(</tt><tt class="py-name">False</tt><tt class="py-op">,</tt> <tt class="py-string">'Q1'</tt><tt class="py-op">,</tt> <tt class="py-name">self</tt><tt class="py-op">)</tt> </tt>
+<a name="L141"></a><tt class="py-lineno">141</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">Q2</tt> <tt class="py-op">=</tt> <tt id="link-70" class="py-name"><a title="src.engine.simulator.Plug" class="py-name" href="#" onclick="return doclink('link-70', 'Plug', 'link-3');">Plug</a></tt><tt class="py-op">(</tt><tt class="py-name">False</tt><tt class="py-op">,</tt> <tt class="py-string">'Q2'</tt><tt class="py-op">,</tt> <tt class="py-name">self</tt><tt class="py-op">)</tt> </tt>
+<a name="L142"></a><tt class="py-lineno">142</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">Q3</tt> <tt class="py-op">=</tt> <tt id="link-71" class="py-name"><a title="src.engine.simulator.Plug" class="py-name" href="#" onclick="return doclink('link-71', 'Plug', 'link-3');">Plug</a></tt><tt class="py-op">(</tt><tt class="py-name">False</tt><tt class="py-op">,</tt> <tt class="py-string">'Q3'</tt><tt class="py-op">,</tt> <tt class="py-name">self</tt><tt class="py-op">)</tt> </tt>
+<a name="L143"></a><tt class="py-lineno">143</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-72" class="py-name"><a title="src.engine.simulator.Circuit.init_inputs" class="py-name" href="#" onclick="return doclink('link-72', 'init_inputs', 'link-22');">init_inputs</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L144"></a><tt class="py-lineno">144</tt>  <tt class="py-line">        <tt class="py-comment"># components</tt> </tt>
+<a name="L145"></a><tt class="py-lineno">145</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">JKFF0</tt> <tt class="py-op">=</tt> <tt id="link-73" class="py-name" targets="Class src.engine.circuits.JKFlipFlop=src.engine.circuits.JKFlipFlop-class.html,Class src.engine_test.JKFlipFlop=src.engine_test.JKFlipFlop-class.html"><a title="src.engine.circuits.JKFlipFlop
+src.engine_test.JKFlipFlop" class="py-name" href="#" onclick="return doclink('link-73', 'JKFlipFlop', 'link-73');">JKFlipFlop</a></tt><tt class="py-op">(</tt><tt class="py-string">'JKFF0'</tt><tt class="py-op">,</tt> <tt class="py-name">self</tt><tt class="py-op">)</tt> </tt>
+<a name="L146"></a><tt class="py-lineno">146</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">JKFF1</tt> <tt class="py-op">=</tt> <tt id="link-74" class="py-name"><a title="src.engine.circuits.JKFlipFlop
+src.engine_test.JKFlipFlop" class="py-name" href="#" onclick="return doclink('link-74', 'JKFlipFlop', 'link-73');">JKFlipFlop</a></tt><tt class="py-op">(</tt><tt class="py-string">'JKFF1'</tt><tt class="py-op">,</tt> <tt class="py-name">self</tt><tt class="py-op">)</tt> </tt>
+<a name="L147"></a><tt class="py-lineno">147</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">JKFF2</tt> <tt class="py-op">=</tt> <tt id="link-75" class="py-name"><a title="src.engine.circuits.JKFlipFlop
+src.engine_test.JKFlipFlop" class="py-name" href="#" onclick="return doclink('link-75', 'JKFlipFlop', 'link-73');">JKFlipFlop</a></tt><tt class="py-op">(</tt><tt class="py-string">'JKFF2'</tt><tt class="py-op">,</tt> <tt class="py-name">self</tt><tt class="py-op">)</tt> </tt>
+<a name="L148"></a><tt class="py-lineno">148</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">JKFF3</tt> <tt class="py-op">=</tt> <tt id="link-76" class="py-name"><a title="src.engine.circuits.JKFlipFlop
+src.engine_test.JKFlipFlop" class="py-name" href="#" onclick="return doclink('link-76', 'JKFlipFlop', 'link-73');">JKFlipFlop</a></tt><tt class="py-op">(</tt><tt class="py-string">'JKFF3'</tt><tt class="py-op">,</tt> <tt class="py-name">self</tt><tt class="py-op">)</tt> </tt>
+<a name="L149"></a><tt class="py-lineno">149</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">AND0</tt> <tt class="py-op">=</tt> <tt id="link-77" class="py-name"><a title="src.engine.gates.AndGate" class="py-name" href="#" onclick="return doclink('link-77', 'AndGate', 'link-7');">AndGate</a></tt><tt class="py-op">(</tt><tt class="py-string">'AND0'</tt><tt class="py-op">,</tt> <tt class="py-name">self</tt><tt class="py-op">)</tt> </tt>
+<a name="L150"></a><tt class="py-lineno">150</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">AND1</tt> <tt class="py-op">=</tt> <tt id="link-78" class="py-name"><a title="src.engine.gates.AndGate" class="py-name" href="#" onclick="return doclink('link-78', 'AndGate', 'link-7');">AndGate</a></tt><tt class="py-op">(</tt><tt class="py-string">'AND1'</tt><tt class="py-op">,</tt> <tt class="py-name">self</tt><tt class="py-op">,</tt> <tt class="py-number">3</tt><tt class="py-op">)</tt> </tt>
+<a name="L151"></a><tt class="py-lineno">151</tt>  <tt class="py-line">        <tt class="py-comment"># connections between components</tt> </tt>
+<a name="L152"></a><tt class="py-lineno">152</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">A</tt><tt class="py-op">.</tt><tt id="link-79" class="py-name"><a title="src.engine.simulator.Plug.connect
+src.gui.graphicitem.WireItem.connect" class="py-name" href="#" onclick="return doclink('link-79', 'connect', 'link-9');">connect</a></tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">JKFF0</tt><tt class="py-op">.</tt><tt class="py-name">J</tt><tt class="py-op">)</tt> </tt>
+<a name="L153"></a><tt class="py-lineno">153</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">A</tt><tt class="py-op">.</tt><tt id="link-80" class="py-name"><a title="src.engine.simulator.Plug.connect
+src.gui.graphicitem.WireItem.connect" class="py-name" href="#" onclick="return doclink('link-80', 'connect', 'link-9');">connect</a></tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">JKFF0</tt><tt class="py-op">.</tt><tt class="py-name">K</tt><tt class="py-op">)</tt> </tt>
+<a name="L154"></a><tt class="py-lineno">154</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">CLK</tt><tt class="py-op">.</tt><tt id="link-81" class="py-name"><a title="src.engine.simulator.Plug.connect
+src.gui.graphicitem.WireItem.connect" class="py-name" href="#" onclick="return doclink('link-81', 'connect', 'link-9');">connect</a></tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">JKFF0</tt><tt class="py-op">.</tt><tt class="py-name">CLK</tt><tt class="py-op">)</tt> </tt>
+<a name="L155"></a><tt class="py-lineno">155</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">CLK</tt><tt class="py-op">.</tt><tt id="link-82" class="py-name"><a title="src.engine.simulator.Plug.connect
+src.gui.graphicitem.WireItem.connect" class="py-name" href="#" onclick="return doclink('link-82', 'connect', 'link-9');">connect</a></tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">JKFF1</tt><tt class="py-op">.</tt><tt class="py-name">CLK</tt><tt class="py-op">)</tt> </tt>
+<a name="L156"></a><tt class="py-lineno">156</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">CLK</tt><tt class="py-op">.</tt><tt id="link-83" class="py-name"><a title="src.engine.simulator.Plug.connect
+src.gui.graphicitem.WireItem.connect" class="py-name" href="#" onclick="return doclink('link-83', 'connect', 'link-9');">connect</a></tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">JKFF2</tt><tt class="py-op">.</tt><tt class="py-name">CLK</tt><tt class="py-op">)</tt> </tt>
+<a name="L157"></a><tt class="py-lineno">157</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">CLK</tt><tt class="py-op">.</tt><tt id="link-84" class="py-name"><a title="src.engine.simulator.Plug.connect
+src.gui.graphicitem.WireItem.connect" class="py-name" href="#" onclick="return doclink('link-84', 'connect', 'link-9');">connect</a></tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">JKFF3</tt><tt class="py-op">.</tt><tt class="py-name">CLK</tt><tt class="py-op">)</tt> </tt>
+<a name="L158"></a><tt class="py-lineno">158</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">JKFF0</tt><tt class="py-op">.</tt><tt class="py-name">NQ</tt><tt class="py-op">.</tt><tt id="link-85" class="py-name"><a title="src.engine.simulator.Plug.connect
+src.gui.graphicitem.WireItem.connect" class="py-name" href="#" onclick="return doclink('link-85', 'connect', 'link-9');">connect</a></tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">JKFF1</tt><tt class="py-op">.</tt><tt class="py-name">J</tt><tt class="py-op">)</tt> </tt>
+<a name="L159"></a><tt class="py-lineno">159</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">JKFF0</tt><tt class="py-op">.</tt><tt class="py-name">NQ</tt><tt class="py-op">.</tt><tt id="link-86" class="py-name"><a title="src.engine.simulator.Plug.connect
+src.gui.graphicitem.WireItem.connect" class="py-name" href="#" onclick="return doclink('link-86', 'connect', 'link-9');">connect</a></tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">JKFF1</tt><tt class="py-op">.</tt><tt class="py-name">K</tt><tt class="py-op">)</tt> </tt>
+<a name="L160"></a><tt class="py-lineno">160</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">JKFF0</tt><tt class="py-op">.</tt><tt class="py-name">NQ</tt><tt class="py-op">.</tt><tt id="link-87" class="py-name"><a title="src.engine.simulator.Plug.connect
+src.gui.graphicitem.WireItem.connect" class="py-name" href="#" onclick="return doclink('link-87', 'connect', 'link-9');">connect</a></tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">AND0</tt><tt class="py-op">.</tt><tt class="py-name">inputList</tt><tt class="py-op">[</tt><tt class="py-number">0</tt><tt class="py-op">]</tt><tt class="py-op">)</tt> </tt>
+<a name="L161"></a><tt class="py-lineno">161</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">JKFF0</tt><tt class="py-op">.</tt><tt class="py-name">NQ</tt><tt class="py-op">.</tt><tt id="link-88" class="py-name"><a title="src.engine.simulator.Plug.connect
+src.gui.graphicitem.WireItem.connect" class="py-name" href="#" onclick="return doclink('link-88', 'connect', 'link-9');">connect</a></tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">AND1</tt><tt class="py-op">.</tt><tt class="py-name">inputList</tt><tt class="py-op">[</tt><tt class="py-number">0</tt><tt class="py-op">]</tt><tt class="py-op">)</tt> </tt>
+<a name="L162"></a><tt class="py-lineno">162</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">JKFF0</tt><tt class="py-op">.</tt><tt class="py-name">Q</tt><tt class="py-op">.</tt><tt id="link-89" class="py-name"><a title="src.engine.simulator.Plug.connect
+src.gui.graphicitem.WireItem.connect" class="py-name" href="#" onclick="return doclink('link-89', 'connect', 'link-9');">connect</a></tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">Q0</tt><tt class="py-op">)</tt> </tt>
+<a name="L163"></a><tt class="py-lineno">163</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">JKFF1</tt><tt class="py-op">.</tt><tt class="py-name">NQ</tt><tt class="py-op">.</tt><tt id="link-90" class="py-name"><a title="src.engine.simulator.Plug.connect
+src.gui.graphicitem.WireItem.connect" class="py-name" href="#" onclick="return doclink('link-90', 'connect', 'link-9');">connect</a></tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">AND0</tt><tt class="py-op">.</tt><tt class="py-name">inputList</tt><tt class="py-op">[</tt><tt class="py-number">1</tt><tt class="py-op">]</tt><tt class="py-op">)</tt> </tt>
+<a name="L164"></a><tt class="py-lineno">164</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">JKFF1</tt><tt class="py-op">.</tt><tt class="py-name">NQ</tt><tt class="py-op">.</tt><tt id="link-91" class="py-name"><a title="src.engine.simulator.Plug.connect
+src.gui.graphicitem.WireItem.connect" class="py-name" href="#" onclick="return doclink('link-91', 'connect', 'link-9');">connect</a></tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">AND1</tt><tt class="py-op">.</tt><tt class="py-name">inputList</tt><tt class="py-op">[</tt><tt class="py-number">1</tt><tt class="py-op">]</tt><tt class="py-op">)</tt> </tt>
+<a name="L165"></a><tt class="py-lineno">165</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">JKFF1</tt><tt class="py-op">.</tt><tt class="py-name">Q</tt><tt class="py-op">.</tt><tt id="link-92" class="py-name"><a title="src.engine.simulator.Plug.connect
+src.gui.graphicitem.WireItem.connect" class="py-name" href="#" onclick="return doclink('link-92', 'connect', 'link-9');">connect</a></tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">Q1</tt><tt class="py-op">)</tt> </tt>
+<a name="L166"></a><tt class="py-lineno">166</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">JKFF2</tt><tt class="py-op">.</tt><tt class="py-name">NQ</tt><tt class="py-op">.</tt><tt id="link-93" class="py-name"><a title="src.engine.simulator.Plug.connect
+src.gui.graphicitem.WireItem.connect" class="py-name" href="#" onclick="return doclink('link-93', 'connect', 'link-9');">connect</a></tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">AND1</tt><tt class="py-op">.</tt><tt class="py-name">inputList</tt><tt class="py-op">[</tt><tt class="py-number">2</tt><tt class="py-op">]</tt><tt class="py-op">)</tt> </tt>
+<a name="L167"></a><tt class="py-lineno">167</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">JKFF2</tt><tt class="py-op">.</tt><tt class="py-name">Q</tt><tt class="py-op">.</tt><tt id="link-94" class="py-name"><a title="src.engine.simulator.Plug.connect
+src.gui.graphicitem.WireItem.connect" class="py-name" href="#" onclick="return doclink('link-94', 'connect', 'link-9');">connect</a></tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">Q2</tt><tt class="py-op">)</tt> </tt>
+<a name="L168"></a><tt class="py-lineno">168</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">JKFF3</tt><tt class="py-op">.</tt><tt class="py-name">Q</tt><tt class="py-op">.</tt><tt id="link-95" class="py-name"><a title="src.engine.simulator.Plug.connect
+src.gui.graphicitem.WireItem.connect" class="py-name" href="#" onclick="return doclink('link-95', 'connect', 'link-9');">connect</a></tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">Q3</tt><tt class="py-op">)</tt> </tt>
+<a name="L169"></a><tt class="py-lineno">169</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">AND0</tt><tt class="py-op">.</tt><tt class="py-name">outputList</tt><tt class="py-op">[</tt><tt class="py-number">0</tt><tt class="py-op">]</tt><tt class="py-op">.</tt><tt id="link-96" class="py-name"><a title="src.engine.simulator.Plug.connect
+src.gui.graphicitem.WireItem.connect" class="py-name" href="#" onclick="return doclink('link-96', 'connect', 'link-9');">connect</a></tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">JKFF2</tt><tt class="py-op">.</tt><tt class="py-name">J</tt><tt class="py-op">)</tt> </tt>
+<a name="L170"></a><tt class="py-lineno">170</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">AND0</tt><tt class="py-op">.</tt><tt class="py-name">outputList</tt><tt class="py-op">[</tt><tt class="py-number">0</tt><tt class="py-op">]</tt><tt class="py-op">.</tt><tt id="link-97" class="py-name"><a title="src.engine.simulator.Plug.connect
+src.gui.graphicitem.WireItem.connect" class="py-name" href="#" onclick="return doclink('link-97', 'connect', 'link-9');">connect</a></tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">JKFF2</tt><tt class="py-op">.</tt><tt class="py-name">K</tt><tt class="py-op">)</tt> </tt>
+<a name="L171"></a><tt class="py-lineno">171</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">AND1</tt><tt class="py-op">.</tt><tt class="py-name">outputList</tt><tt class="py-op">[</tt><tt class="py-number">0</tt><tt class="py-op">]</tt><tt class="py-op">.</tt><tt id="link-98" class="py-name"><a title="src.engine.simulator.Plug.connect
+src.gui.graphicitem.WireItem.connect" class="py-name" href="#" onclick="return doclink('link-98', 'connect', 'link-9');">connect</a></tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">JKFF3</tt><tt class="py-op">.</tt><tt class="py-name">J</tt><tt class="py-op">)</tt> </tt>
+<a name="L172"></a><tt class="py-lineno">172</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">AND1</tt><tt class="py-op">.</tt><tt class="py-name">outputList</tt><tt class="py-op">[</tt><tt class="py-number">0</tt><tt class="py-op">]</tt><tt class="py-op">.</tt><tt id="link-99" class="py-name"><a title="src.engine.simulator.Plug.connect
+src.gui.graphicitem.WireItem.connect" class="py-name" href="#" onclick="return doclink('link-99', 'connect', 'link-9');">connect</a></tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">JKFF3</tt><tt class="py-op">.</tt><tt class="py-name">K</tt><tt class="py-op">)</tt> </tt>
+</div></div><a name="L173"></a><tt class="py-lineno">173</tt>  <tt class="py-line">  </tt>
+<a name="L174"></a><tt class="py-lineno">174</tt>  <tt class="py-line">  </tt>
+<a name="Register4b"></a><div id="Register4b-def"><a name="L175"></a><tt class="py-lineno">175</tt> <a class="py-toggle" href="#" id="Register4b-toggle" onclick="return toggle('Register4b');">-</a><tt class="py-line"><tt class="py-keyword">class</tt> <a class="py-def-name" href="src.engine.circuits.Register4b-class.html">Register4b</a><tt class="py-op">(</tt><tt class="py-base-class">Circuit</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="Register4b-collapsed" style="display:none;" pad="+++" indent="++++"></div><div id="Register4b-expanded"><a name="Register4b.__init__"></a><div id="Register4b.__init__-def"><a name="L176"></a><tt class="py-lineno">176</tt> <a class="py-toggle" href="#" id="Register4b.__init__-toggle" onclick="return toggle('Register4b.__init__');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="src.engine.circuits.Register4b-class.html#__init__">__init__</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">name</tt><tt class="py-op">,</tt> <tt class="py-param">owner</tt><tt class="py-op">,</tt> <tt class="py-param">category</tt><tt class="py-op">=</tt><tt class="py-name">None</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="Register4b.__init__-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="Register4b.__init__-expanded"><a name="L177"></a><tt class="py-lineno">177</tt>  <tt class="py-line">        <tt id="link-100" class="py-name"><a title="src.engine.simulator.Circuit" class="py-name" href="#" onclick="return doclink('link-100', 'Circuit', 'link-1');">Circuit</a></tt><tt class="py-op">.</tt><tt id="link-101" class="py-name"><a title="src.engine.circuits.Counter4b.__init__
+src.engine.circuits.DFlipFlop.__init__
+src.engine.circuits.JKFlipFlop.__init__
+src.engine.circuits.Mem1b.__init__
+src.engine.circuits.RSFlipFlop.__init__
+src.engine.circuits.Register4b.__init__
+src.engine.clock.Clock.__init__
+src.engine.clock.ClockThread.__init__
+src.engine.gates.AndGate.__init__
+src.engine.gates.NandGate.__init__
+src.engine.gates.NorGate.__init__
+src.engine.gates.NotGate.__init__
+src.engine.gates.OrGate.__init__
+src.engine.gates.XnorGate.__init__
+src.engine.gates.XorGate.__init__
+src.engine.simulator.Agenda.__init__
+src.engine.simulator.Circuit.__init__
+src.engine.simulator.Plug.__init__
+src.engine_test.Counter4b.__init__
+src.engine_test.DFlipFlop.__init__
+src.engine_test.Div2.__init__
+src.engine_test.JKFlipFlop.__init__
+src.engine_test.Mem1b.__init__
+src.engine_test.RSFlipFlop.__init__
+src.engine_test.Register4b.__init__
+src.engine_test.oCounter4b.__init__
+src.engine_test.oJKFlipFlop.__init__
+src.engine_test.ooJKFlipFlop.__init__
+src.engine_test.sDFlipFlop.__init__
+src.gui.circuitdrawing.CustomCircuitCreator.__init__
+src.gui.circuitdrawing.PaintArea.__init__
+src.gui.docu.HelpDockWidget.__init__
+src.gui.docu.HelpTextBrowser.__init__
+src.gui.graphicitem.CircuitItem.__init__
+src.gui.graphicitem.PlugItem.__init__
+src.gui.graphicitem.WireItem.__init__
+src.gui.logwidgets.LogDockWidget.__init__
+src.gui.logwidgets.LoggerTextEdit.__init__
+src.gui.mainview.MainView.__init__
+src.gui.selectionoptions.SelectionOptions.__init__
+src.gui.selectionoptions.SelectionOptionsDockWidget.__init__
+src.gui.settings.Settings.__init__
+src.gui.settings.SettingsDialog.__init__
+src.gui.toolbox.ToolBox.__init__
+src.gui.toolbox.ToolBoxDockWidget.__init__" class="py-name" href="#" onclick="return doclink('link-101', '__init__', 'link-2');">__init__</a></tt> <tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">,</tt> <tt class="py-name">name</tt><tt class="py-op">,</tt> <tt class="py-name">owner</tt><tt class="py-op">)</tt> </tt>
+<a name="L178"></a><tt class="py-lineno">178</tt>  <tt class="py-line">        <tt class="py-comment"># I/O</tt> </tt>
+<a name="L179"></a><tt class="py-lineno">179</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">I0</tt> <tt class="py-op">=</tt> <tt id="link-102" class="py-name"><a title="src.engine.simulator.Plug" class="py-name" href="#" onclick="return doclink('link-102', 'Plug', 'link-3');">Plug</a></tt><tt class="py-op">(</tt><tt class="py-name">True</tt><tt class="py-op">,</tt> <tt class="py-string">'I0'</tt><tt class="py-op">,</tt> <tt class="py-name">self</tt><tt class="py-op">)</tt> </tt>
+<a name="L180"></a><tt class="py-lineno">180</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">I1</tt> <tt class="py-op">=</tt> <tt id="link-103" class="py-name"><a title="src.engine.simulator.Plug" class="py-name" href="#" onclick="return doclink('link-103', 'Plug', 'link-3');">Plug</a></tt><tt class="py-op">(</tt><tt class="py-name">True</tt><tt class="py-op">,</tt> <tt class="py-string">'I1'</tt><tt class="py-op">,</tt> <tt class="py-name">self</tt><tt class="py-op">)</tt> </tt>
+<a name="L181"></a><tt class="py-lineno">181</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">I2</tt> <tt class="py-op">=</tt> <tt id="link-104" class="py-name"><a title="src.engine.simulator.Plug" class="py-name" href="#" onclick="return doclink('link-104', 'Plug', 'link-3');">Plug</a></tt><tt class="py-op">(</tt><tt class="py-name">True</tt><tt class="py-op">,</tt> <tt class="py-string">'I2'</tt><tt class="py-op">,</tt> <tt class="py-name">self</tt><tt class="py-op">)</tt> </tt>
+<a name="L182"></a><tt class="py-lineno">182</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">I3</tt> <tt class="py-op">=</tt> <tt id="link-105" class="py-name"><a title="src.engine.simulator.Plug" class="py-name" href="#" onclick="return doclink('link-105', 'Plug', 'link-3');">Plug</a></tt><tt class="py-op">(</tt><tt class="py-name">True</tt><tt class="py-op">,</tt> <tt class="py-string">'I3'</tt><tt class="py-op">,</tt> <tt class="py-name">self</tt><tt class="py-op">)</tt> </tt>
+<a name="L183"></a><tt class="py-lineno">183</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">CLK</tt> <tt class="py-op">=</tt> <tt id="link-106" class="py-name"><a title="src.engine.simulator.Plug" class="py-name" href="#" onclick="return doclink('link-106', 'Plug', 'link-3');">Plug</a></tt><tt class="py-op">(</tt><tt class="py-name">True</tt><tt class="py-op">,</tt> <tt class="py-string">'CLK'</tt><tt class="py-op">,</tt> <tt class="py-name">self</tt><tt class="py-op">)</tt> </tt>
+<a name="L184"></a><tt class="py-lineno">184</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">Q0</tt> <tt class="py-op">=</tt> <tt id="link-107" class="py-name"><a title="src.engine.simulator.Plug" class="py-name" href="#" onclick="return doclink('link-107', 'Plug', 'link-3');">Plug</a></tt><tt class="py-op">(</tt><tt class="py-name">False</tt><tt class="py-op">,</tt> <tt class="py-string">'Q0'</tt><tt class="py-op">,</tt> <tt class="py-name">self</tt><tt class="py-op">)</tt> </tt>
+<a name="L185"></a><tt class="py-lineno">185</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">Q1</tt> <tt class="py-op">=</tt> <tt id="link-108" class="py-name"><a title="src.engine.simulator.Plug" class="py-name" href="#" onclick="return doclink('link-108', 'Plug', 'link-3');">Plug</a></tt><tt class="py-op">(</tt><tt class="py-name">False</tt><tt class="py-op">,</tt> <tt class="py-string">'Q1'</tt><tt class="py-op">,</tt> <tt class="py-name">self</tt><tt class="py-op">)</tt> </tt>
+<a name="L186"></a><tt class="py-lineno">186</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">Q2</tt> <tt class="py-op">=</tt> <tt id="link-109" class="py-name"><a title="src.engine.simulator.Plug" class="py-name" href="#" onclick="return doclink('link-109', 'Plug', 'link-3');">Plug</a></tt><tt class="py-op">(</tt><tt class="py-name">False</tt><tt class="py-op">,</tt> <tt class="py-string">'Q2'</tt><tt class="py-op">,</tt> <tt class="py-name">self</tt><tt class="py-op">)</tt> </tt>
+<a name="L187"></a><tt class="py-lineno">187</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">Q3</tt> <tt class="py-op">=</tt> <tt id="link-110" class="py-name"><a title="src.engine.simulator.Plug" class="py-name" href="#" onclick="return doclink('link-110', 'Plug', 'link-3');">Plug</a></tt><tt class="py-op">(</tt><tt class="py-name">False</tt><tt class="py-op">,</tt> <tt class="py-string">'Q3'</tt><tt class="py-op">,</tt> <tt class="py-name">self</tt><tt class="py-op">)</tt> </tt>
+<a name="L188"></a><tt class="py-lineno">188</tt>  <tt class="py-line">        <tt class="py-comment"># components</tt> </tt>
+<a name="L189"></a><tt class="py-lineno">189</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">DFF0</tt> <tt class="py-op">=</tt> <tt id="link-111" class="py-name" targets="Class src.engine.circuits.DFlipFlop=src.engine.circuits.DFlipFlop-class.html,Class src.engine_test.DFlipFlop=src.engine_test.DFlipFlop-class.html"><a title="src.engine.circuits.DFlipFlop
+src.engine_test.DFlipFlop" class="py-name" href="#" onclick="return doclink('link-111', 'DFlipFlop', 'link-111');">DFlipFlop</a></tt><tt class="py-op">(</tt><tt class="py-string">'DFF0'</tt><tt class="py-op">,</tt> <tt class="py-name">self</tt><tt class="py-op">)</tt> </tt>
+<a name="L190"></a><tt class="py-lineno">190</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">DFF1</tt> <tt class="py-op">=</tt> <tt id="link-112" class="py-name"><a title="src.engine.circuits.DFlipFlop
+src.engine_test.DFlipFlop" class="py-name" href="#" onclick="return doclink('link-112', 'DFlipFlop', 'link-111');">DFlipFlop</a></tt><tt class="py-op">(</tt><tt class="py-string">'DFF1'</tt><tt class="py-op">,</tt> <tt class="py-name">self</tt><tt class="py-op">)</tt> </tt>
+<a name="L191"></a><tt class="py-lineno">191</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">DFF2</tt> <tt class="py-op">=</tt> <tt id="link-113" class="py-name"><a title="src.engine.circuits.DFlipFlop
+src.engine_test.DFlipFlop" class="py-name" href="#" onclick="return doclink('link-113', 'DFlipFlop', 'link-111');">DFlipFlop</a></tt><tt class="py-op">(</tt><tt class="py-string">'DFF2'</tt><tt class="py-op">,</tt> <tt class="py-name">self</tt><tt class="py-op">)</tt> </tt>
+<a name="L192"></a><tt class="py-lineno">192</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">DFF3</tt> <tt class="py-op">=</tt> <tt id="link-114" class="py-name"><a title="src.engine.circuits.DFlipFlop
+src.engine_test.DFlipFlop" class="py-name" href="#" onclick="return doclink('link-114', 'DFlipFlop', 'link-111');">DFlipFlop</a></tt><tt class="py-op">(</tt><tt class="py-string">'DFF3'</tt><tt class="py-op">,</tt> <tt class="py-name">self</tt><tt class="py-op">)</tt> </tt>
+<a name="L193"></a><tt class="py-lineno">193</tt>  <tt class="py-line">        <tt class="py-comment"># connections between components</tt> </tt>
+<a name="L194"></a><tt class="py-lineno">194</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">CLK</tt><tt class="py-op">.</tt><tt id="link-115" class="py-name"><a title="src.engine.simulator.Plug.connect
+src.gui.graphicitem.WireItem.connect" class="py-name" href="#" onclick="return doclink('link-115', 'connect', 'link-9');">connect</a></tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">DFF0</tt><tt class="py-op">.</tt><tt class="py-name">CLK</tt><tt class="py-op">)</tt> </tt>
+<a name="L195"></a><tt class="py-lineno">195</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">CLK</tt><tt class="py-op">.</tt><tt id="link-116" class="py-name"><a title="src.engine.simulator.Plug.connect
+src.gui.graphicitem.WireItem.connect" class="py-name" href="#" onclick="return doclink('link-116', 'connect', 'link-9');">connect</a></tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">DFF1</tt><tt class="py-op">.</tt><tt class="py-name">CLK</tt><tt class="py-op">)</tt> </tt>
+<a name="L196"></a><tt class="py-lineno">196</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">CLK</tt><tt class="py-op">.</tt><tt id="link-117" class="py-name"><a title="src.engine.simulator.Plug.connect
+src.gui.graphicitem.WireItem.connect" class="py-name" href="#" onclick="return doclink('link-117', 'connect', 'link-9');">connect</a></tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">DFF2</tt><tt class="py-op">.</tt><tt class="py-name">CLK</tt><tt class="py-op">)</tt> </tt>
+<a name="L197"></a><tt class="py-lineno">197</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">CLK</tt><tt class="py-op">.</tt><tt id="link-118" class="py-name"><a title="src.engine.simulator.Plug.connect
+src.gui.graphicitem.WireItem.connect" class="py-name" href="#" onclick="return doclink('link-118', 'connect', 'link-9');">connect</a></tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">DFF3</tt><tt class="py-op">.</tt><tt class="py-name">CLK</tt><tt class="py-op">)</tt> </tt>
+<a name="L198"></a><tt class="py-lineno">198</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">I0</tt><tt class="py-op">.</tt><tt id="link-119" class="py-name"><a title="src.engine.simulator.Plug.connect
+src.gui.graphicitem.WireItem.connect" class="py-name" href="#" onclick="return doclink('link-119', 'connect', 'link-9');">connect</a></tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">DFF0</tt><tt class="py-op">.</tt><tt class="py-name">D</tt><tt class="py-op">)</tt> </tt>
+<a name="L199"></a><tt class="py-lineno">199</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">I1</tt><tt class="py-op">.</tt><tt id="link-120" class="py-name"><a title="src.engine.simulator.Plug.connect
+src.gui.graphicitem.WireItem.connect" class="py-name" href="#" onclick="return doclink('link-120', 'connect', 'link-9');">connect</a></tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">DFF1</tt><tt class="py-op">.</tt><tt class="py-name">D</tt><tt class="py-op">)</tt> </tt>
+<a name="L200"></a><tt class="py-lineno">200</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">I2</tt><tt class="py-op">.</tt><tt id="link-121" class="py-name"><a title="src.engine.simulator.Plug.connect
+src.gui.graphicitem.WireItem.connect" class="py-name" href="#" onclick="return doclink('link-121', 'connect', 'link-9');">connect</a></tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">DFF2</tt><tt class="py-op">.</tt><tt class="py-name">D</tt><tt class="py-op">)</tt> </tt>
+<a name="L201"></a><tt class="py-lineno">201</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">I3</tt><tt class="py-op">.</tt><tt id="link-122" class="py-name"><a title="src.engine.simulator.Plug.connect
+src.gui.graphicitem.WireItem.connect" class="py-name" href="#" onclick="return doclink('link-122', 'connect', 'link-9');">connect</a></tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">DFF3</tt><tt class="py-op">.</tt><tt class="py-name">D</tt><tt class="py-op">)</tt> </tt>
+<a name="L202"></a><tt class="py-lineno">202</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">DFF0</tt><tt class="py-op">.</tt><tt class="py-name">Q</tt><tt class="py-op">.</tt><tt id="link-123" class="py-name"><a title="src.engine.simulator.Plug.connect
+src.gui.graphicitem.WireItem.connect" class="py-name" href="#" onclick="return doclink('link-123', 'connect', 'link-9');">connect</a></tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">Q0</tt><tt class="py-op">)</tt> </tt>
+<a name="L203"></a><tt class="py-lineno">203</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">DFF1</tt><tt class="py-op">.</tt><tt class="py-name">Q</tt><tt class="py-op">.</tt><tt id="link-124" class="py-name"><a title="src.engine.simulator.Plug.connect
+src.gui.graphicitem.WireItem.connect" class="py-name" href="#" onclick="return doclink('link-124', 'connect', 'link-9');">connect</a></tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">Q1</tt><tt class="py-op">)</tt> </tt>
+<a name="L204"></a><tt class="py-lineno">204</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">DFF2</tt><tt class="py-op">.</tt><tt class="py-name">Q</tt><tt class="py-op">.</tt><tt id="link-125" class="py-name"><a title="src.engine.simulator.Plug.connect
+src.gui.graphicitem.WireItem.connect" class="py-name" href="#" onclick="return doclink('link-125', 'connect', 'link-9');">connect</a></tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">Q2</tt><tt class="py-op">)</tt> </tt>
+<a name="L205"></a><tt class="py-lineno">205</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">DFF3</tt><tt class="py-op">.</tt><tt class="py-name">Q</tt><tt class="py-op">.</tt><tt id="link-126" class="py-name"><a title="src.engine.simulator.Plug.connect
+src.gui.graphicitem.WireItem.connect" class="py-name" href="#" onclick="return doclink('link-126', 'connect', 'link-9');">connect</a></tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">Q3</tt><tt class="py-op">)</tt> </tt>
+</div></div><a name="L206"></a><tt class="py-lineno">206</tt>  <tt class="py-line"> </tt><script type="text/javascript">
+<!--
+expandto(location.href);
+// -->
+</script>
+</pre>
+<br />
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="src-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+      <th class="navbar" width="100%"></th>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%%">
+  <tr>
+    <td align="left" class="footer">
+    Generated by Epydoc 3.0.1 on Sun Sep 14 16:43:36 2014
+    </td>
+    <td align="right" class="footer">
+      <a target="mainFrame" href="http://epydoc.sourceforge.net"
+        >http://epydoc.sourceforge.net</a>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+  <!--
+  // Private objects are initially displayed (because if
+  // javascript is turned off then we want them to be
+  // visible); but by default, we want to hide them.  So hide
+  // them unless we have a cookie that says to show them.
+  checkCookie();
+  // -->
+</script>
+</body>
+</html>

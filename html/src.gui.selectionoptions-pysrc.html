@@ -1,0 +1,350 @@
+<?xml version="1.0" encoding="ascii"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>src.gui.selectionoptions</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css" />
+  <script type="text/javascript" src="epydoc.js"></script>
+</head>
+
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="src-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+      <th class="navbar" width="100%"></th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">
+      <span class="breadcrumbs">
+        <a href="src-module.html">Package&nbsp;src</a> ::
+        <a href="src.gui-module.html">Package&nbsp;gui</a> ::
+        Module&nbsp;selectionoptions
+      </span>
+    </td>
+    <td>
+      <table cellpadding="0" cellspacing="0">
+        <!-- hide/show private -->
+        <tr><td align="right"><span class="options">[<a href="javascript:void(0);" class="privatelink"
+    onclick="toggle_private();">hide&nbsp;private</a>]</span></td></tr>
+        <tr><td align="right"><span class="options"
+            >[<a href="frames.html" target="_top">frames</a
+            >]&nbsp;|&nbsp;<a href="src.gui.selectionoptions-pysrc.html"
+            target="_top">no&nbsp;frames</a>]</span></td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<h1 class="epydoc">Source Code for <a href="src.gui.selectionoptions-module.html">Module src.gui.selectionoptions</a></h1>
+<pre class="py-src">
+<a name="L1"></a><tt class="py-lineno">  1</tt>  <tt class="py-line"><tt class="py-comment">#!/usr/bin/env python3</tt> </tt>
+<a name="L2"></a><tt class="py-lineno">  2</tt>  <tt class="py-line"><tt class="py-comment"># coding=utf-8</tt> </tt>
+<a name="L3"></a><tt class="py-lineno">  3</tt>  <tt class="py-line"> </tt>
+<a name="L4"></a><tt class="py-lineno">  4</tt>  <tt class="py-line"><tt class="py-keyword">import</tt> <tt class="py-name">inspect</tt> </tt>
+<a name="L5"></a><tt class="py-lineno">  5</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt class="py-name">PySide</tt><tt class="py-op">.</tt><tt class="py-name">QtGui</tt> <tt class="py-keyword">import</tt> <tt class="py-op">(</tt> </tt>
+<a name="L6"></a><tt class="py-lineno">  6</tt>  <tt class="py-line">    <tt class="py-name">QCheckBox</tt><tt class="py-op">,</tt> <tt class="py-name">QComboBox</tt><tt class="py-op">,</tt> <tt class="py-name">QDockWidget</tt><tt class="py-op">,</tt> <tt class="py-name">QGridLayout</tt><tt class="py-op">,</tt> <tt class="py-name">QLabel</tt><tt class="py-op">,</tt> <tt class="py-name">QLineEdit</tt><tt class="py-op">,</tt> </tt>
+<a name="L7"></a><tt class="py-lineno">  7</tt>  <tt class="py-line">    <tt class="py-name">QPushButton</tt><tt class="py-op">,</tt> <tt class="py-name">QRadioButton</tt><tt class="py-op">,</tt> <tt class="py-name">QSizePolicy</tt><tt class="py-op">,</tt> <tt class="py-name">QWidget</tt><tt class="py-op">)</tt> </tt>
+<a name="L8"></a><tt class="py-lineno">  8</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt class="py-op">.</tt><tt id="link-0" class="py-name" targets="Module src.gui.graphicitem=src.gui.graphicitem-module.html"><a title="src.gui.graphicitem" class="py-name" href="#" onclick="return doclink('link-0', 'graphicitem', 'link-0');">graphicitem</a></tt> <tt class="py-keyword">import</tt> <tt id="link-1" class="py-name" targets="Class src.gui.graphicitem.CircuitItem=src.gui.graphicitem.CircuitItem-class.html"><a title="src.gui.graphicitem.CircuitItem" class="py-name" href="#" onclick="return doclink('link-1', 'CircuitItem', 'link-1');">CircuitItem</a></tt><tt class="py-op">,</tt> <tt id="link-2" class="py-name" targets="Class src.gui.graphicitem.WireItem=src.gui.graphicitem.WireItem-class.html"><a title="src.gui.graphicitem.WireItem" class="py-name" href="#" onclick="return doclink('link-2', 'WireItem', 'link-2');">WireItem</a></tt> </tt>
+<a name="L9"></a><tt class="py-lineno">  9</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt class="py-op">.</tt><tt id="link-3" class="py-name" targets="Module src.gui.util=src.gui.util-module.html"><a title="src.gui.util" class="py-name" href="#" onclick="return doclink('link-3', 'util', 'link-3');">util</a></tt> <tt class="py-keyword">import</tt> <tt id="link-4" class="py-name" targets="Function src.gui.util.boolToCheckState()=src.gui.util-module.html#boolToCheckState"><a title="src.gui.util.boolToCheckState" class="py-name" href="#" onclick="return doclink('link-4', 'boolToCheckState', 'link-4');">boolToCheckState</a></tt> </tt>
+<a name="L10"></a><tt class="py-lineno"> 10</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt id="link-5" class="py-name" targets="Package src.engine=src.engine-module.html"><a title="src.engine" class="py-name" href="#" onclick="return doclink('link-5', 'engine', 'link-5');">engine</a></tt><tt class="py-op">.</tt><tt id="link-6" class="py-name" targets="Module src.engine.gates=src.engine.gates-module.html"><a title="src.engine.gates" class="py-name" href="#" onclick="return doclink('link-6', 'gates', 'link-6');">gates</a></tt> <tt class="py-keyword">import</tt> <tt class="py-op">*</tt> </tt>
+<a name="L11"></a><tt class="py-lineno"> 11</tt>  <tt class="py-line"> </tt>
+<a name="L12"></a><tt class="py-lineno"> 12</tt>  <tt class="py-line"> </tt>
+<a name="SelectionOptions"></a><div id="SelectionOptions-def"><a name="L13"></a><tt class="py-lineno"> 13</tt> <a class="py-toggle" href="#" id="SelectionOptions-toggle" onclick="return toggle('SelectionOptions');">-</a><tt class="py-line"><tt class="py-keyword">class</tt> <a class="py-def-name" href="src.gui.selectionoptions.SelectionOptions-class.html">SelectionOptions</a><tt class="py-op">(</tt><tt class="py-base-class">QWidget</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="SelectionOptions-collapsed" style="display:none;" pad="+++" indent="++++"></div><div id="SelectionOptions-expanded"><a name="L14"></a><tt class="py-lineno"> 14</tt>  <tt class="py-line">    <tt class="py-docstring">"""Widget for modifying the selected circuit or gate."""</tt> </tt>
+<a name="L15"></a><tt class="py-lineno"> 15</tt>  <tt class="py-line"> </tt>
+<a name="SelectionOptions.__init__"></a><div id="SelectionOptions.__init__-def"><a name="L16"></a><tt class="py-lineno"> 16</tt> <a class="py-toggle" href="#" id="SelectionOptions.__init__-toggle" onclick="return toggle('SelectionOptions.__init__');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="src.gui.selectionoptions.SelectionOptions-class.html#__init__">__init__</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">view</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="SelectionOptions.__init__-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="SelectionOptions.__init__-expanded"><a name="L17"></a><tt class="py-lineno"> 17</tt>  <tt class="py-line">        <tt class="py-name">super</tt><tt class="py-op">(</tt><tt id="link-7" class="py-name" targets="Class src.gui.selectionoptions.SelectionOptions=src.gui.selectionoptions.SelectionOptions-class.html"><a title="src.gui.selectionoptions.SelectionOptions" class="py-name" href="#" onclick="return doclink('link-7', 'SelectionOptions', 'link-7');">SelectionOptions</a></tt><tt class="py-op">,</tt> <tt class="py-name">self</tt><tt class="py-op">)</tt><tt class="py-op">.</tt><tt id="link-8" class="py-name" targets="Method src.engine.circuits.Counter4b.__init__()=src.engine.circuits.Counter4b-class.html#__init__,Method src.engine.circuits.DFlipFlop.__init__()=src.engine.circuits.DFlipFlop-class.html#__init__,Method src.engine.circuits.JKFlipFlop.__init__()=src.engine.circuits.JKFlipFlop-class.html#__init__,Method src.engine.circuits.Mem1b.__init__()=src.engine.circuits.Mem1b-class.html#__init__,Method src.engine.circuits.RSFlipFlop.__init__()=src.engine.circuits.RSFlipFlop-class.html#__init__,Method src.engine.circuits.Register4b.__init__()=src.engine.circuits.Register4b-class.html#__init__,Method src.engine.clock.Clock.__init__()=src.engine.clock.Clock-class.html#__init__,Method src.engine.clock.ClockThread.__init__()=src.engine.clock.ClockThread-class.html#__init__,Method src.engine.gates.AndGate.__init__()=src.engine.gates.AndGate-class.html#__init__,Method src.engine.gates.NandGate.__init__()=src.engine.gates.NandGate-class.html#__init__,Method src.engine.gates.NorGate.__init__()=src.engine.gates.NorGate-class.html#__init__,Method src.engine.gates.NotGate.__init__()=src.engine.gates.NotGate-class.html#__init__,Method src.engine.gates.OrGate.__init__()=src.engine.gates.OrGate-class.html#__init__,Method src.engine.gates.XnorGate.__init__()=src.engine.gates.XnorGate-class.html#__init__,Method src.engine.gates.XorGate.__init__()=src.engine.gates.XorGate-class.html#__init__,Method src.engine.simulator.Agenda.__init__()=src.engine.simulator.Agenda-class.html#__init__,Method src.engine.simulator.Circuit.__init__()=src.engine.simulator.Circuit-class.html#__init__,Method src.engine.simulator.Plug.__init__()=src.engine.simulator.Plug-class.html#__init__,Method src.engine_test.Counter4b.__init__()=src.engine_test.Counter4b-class.html#__init__,Method src.engine_test.DFlipFlop.__init__()=src.engine_test.DFlipFlop-class.html#__init__,Method src.engine_test.Div2.__init__()=src.engine_test.Div2-class.html#__init__,Method src.engine_test.JKFlipFlop.__init__()=src.engine_test.JKFlipFlop-class.html#__init__,Method src.engine_test.Mem1b.__init__()=src.engine_test.Mem1b-class.html#__init__,Method src.engine_test.RSFlipFlop.__init__()=src.engine_test.RSFlipFlop-class.html#__init__,Method src.engine_test.Register4b.__init__()=src.engine_test.Register4b-class.html#__init__,Method src.engine_test.oCounter4b.__init__()=src.engine_test.oCounter4b-class.html#__init__,Method src.engine_test.oJKFlipFlop.__init__()=src.engine_test.oJKFlipFlop-class.html#__init__,Method src.engine_test.ooJKFlipFlop.__init__()=src.engine_test.ooJKFlipFlop-class.html#__init__,Method src.engine_test.sDFlipFlop.__init__()=src.engine_test.sDFlipFlop-class.html#__init__,Method src.gui.circuitdrawing.CustomCircuitCreator.__init__()=src.gui.circuitdrawing.CustomCircuitCreator-class.html#__init__,Method src.gui.circuitdrawing.PaintArea.__init__()=src.gui.circuitdrawing.PaintArea-class.html#__init__,Method src.gui.docu.HelpDockWidget.__init__()=src.gui.docu.HelpDockWidget-class.html#__init__,Method src.gui.docu.HelpTextBrowser.__init__()=src.gui.docu.HelpTextBrowser-class.html#__init__,Method src.gui.graphicitem.CircuitItem.__init__()=src.gui.graphicitem.CircuitItem-class.html#__init__,Method src.gui.graphicitem.PlugItem.__init__()=src.gui.graphicitem.PlugItem-class.html#__init__,Method src.gui.graphicitem.WireItem.__init__()=src.gui.graphicitem.WireItem-class.html#__init__,Method src.gui.logwidgets.LogDockWidget.__init__()=src.gui.logwidgets.LogDockWidget-class.html#__init__,Method src.gui.logwidgets.LoggerTextEdit.__init__()=src.gui.logwidgets.LoggerTextEdit-class.html#__init__,Method src.gui.mainview.MainView.__init__()=src.gui.mainview.MainView-class.html#__init__,Method src.gui.selectionoptions.SelectionOptions.__init__()=src.gui.selectionoptions.SelectionOptions-class.html#__init__,Method src.gui.selectionoptions.SelectionOptionsDockWidget.__init__()=src.gui.selectionoptions.SelectionOptionsDockWidget-class.html#__init__,Method src.gui.settings.Settings.__init__()=src.gui.settings.Settings-class.html#__init__,Method src.gui.settings.SettingsDialog.__init__()=src.gui.settings.SettingsDialog-class.html#__init__,Method src.gui.toolbox.ToolBox.__init__()=src.gui.toolbox.ToolBox-class.html#__init__,Method src.gui.toolbox.ToolBoxDockWidget.__init__()=src.gui.toolbox.ToolBoxDockWidget-class.html#__init__"><a title="src.engine.circuits.Counter4b.__init__
+src.engine.circuits.DFlipFlop.__init__
+src.engine.circuits.JKFlipFlop.__init__
+src.engine.circuits.Mem1b.__init__
+src.engine.circuits.RSFlipFlop.__init__
+src.engine.circuits.Register4b.__init__
+src.engine.clock.Clock.__init__
+src.engine.clock.ClockThread.__init__
+src.engine.gates.AndGate.__init__
+src.engine.gates.NandGate.__init__
+src.engine.gates.NorGate.__init__
+src.engine.gates.NotGate.__init__
+src.engine.gates.OrGate.__init__
+src.engine.gates.XnorGate.__init__
+src.engine.gates.XorGate.__init__
+src.engine.simulator.Agenda.__init__
+src.engine.simulator.Circuit.__init__
+src.engine.simulator.Plug.__init__
+src.engine_test.Counter4b.__init__
+src.engine_test.DFlipFlop.__init__
+src.engine_test.Div2.__init__
+src.engine_test.JKFlipFlop.__init__
+src.engine_test.Mem1b.__init__
+src.engine_test.RSFlipFlop.__init__
+src.engine_test.Register4b.__init__
+src.engine_test.oCounter4b.__init__
+src.engine_test.oJKFlipFlop.__init__
+src.engine_test.ooJKFlipFlop.__init__
+src.engine_test.sDFlipFlop.__init__
+src.gui.circuitdrawing.CustomCircuitCreator.__init__
+src.gui.circuitdrawing.PaintArea.__init__
+src.gui.docu.HelpDockWidget.__init__
+src.gui.docu.HelpTextBrowser.__init__
+src.gui.graphicitem.CircuitItem.__init__
+src.gui.graphicitem.PlugItem.__init__
+src.gui.graphicitem.WireItem.__init__
+src.gui.logwidgets.LogDockWidget.__init__
+src.gui.logwidgets.LoggerTextEdit.__init__
+src.gui.mainview.MainView.__init__
+src.gui.selectionoptions.SelectionOptions.__init__
+src.gui.selectionoptions.SelectionOptionsDockWidget.__init__
+src.gui.settings.Settings.__init__
+src.gui.settings.SettingsDialog.__init__
+src.gui.toolbox.ToolBox.__init__
+src.gui.toolbox.ToolBoxDockWidget.__init__" class="py-name" href="#" onclick="return doclink('link-8', '__init__', 'link-8');">__init__</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L18"></a><tt class="py-lineno"> 18</tt>  <tt class="py-line"> </tt>
+<a name="L19"></a><tt class="py-lineno"> 19</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">setSizePolicy</tt><tt class="py-op">(</tt><tt class="py-name">QSizePolicy</tt><tt class="py-op">.</tt><tt class="py-name">Minimum</tt><tt class="py-op">,</tt> <tt class="py-name">QSizePolicy</tt><tt class="py-op">.</tt><tt class="py-name">Preferred</tt><tt class="py-op">)</tt> </tt>
+<a name="L20"></a><tt class="py-lineno"> 20</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">view</tt> <tt class="py-op">=</tt> <tt class="py-name">view</tt> </tt>
+<a name="L21"></a><tt class="py-lineno"> 21</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">view</tt><tt class="py-op">.</tt><tt class="py-name">scene</tt><tt class="py-op">(</tt><tt class="py-op">)</tt><tt class="py-op">.</tt><tt class="py-name">selectionChanged</tt><tt class="py-op">.</tt><tt id="link-9" class="py-name" targets="Method src.engine.simulator.Plug.connect()=src.engine.simulator.Plug-class.html#connect,Method src.gui.graphicitem.WireItem.connect()=src.gui.graphicitem.WireItem-class.html#connect"><a title="src.engine.simulator.Plug.connect
+src.gui.graphicitem.WireItem.connect" class="py-name" href="#" onclick="return doclink('link-9', 'connect', 'link-9');">connect</a></tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-10" class="py-name" targets="Method src.gui.selectionoptions.SelectionOptions.updateOptions()=src.gui.selectionoptions.SelectionOptions-class.html#updateOptions"><a title="src.gui.selectionoptions.SelectionOptions.updateOptions" class="py-name" href="#" onclick="return doclink('link-10', 'updateOptions', 'link-10');">updateOptions</a></tt><tt class="py-op">)</tt> </tt>
+<a name="L22"></a><tt class="py-lineno"> 22</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">gridLayout</tt> <tt class="py-op">=</tt> <tt class="py-name">QGridLayout</tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">)</tt> </tt>
+<a name="L23"></a><tt class="py-lineno"> 23</tt>  <tt class="py-line"> </tt>
+<a name="L24"></a><tt class="py-lineno"> 24</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">nameLabel</tt> <tt class="py-op">=</tt> <tt class="py-name">QLabel</tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">str_name</tt><tt class="py-op">,</tt> <tt class="py-name">self</tt><tt class="py-op">)</tt> </tt>
+<a name="L25"></a><tt class="py-lineno"> 25</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">gridLayout</tt><tt class="py-op">.</tt><tt class="py-name">addWidget</tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">nameLabel</tt><tt class="py-op">,</tt> <tt class="py-number">0</tt><tt class="py-op">,</tt> <tt class="py-number">0</tt><tt class="py-op">,</tt> <tt class="py-number">1</tt><tt class="py-op">,</tt> <tt class="py-number">1</tt><tt class="py-op">)</tt> </tt>
+<a name="L26"></a><tt class="py-lineno"> 26</tt>  <tt class="py-line"> </tt>
+<a name="L27"></a><tt class="py-lineno"> 27</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">nameLE</tt> <tt class="py-op">=</tt> <tt class="py-name">QLineEdit</tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">)</tt> </tt>
+<a name="L28"></a><tt class="py-lineno"> 28</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">gridLayout</tt><tt class="py-op">.</tt><tt class="py-name">addWidget</tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">nameLE</tt><tt class="py-op">,</tt> <tt class="py-number">0</tt><tt class="py-op">,</tt> <tt class="py-number">1</tt><tt class="py-op">,</tt> <tt class="py-number">1</tt><tt class="py-op">,</tt> <tt class="py-number">2</tt><tt class="py-op">)</tt> </tt>
+<a name="L29"></a><tt class="py-lineno"> 29</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">nameLE</tt><tt class="py-op">.</tt><tt class="py-name">returnPressed</tt><tt class="py-op">.</tt><tt id="link-11" class="py-name"><a title="src.engine.simulator.Plug.connect
+src.gui.graphicitem.WireItem.connect" class="py-name" href="#" onclick="return doclink('link-11', 'connect', 'link-9');">connect</a></tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-12" class="py-name" targets="Method src.gui.selectionoptions.SelectionOptions.setItemName()=src.gui.selectionoptions.SelectionOptions-class.html#setItemName"><a title="src.gui.selectionoptions.SelectionOptions.setItemName" class="py-name" href="#" onclick="return doclink('link-12', 'setItemName', 'link-12');">setItemName</a></tt><tt class="py-op">)</tt> </tt>
+<a name="L30"></a><tt class="py-lineno"> 30</tt>  <tt class="py-line"> </tt>
+<a name="L31"></a><tt class="py-lineno"> 31</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">showNameLabel</tt> <tt class="py-op">=</tt> <tt class="py-name">QLabel</tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">str_showName</tt><tt class="py-op">,</tt> <tt class="py-name">self</tt><tt class="py-op">)</tt> </tt>
+<a name="L32"></a><tt class="py-lineno"> 32</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">gridLayout</tt><tt class="py-op">.</tt><tt class="py-name">addWidget</tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">showNameLabel</tt><tt class="py-op">,</tt> <tt class="py-number">1</tt><tt class="py-op">,</tt> <tt class="py-number">0</tt><tt class="py-op">,</tt> <tt class="py-number">1</tt><tt class="py-op">,</tt> <tt class="py-number">1</tt><tt class="py-op">)</tt> </tt>
+<a name="L33"></a><tt class="py-lineno"> 33</tt>  <tt class="py-line"> </tt>
+<a name="L34"></a><tt class="py-lineno"> 34</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">showNameCB</tt> <tt class="py-op">=</tt> <tt class="py-name">QCheckBox</tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">)</tt> </tt>
+<a name="L35"></a><tt class="py-lineno"> 35</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">gridLayout</tt><tt class="py-op">.</tt><tt class="py-name">addWidget</tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">showNameCB</tt><tt class="py-op">,</tt> <tt class="py-number">1</tt><tt class="py-op">,</tt> <tt class="py-number">1</tt><tt class="py-op">,</tt> <tt class="py-number">1</tt><tt class="py-op">,</tt> <tt class="py-number">1</tt><tt class="py-op">)</tt> </tt>
+<a name="L36"></a><tt class="py-lineno"> 36</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">showNameCB</tt><tt class="py-op">.</tt><tt class="py-name">stateChanged</tt><tt class="py-op">.</tt><tt id="link-13" class="py-name"><a title="src.engine.simulator.Plug.connect
+src.gui.graphicitem.WireItem.connect" class="py-name" href="#" onclick="return doclink('link-13', 'connect', 'link-9');">connect</a></tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-14" class="py-name" targets="Method src.gui.graphicitem.CircuitItem.setNameVisibility()=src.gui.graphicitem.CircuitItem-class.html#setNameVisibility,Method src.gui.graphicitem.PlugItem.setNameVisibility()=src.gui.graphicitem.PlugItem-class.html#setNameVisibility,Method src.gui.selectionoptions.SelectionOptions.setNameVisibility()=src.gui.selectionoptions.SelectionOptions-class.html#setNameVisibility"><a title="src.gui.graphicitem.CircuitItem.setNameVisibility
+src.gui.graphicitem.PlugItem.setNameVisibility
+src.gui.selectionoptions.SelectionOptions.setNameVisibility" class="py-name" href="#" onclick="return doclink('link-14', 'setNameVisibility', 'link-14');">setNameVisibility</a></tt><tt class="py-op">)</tt> </tt>
+<a name="L37"></a><tt class="py-lineno"> 37</tt>  <tt class="py-line"> </tt>
+<a name="L38"></a><tt class="py-lineno"> 38</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">showCategoryLabel</tt> <tt class="py-op">=</tt> <tt class="py-name">QLabel</tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">str_showCategory</tt><tt class="py-op">,</tt> <tt class="py-name">self</tt><tt class="py-op">)</tt> </tt>
+<a name="L39"></a><tt class="py-lineno"> 39</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">gridLayout</tt><tt class="py-op">.</tt><tt class="py-name">addWidget</tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">showCategoryLabel</tt><tt class="py-op">,</tt> <tt class="py-number">2</tt><tt class="py-op">,</tt> <tt class="py-number">0</tt><tt class="py-op">,</tt> <tt class="py-number">1</tt><tt class="py-op">,</tt> <tt class="py-number">1</tt><tt class="py-op">)</tt> </tt>
+<a name="L40"></a><tt class="py-lineno"> 40</tt>  <tt class="py-line"> </tt>
+<a name="L41"></a><tt class="py-lineno"> 41</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">showCategoryCB</tt> <tt class="py-op">=</tt> <tt class="py-name">QCheckBox</tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">)</tt> </tt>
+<a name="L42"></a><tt class="py-lineno"> 42</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">gridLayout</tt><tt class="py-op">.</tt><tt class="py-name">addWidget</tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">showCategoryCB</tt><tt class="py-op">,</tt> <tt class="py-number">2</tt><tt class="py-op">,</tt> <tt class="py-number">1</tt><tt class="py-op">,</tt> <tt class="py-number">1</tt><tt class="py-op">,</tt> <tt class="py-number">1</tt><tt class="py-op">)</tt> </tt>
+<a name="L43"></a><tt class="py-lineno"> 43</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">showCategoryCB</tt><tt class="py-op">.</tt><tt class="py-name">stateChanged</tt><tt class="py-op">.</tt><tt id="link-15" class="py-name"><a title="src.engine.simulator.Plug.connect
+src.gui.graphicitem.WireItem.connect" class="py-name" href="#" onclick="return doclink('link-15', 'connect', 'link-9');">connect</a></tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-16" class="py-name" targets="Method src.gui.graphicitem.CircuitItem.setCategoryVisibility()=src.gui.graphicitem.CircuitItem-class.html#setCategoryVisibility,Method src.gui.selectionoptions.SelectionOptions.setCategoryVisibility()=src.gui.selectionoptions.SelectionOptions-class.html#setCategoryVisibility"><a title="src.gui.graphicitem.CircuitItem.setCategoryVisibility
+src.gui.selectionoptions.SelectionOptions.setCategoryVisibility" class="py-name" href="#" onclick="return doclink('link-16', 'setCategoryVisibility', 'link-16');">setCategoryVisibility</a></tt><tt class="py-op">)</tt> </tt>
+<a name="L44"></a><tt class="py-lineno"> 44</tt>  <tt class="py-line"> </tt>
+<a name="L45"></a><tt class="py-lineno"> 45</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">nbInputsLabel</tt> <tt class="py-op">=</tt> <tt class="py-name">QLabel</tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">str_nbInputs</tt><tt class="py-op">,</tt> <tt class="py-name">self</tt><tt class="py-op">)</tt> </tt>
+<a name="L46"></a><tt class="py-lineno"> 46</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">gridLayout</tt><tt class="py-op">.</tt><tt class="py-name">addWidget</tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">nbInputsLabel</tt><tt class="py-op">,</tt> <tt class="py-number">3</tt><tt class="py-op">,</tt> <tt class="py-number">0</tt><tt class="py-op">,</tt> <tt class="py-number">1</tt><tt class="py-op">,</tt> <tt class="py-number">1</tt><tt class="py-op">)</tt> </tt>
+<a name="L47"></a><tt class="py-lineno"> 47</tt>  <tt class="py-line"> </tt>
+<a name="L48"></a><tt class="py-lineno"> 48</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">nbInputsCB</tt> <tt class="py-op">=</tt> <tt class="py-name">QComboBox</tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">)</tt> </tt>
+<a name="L49"></a><tt class="py-lineno"> 49</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">nbInputsCB</tt><tt class="py-op">.</tt><tt class="py-name">activated</tt><tt class="py-op">.</tt><tt id="link-17" class="py-name"><a title="src.engine.simulator.Plug.connect
+src.gui.graphicitem.WireItem.connect" class="py-name" href="#" onclick="return doclink('link-17', 'connect', 'link-9');">connect</a></tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-18" class="py-name" targets="Method src.gui.graphicitem.CircuitItem.setNbInputs()=src.gui.graphicitem.CircuitItem-class.html#setNbInputs,Method src.gui.selectionoptions.SelectionOptions.setNbInputs()=src.gui.selectionoptions.SelectionOptions-class.html#setNbInputs"><a title="src.gui.graphicitem.CircuitItem.setNbInputs
+src.gui.selectionoptions.SelectionOptions.setNbInputs" class="py-name" href="#" onclick="return doclink('link-18', 'setNbInputs', 'link-18');">setNbInputs</a></tt><tt class="py-op">)</tt> </tt>
+<a name="L50"></a><tt class="py-lineno"> 50</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">nbInputsCB</tt><tt class="py-op">.</tt><tt class="py-name">addItems</tt><tt class="py-op">(</tt><tt class="py-op">[</tt><tt class="py-name">str</tt><tt class="py-op">(</tt><tt class="py-name">x</tt><tt class="py-op">)</tt> <tt class="py-keyword">for</tt> <tt class="py-name">x</tt> <tt class="py-keyword">in</tt> <tt class="py-name">range</tt><tt class="py-op">(</tt><tt class="py-number">2</tt><tt class="py-op">,</tt> <tt class="py-number">33</tt><tt class="py-op">)</tt><tt class="py-op">]</tt><tt class="py-op">)</tt> </tt>
+<a name="L51"></a><tt class="py-lineno"> 51</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">gridLayout</tt><tt class="py-op">.</tt><tt class="py-name">addWidget</tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">nbInputsCB</tt><tt class="py-op">,</tt> <tt class="py-number">3</tt><tt class="py-op">,</tt> <tt class="py-number">1</tt><tt class="py-op">,</tt> <tt class="py-number">1</tt><tt class="py-op">,</tt> <tt class="py-number">2</tt><tt class="py-op">)</tt> </tt>
+<a name="L52"></a><tt class="py-lineno"> 52</tt>  <tt class="py-line"> </tt>
+<a name="L53"></a><tt class="py-lineno"> 53</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">orientLabel</tt> <tt class="py-op">=</tt> <tt class="py-name">QLabel</tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">str_orientation</tt><tt class="py-op">,</tt> <tt class="py-name">self</tt><tt class="py-op">)</tt> </tt>
+<a name="L54"></a><tt class="py-lineno"> 54</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">gridLayout</tt><tt class="py-op">.</tt><tt class="py-name">addWidget</tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">orientLabel</tt><tt class="py-op">,</tt> <tt class="py-number">4</tt><tt class="py-op">,</tt> <tt class="py-number">0</tt><tt class="py-op">,</tt> <tt class="py-number">1</tt><tt class="py-op">,</tt> <tt class="py-number">1</tt><tt class="py-op">)</tt> </tt>
+<a name="L55"></a><tt class="py-lineno"> 55</tt>  <tt class="py-line"> </tt>
+<a name="L56"></a><tt class="py-lineno"> 56</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">cwRotationButton</tt> <tt class="py-op">=</tt> <tt class="py-name">QPushButton</tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">)</tt> </tt>
+<a name="L57"></a><tt class="py-lineno"> 57</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">cwRotationButton</tt><tt class="py-op">.</tt><tt class="py-name">setText</tt><tt class="py-op">(</tt><tt class="py-string">"&#8635;"</tt><tt class="py-op">)</tt> </tt>
+<a name="L58"></a><tt class="py-lineno"> 58</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">cwRotationButton</tt><tt class="py-op">.</tt><tt class="py-name">clicked</tt><tt class="py-op">.</tt><tt id="link-19" class="py-name"><a title="src.engine.simulator.Plug.connect
+src.gui.graphicitem.WireItem.connect" class="py-name" href="#" onclick="return doclink('link-19', 'connect', 'link-9');">connect</a></tt><tt class="py-op">(</tt> </tt>
+<a name="L59"></a><tt class="py-lineno"> 59</tt>  <tt class="py-line">            <tt class="py-keyword">lambda</tt><tt class="py-op">:</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">view</tt><tt class="py-op">.</tt><tt id="link-20" class="py-name" targets="Method src.gui.mainview.MainView.rotateItems()=src.gui.mainview.MainView-class.html#rotateItems"><a title="src.gui.mainview.MainView.rotateItems" class="py-name" href="#" onclick="return doclink('link-20', 'rotateItems', 'link-20');">rotateItems</a></tt><tt class="py-op">(</tt><tt class="py-number">90</tt><tt class="py-op">)</tt><tt class="py-op">)</tt> </tt>
+<a name="L60"></a><tt class="py-lineno"> 60</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">gridLayout</tt><tt class="py-op">.</tt><tt class="py-name">addWidget</tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">cwRotationButton</tt><tt class="py-op">,</tt> <tt class="py-number">4</tt><tt class="py-op">,</tt> <tt class="py-number">1</tt><tt class="py-op">,</tt> <tt class="py-number">1</tt><tt class="py-op">,</tt> <tt class="py-number">1</tt><tt class="py-op">)</tt> </tt>
+<a name="L61"></a><tt class="py-lineno"> 61</tt>  <tt class="py-line"> </tt>
+<a name="L62"></a><tt class="py-lineno"> 62</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">acwRotationButton</tt> <tt class="py-op">=</tt> <tt class="py-name">QPushButton</tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">)</tt> </tt>
+<a name="L63"></a><tt class="py-lineno"> 63</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">acwRotationButton</tt><tt class="py-op">.</tt><tt class="py-name">setText</tt><tt class="py-op">(</tt><tt class="py-string">"&#8634;"</tt><tt class="py-op">)</tt> </tt>
+<a name="L64"></a><tt class="py-lineno"> 64</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">acwRotationButton</tt><tt class="py-op">.</tt><tt class="py-name">clicked</tt><tt class="py-op">.</tt><tt id="link-21" class="py-name"><a title="src.engine.simulator.Plug.connect
+src.gui.graphicitem.WireItem.connect" class="py-name" href="#" onclick="return doclink('link-21', 'connect', 'link-9');">connect</a></tt><tt class="py-op">(</tt> </tt>
+<a name="L65"></a><tt class="py-lineno"> 65</tt>  <tt class="py-line">            <tt class="py-keyword">lambda</tt><tt class="py-op">:</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">view</tt><tt class="py-op">.</tt><tt id="link-22" class="py-name"><a title="src.gui.mainview.MainView.rotateItems" class="py-name" href="#" onclick="return doclink('link-22', 'rotateItems', 'link-20');">rotateItems</a></tt><tt class="py-op">(</tt><tt class="py-op">-</tt><tt class="py-number">90</tt><tt class="py-op">)</tt><tt class="py-op">)</tt> </tt>
+<a name="L66"></a><tt class="py-lineno"> 66</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">gridLayout</tt><tt class="py-op">.</tt><tt class="py-name">addWidget</tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">acwRotationButton</tt><tt class="py-op">,</tt> <tt class="py-number">4</tt><tt class="py-op">,</tt> <tt class="py-number">2</tt><tt class="py-op">,</tt> <tt class="py-number">1</tt><tt class="py-op">,</tt> <tt class="py-number">1</tt><tt class="py-op">)</tt> </tt>
+<a name="L67"></a><tt class="py-lineno"> 67</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-23" class="py-name"><a title="src.gui.selectionoptions.SelectionOptions.updateOptions" class="py-name" href="#" onclick="return doclink('link-23', 'updateOptions', 'link-10');">updateOptions</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L68"></a><tt class="py-lineno"> 68</tt>  <tt class="py-line"> </tt>
+<a name="SelectionOptions.updateOptions"></a><div id="SelectionOptions.updateOptions-def"><a name="L69"></a><tt class="py-lineno"> 69</tt> <a class="py-toggle" href="#" id="SelectionOptions.updateOptions-toggle" onclick="return toggle('SelectionOptions.updateOptions');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="src.gui.selectionoptions.SelectionOptions-class.html#updateOptions">updateOptions</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="SelectionOptions.updateOptions-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="SelectionOptions.updateOptions-expanded"><a name="L70"></a><tt class="py-lineno"> 70</tt>  <tt class="py-line">        <tt class="py-docstring">"""Hides irrelevant options, and sets reasonable values for the</tt> </tt>
+<a name="L71"></a><tt class="py-lineno"> 71</tt>  <tt class="py-line"><tt class="py-docstring">        visible options.</tt> </tt>
+<a name="L72"></a><tt class="py-lineno"> 72</tt>  <tt class="py-line"><tt class="py-docstring">        """</tt> </tt>
+<a name="L73"></a><tt class="py-lineno"> 73</tt>  <tt class="py-line">        <tt class="py-name">selection</tt> <tt class="py-op">=</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">view</tt><tt class="py-op">.</tt><tt class="py-name">scene</tt><tt class="py-op">(</tt><tt class="py-op">)</tt><tt class="py-op">.</tt><tt class="py-name">selectedItems</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L74"></a><tt class="py-lineno"> 74</tt>  <tt class="py-line">        <tt class="py-keyword">for</tt> <tt class="py-name">widget</tt> <tt class="py-keyword">in</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">findChildren</tt><tt class="py-op">(</tt><tt class="py-name">QWidget</tt><tt class="py-op">)</tt><tt class="py-op">:</tt>     <tt class="py-comment"># Hide all options</tt> </tt>
+<a name="L75"></a><tt class="py-lineno"> 75</tt>  <tt class="py-line">            <tt class="py-name">widget</tt><tt class="py-op">.</tt><tt class="py-name">setHidden</tt><tt class="py-op">(</tt><tt class="py-name">True</tt><tt class="py-op">)</tt> </tt>
+<a name="L76"></a><tt class="py-lineno"> 76</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-keyword">not</tt> <tt class="py-name">len</tt><tt class="py-op">(</tt><tt class="py-name">selection</tt><tt class="py-op">)</tt><tt class="py-op">:</tt>          <tt class="py-comment"># then return if no selection.</tt> </tt>
+<a name="L77"></a><tt class="py-lineno"> 77</tt>  <tt class="py-line">            <tt class="py-keyword">return</tt> </tt>
+<a name="L78"></a><tt class="py-lineno"> 78</tt>  <tt class="py-line">        <tt class="py-comment"># The number of entries option only applies to gates (except NOT)</tt> </tt>
+<a name="L79"></a><tt class="py-lineno"> 79</tt>  <tt class="py-line">        <tt class="py-name">notAllGates</tt> <tt class="py-op">=</tt> <tt class="py-name">any</tt><tt class="py-op">(</tt><tt class="py-op">[</tt><tt class="py-name">i</tt><tt class="py-op">.</tt><tt class="py-name">data</tt><tt class="py-op">.</tt><tt class="py-name">__class__</tt> <tt class="py-keyword">not</tt> <tt class="py-keyword">in</tt> <tt class="py-op">[</tt> </tt>
+<a name="L80"></a><tt class="py-lineno"> 80</tt>  <tt class="py-line">            <tt id="link-24" class="py-name" targets="Class src.engine.gates.AndGate=src.engine.gates.AndGate-class.html"><a title="src.engine.gates.AndGate" class="py-name" href="#" onclick="return doclink('link-24', 'AndGate', 'link-24');">AndGate</a></tt><tt class="py-op">,</tt> <tt id="link-25" class="py-name" targets="Class src.engine.gates.NandGate=src.engine.gates.NandGate-class.html"><a title="src.engine.gates.NandGate" class="py-name" href="#" onclick="return doclink('link-25', 'NandGate', 'link-25');">NandGate</a></tt><tt class="py-op">,</tt> <tt id="link-26" class="py-name" targets="Class src.engine.gates.OrGate=src.engine.gates.OrGate-class.html"><a title="src.engine.gates.OrGate" class="py-name" href="#" onclick="return doclink('link-26', 'OrGate', 'link-26');">OrGate</a></tt><tt class="py-op">,</tt> <tt id="link-27" class="py-name" targets="Class src.engine.gates.NorGate=src.engine.gates.NorGate-class.html"><a title="src.engine.gates.NorGate" class="py-name" href="#" onclick="return doclink('link-27', 'NorGate', 'link-27');">NorGate</a></tt><tt class="py-op">,</tt> <tt id="link-28" class="py-name" targets="Class src.engine.gates.XorGate=src.engine.gates.XorGate-class.html"><a title="src.engine.gates.XorGate" class="py-name" href="#" onclick="return doclink('link-28', 'XorGate', 'link-28');">XorGate</a></tt><tt class="py-op">,</tt> <tt id="link-29" class="py-name" targets="Class src.engine.gates.XnorGate=src.engine.gates.XnorGate-class.html"><a title="src.engine.gates.XnorGate" class="py-name" href="#" onclick="return doclink('link-29', 'XnorGate', 'link-29');">XnorGate</a></tt><tt class="py-op">]</tt> </tt>
+<a name="L81"></a><tt class="py-lineno"> 81</tt>  <tt class="py-line">            <tt class="py-keyword">for</tt> <tt class="py-name">i</tt> <tt class="py-keyword">in</tt> <tt class="py-name">selection</tt><tt class="py-op">]</tt><tt class="py-op">)</tt> </tt>
+<a name="L82"></a><tt class="py-lineno"> 82</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">nbInputsLabel</tt><tt class="py-op">.</tt><tt class="py-name">setHidden</tt><tt class="py-op">(</tt><tt class="py-name">notAllGates</tt><tt class="py-op">)</tt> </tt>
+<a name="L83"></a><tt class="py-lineno"> 83</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">nbInputsCB</tt><tt class="py-op">.</tt><tt class="py-name">setHidden</tt><tt class="py-op">(</tt><tt class="py-name">notAllGates</tt><tt class="py-op">)</tt> </tt>
+<a name="L84"></a><tt class="py-lineno"> 84</tt>  <tt class="py-line">        <tt class="py-comment"># Only circuits may display their category, we only show the</tt> </tt>
+<a name="L85"></a><tt class="py-lineno"> 85</tt>  <tt class="py-line">        <tt class="py-comment"># option if at least one circuit is present</tt> </tt>
+<a name="L86"></a><tt class="py-lineno"> 86</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-name">any</tt><tt class="py-op">(</tt><tt class="py-op">[</tt><tt class="py-name">isinstance</tt><tt class="py-op">(</tt><tt class="py-name">i</tt><tt class="py-op">,</tt> <tt id="link-30" class="py-name"><a title="src.gui.graphicitem.CircuitItem" class="py-name" href="#" onclick="return doclink('link-30', 'CircuitItem', 'link-1');">CircuitItem</a></tt><tt class="py-op">)</tt> <tt class="py-keyword">for</tt> <tt class="py-name">i</tt> <tt class="py-keyword">in</tt> <tt class="py-name">selection</tt><tt class="py-op">]</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L87"></a><tt class="py-lineno"> 87</tt>  <tt class="py-line">            <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">showCategoryLabel</tt><tt class="py-op">.</tt><tt class="py-name">setHidden</tt><tt class="py-op">(</tt><tt class="py-name">False</tt><tt class="py-op">)</tt> </tt>
+<a name="L88"></a><tt class="py-lineno"> 88</tt>  <tt class="py-line">            <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">showCategoryCB</tt><tt class="py-op">.</tt><tt class="py-name">setHidden</tt><tt class="py-op">(</tt><tt class="py-name">False</tt><tt class="py-op">)</tt> </tt>
+<a name="L89"></a><tt class="py-lineno"> 89</tt>  <tt class="py-line">        <tt class="py-comment"># Wires have no name; no need for name visibility</tt> </tt>
+<a name="L90"></a><tt class="py-lineno"> 90</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-keyword">not</tt> <tt class="py-name">all</tt><tt class="py-op">(</tt><tt class="py-op">[</tt><tt class="py-name">isinstance</tt><tt class="py-op">(</tt><tt class="py-name">i</tt><tt class="py-op">,</tt> <tt id="link-31" class="py-name"><a title="src.gui.graphicitem.WireItem" class="py-name" href="#" onclick="return doclink('link-31', 'WireItem', 'link-2');">WireItem</a></tt><tt class="py-op">)</tt> <tt class="py-keyword">for</tt> <tt class="py-name">i</tt> <tt class="py-keyword">in</tt> <tt class="py-name">selection</tt><tt class="py-op">]</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L91"></a><tt class="py-lineno"> 91</tt>  <tt class="py-line">            <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">showNameLabel</tt><tt class="py-op">.</tt><tt class="py-name">setHidden</tt><tt class="py-op">(</tt><tt class="py-name">False</tt><tt class="py-op">)</tt> </tt>
+<a name="L92"></a><tt class="py-lineno"> 92</tt>  <tt class="py-line">            <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">showNameCB</tt><tt class="py-op">.</tt><tt class="py-name">setHidden</tt><tt class="py-op">(</tt><tt class="py-name">False</tt><tt class="py-op">)</tt> </tt>
+<a name="L93"></a><tt class="py-lineno"> 93</tt>  <tt class="py-line">        <tt class="py-comment"># We only show the name if we have exactly one non-wire item</tt> </tt>
+<a name="L94"></a><tt class="py-lineno"> 94</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-name">len</tt><tt class="py-op">(</tt><tt class="py-name">selection</tt><tt class="py-op">)</tt> <tt class="py-op">==</tt> <tt class="py-number">1</tt> <tt class="py-keyword">and</tt> <tt class="py-keyword">not</tt> <tt class="py-name">isinstance</tt><tt class="py-op">(</tt><tt class="py-name">selection</tt><tt class="py-op">[</tt><tt class="py-number">0</tt><tt class="py-op">]</tt><tt class="py-op">,</tt> <tt id="link-32" class="py-name"><a title="src.gui.graphicitem.WireItem" class="py-name" href="#" onclick="return doclink('link-32', 'WireItem', 'link-2');">WireItem</a></tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L95"></a><tt class="py-lineno"> 95</tt>  <tt class="py-line">            <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">nameLabel</tt><tt class="py-op">.</tt><tt class="py-name">setHidden</tt><tt class="py-op">(</tt><tt class="py-name">False</tt><tt class="py-op">)</tt> </tt>
+<a name="L96"></a><tt class="py-lineno"> 96</tt>  <tt class="py-line">            <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">nameLE</tt><tt class="py-op">.</tt><tt class="py-name">blockSignals</tt><tt class="py-op">(</tt><tt class="py-name">True</tt><tt class="py-op">)</tt> </tt>
+<a name="L97"></a><tt class="py-lineno"> 97</tt>  <tt class="py-line">            <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">nameLE</tt><tt class="py-op">.</tt><tt class="py-name">setText</tt><tt class="py-op">(</tt><tt class="py-name">selection</tt><tt class="py-op">[</tt><tt class="py-number">0</tt><tt class="py-op">]</tt><tt class="py-op">.</tt><tt class="py-name">data</tt><tt class="py-op">.</tt><tt class="py-name">name</tt><tt class="py-op">)</tt> </tt>
+<a name="L98"></a><tt class="py-lineno"> 98</tt>  <tt class="py-line">            <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">nameLE</tt><tt class="py-op">.</tt><tt class="py-name">blockSignals</tt><tt class="py-op">(</tt><tt class="py-name">False</tt><tt class="py-op">)</tt> </tt>
+<a name="L99"></a><tt class="py-lineno"> 99</tt>  <tt class="py-line">            <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">nameLE</tt><tt class="py-op">.</tt><tt class="py-name">setHidden</tt><tt class="py-op">(</tt><tt class="py-name">False</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L100"></a><tt class="py-lineno">100</tt>  <tt class="py-line"> </tt>
+<a name="SelectionOptions.setCategoryVisibility"></a><div id="SelectionOptions.setCategoryVisibility-def"><a name="L101"></a><tt class="py-lineno">101</tt> <a class="py-toggle" href="#" id="SelectionOptions.setCategoryVisibility-toggle" onclick="return toggle('SelectionOptions.setCategoryVisibility');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="src.gui.selectionoptions.SelectionOptions-class.html#setCategoryVisibility">setCategoryVisibility</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">state</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="SelectionOptions.setCategoryVisibility-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="SelectionOptions.setCategoryVisibility-expanded"><a name="L102"></a><tt class="py-lineno">102</tt>  <tt class="py-line">        <tt class="py-docstring">"""Show/Hide the category of an item in the main view."""</tt> </tt>
+<a name="L103"></a><tt class="py-lineno">103</tt>  <tt class="py-line">        <tt class="py-keyword">for</tt> <tt class="py-name">item</tt> <tt class="py-keyword">in</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">view</tt><tt class="py-op">.</tt><tt class="py-name">scene</tt><tt class="py-op">(</tt><tt class="py-op">)</tt><tt class="py-op">.</tt><tt class="py-name">selectedItems</tt><tt class="py-op">(</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L104"></a><tt class="py-lineno">104</tt>  <tt class="py-line">            <tt class="py-keyword">if</tt> <tt class="py-name">isinstance</tt><tt class="py-op">(</tt><tt class="py-name">item</tt><tt class="py-op">,</tt> <tt id="link-33" class="py-name"><a title="src.gui.graphicitem.CircuitItem" class="py-name" href="#" onclick="return doclink('link-33', 'CircuitItem', 'link-1');">CircuitItem</a></tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L105"></a><tt class="py-lineno">105</tt>  <tt class="py-line">                <tt class="py-name">item</tt><tt class="py-op">.</tt><tt id="link-34" class="py-name"><a title="src.gui.graphicitem.CircuitItem.setCategoryVisibility
+src.gui.selectionoptions.SelectionOptions.setCategoryVisibility" class="py-name" href="#" onclick="return doclink('link-34', 'setCategoryVisibility', 'link-16');">setCategoryVisibility</a></tt><tt class="py-op">(</tt><tt class="py-name">True</tt> <tt class="py-keyword">if</tt> <tt class="py-name">state</tt> <tt class="py-keyword">else</tt> <tt class="py-name">False</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L106"></a><tt class="py-lineno">106</tt>  <tt class="py-line"> </tt>
+<a name="SelectionOptions.setItemName"></a><div id="SelectionOptions.setItemName-def"><a name="L107"></a><tt class="py-lineno">107</tt> <a class="py-toggle" href="#" id="SelectionOptions.setItemName-toggle" onclick="return toggle('SelectionOptions.setItemName');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="src.gui.selectionoptions.SelectionOptions-class.html#setItemName">setItemName</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="SelectionOptions.setItemName-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="SelectionOptions.setItemName-expanded"><a name="L108"></a><tt class="py-lineno">108</tt>  <tt class="py-line">        <tt class="py-docstring">"""Show/Hide the category of an item in the main view."""</tt> </tt>
+<a name="L109"></a><tt class="py-lineno">109</tt>  <tt class="py-line">        <tt class="py-name">item</tt> <tt class="py-op">=</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">view</tt><tt class="py-op">.</tt><tt class="py-name">scene</tt><tt class="py-op">(</tt><tt class="py-op">)</tt><tt class="py-op">.</tt><tt class="py-name">selectedItems</tt><tt class="py-op">(</tt><tt class="py-op">)</tt><tt class="py-op">[</tt><tt class="py-number">0</tt><tt class="py-op">]</tt> </tt>
+<a name="L110"></a><tt class="py-lineno">110</tt>  <tt class="py-line">        <tt class="py-name">item</tt><tt class="py-op">.</tt><tt class="py-name">data</tt><tt class="py-op">.</tt><tt id="link-35" class="py-name" targets="Method src.engine.simulator.Circuit.setName()=src.engine.simulator.Circuit-class.html#setName,Method src.engine.simulator.Plug.setName()=src.engine.simulator.Plug-class.html#setName"><a title="src.engine.simulator.Circuit.setName
+src.engine.simulator.Plug.setName" class="py-name" href="#" onclick="return doclink('link-35', 'setName', 'link-35');">setName</a></tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">nameLE</tt><tt class="py-op">.</tt><tt class="py-name">text</tt><tt class="py-op">(</tt><tt class="py-op">)</tt><tt class="py-op">)</tt> </tt>
+<a name="L111"></a><tt class="py-lineno">111</tt>  <tt class="py-line">        <tt class="py-name">item</tt><tt class="py-op">.</tt><tt id="link-36" class="py-name" targets="Method src.gui.graphicitem.CircuitItem.setupPaint()=src.gui.graphicitem.CircuitItem-class.html#setupPaint,Method src.gui.graphicitem.PlugItem.setupPaint()=src.gui.graphicitem.PlugItem-class.html#setupPaint,Method src.gui.graphicitem.WireItem.setupPaint()=src.gui.graphicitem.WireItem-class.html#setupPaint"><a title="src.gui.graphicitem.CircuitItem.setupPaint
+src.gui.graphicitem.PlugItem.setupPaint
+src.gui.graphicitem.WireItem.setupPaint" class="py-name" href="#" onclick="return doclink('link-36', 'setupPaint', 'link-36');">setupPaint</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L112"></a><tt class="py-lineno">112</tt>  <tt class="py-line"> </tt>
+<a name="SelectionOptions.setNameVisibility"></a><div id="SelectionOptions.setNameVisibility-def"><a name="L113"></a><tt class="py-lineno">113</tt> <a class="py-toggle" href="#" id="SelectionOptions.setNameVisibility-toggle" onclick="return toggle('SelectionOptions.setNameVisibility');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="src.gui.selectionoptions.SelectionOptions-class.html#setNameVisibility">setNameVisibility</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">state</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="SelectionOptions.setNameVisibility-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="SelectionOptions.setNameVisibility-expanded"><a name="L114"></a><tt class="py-lineno">114</tt>  <tt class="py-line">        <tt class="py-docstring">"""Show/Hide the name of items in the main view."""</tt> </tt>
+<a name="L115"></a><tt class="py-lineno">115</tt>  <tt class="py-line">        <tt class="py-keyword">for</tt> <tt class="py-name">item</tt> <tt class="py-keyword">in</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">view</tt><tt class="py-op">.</tt><tt class="py-name">scene</tt><tt class="py-op">(</tt><tt class="py-op">)</tt><tt class="py-op">.</tt><tt class="py-name">selectedItems</tt><tt class="py-op">(</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L116"></a><tt class="py-lineno">116</tt>  <tt class="py-line">            <tt class="py-keyword">if</tt> <tt class="py-keyword">not</tt> <tt class="py-name">isinstance</tt><tt class="py-op">(</tt><tt class="py-name">item</tt><tt class="py-op">,</tt> <tt id="link-37" class="py-name"><a title="src.gui.graphicitem.WireItem" class="py-name" href="#" onclick="return doclink('link-37', 'WireItem', 'link-2');">WireItem</a></tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L117"></a><tt class="py-lineno">117</tt>  <tt class="py-line">                <tt class="py-name">item</tt><tt class="py-op">.</tt><tt id="link-38" class="py-name"><a title="src.gui.graphicitem.CircuitItem.setNameVisibility
+src.gui.graphicitem.PlugItem.setNameVisibility
+src.gui.selectionoptions.SelectionOptions.setNameVisibility" class="py-name" href="#" onclick="return doclink('link-38', 'setNameVisibility', 'link-14');">setNameVisibility</a></tt><tt class="py-op">(</tt><tt class="py-name">True</tt> <tt class="py-keyword">if</tt> <tt class="py-name">state</tt> <tt class="py-keyword">else</tt> <tt class="py-name">False</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L118"></a><tt class="py-lineno">118</tt>  <tt class="py-line"> </tt>
+<a name="SelectionOptions.setNbInputs"></a><div id="SelectionOptions.setNbInputs-def"><a name="L119"></a><tt class="py-lineno">119</tt> <a class="py-toggle" href="#" id="SelectionOptions.setNbInputs-toggle" onclick="return toggle('SelectionOptions.setNbInputs');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="src.gui.selectionoptions.SelectionOptions-class.html#setNbInputs">setNbInputs</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">index</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="SelectionOptions.setNbInputs-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="SelectionOptions.setNbInputs-expanded"><a name="L120"></a><tt class="py-lineno">120</tt>  <tt class="py-line">        <tt class="py-docstring">"""Add/Remove inputs from basic gates."""</tt> </tt>
+<a name="L121"></a><tt class="py-lineno">121</tt>  <tt class="py-line">        <tt class="py-keyword">for</tt> <tt class="py-name">item</tt> <tt class="py-keyword">in</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">view</tt><tt class="py-op">.</tt><tt class="py-name">scene</tt><tt class="py-op">(</tt><tt class="py-op">)</tt><tt class="py-op">.</tt><tt class="py-name">selectedItems</tt><tt class="py-op">(</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L122"></a><tt class="py-lineno">122</tt>  <tt class="py-line">            <tt class="py-name">item</tt><tt class="py-op">.</tt><tt id="link-39" class="py-name"><a title="src.gui.graphicitem.CircuitItem.setNbInputs
+src.gui.selectionoptions.SelectionOptions.setNbInputs" class="py-name" href="#" onclick="return doclink('link-39', 'setNbInputs', 'link-18');">setNbInputs</a></tt><tt class="py-op">(</tt><tt class="py-name">index</tt> <tt class="py-op">+</tt> <tt class="py-number">2</tt><tt class="py-op">)</tt> </tt>
+</div></div><a name="L123"></a><tt class="py-lineno">123</tt>  <tt class="py-line"> </tt>
+<a name="L124"></a><tt class="py-lineno">124</tt>  <tt class="py-line"> </tt>
+<a name="SelectionOptionsDockWidget"></a><div id="SelectionOptionsDockWidget-def"><a name="L125"></a><tt class="py-lineno">125</tt> <a class="py-toggle" href="#" id="SelectionOptionsDockWidget-toggle" onclick="return toggle('SelectionOptionsDockWidget');">-</a><tt class="py-line"><tt class="py-keyword">class</tt> <a class="py-def-name" href="src.gui.selectionoptions.SelectionOptionsDockWidget-class.html">SelectionOptionsDockWidget</a><tt class="py-op">(</tt><tt class="py-base-class">QDockWidget</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="SelectionOptionsDockWidget-collapsed" style="display:none;" pad="+++" indent="++++"></div><div id="SelectionOptionsDockWidget-expanded"><a name="L126"></a><tt class="py-lineno">126</tt>  <tt class="py-line">    <tt class="py-docstring">"""A dock widget containing our tool options."""</tt> </tt>
+<a name="L127"></a><tt class="py-lineno">127</tt>  <tt class="py-line"> </tt>
+<a name="SelectionOptionsDockWidget.__init__"></a><div id="SelectionOptionsDockWidget.__init__-def"><a name="L128"></a><tt class="py-lineno">128</tt> <a class="py-toggle" href="#" id="SelectionOptionsDockWidget.__init__-toggle" onclick="return toggle('SelectionOptionsDockWidget.__init__');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="src.gui.selectionoptions.SelectionOptionsDockWidget-class.html#__init__">__init__</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">view</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="SelectionOptionsDockWidget.__init__-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="SelectionOptionsDockWidget.__init__-expanded"><a name="L129"></a><tt class="py-lineno">129</tt>  <tt class="py-line">        <tt class="py-name">super</tt><tt class="py-op">(</tt><tt id="link-40" class="py-name" targets="Class src.gui.selectionoptions.SelectionOptionsDockWidget=src.gui.selectionoptions.SelectionOptionsDockWidget-class.html"><a title="src.gui.selectionoptions.SelectionOptionsDockWidget" class="py-name" href="#" onclick="return doclink('link-40', 'SelectionOptionsDockWidget', 'link-40');">SelectionOptionsDockWidget</a></tt><tt class="py-op">,</tt> <tt class="py-name">self</tt><tt class="py-op">)</tt><tt class="py-op">.</tt><tt id="link-41" class="py-name"><a title="src.engine.circuits.Counter4b.__init__
+src.engine.circuits.DFlipFlop.__init__
+src.engine.circuits.JKFlipFlop.__init__
+src.engine.circuits.Mem1b.__init__
+src.engine.circuits.RSFlipFlop.__init__
+src.engine.circuits.Register4b.__init__
+src.engine.clock.Clock.__init__
+src.engine.clock.ClockThread.__init__
+src.engine.gates.AndGate.__init__
+src.engine.gates.NandGate.__init__
+src.engine.gates.NorGate.__init__
+src.engine.gates.NotGate.__init__
+src.engine.gates.OrGate.__init__
+src.engine.gates.XnorGate.__init__
+src.engine.gates.XorGate.__init__
+src.engine.simulator.Agenda.__init__
+src.engine.simulator.Circuit.__init__
+src.engine.simulator.Plug.__init__
+src.engine_test.Counter4b.__init__
+src.engine_test.DFlipFlop.__init__
+src.engine_test.Div2.__init__
+src.engine_test.JKFlipFlop.__init__
+src.engine_test.Mem1b.__init__
+src.engine_test.RSFlipFlop.__init__
+src.engine_test.Register4b.__init__
+src.engine_test.oCounter4b.__init__
+src.engine_test.oJKFlipFlop.__init__
+src.engine_test.ooJKFlipFlop.__init__
+src.engine_test.sDFlipFlop.__init__
+src.gui.circuitdrawing.CustomCircuitCreator.__init__
+src.gui.circuitdrawing.PaintArea.__init__
+src.gui.docu.HelpDockWidget.__init__
+src.gui.docu.HelpTextBrowser.__init__
+src.gui.graphicitem.CircuitItem.__init__
+src.gui.graphicitem.PlugItem.__init__
+src.gui.graphicitem.WireItem.__init__
+src.gui.logwidgets.LogDockWidget.__init__
+src.gui.logwidgets.LoggerTextEdit.__init__
+src.gui.mainview.MainView.__init__
+src.gui.selectionoptions.SelectionOptions.__init__
+src.gui.selectionoptions.SelectionOptionsDockWidget.__init__
+src.gui.settings.Settings.__init__
+src.gui.settings.SettingsDialog.__init__
+src.gui.toolbox.ToolBox.__init__
+src.gui.toolbox.ToolBoxDockWidget.__init__" class="py-name" href="#" onclick="return doclink('link-41', '__init__', 'link-8');">__init__</a></tt><tt class="py-op">(</tt> </tt>
+<a name="L130"></a><tt class="py-lineno">130</tt>  <tt class="py-line">            <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">str_selectionDockTitle</tt><tt class="py-op">)</tt> </tt>
+<a name="L131"></a><tt class="py-lineno">131</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">setWidget</tt><tt class="py-op">(</tt><tt id="link-42" class="py-name"><a title="src.gui.selectionoptions.SelectionOptions" class="py-name" href="#" onclick="return doclink('link-42', 'SelectionOptions', 'link-7');">SelectionOptions</a></tt><tt class="py-op">(</tt><tt class="py-name">view</tt><tt class="py-op">)</tt><tt class="py-op">)</tt> </tt>
+<a name="L132"></a><tt class="py-lineno">132</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">setFeatures</tt><tt class="py-op">(</tt><tt class="py-name">QDockWidget</tt><tt class="py-op">.</tt><tt id="link-43" class="py-name" targets="Variable PySide.QtGui.QDockWidget.DockWidgetFeature.NoDockWidgetFeatures=PySide.QtGui.QDockWidget.DockWidgetFeature-class.html#NoDockWidgetFeatures"><a title="PySide.QtGui.QDockWidget.DockWidgetFeature.NoDockWidgetFeatures" class="py-name" href="#" onclick="return doclink('link-43', 'NoDockWidgetFeatures', 'link-43');">NoDockWidgetFeatures</a></tt><tt class="py-op">)</tt> </tt>
+</div></div><a name="L133"></a><tt class="py-lineno">133</tt>  <tt class="py-line"> </tt><script type="text/javascript">
+<!--
+expandto(location.href);
+// -->
+</script>
+</pre>
+<br />
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="src-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+      <th class="navbar" width="100%"></th>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%%">
+  <tr>
+    <td align="left" class="footer">
+    Generated by Epydoc 3.0.1 on Sun Sep 14 16:43:36 2014
+    </td>
+    <td align="right" class="footer">
+      <a target="mainFrame" href="http://epydoc.sourceforge.net"
+        >http://epydoc.sourceforge.net</a>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+  <!--
+  // Private objects are initially displayed (because if
+  // javascript is turned off then we want them to be
+  // visible); but by default, we want to hide them.  So hide
+  // them unless we have a cookie that says to show them.
+  checkCookie();
+  // -->
+</script>
+</body>
+</html>

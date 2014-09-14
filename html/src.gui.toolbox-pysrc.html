@@ -1,0 +1,269 @@
+<?xml version="1.0" encoding="ascii"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>src.gui.toolbox</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css" />
+  <script type="text/javascript" src="epydoc.js"></script>
+</head>
+
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="src-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+      <th class="navbar" width="100%"></th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">
+      <span class="breadcrumbs">
+        <a href="src-module.html">Package&nbsp;src</a> ::
+        <a href="src.gui-module.html">Package&nbsp;gui</a> ::
+        Module&nbsp;toolbox
+      </span>
+    </td>
+    <td>
+      <table cellpadding="0" cellspacing="0">
+        <!-- hide/show private -->
+        <tr><td align="right"><span class="options">[<a href="javascript:void(0);" class="privatelink"
+    onclick="toggle_private();">hide&nbsp;private</a>]</span></td></tr>
+        <tr><td align="right"><span class="options"
+            >[<a href="frames.html" target="_top">frames</a
+            >]&nbsp;|&nbsp;<a href="src.gui.toolbox-pysrc.html"
+            target="_top">no&nbsp;frames</a>]</span></td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<h1 class="epydoc">Source Code for <a href="src.gui.toolbox-module.html">Module src.gui.toolbox</a></h1>
+<pre class="py-src">
+<a name="L1"></a><tt class="py-lineno"> 1</tt>  <tt class="py-line"><tt class="py-comment">#!/usr/bin/env python3</tt> </tt>
+<a name="L2"></a><tt class="py-lineno"> 2</tt>  <tt class="py-line"><tt class="py-comment"># coding=utf-8</tt> </tt>
+<a name="L3"></a><tt class="py-lineno"> 3</tt>  <tt class="py-line"> </tt>
+<a name="L4"></a><tt class="py-lineno"> 4</tt>  <tt class="py-line"><tt class="py-keyword">import</tt> <tt class="py-name">inspect</tt> </tt>
+<a name="L5"></a><tt class="py-lineno"> 5</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt class="py-name">os</tt> <tt class="py-keyword">import</tt> <tt class="py-name">listdir</tt> </tt>
+<a name="L6"></a><tt class="py-lineno"> 6</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt class="py-name">PySide</tt><tt class="py-op">.</tt><tt class="py-name">QtCore</tt> <tt class="py-keyword">import</tt> <tt class="py-name">QByteArray</tt><tt class="py-op">,</tt> <tt class="py-name">QDir</tt><tt class="py-op">,</tt> <tt class="py-name">QMimeData</tt><tt class="py-op">,</tt> <tt class="py-name">Qt</tt> </tt>
+<a name="L7"></a><tt class="py-lineno"> 7</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt class="py-name">PySide</tt><tt class="py-op">.</tt><tt class="py-name">QtGui</tt> <tt class="py-keyword">import</tt> <tt class="py-op">(</tt> </tt>
+<a name="L8"></a><tt class="py-lineno"> 8</tt>  <tt class="py-line">    <tt class="py-name">QDockWidget</tt><tt class="py-op">,</tt> <tt class="py-name">QDrag</tt><tt class="py-op">,</tt> <tt class="py-name">QIcon</tt><tt class="py-op">,</tt> <tt class="py-name">QTreeWidget</tt><tt class="py-op">,</tt> <tt class="py-name">QTreeWidgetItem</tt><tt class="py-op">)</tt> </tt>
+<a name="L9"></a><tt class="py-lineno"> 9</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt class="py-op">.</tt><tt id="link-0" class="py-name" targets="Module src.gui.util=src.gui.util-module.html"><a title="src.gui.util" class="py-name" href="#" onclick="return doclink('link-0', 'util', 'link-0');">util</a></tt> <tt class="py-keyword">import</tt> <tt id="link-1" class="py-name" targets="Function src.gui.util.filePath()=src.gui.util-module.html#filePath"><a title="src.gui.util.filePath" class="py-name" href="#" onclick="return doclink('link-1', 'filePath', 'link-1');">filePath</a></tt> </tt>
+<a name="L10"></a><tt class="py-lineno">10</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt id="link-2" class="py-name" targets="Package src.engine=src.engine-module.html"><a title="src.engine" class="py-name" href="#" onclick="return doclink('link-2', 'engine', 'link-2');">engine</a></tt> <tt class="py-keyword">import</tt> <tt id="link-3" class="py-name" targets="Module src.engine.gates=src.engine.gates-module.html"><a title="src.engine.gates" class="py-name" href="#" onclick="return doclink('link-3', 'gates', 'link-3');">gates</a></tt><tt class="py-op">,</tt> <tt id="link-4" class="py-name" targets="Module src.engine.circuits=src.engine.circuits-module.html"><a title="src.engine.circuits" class="py-name" href="#" onclick="return doclink('link-4', 'circuits', 'link-4');">circuits</a></tt> </tt>
+<a name="L11"></a><tt class="py-lineno">11</tt>  <tt class="py-line"> </tt>
+<a name="L12"></a><tt class="py-lineno">12</tt>  <tt class="py-line"> </tt>
+<a name="ToolBox"></a><div id="ToolBox-def"><a name="L13"></a><tt class="py-lineno">13</tt> <a class="py-toggle" href="#" id="ToolBox-toggle" onclick="return toggle('ToolBox');">-</a><tt class="py-line"><tt class="py-keyword">class</tt> <a class="py-def-name" href="src.gui.toolbox.ToolBox-class.html">ToolBox</a><tt class="py-op">(</tt><tt class="py-base-class">QTreeWidget</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="ToolBox-collapsed" style="display:none;" pad="++" indent="++++"></div><div id="ToolBox-expanded"><a name="L14"></a><tt class="py-lineno">14</tt>  <tt class="py-line">    <tt class="py-docstring">"""A toolbox that contains logic gates and user circuits, for use</tt> </tt>
+<a name="L15"></a><tt class="py-lineno">15</tt>  <tt class="py-line"><tt class="py-docstring">    in the main designer window.</tt> </tt>
+<a name="L16"></a><tt class="py-lineno">16</tt>  <tt class="py-line"><tt class="py-docstring">    """</tt> </tt>
+<a name="L17"></a><tt class="py-lineno">17</tt>  <tt class="py-line"> </tt>
+<a name="ToolBox.__init__"></a><div id="ToolBox.__init__-def"><a name="L18"></a><tt class="py-lineno">18</tt> <a class="py-toggle" href="#" id="ToolBox.__init__-toggle" onclick="return toggle('ToolBox.__init__');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="src.gui.toolbox.ToolBox-class.html#__init__">__init__</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="ToolBox.__init__-collapsed" style="display:none;" pad="++" indent="++++++++"></div><div id="ToolBox.__init__-expanded"><a name="L19"></a><tt class="py-lineno">19</tt>  <tt class="py-line">        <tt class="py-name">super</tt><tt class="py-op">(</tt><tt id="link-5" class="py-name" targets="Class src.gui.toolbox.ToolBox=src.gui.toolbox.ToolBox-class.html"><a title="src.gui.toolbox.ToolBox" class="py-name" href="#" onclick="return doclink('link-5', 'ToolBox', 'link-5');">ToolBox</a></tt><tt class="py-op">,</tt> <tt class="py-name">self</tt><tt class="py-op">)</tt><tt class="py-op">.</tt><tt id="link-6" class="py-name" targets="Method src.engine.circuits.Counter4b.__init__()=src.engine.circuits.Counter4b-class.html#__init__,Method src.engine.circuits.DFlipFlop.__init__()=src.engine.circuits.DFlipFlop-class.html#__init__,Method src.engine.circuits.JKFlipFlop.__init__()=src.engine.circuits.JKFlipFlop-class.html#__init__,Method src.engine.circuits.Mem1b.__init__()=src.engine.circuits.Mem1b-class.html#__init__,Method src.engine.circuits.RSFlipFlop.__init__()=src.engine.circuits.RSFlipFlop-class.html#__init__,Method src.engine.circuits.Register4b.__init__()=src.engine.circuits.Register4b-class.html#__init__,Method src.engine.clock.Clock.__init__()=src.engine.clock.Clock-class.html#__init__,Method src.engine.clock.ClockThread.__init__()=src.engine.clock.ClockThread-class.html#__init__,Method src.engine.gates.AndGate.__init__()=src.engine.gates.AndGate-class.html#__init__,Method src.engine.gates.NandGate.__init__()=src.engine.gates.NandGate-class.html#__init__,Method src.engine.gates.NorGate.__init__()=src.engine.gates.NorGate-class.html#__init__,Method src.engine.gates.NotGate.__init__()=src.engine.gates.NotGate-class.html#__init__,Method src.engine.gates.OrGate.__init__()=src.engine.gates.OrGate-class.html#__init__,Method src.engine.gates.XnorGate.__init__()=src.engine.gates.XnorGate-class.html#__init__,Method src.engine.gates.XorGate.__init__()=src.engine.gates.XorGate-class.html#__init__,Method src.engine.simulator.Agenda.__init__()=src.engine.simulator.Agenda-class.html#__init__,Method src.engine.simulator.Circuit.__init__()=src.engine.simulator.Circuit-class.html#__init__,Method src.engine.simulator.Plug.__init__()=src.engine.simulator.Plug-class.html#__init__,Method src.engine_test.Counter4b.__init__()=src.engine_test.Counter4b-class.html#__init__,Method src.engine_test.DFlipFlop.__init__()=src.engine_test.DFlipFlop-class.html#__init__,Method src.engine_test.Div2.__init__()=src.engine_test.Div2-class.html#__init__,Method src.engine_test.JKFlipFlop.__init__()=src.engine_test.JKFlipFlop-class.html#__init__,Method src.engine_test.Mem1b.__init__()=src.engine_test.Mem1b-class.html#__init__,Method src.engine_test.RSFlipFlop.__init__()=src.engine_test.RSFlipFlop-class.html#__init__,Method src.engine_test.Register4b.__init__()=src.engine_test.Register4b-class.html#__init__,Method src.engine_test.oCounter4b.__init__()=src.engine_test.oCounter4b-class.html#__init__,Method src.engine_test.oJKFlipFlop.__init__()=src.engine_test.oJKFlipFlop-class.html#__init__,Method src.engine_test.ooJKFlipFlop.__init__()=src.engine_test.ooJKFlipFlop-class.html#__init__,Method src.engine_test.sDFlipFlop.__init__()=src.engine_test.sDFlipFlop-class.html#__init__,Method src.gui.circuitdrawing.CustomCircuitCreator.__init__()=src.gui.circuitdrawing.CustomCircuitCreator-class.html#__init__,Method src.gui.circuitdrawing.PaintArea.__init__()=src.gui.circuitdrawing.PaintArea-class.html#__init__,Method src.gui.docu.HelpDockWidget.__init__()=src.gui.docu.HelpDockWidget-class.html#__init__,Method src.gui.docu.HelpTextBrowser.__init__()=src.gui.docu.HelpTextBrowser-class.html#__init__,Method src.gui.graphicitem.CircuitItem.__init__()=src.gui.graphicitem.CircuitItem-class.html#__init__,Method src.gui.graphicitem.PlugItem.__init__()=src.gui.graphicitem.PlugItem-class.html#__init__,Method src.gui.graphicitem.WireItem.__init__()=src.gui.graphicitem.WireItem-class.html#__init__,Method src.gui.logwidgets.LogDockWidget.__init__()=src.gui.logwidgets.LogDockWidget-class.html#__init__,Method src.gui.logwidgets.LoggerTextEdit.__init__()=src.gui.logwidgets.LoggerTextEdit-class.html#__init__,Method src.gui.mainview.MainView.__init__()=src.gui.mainview.MainView-class.html#__init__,Method src.gui.selectionoptions.SelectionOptions.__init__()=src.gui.selectionoptions.SelectionOptions-class.html#__init__,Method src.gui.selectionoptions.SelectionOptionsDockWidget.__init__()=src.gui.selectionoptions.SelectionOptionsDockWidget-class.html#__init__,Method src.gui.settings.Settings.__init__()=src.gui.settings.Settings-class.html#__init__,Method src.gui.settings.SettingsDialog.__init__()=src.gui.settings.SettingsDialog-class.html#__init__,Method src.gui.toolbox.ToolBox.__init__()=src.gui.toolbox.ToolBox-class.html#__init__,Method src.gui.toolbox.ToolBoxDockWidget.__init__()=src.gui.toolbox.ToolBoxDockWidget-class.html#__init__"><a title="src.engine.circuits.Counter4b.__init__
+src.engine.circuits.DFlipFlop.__init__
+src.engine.circuits.JKFlipFlop.__init__
+src.engine.circuits.Mem1b.__init__
+src.engine.circuits.RSFlipFlop.__init__
+src.engine.circuits.Register4b.__init__
+src.engine.clock.Clock.__init__
+src.engine.clock.ClockThread.__init__
+src.engine.gates.AndGate.__init__
+src.engine.gates.NandGate.__init__
+src.engine.gates.NorGate.__init__
+src.engine.gates.NotGate.__init__
+src.engine.gates.OrGate.__init__
+src.engine.gates.XnorGate.__init__
+src.engine.gates.XorGate.__init__
+src.engine.simulator.Agenda.__init__
+src.engine.simulator.Circuit.__init__
+src.engine.simulator.Plug.__init__
+src.engine_test.Counter4b.__init__
+src.engine_test.DFlipFlop.__init__
+src.engine_test.Div2.__init__
+src.engine_test.JKFlipFlop.__init__
+src.engine_test.Mem1b.__init__
+src.engine_test.RSFlipFlop.__init__
+src.engine_test.Register4b.__init__
+src.engine_test.oCounter4b.__init__
+src.engine_test.oJKFlipFlop.__init__
+src.engine_test.ooJKFlipFlop.__init__
+src.engine_test.sDFlipFlop.__init__
+src.gui.circuitdrawing.CustomCircuitCreator.__init__
+src.gui.circuitdrawing.PaintArea.__init__
+src.gui.docu.HelpDockWidget.__init__
+src.gui.docu.HelpTextBrowser.__init__
+src.gui.graphicitem.CircuitItem.__init__
+src.gui.graphicitem.PlugItem.__init__
+src.gui.graphicitem.WireItem.__init__
+src.gui.logwidgets.LogDockWidget.__init__
+src.gui.logwidgets.LoggerTextEdit.__init__
+src.gui.mainview.MainView.__init__
+src.gui.selectionoptions.SelectionOptions.__init__
+src.gui.selectionoptions.SelectionOptionsDockWidget.__init__
+src.gui.settings.Settings.__init__
+src.gui.settings.SettingsDialog.__init__
+src.gui.toolbox.ToolBox.__init__
+src.gui.toolbox.ToolBoxDockWidget.__init__" class="py-name" href="#" onclick="return doclink('link-6', '__init__', 'link-6');">__init__</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L20"></a><tt class="py-lineno">20</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">setDragEnabled</tt><tt class="py-op">(</tt><tt class="py-name">True</tt><tt class="py-op">)</tt> </tt>
+<a name="L21"></a><tt class="py-lineno">21</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">setColumnCount</tt><tt class="py-op">(</tt><tt class="py-number">2</tt><tt class="py-op">)</tt> </tt>
+<a name="L22"></a><tt class="py-lineno">22</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">header</tt><tt class="py-op">(</tt><tt class="py-op">)</tt><tt class="py-op">.</tt><tt class="py-name">setVisible</tt><tt class="py-op">(</tt><tt class="py-name">False</tt><tt class="py-op">)</tt> </tt>
+<a name="L23"></a><tt class="py-lineno">23</tt>  <tt class="py-line">        <tt class="py-name">gatesheader</tt> <tt class="py-op">=</tt> <tt class="py-name">QTreeWidgetItem</tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">,</tt> <tt class="py-op">[</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">str_basicGates</tt><tt class="py-op">]</tt><tt class="py-op">)</tt> </tt>
+<a name="L24"></a><tt class="py-lineno">24</tt>  <tt class="py-line">        <tt class="py-name">gatesheader</tt><tt class="py-op">.</tt><tt class="py-name">setFlags</tt><tt class="py-op">(</tt> </tt>
+<a name="L25"></a><tt class="py-lineno">25</tt>  <tt class="py-line">            <tt class="py-op">~</tt><tt class="py-name">Qt</tt><tt class="py-op">.</tt><tt class="py-name">ItemFlag</tt><tt class="py-op">.</tt><tt class="py-name">ItemIsDragEnabled</tt> <tt class="py-op">&amp;</tt> <tt class="py-op">~</tt><tt class="py-name">Qt</tt><tt class="py-op">.</tt><tt class="py-name">ItemFlag</tt><tt class="py-op">.</tt><tt class="py-name">ItemIsSelectable</tt><tt class="py-op">)</tt> </tt>
+<a name="L26"></a><tt class="py-lineno">26</tt>  <tt class="py-line">        <tt class="py-name">gatesheader</tt><tt class="py-op">.</tt><tt class="py-name">setExpanded</tt><tt class="py-op">(</tt><tt class="py-name">True</tt><tt class="py-op">)</tt> </tt>
+<a name="L27"></a><tt class="py-lineno">27</tt>  <tt class="py-line">        <tt class="py-name">imgDir</tt> <tt class="py-op">=</tt> <tt id="link-7" class="py-name"><a title="src.gui.util.filePath" class="py-name" href="#" onclick="return doclink('link-7', 'filePath', 'link-1');">filePath</a></tt><tt class="py-op">(</tt><tt class="py-string">'icons/'</tt><tt class="py-op">)</tt> </tt>
+<a name="L28"></a><tt class="py-lineno">28</tt>  <tt class="py-line">        <tt class="py-keyword">for</tt> <tt class="py-name">name</tt><tt class="py-op">,</tt> <tt class="py-name">class_</tt> <tt class="py-keyword">in</tt> <tt class="py-name">inspect</tt><tt class="py-op">.</tt><tt class="py-name">getmembers</tt><tt class="py-op">(</tt> </tt>
+<a name="L29"></a><tt class="py-lineno">29</tt>  <tt class="py-line">                <tt id="link-8" class="py-name"><a title="src.engine.gates" class="py-name" href="#" onclick="return doclink('link-8', 'gates', 'link-3');">gates</a></tt><tt class="py-op">,</tt> </tt>
+<a name="L30"></a><tt class="py-lineno">30</tt>  <tt class="py-line">                <tt class="py-keyword">lambda</tt> <tt class="py-name">m</tt><tt class="py-op">:</tt> <tt class="py-op">(</tt> </tt>
+<a name="L31"></a><tt class="py-lineno">31</tt>  <tt class="py-line">                    <tt class="py-name">inspect</tt><tt class="py-op">.</tt><tt class="py-name">isclass</tt><tt class="py-op">(</tt><tt class="py-name">m</tt><tt class="py-op">)</tt> <tt class="py-keyword">and</tt> <tt class="py-name">m</tt><tt class="py-op">.</tt><tt class="py-name">__module__</tt> <tt class="py-op">==</tt> <tt class="py-string">'engine.gates'</tt><tt class="py-op">)</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L32"></a><tt class="py-lineno">32</tt>  <tt class="py-line">            <tt class="py-name">item</tt> <tt class="py-op">=</tt> <tt class="py-name">QTreeWidgetItem</tt><tt class="py-op">(</tt><tt class="py-name">gatesheader</tt><tt class="py-op">,</tt> <tt class="py-op">[</tt><tt class="py-name">name</tt><tt class="py-op">[</tt><tt class="py-op">:</tt><tt class="py-op">-</tt><tt class="py-number">4</tt><tt class="py-op">]</tt><tt class="py-op">]</tt><tt class="py-op">)</tt> </tt>
+<a name="L33"></a><tt class="py-lineno">33</tt>  <tt class="py-line">            <tt class="py-name">item</tt><tt class="py-op">.</tt><tt class="py-name">setIcon</tt><tt class="py-op">(</tt><tt class="py-number">0</tt><tt class="py-op">,</tt> <tt class="py-name">QIcon</tt><tt class="py-op">(</tt><tt class="py-name">imgDir</tt> <tt class="py-op">+</tt> <tt class="py-name">name</tt> <tt class="py-op">+</tt> <tt class="py-string">'.png'</tt><tt class="py-op">)</tt><tt class="py-op">)</tt> </tt>
+<a name="L34"></a><tt class="py-lineno">34</tt>  <tt class="py-line">        <tt class="py-name">item</tt> <tt class="py-op">=</tt> <tt class="py-name">QTreeWidgetItem</tt><tt class="py-op">(</tt><tt class="py-name">gatesheader</tt><tt class="py-op">,</tt> <tt class="py-op">[</tt><tt class="py-string">'JKFlipFlop'</tt><tt class="py-op">]</tt><tt class="py-op">)</tt> </tt>
+<a name="L35"></a><tt class="py-lineno">35</tt>  <tt class="py-line">        <tt class="py-name">item</tt><tt class="py-op">.</tt><tt class="py-name">setIcon</tt><tt class="py-op">(</tt><tt class="py-number">0</tt><tt class="py-op">,</tt> <tt class="py-name">QIcon</tt><tt class="py-op">(</tt><tt class="py-name">imgDir</tt> <tt class="py-op">+</tt> <tt class="py-string">'JKFlipFlop.png'</tt><tt class="py-op">)</tt><tt class="py-op">)</tt> </tt>
+<a name="L36"></a><tt class="py-lineno">36</tt>  <tt class="py-line">        <tt class="py-name">item</tt> <tt class="py-op">=</tt> <tt class="py-name">QTreeWidgetItem</tt><tt class="py-op">(</tt><tt class="py-name">gatesheader</tt><tt class="py-op">,</tt> <tt class="py-op">[</tt><tt class="py-string">'RSFlipFlop'</tt><tt class="py-op">]</tt><tt class="py-op">)</tt> </tt>
+<a name="L37"></a><tt class="py-lineno">37</tt>  <tt class="py-line">        <tt class="py-name">item</tt><tt class="py-op">.</tt><tt class="py-name">setIcon</tt><tt class="py-op">(</tt><tt class="py-number">0</tt><tt class="py-op">,</tt> <tt class="py-name">QIcon</tt><tt class="py-op">(</tt><tt class="py-name">imgDir</tt> <tt class="py-op">+</tt> <tt class="py-string">'RSFlipFlop.png'</tt><tt class="py-op">)</tt><tt class="py-op">)</tt> </tt>
+<a name="L38"></a><tt class="py-lineno">38</tt>  <tt class="py-line">        <tt class="py-name">ioheader</tt> <tt class="py-op">=</tt> <tt class="py-name">QTreeWidgetItem</tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">,</tt> <tt class="py-op">[</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">str_IO</tt><tt class="py-op">]</tt><tt class="py-op">)</tt> </tt>
+<a name="L39"></a><tt class="py-lineno">39</tt>  <tt class="py-line">        <tt class="py-name">ioheader</tt><tt class="py-op">.</tt><tt class="py-name">setFlags</tt><tt class="py-op">(</tt> </tt>
+<a name="L40"></a><tt class="py-lineno">40</tt>  <tt class="py-line">            <tt class="py-op">~</tt><tt class="py-name">Qt</tt><tt class="py-op">.</tt><tt class="py-name">ItemFlag</tt><tt class="py-op">.</tt><tt class="py-name">ItemIsDragEnabled</tt> <tt class="py-op">&amp;</tt> <tt class="py-op">~</tt><tt class="py-name">Qt</tt><tt class="py-op">.</tt><tt class="py-name">ItemFlag</tt><tt class="py-op">.</tt><tt class="py-name">ItemIsSelectable</tt><tt class="py-op">)</tt> </tt>
+<a name="L41"></a><tt class="py-lineno">41</tt>  <tt class="py-line">        <tt class="py-name">ioheader</tt><tt class="py-op">.</tt><tt class="py-name">setExpanded</tt><tt class="py-op">(</tt><tt class="py-name">True</tt><tt class="py-op">)</tt> </tt>
+<a name="L42"></a><tt class="py-lineno">42</tt>  <tt class="py-line">        <tt class="py-op">[</tt> </tt>
+<a name="L43"></a><tt class="py-lineno">43</tt>  <tt class="py-line">            <tt class="py-name">QTreeWidgetItem</tt><tt class="py-op">(</tt><tt class="py-name">ioheader</tt><tt class="py-op">,</tt> <tt class="py-op">[</tt><tt class="py-name">name</tt><tt class="py-op">]</tt><tt class="py-op">)</tt> </tt>
+<a name="L44"></a><tt class="py-lineno">44</tt>  <tt class="py-line">            <tt class="py-keyword">for</tt> <tt class="py-name">name</tt> <tt class="py-keyword">in</tt> <tt class="py-op">[</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">str_I</tt><tt class="py-op">,</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">str_O</tt><tt class="py-op">,</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">str_Clock</tt><tt class="py-op">]</tt><tt class="py-op">]</tt> </tt>
+<a name="L45"></a><tt class="py-lineno">45</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">userheader</tt> <tt class="py-op">=</tt> <tt class="py-name">QTreeWidgetItem</tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">,</tt> <tt class="py-op">[</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">str_userCircuits</tt><tt class="py-op">]</tt><tt class="py-op">)</tt> </tt>
+<a name="L46"></a><tt class="py-lineno">46</tt>  <tt class="py-line">        <tt class="py-op">[</tt><tt class="py-name">QTreeWidgetItem</tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">userheader</tt><tt class="py-op">,</tt> <tt class="py-op">[</tt><tt class="py-name">name</tt><tt class="py-op">[</tt><tt class="py-op">:</tt><tt class="py-op">-</tt><tt class="py-number">4</tt><tt class="py-op">]</tt><tt class="py-op">,</tt> <tt class="py-string">'user'</tt><tt class="py-op">]</tt><tt class="py-op">)</tt> </tt>
+<a name="L47"></a><tt class="py-lineno">47</tt>  <tt class="py-line">            <tt class="py-keyword">for</tt> <tt class="py-name">name</tt> <tt class="py-keyword">in</tt> <tt class="py-name">sorted</tt><tt class="py-op">(</tt><tt class="py-name">listdir</tt><tt class="py-op">(</tt><tt id="link-9" class="py-name"><a title="src.gui.util.filePath" class="py-name" href="#" onclick="return doclink('link-9', 'filePath', 'link-1');">filePath</a></tt><tt class="py-op">(</tt><tt class="py-string">'user/'</tt><tt class="py-op">)</tt><tt class="py-op">)</tt><tt class="py-op">)</tt><tt class="py-op">]</tt> </tt>
+<a name="L48"></a><tt class="py-lineno">48</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">userheader</tt><tt class="py-op">.</tt><tt class="py-name">setFlags</tt><tt class="py-op">(</tt> </tt>
+<a name="L49"></a><tt class="py-lineno">49</tt>  <tt class="py-line">            <tt class="py-op">~</tt><tt class="py-name">Qt</tt><tt class="py-op">.</tt><tt class="py-name">ItemFlag</tt><tt class="py-op">.</tt><tt class="py-name">ItemIsDragEnabled</tt> <tt class="py-op">&amp;</tt> <tt class="py-op">~</tt><tt class="py-name">Qt</tt><tt class="py-op">.</tt><tt class="py-name">ItemFlag</tt><tt class="py-op">.</tt><tt class="py-name">ItemIsSelectable</tt><tt class="py-op">)</tt> </tt>
+<a name="L50"></a><tt class="py-lineno">50</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">userheader</tt><tt class="py-op">.</tt><tt class="py-name">setExpanded</tt><tt class="py-op">(</tt><tt class="py-name">True</tt><tt class="py-op">)</tt> </tt>
+<a name="L51"></a><tt class="py-lineno">51</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">setColumnWidth</tt><tt class="py-op">(</tt><tt class="py-number">0</tt><tt class="py-op">,</tt> <tt class="py-number">300</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L52"></a><tt class="py-lineno">52</tt>  <tt class="py-line"> </tt>
+<a name="ToolBox.addUserCircuit"></a><div id="ToolBox.addUserCircuit-def"><a name="L53"></a><tt class="py-lineno">53</tt> <a class="py-toggle" href="#" id="ToolBox.addUserCircuit-toggle" onclick="return toggle('ToolBox.addUserCircuit');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="src.gui.toolbox.ToolBox-class.html#addUserCircuit">addUserCircuit</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">name</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="ToolBox.addUserCircuit-collapsed" style="display:none;" pad="++" indent="++++++++"></div><div id="ToolBox.addUserCircuit-expanded"><a name="L54"></a><tt class="py-lineno">54</tt>  <tt class="py-line">        <tt class="py-docstring">"""When the user saves a circuit, add it at the correct</tt> </tt>
+<a name="L55"></a><tt class="py-lineno">55</tt>  <tt class="py-line"><tt class="py-docstring">        alphabetical spot, if it is not already present."""</tt> </tt>
+<a name="L56"></a><tt class="py-lineno">56</tt>  <tt class="py-line">        <tt class="py-keyword">for</tt> <tt class="py-name">i</tt> <tt class="py-keyword">in</tt> <tt class="py-name">range</tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">userheader</tt><tt class="py-op">.</tt><tt class="py-name">childCount</tt><tt class="py-op">(</tt><tt class="py-op">)</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L57"></a><tt class="py-lineno">57</tt>  <tt class="py-line">            <tt class="py-keyword">if</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">userheader</tt><tt class="py-op">.</tt><tt class="py-name">child</tt><tt class="py-op">(</tt><tt class="py-name">i</tt><tt class="py-op">)</tt><tt class="py-op">.</tt><tt class="py-name">text</tt><tt class="py-op">(</tt><tt class="py-number">0</tt><tt class="py-op">)</tt> <tt class="py-op">==</tt> <tt class="py-name">name</tt><tt class="py-op">:</tt> </tt>
+<a name="L58"></a><tt class="py-lineno">58</tt>  <tt class="py-line">                <tt class="py-keyword">return</tt> </tt>
+<a name="L59"></a><tt class="py-lineno">59</tt>  <tt class="py-line">        <tt class="py-name">QTreeWidgetItem</tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">userheader</tt><tt class="py-op">,</tt> <tt class="py-op">[</tt><tt class="py-name">name</tt><tt class="py-op">,</tt> <tt class="py-string">'user'</tt><tt class="py-op">]</tt><tt class="py-op">)</tt> </tt>
+<a name="L60"></a><tt class="py-lineno">60</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">userheader</tt><tt class="py-op">.</tt><tt class="py-name">sortChildren</tt><tt class="py-op">(</tt><tt class="py-number">0</tt><tt class="py-op">,</tt> <tt class="py-name">Qt</tt><tt class="py-op">.</tt><tt class="py-name">AscendingOrder</tt><tt class="py-op">)</tt> </tt>
+</div></div><a name="L61"></a><tt class="py-lineno">61</tt>  <tt class="py-line"> </tt>
+<a name="L62"></a><tt class="py-lineno">62</tt>  <tt class="py-line"> </tt>
+<a name="ToolBoxDockWidget"></a><div id="ToolBoxDockWidget-def"><a name="L63"></a><tt class="py-lineno">63</tt> <a class="py-toggle" href="#" id="ToolBoxDockWidget-toggle" onclick="return toggle('ToolBoxDockWidget');">-</a><tt class="py-line"><tt class="py-keyword">class</tt> <a class="py-def-name" href="src.gui.toolbox.ToolBoxDockWidget-class.html">ToolBoxDockWidget</a><tt class="py-op">(</tt><tt class="py-base-class">QDockWidget</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="ToolBoxDockWidget-collapsed" style="display:none;" pad="++" indent="++++"></div><div id="ToolBoxDockWidget-expanded"><a name="L64"></a><tt class="py-lineno">64</tt>  <tt class="py-line">    <tt class="py-docstring">"""A dock widget containing our toolbox."""</tt> </tt>
+<a name="L65"></a><tt class="py-lineno">65</tt>  <tt class="py-line"> </tt>
+<a name="ToolBoxDockWidget.__init__"></a><div id="ToolBoxDockWidget.__init__-def"><a name="L66"></a><tt class="py-lineno">66</tt> <a class="py-toggle" href="#" id="ToolBoxDockWidget.__init__-toggle" onclick="return toggle('ToolBoxDockWidget.__init__');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="src.gui.toolbox.ToolBoxDockWidget-class.html#__init__">__init__</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="ToolBoxDockWidget.__init__-collapsed" style="display:none;" pad="++" indent="++++++++"></div><div id="ToolBoxDockWidget.__init__-expanded"><a name="L67"></a><tt class="py-lineno">67</tt>  <tt class="py-line">        <tt class="py-name">super</tt><tt class="py-op">(</tt><tt id="link-10" class="py-name" targets="Class src.gui.toolbox.ToolBoxDockWidget=src.gui.toolbox.ToolBoxDockWidget-class.html"><a title="src.gui.toolbox.ToolBoxDockWidget" class="py-name" href="#" onclick="return doclink('link-10', 'ToolBoxDockWidget', 'link-10');">ToolBoxDockWidget</a></tt><tt class="py-op">,</tt> <tt class="py-name">self</tt><tt class="py-op">)</tt><tt class="py-op">.</tt><tt id="link-11" class="py-name"><a title="src.engine.circuits.Counter4b.__init__
+src.engine.circuits.DFlipFlop.__init__
+src.engine.circuits.JKFlipFlop.__init__
+src.engine.circuits.Mem1b.__init__
+src.engine.circuits.RSFlipFlop.__init__
+src.engine.circuits.Register4b.__init__
+src.engine.clock.Clock.__init__
+src.engine.clock.ClockThread.__init__
+src.engine.gates.AndGate.__init__
+src.engine.gates.NandGate.__init__
+src.engine.gates.NorGate.__init__
+src.engine.gates.NotGate.__init__
+src.engine.gates.OrGate.__init__
+src.engine.gates.XnorGate.__init__
+src.engine.gates.XorGate.__init__
+src.engine.simulator.Agenda.__init__
+src.engine.simulator.Circuit.__init__
+src.engine.simulator.Plug.__init__
+src.engine_test.Counter4b.__init__
+src.engine_test.DFlipFlop.__init__
+src.engine_test.Div2.__init__
+src.engine_test.JKFlipFlop.__init__
+src.engine_test.Mem1b.__init__
+src.engine_test.RSFlipFlop.__init__
+src.engine_test.Register4b.__init__
+src.engine_test.oCounter4b.__init__
+src.engine_test.oJKFlipFlop.__init__
+src.engine_test.ooJKFlipFlop.__init__
+src.engine_test.sDFlipFlop.__init__
+src.gui.circuitdrawing.CustomCircuitCreator.__init__
+src.gui.circuitdrawing.PaintArea.__init__
+src.gui.docu.HelpDockWidget.__init__
+src.gui.docu.HelpTextBrowser.__init__
+src.gui.graphicitem.CircuitItem.__init__
+src.gui.graphicitem.PlugItem.__init__
+src.gui.graphicitem.WireItem.__init__
+src.gui.logwidgets.LogDockWidget.__init__
+src.gui.logwidgets.LoggerTextEdit.__init__
+src.gui.mainview.MainView.__init__
+src.gui.selectionoptions.SelectionOptions.__init__
+src.gui.selectionoptions.SelectionOptionsDockWidget.__init__
+src.gui.settings.Settings.__init__
+src.gui.settings.SettingsDialog.__init__
+src.gui.toolbox.ToolBox.__init__
+src.gui.toolbox.ToolBoxDockWidget.__init__" class="py-name" href="#" onclick="return doclink('link-11', '__init__', 'link-6');">__init__</a></tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">str_dockTitle</tt><tt class="py-op">)</tt> </tt>
+<a name="L68"></a><tt class="py-lineno">68</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">setWidget</tt><tt class="py-op">(</tt><tt id="link-12" class="py-name"><a title="src.gui.toolbox.ToolBox" class="py-name" href="#" onclick="return doclink('link-12', 'ToolBox', 'link-5');">ToolBox</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt><tt class="py-op">)</tt> </tt>
+<a name="L69"></a><tt class="py-lineno">69</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">setFeatures</tt><tt class="py-op">(</tt><tt class="py-name">QDockWidget</tt><tt class="py-op">.</tt><tt id="link-13" class="py-name" targets="Variable PySide.QtGui.QDockWidget.DockWidgetFeature.NoDockWidgetFeatures=PySide.QtGui.QDockWidget.DockWidgetFeature-class.html#NoDockWidgetFeatures"><a title="PySide.QtGui.QDockWidget.DockWidgetFeature.NoDockWidgetFeatures" class="py-name" href="#" onclick="return doclink('link-13', 'NoDockWidgetFeatures', 'link-13');">NoDockWidgetFeatures</a></tt><tt class="py-op">)</tt> </tt>
+</div></div><a name="L70"></a><tt class="py-lineno">70</tt>  <tt class="py-line"> </tt><script type="text/javascript">
+<!--
+expandto(location.href);
+// -->
+</script>
+</pre>
+<br />
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="src-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+      <th class="navbar" width="100%"></th>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%%">
+  <tr>
+    <td align="left" class="footer">
+    Generated by Epydoc 3.0.1 on Sun Sep 14 16:43:36 2014
+    </td>
+    <td align="right" class="footer">
+      <a target="mainFrame" href="http://epydoc.sourceforge.net"
+        >http://epydoc.sourceforge.net</a>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+  <!--
+  // Private objects are initially displayed (because if
+  // javascript is turned off then we want them to be
+  // visible); but by default, we want to hide them.  So hide
+  // them unless we have a cookie that says to show them.
+  checkCookie();
+  // -->
+</script>
+</body>
+</html>

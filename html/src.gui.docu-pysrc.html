@@ -1,0 +1,238 @@
+<?xml version="1.0" encoding="ascii"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>src.gui.docu</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css" />
+  <script type="text/javascript" src="epydoc.js"></script>
+</head>
+
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="src-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+      <th class="navbar" width="100%"></th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">
+      <span class="breadcrumbs">
+        <a href="src-module.html">Package&nbsp;src</a> ::
+        <a href="src.gui-module.html">Package&nbsp;gui</a> ::
+        Module&nbsp;docu
+      </span>
+    </td>
+    <td>
+      <table cellpadding="0" cellspacing="0">
+        <!-- hide/show private -->
+        <tr><td align="right"><span class="options">[<a href="javascript:void(0);" class="privatelink"
+    onclick="toggle_private();">hide&nbsp;private</a>]</span></td></tr>
+        <tr><td align="right"><span class="options"
+            >[<a href="frames.html" target="_top">frames</a
+            >]&nbsp;|&nbsp;<a href="src.gui.docu-pysrc.html"
+            target="_top">no&nbsp;frames</a>]</span></td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<h1 class="epydoc">Source Code for <a href="src.gui.docu-module.html">Module src.gui.docu</a></h1>
+<pre class="py-src">
+<a name="L1"></a><tt class="py-lineno"> 1</tt>  <tt class="py-line"><tt class="py-comment">#!/usr/bin/env python3</tt> </tt>
+<a name="L2"></a><tt class="py-lineno"> 2</tt>  <tt class="py-line"><tt class="py-comment"># coding=utf-8</tt> </tt>
+<a name="L3"></a><tt class="py-lineno"> 3</tt>  <tt class="py-line"> </tt>
+<a name="L4"></a><tt class="py-lineno"> 4</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt class="py-name">PySide</tt><tt class="py-op">.</tt><tt class="py-name">QtCore</tt> <tt class="py-keyword">import</tt> <tt class="py-name">Qt</tt> </tt>
+<a name="L5"></a><tt class="py-lineno"> 5</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt class="py-name">PySide</tt><tt class="py-op">.</tt><tt class="py-name">QtGui</tt> <tt class="py-keyword">import</tt> <tt class="py-name">QDockWidget</tt><tt class="py-op">,</tt> <tt class="py-name">QSplitter</tt><tt class="py-op">,</tt> <tt class="py-name">QTextBrowser</tt> </tt>
+<a name="L6"></a><tt class="py-lineno"> 6</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt class="py-name">PySide</tt><tt class="py-op">.</tt><tt class="py-name">QtHelp</tt> <tt class="py-keyword">import</tt> <tt class="py-name">QHelpEngine</tt> </tt>
+<a name="L7"></a><tt class="py-lineno"> 7</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt class="py-op">.</tt><tt id="link-0" class="py-name" targets="Module src.gui.util=src.gui.util-module.html"><a title="src.gui.util" class="py-name" href="#" onclick="return doclink('link-0', 'util', 'link-0');">util</a></tt> <tt class="py-keyword">import</tt> <tt id="link-1" class="py-name" targets="Function src.gui.util.filePath()=src.gui.util-module.html#filePath"><a title="src.gui.util.filePath" class="py-name" href="#" onclick="return doclink('link-1', 'filePath', 'link-1');">filePath</a></tt> </tt>
+<a name="L8"></a><tt class="py-lineno"> 8</tt>  <tt class="py-line"> </tt>
+<a name="L9"></a><tt class="py-lineno"> 9</tt>  <tt class="py-line"> </tt>
+<a name="HelpTextBrowser"></a><div id="HelpTextBrowser-def"><a name="L10"></a><tt class="py-lineno">10</tt> <a class="py-toggle" href="#" id="HelpTextBrowser-toggle" onclick="return toggle('HelpTextBrowser');">-</a><tt class="py-line"><tt class="py-keyword">class</tt> <a class="py-def-name" href="src.gui.docu.HelpTextBrowser-class.html">HelpTextBrowser</a><tt class="py-op">(</tt><tt class="py-base-class">QTextBrowser</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="HelpTextBrowser-collapsed" style="display:none;" pad="++" indent="++++"></div><div id="HelpTextBrowser-expanded"><a name="L11"></a><tt class="py-lineno">11</tt>  <tt class="py-line">    <tt class="py-docstring">"""Overload QTextBrowser to enable communication with QHelpEngine."""</tt> </tt>
+<a name="L12"></a><tt class="py-lineno">12</tt>  <tt class="py-line"> </tt>
+<a name="HelpTextBrowser.__init__"></a><div id="HelpTextBrowser.__init__-def"><a name="L13"></a><tt class="py-lineno">13</tt> <a class="py-toggle" href="#" id="HelpTextBrowser.__init__-toggle" onclick="return toggle('HelpTextBrowser.__init__');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="src.gui.docu.HelpTextBrowser-class.html#__init__">__init__</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">helpEngine</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="HelpTextBrowser.__init__-collapsed" style="display:none;" pad="++" indent="++++++++"></div><div id="HelpTextBrowser.__init__-expanded"><a name="L14"></a><tt class="py-lineno">14</tt>  <tt class="py-line">        <tt class="py-name">super</tt><tt class="py-op">(</tt><tt id="link-2" class="py-name" targets="Class src.gui.docu.HelpTextBrowser=src.gui.docu.HelpTextBrowser-class.html"><a title="src.gui.docu.HelpTextBrowser" class="py-name" href="#" onclick="return doclink('link-2', 'HelpTextBrowser', 'link-2');">HelpTextBrowser</a></tt><tt class="py-op">,</tt> <tt class="py-name">self</tt><tt class="py-op">)</tt><tt class="py-op">.</tt><tt id="link-3" class="py-name" targets="Method src.engine.circuits.Counter4b.__init__()=src.engine.circuits.Counter4b-class.html#__init__,Method src.engine.circuits.DFlipFlop.__init__()=src.engine.circuits.DFlipFlop-class.html#__init__,Method src.engine.circuits.JKFlipFlop.__init__()=src.engine.circuits.JKFlipFlop-class.html#__init__,Method src.engine.circuits.Mem1b.__init__()=src.engine.circuits.Mem1b-class.html#__init__,Method src.engine.circuits.RSFlipFlop.__init__()=src.engine.circuits.RSFlipFlop-class.html#__init__,Method src.engine.circuits.Register4b.__init__()=src.engine.circuits.Register4b-class.html#__init__,Method src.engine.clock.Clock.__init__()=src.engine.clock.Clock-class.html#__init__,Method src.engine.clock.ClockThread.__init__()=src.engine.clock.ClockThread-class.html#__init__,Method src.engine.gates.AndGate.__init__()=src.engine.gates.AndGate-class.html#__init__,Method src.engine.gates.NandGate.__init__()=src.engine.gates.NandGate-class.html#__init__,Method src.engine.gates.NorGate.__init__()=src.engine.gates.NorGate-class.html#__init__,Method src.engine.gates.NotGate.__init__()=src.engine.gates.NotGate-class.html#__init__,Method src.engine.gates.OrGate.__init__()=src.engine.gates.OrGate-class.html#__init__,Method src.engine.gates.XnorGate.__init__()=src.engine.gates.XnorGate-class.html#__init__,Method src.engine.gates.XorGate.__init__()=src.engine.gates.XorGate-class.html#__init__,Method src.engine.simulator.Agenda.__init__()=src.engine.simulator.Agenda-class.html#__init__,Method src.engine.simulator.Circuit.__init__()=src.engine.simulator.Circuit-class.html#__init__,Method src.engine.simulator.Plug.__init__()=src.engine.simulator.Plug-class.html#__init__,Method src.engine_test.Counter4b.__init__()=src.engine_test.Counter4b-class.html#__init__,Method src.engine_test.DFlipFlop.__init__()=src.engine_test.DFlipFlop-class.html#__init__,Method src.engine_test.Div2.__init__()=src.engine_test.Div2-class.html#__init__,Method src.engine_test.JKFlipFlop.__init__()=src.engine_test.JKFlipFlop-class.html#__init__,Method src.engine_test.Mem1b.__init__()=src.engine_test.Mem1b-class.html#__init__,Method src.engine_test.RSFlipFlop.__init__()=src.engine_test.RSFlipFlop-class.html#__init__,Method src.engine_test.Register4b.__init__()=src.engine_test.Register4b-class.html#__init__,Method src.engine_test.oCounter4b.__init__()=src.engine_test.oCounter4b-class.html#__init__,Method src.engine_test.oJKFlipFlop.__init__()=src.engine_test.oJKFlipFlop-class.html#__init__,Method src.engine_test.ooJKFlipFlop.__init__()=src.engine_test.ooJKFlipFlop-class.html#__init__,Method src.engine_test.sDFlipFlop.__init__()=src.engine_test.sDFlipFlop-class.html#__init__,Method src.gui.circuitdrawing.CustomCircuitCreator.__init__()=src.gui.circuitdrawing.CustomCircuitCreator-class.html#__init__,Method src.gui.circuitdrawing.PaintArea.__init__()=src.gui.circuitdrawing.PaintArea-class.html#__init__,Method src.gui.docu.HelpDockWidget.__init__()=src.gui.docu.HelpDockWidget-class.html#__init__,Method src.gui.docu.HelpTextBrowser.__init__()=src.gui.docu.HelpTextBrowser-class.html#__init__,Method src.gui.graphicitem.CircuitItem.__init__()=src.gui.graphicitem.CircuitItem-class.html#__init__,Method src.gui.graphicitem.PlugItem.__init__()=src.gui.graphicitem.PlugItem-class.html#__init__,Method src.gui.graphicitem.WireItem.__init__()=src.gui.graphicitem.WireItem-class.html#__init__,Method src.gui.logwidgets.LogDockWidget.__init__()=src.gui.logwidgets.LogDockWidget-class.html#__init__,Method src.gui.logwidgets.LoggerTextEdit.__init__()=src.gui.logwidgets.LoggerTextEdit-class.html#__init__,Method src.gui.mainview.MainView.__init__()=src.gui.mainview.MainView-class.html#__init__,Method src.gui.selectionoptions.SelectionOptions.__init__()=src.gui.selectionoptions.SelectionOptions-class.html#__init__,Method src.gui.selectionoptions.SelectionOptionsDockWidget.__init__()=src.gui.selectionoptions.SelectionOptionsDockWidget-class.html#__init__,Method src.gui.settings.Settings.__init__()=src.gui.settings.Settings-class.html#__init__,Method src.gui.settings.SettingsDialog.__init__()=src.gui.settings.SettingsDialog-class.html#__init__,Method src.gui.toolbox.ToolBox.__init__()=src.gui.toolbox.ToolBox-class.html#__init__,Method src.gui.toolbox.ToolBoxDockWidget.__init__()=src.gui.toolbox.ToolBoxDockWidget-class.html#__init__"><a title="src.engine.circuits.Counter4b.__init__
+src.engine.circuits.DFlipFlop.__init__
+src.engine.circuits.JKFlipFlop.__init__
+src.engine.circuits.Mem1b.__init__
+src.engine.circuits.RSFlipFlop.__init__
+src.engine.circuits.Register4b.__init__
+src.engine.clock.Clock.__init__
+src.engine.clock.ClockThread.__init__
+src.engine.gates.AndGate.__init__
+src.engine.gates.NandGate.__init__
+src.engine.gates.NorGate.__init__
+src.engine.gates.NotGate.__init__
+src.engine.gates.OrGate.__init__
+src.engine.gates.XnorGate.__init__
+src.engine.gates.XorGate.__init__
+src.engine.simulator.Agenda.__init__
+src.engine.simulator.Circuit.__init__
+src.engine.simulator.Plug.__init__
+src.engine_test.Counter4b.__init__
+src.engine_test.DFlipFlop.__init__
+src.engine_test.Div2.__init__
+src.engine_test.JKFlipFlop.__init__
+src.engine_test.Mem1b.__init__
+src.engine_test.RSFlipFlop.__init__
+src.engine_test.Register4b.__init__
+src.engine_test.oCounter4b.__init__
+src.engine_test.oJKFlipFlop.__init__
+src.engine_test.ooJKFlipFlop.__init__
+src.engine_test.sDFlipFlop.__init__
+src.gui.circuitdrawing.CustomCircuitCreator.__init__
+src.gui.circuitdrawing.PaintArea.__init__
+src.gui.docu.HelpDockWidget.__init__
+src.gui.docu.HelpTextBrowser.__init__
+src.gui.graphicitem.CircuitItem.__init__
+src.gui.graphicitem.PlugItem.__init__
+src.gui.graphicitem.WireItem.__init__
+src.gui.logwidgets.LogDockWidget.__init__
+src.gui.logwidgets.LoggerTextEdit.__init__
+src.gui.mainview.MainView.__init__
+src.gui.selectionoptions.SelectionOptions.__init__
+src.gui.selectionoptions.SelectionOptionsDockWidget.__init__
+src.gui.settings.Settings.__init__
+src.gui.settings.SettingsDialog.__init__
+src.gui.toolbox.ToolBox.__init__
+src.gui.toolbox.ToolBoxDockWidget.__init__" class="py-name" href="#" onclick="return doclink('link-3', '__init__', 'link-3');">__init__</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L15"></a><tt class="py-lineno">15</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">helpEngine</tt> <tt class="py-op">=</tt> <tt class="py-name">helpEngine</tt> </tt>
+</div><a name="L16"></a><tt class="py-lineno">16</tt>  <tt class="py-line"> </tt>
+<a name="HelpTextBrowser.loadResource"></a><div id="HelpTextBrowser.loadResource-def"><a name="L17"></a><tt class="py-lineno">17</tt> <a class="py-toggle" href="#" id="HelpTextBrowser.loadResource-toggle" onclick="return toggle('HelpTextBrowser.loadResource');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="src.gui.docu.HelpTextBrowser-class.html#loadResource">loadResource</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">type</tt><tt class="py-op">,</tt> <tt class="py-param">url</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="HelpTextBrowser.loadResource-collapsed" style="display:none;" pad="++" indent="++++++++"></div><div id="HelpTextBrowser.loadResource-expanded"><a name="L18"></a><tt class="py-lineno">18</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-name">url</tt><tt class="py-op">.</tt><tt class="py-name">scheme</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> <tt class="py-op">==</tt> <tt class="py-string">"qthelp"</tt><tt class="py-op">:</tt> </tt>
+<a name="L19"></a><tt class="py-lineno">19</tt>  <tt class="py-line">            <tt class="py-keyword">return</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">helpEngine</tt><tt class="py-op">.</tt><tt class="py-name">fileData</tt><tt class="py-op">(</tt><tt class="py-name">url</tt><tt class="py-op">)</tt> </tt>
+<a name="L20"></a><tt class="py-lineno">20</tt>  <tt class="py-line">        <tt class="py-keyword">else</tt><tt class="py-op">:</tt> </tt>
+<a name="L21"></a><tt class="py-lineno">21</tt>  <tt class="py-line">            <tt class="py-keyword">return</tt> <tt class="py-name">super</tt><tt class="py-op">(</tt><tt id="link-4" class="py-name"><a title="src.gui.docu.HelpTextBrowser" class="py-name" href="#" onclick="return doclink('link-4', 'HelpTextBrowser', 'link-2');">HelpTextBrowser</a></tt><tt class="py-op">,</tt> <tt class="py-name">self</tt><tt class="py-op">)</tt><tt class="py-op">.</tt><tt id="link-5" class="py-name" targets="Method src.gui.docu.HelpTextBrowser.loadResource()=src.gui.docu.HelpTextBrowser-class.html#loadResource"><a title="src.gui.docu.HelpTextBrowser.loadResource" class="py-name" href="#" onclick="return doclink('link-5', 'loadResource', 'link-5');">loadResource</a></tt><tt class="py-op">(</tt><tt class="py-name">type</tt><tt class="py-op">,</tt> <tt class="py-name">url</tt><tt class="py-op">)</tt> </tt>
+</div></div><a name="L22"></a><tt class="py-lineno">22</tt>  <tt class="py-line"> </tt>
+<a name="L23"></a><tt class="py-lineno">23</tt>  <tt class="py-line"> </tt>
+<a name="HelpDockWidget"></a><div id="HelpDockWidget-def"><a name="L24"></a><tt class="py-lineno">24</tt> <a class="py-toggle" href="#" id="HelpDockWidget-toggle" onclick="return toggle('HelpDockWidget');">-</a><tt class="py-line"><tt class="py-keyword">class</tt> <a class="py-def-name" href="src.gui.docu.HelpDockWidget-class.html">HelpDockWidget</a><tt class="py-op">(</tt><tt class="py-base-class">QDockWidget</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="HelpDockWidget-collapsed" style="display:none;" pad="++" indent="++++"></div><div id="HelpDockWidget-expanded"><a name="L25"></a><tt class="py-lineno">25</tt>  <tt class="py-line">    <tt class="py-docstring">"""A dock widget providing inline application help."""</tt> </tt>
+<a name="L26"></a><tt class="py-lineno">26</tt>  <tt class="py-line"> </tt>
+<a name="HelpDockWidget.__init__"></a><div id="HelpDockWidget.__init__-def"><a name="L27"></a><tt class="py-lineno">27</tt> <a class="py-toggle" href="#" id="HelpDockWidget.__init__-toggle" onclick="return toggle('HelpDockWidget.__init__');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="src.gui.docu.HelpDockWidget-class.html#__init__">__init__</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="HelpDockWidget.__init__-collapsed" style="display:none;" pad="++" indent="++++++++"></div><div id="HelpDockWidget.__init__-expanded"><a name="L28"></a><tt class="py-lineno">28</tt>  <tt class="py-line">        <tt class="py-name">super</tt><tt class="py-op">(</tt><tt id="link-6" class="py-name" targets="Class src.gui.docu.HelpDockWidget=src.gui.docu.HelpDockWidget-class.html"><a title="src.gui.docu.HelpDockWidget" class="py-name" href="#" onclick="return doclink('link-6', 'HelpDockWidget', 'link-6');">HelpDockWidget</a></tt><tt class="py-op">,</tt> <tt class="py-name">self</tt><tt class="py-op">)</tt><tt class="py-op">.</tt><tt id="link-7" class="py-name"><a title="src.engine.circuits.Counter4b.__init__
+src.engine.circuits.DFlipFlop.__init__
+src.engine.circuits.JKFlipFlop.__init__
+src.engine.circuits.Mem1b.__init__
+src.engine.circuits.RSFlipFlop.__init__
+src.engine.circuits.Register4b.__init__
+src.engine.clock.Clock.__init__
+src.engine.clock.ClockThread.__init__
+src.engine.gates.AndGate.__init__
+src.engine.gates.NandGate.__init__
+src.engine.gates.NorGate.__init__
+src.engine.gates.NotGate.__init__
+src.engine.gates.OrGate.__init__
+src.engine.gates.XnorGate.__init__
+src.engine.gates.XorGate.__init__
+src.engine.simulator.Agenda.__init__
+src.engine.simulator.Circuit.__init__
+src.engine.simulator.Plug.__init__
+src.engine_test.Counter4b.__init__
+src.engine_test.DFlipFlop.__init__
+src.engine_test.Div2.__init__
+src.engine_test.JKFlipFlop.__init__
+src.engine_test.Mem1b.__init__
+src.engine_test.RSFlipFlop.__init__
+src.engine_test.Register4b.__init__
+src.engine_test.oCounter4b.__init__
+src.engine_test.oJKFlipFlop.__init__
+src.engine_test.ooJKFlipFlop.__init__
+src.engine_test.sDFlipFlop.__init__
+src.gui.circuitdrawing.CustomCircuitCreator.__init__
+src.gui.circuitdrawing.PaintArea.__init__
+src.gui.docu.HelpDockWidget.__init__
+src.gui.docu.HelpTextBrowser.__init__
+src.gui.graphicitem.CircuitItem.__init__
+src.gui.graphicitem.PlugItem.__init__
+src.gui.graphicitem.WireItem.__init__
+src.gui.logwidgets.LogDockWidget.__init__
+src.gui.logwidgets.LoggerTextEdit.__init__
+src.gui.mainview.MainView.__init__
+src.gui.selectionoptions.SelectionOptions.__init__
+src.gui.selectionoptions.SelectionOptionsDockWidget.__init__
+src.gui.settings.Settings.__init__
+src.gui.settings.SettingsDialog.__init__
+src.gui.toolbox.ToolBox.__init__
+src.gui.toolbox.ToolBoxDockWidget.__init__" class="py-name" href="#" onclick="return doclink('link-7', '__init__', 'link-3');">__init__</a></tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">str_helpDockTitle</tt><tt class="py-op">)</tt> </tt>
+<a name="L29"></a><tt class="py-lineno">29</tt>  <tt class="py-line">        <tt class="py-name">helpEngine</tt> <tt class="py-op">=</tt> <tt class="py-name">QHelpEngine</tt><tt class="py-op">(</tt><tt id="link-8" class="py-name"><a title="src.gui.util.filePath" class="py-name" href="#" onclick="return doclink('link-8', 'filePath', 'link-1');">filePath</a></tt><tt class="py-op">(</tt><tt class="py-string">'help/collection.qhc'</tt><tt class="py-op">)</tt><tt class="py-op">)</tt> </tt>
+<a name="L30"></a><tt class="py-lineno">30</tt>  <tt class="py-line">        <tt class="py-name">helpEngine</tt><tt class="py-op">.</tt><tt class="py-name">setupData</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L31"></a><tt class="py-lineno">31</tt>  <tt class="py-line">        <tt class="py-name">helpPanel</tt> <tt class="py-op">=</tt> <tt class="py-name">QSplitter</tt><tt class="py-op">(</tt><tt class="py-name">Qt</tt><tt class="py-op">.</tt><tt class="py-name">Vertical</tt><tt class="py-op">)</tt> </tt>
+<a name="L32"></a><tt class="py-lineno">32</tt>  <tt class="py-line">        <tt class="py-name">helpBrowser</tt> <tt class="py-op">=</tt> <tt id="link-9" class="py-name"><a title="src.gui.docu.HelpTextBrowser" class="py-name" href="#" onclick="return doclink('link-9', 'HelpTextBrowser', 'link-2');">HelpTextBrowser</a></tt><tt class="py-op">(</tt><tt class="py-name">helpEngine</tt><tt class="py-op">)</tt> </tt>
+<a name="L33"></a><tt class="py-lineno">33</tt>  <tt class="py-line">        <tt class="py-name">helpEngine</tt><tt class="py-op">.</tt><tt class="py-name">contentWidget</tt><tt class="py-op">(</tt><tt class="py-op">)</tt><tt class="py-op">.</tt><tt class="py-name">linkActivated</tt><tt class="py-op">.</tt><tt id="link-10" class="py-name" targets="Method src.engine.simulator.Plug.connect()=src.engine.simulator.Plug-class.html#connect,Method src.gui.graphicitem.WireItem.connect()=src.gui.graphicitem.WireItem-class.html#connect"><a title="src.engine.simulator.Plug.connect
+src.gui.graphicitem.WireItem.connect" class="py-name" href="#" onclick="return doclink('link-10', 'connect', 'link-10');">connect</a></tt><tt class="py-op">(</tt><tt class="py-name">helpBrowser</tt><tt class="py-op">.</tt><tt class="py-name">setSource</tt><tt class="py-op">)</tt> </tt>
+<a name="L34"></a><tt class="py-lineno">34</tt>  <tt class="py-line">        <tt class="py-name">helpPanel</tt><tt class="py-op">.</tt><tt class="py-name">insertWidget</tt><tt class="py-op">(</tt><tt class="py-number">0</tt><tt class="py-op">,</tt> <tt class="py-name">helpEngine</tt><tt class="py-op">.</tt><tt class="py-name">contentWidget</tt><tt class="py-op">(</tt><tt class="py-op">)</tt><tt class="py-op">)</tt> </tt>
+<a name="L35"></a><tt class="py-lineno">35</tt>  <tt class="py-line">        <tt class="py-name">helpPanel</tt><tt class="py-op">.</tt><tt class="py-name">insertWidget</tt><tt class="py-op">(</tt><tt class="py-number">1</tt><tt class="py-op">,</tt> <tt class="py-name">helpBrowser</tt><tt class="py-op">)</tt> </tt>
+<a name="L36"></a><tt class="py-lineno">36</tt>  <tt class="py-line">        <tt class="py-name">helpPanel</tt><tt class="py-op">.</tt><tt class="py-name">setStretchFactor</tt><tt class="py-op">(</tt><tt class="py-number">1</tt><tt class="py-op">,</tt> <tt class="py-number">1</tt><tt class="py-op">)</tt> </tt>
+<a name="L37"></a><tt class="py-lineno">37</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">setWidget</tt><tt class="py-op">(</tt><tt class="py-name">helpPanel</tt><tt class="py-op">)</tt> </tt>
+</div></div><a name="L38"></a><tt class="py-lineno">38</tt>  <tt class="py-line"> </tt><script type="text/javascript">
+<!--
+expandto(location.href);
+// -->
+</script>
+</pre>
+<br />
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="src-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+      <th class="navbar" width="100%"></th>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%%">
+  <tr>
+    <td align="left" class="footer">
+    Generated by Epydoc 3.0.1 on Sun Sep 14 16:43:36 2014
+    </td>
+    <td align="right" class="footer">
+      <a target="mainFrame" href="http://epydoc.sourceforge.net"
+        >http://epydoc.sourceforge.net</a>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+  <!--
+  // Private objects are initially displayed (because if
+  // javascript is turned off then we want them to be
+  // visible); but by default, we want to hide them.  So hide
+  // them unless we have a cookie that says to show them.
+  checkCookie();
+  // -->
+</script>
+</body>
+</html>
