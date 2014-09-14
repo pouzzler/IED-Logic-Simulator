@@ -46,7 +46,7 @@ class MainView(QGraphicsView):
                 or (isinstance(sel[0].data, Plug)
                     and not all([
                         i.data.isInput == sel[0].data.isInput for i in sel]))):
-            print("tut tut")
+            print("Error")
             return
         ret = QInputDialog.getText(self, "Set prefix", "Prefix :")
         if ret[1] and len(ret[0]):
@@ -368,8 +368,8 @@ class MainView(QGraphicsView):
                     source = p if p1.sourcePlug == p else p1
                     if not self.currentWire.connect(source):
                         self.currentWire.revert()
-                    else:
-                        print(self.currentWire.data)
+                    #~ else: # test code
+                        #~ print(self.currentWire.data)
             # Ugly hack to solve selection problems with multiple wireitems
             # on the same spot : the smallest area is selected.
             wires = sorted(
