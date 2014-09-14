@@ -189,7 +189,7 @@ class Plug:
             log.warning(str_connOnItself)
         #   * destination plug already have a source
         elif plug.sourcePlug:
-            log.warning(str_alreadyHaveSrc % (plug.owner.name, plug.name))
+            log.warning(self.str_alreadyHaveSrc % (plug.owner.name, plug.name))
         elif (    # * child Input => child Input
                 self.isInput and
                 plug.isInput and
