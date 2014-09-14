@@ -68,7 +68,8 @@ class MainView(QGraphicsView):
     def clockUpdate(self):
         """Updates the view at each clock tick."""
         for item in self.scene().items():
-            item.setupPaint()
+            if isinstance(item, PlugItem) or isinstance(item, WireItem):
+                item.setupPaint()
 
     def dragEnterEvent(self, e):
         """Accept drag events coming from ToolBox."""
