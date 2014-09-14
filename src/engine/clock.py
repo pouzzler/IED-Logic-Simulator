@@ -1,16 +1,22 @@
 #!/usr/bin/env python3
 # coding: utf-8
 
-"""
-############################################
-##  thread dedicated to clock simulation  ##
-############################################
 
-With this module it's possible to create a plug which acts as the CPU clock.
-This plug is an output whose value changes at regular intervals.
-It's easy to connect this output to inputs so that they force the evaluation
-of the circuit at each clock tick.
-"""
+###############################################################################
+#         ╔╦╗┌─┐┌─┐┬┌─┐  ╔═╗┬┬─┐┌─┐┬ ┬┬┌┬┐  ╔═╗┬┌┬┐┬ ┬┬  ┌─┐┌┬┐┌─┐┬─┐         #
+#         ║║║├─┤│ ┬││    ║  │├┬┘│  │ ││ │   ╚═╗│││││ ││  ├─┤ │ │ │├┬┘         #
+#         ╩ ╩┴ ┴└─┘┴└─┘  ╚═╝┴┴└─└─┘└─┘┴ ┴   ╚═╝┴┴ ┴└─┘┴─┘┴ ┴ ┴ └─┘┴└─         #
+# -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+- #
+#                                                                        2014 #
+#                                                           Sébastien MAGNIEN #
+#                                                            Mathieu FOURCROY #
+# --------------------------------------------------------------------------- #
+# With this module it's possible to create a plug which acts as the CPU clock.#
+# This plug is an input whose value changes at regular intervals.             #
+# It's easy to connect this input to inputs so that they force the evaluation #
+# of the circuit at each clock tick.                                          #
+###############################################################################
+
 
 from threading import Thread
 import time
@@ -26,7 +32,6 @@ class ClockThread(Thread):
         self.alive = True          # the clock is running
         self.paused = False        # you can pause the clock
         self.spd = 1               # clock speed (sec)
-        self.printFront = False    # specifies whether to display the clock
 
     def run(self):
         """Simulate the job of the clock.
@@ -36,8 +41,6 @@ class ClockThread(Thread):
             while self.paused:
                 time.sleep(0.5)
             self.clock.set(not self.clock.value)
-            if self.printFront:
-                print(self.clock.value)
             time.sleep(self.spd)
 
     def pause(self):
