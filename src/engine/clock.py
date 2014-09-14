@@ -19,7 +19,16 @@
 
 
 from threading import Thread
+from .simulator import Plug
 import time
+
+
+class Clock(Plug):
+    def __init__(self, owner):
+        Plug.__init__(self, True, None, owner)
+        self.clkThread = ClockThread(self)
+        self.clkThread.start()
+        self.clkThread.pause()
 
 
 class ClockThread(Thread):
