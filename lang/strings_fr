@@ -33,6 +33,8 @@ MainView.str_removeLast = 'Annuler'
 MainView.str_I = 'Entrée'
 MainView.str_O = 'Sortie'
 MainView.str_Clock = 'Horloge'
+MainView.str_pauseClock = 'Pause'
+MainView.str_startClock = 'Démarrer'
 SelectionOptions.str_name = 'Nom :'
 SelectionOptions.str_showName = 'Afficher le nom?'
 SelectionOptions.str_showCategory = 'Afficher la catégorie?'
@@ -58,7 +60,6 @@ Plug.str_disconnect = '%s.%s déconnectée de %s.%s.'
 Plug.str_unavailableName = 'Le nom "%s" est indisponible.'
 Plug.str_newName = "%s.%s s'appelle maintenant %s."
 Plug.str_nameLen = "Les noms doivent être longs d'au moins un caractère."
-
 Plug.str_CICI = 'Impossible de connecter deux Entrées du même niveau.'
 Plug.str_CIPO = 'Impossible de connecter une Entrée sur sa Sortie parente.'
 Plug.str_COCO = 'Impossible de connecter deux Sorties du même niveau.'
@@ -69,7 +70,6 @@ Plug.str_POCI = 'Impossible de connecter une Sortie sur son Entrée fille.'
 Plug.str_POPO = 'Impossible de connecter deux Sorties du même niveau.'
 Plug.str_connOnItself = 'Impossible de connecter une E/S sur elle-même.'
 Plug.str_alreadyHaveSrc = '%s.%s a déjà une connexion entrante.'
-
 Circuit.str_circuitCreated = "%s '%s' créé."
 Circuit.str_circuitAdded =  "%s '%s' ajouté à %s."
 Circuit.str_inputRem =  "Entrée '%s' supprimée de %s."

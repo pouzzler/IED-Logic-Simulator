@@ -84,11 +84,13 @@ class MainView(QGraphicsView):
                 menu.addAction(self.str_setName, lambda: self.getNewName(item))
             elif isinstance(item, PlugItem):
                 menu.addAction(self.str_setName, lambda: self.getNewName(item))
-                if item.data.isInput:
+                if item.data.isInput and not item.data == self.clock:
                     menu.addAction(
                         str(item.data.value), item.setAndUpdate)
                 if item.data == self.clock:
-                    print("tick")
+                    menu.addAction(
+                        self.str_startClock if self.bgClockThread.paused 
+                        else self.str_pauseClock, self.manageClock)
             elif isinstance(item, WireItem):
                 pos = item.mapFromScene(self.mapToScene(e.pos()))
                 if item.handleAtPos(pos):
@@ -135,6 +137,7 @@ class MainView(QGraphicsView):
             self.bgClockThread = ClockThread(item.data)
             self.bgClockThread.set_extern(self.clockUpdate)
             self.bgClockThread.start()
+            self.bgClockThread.pause()
         elif model.item(0, 1).text() == 'user':
             c = Circuit(None, self.mainCircuit)
             f = open(filePath('user/') + name + '.crc', 'rb')
@@ -285,7 +288,13 @@ class MainView(QGraphicsView):
                 i.setupPaint()
         for item in selection:
             item.setupPaint()
-
+    
+    def manageClock(self):
+        if self.bgClockThread.paused:
+            self.bgClockThread.unpause()
+        else:
+            self.bgClockThread.pause()
+        
     def mouseMoveEvent(self, e):
         """Redraw CurrentWire; change cursor on mouseOver handles."""
         if self.isDrawing:

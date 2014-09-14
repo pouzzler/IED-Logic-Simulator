@@ -33,6 +33,8 @@ MainView.str_name = 'Name : '
 MainView.str_I = 'Input pin'
 MainView.str_O = 'Output pin'
 MainView.str_Clock = 'Clock'
+MainView.str_pauseClock = 'Pause'
+MainView.str_startClock = 'Start'
 SelectionOptions.str_name = 'Name :'
 SelectionOptions.str_showName = 'Show name?'
 SelectionOptions.str_showCategory = 'Show category?'
@@ -58,7 +60,6 @@ Plug.str_disconnect = '%s.%s disconnected from %s.%s.'
 Plug.str_unavailableName = 'The name "%s" is unavailable.'
 Plug.str_newName = "%s.%s is now named %s."
 Plug.str_nameLen = 'Names must be at least one character long.'
-
 Plug.str_CICI = "Can't connect two Inputs from the same scope."
 Plug.str_CIPO = "Can't connect an Input on its parent Output."
 Plug.str_COCO = "Can't connect two outputs from the same scope."
@@ -69,7 +70,6 @@ Plug.str_POCI = "Can't connect an Output on its child Input."
 Plug.str_POPO = "Can't connect two Outputs from the same scope."
 Plug.str_connOnItself = "Can't connect I/O on itself."
 Plug.str_alreadyHaveSrc = '%s.%s already have an incoming connection.'
-
 Circuit.str_circuitCreated = "%s '%s' has been created."
 Circuit.str_circuitAdded = "%s '%s' added to %s."
 Circuit.str_inputRem = "Input '%s' removed from %s."
