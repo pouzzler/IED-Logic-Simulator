@@ -1198,164 +1198,171 @@ src.gui.graphicitem.WireItem.connect" class="py-name" href="#" onclick="return d
 <a name="L437"></a><tt class="py-lineno">437</tt>  <tt class="py-line">    <tt class="py-comment"># circuit principal</tt> </tt>
 <a name="L438"></a><tt class="py-lineno">438</tt>  <tt class="py-line">    <tt class="py-name">TC</tt> <tt class="py-op">=</tt> <tt id="link-288" class="py-name"><a title="src.engine.simulator.Circuit" class="py-name" href="#" onclick="return doclink('link-288', 'Circuit', 'link-19');">Circuit</a></tt><tt class="py-op">(</tt><tt class="py-string">"Main_Circuit"</tt><tt class="py-op">,</tt> <tt class="py-name">None</tt><tt class="py-op">)</tt> </tt>
 <a name="L439"></a><tt class="py-lineno">439</tt>  <tt class="py-line">     </tt>
-<a name="L440"></a><tt class="py-lineno">440</tt>  <tt class="py-line">    <tt class="py-name">MEM</tt> <tt class="py-op">=</tt> <tt id="link-289" class="py-name" targets="Class src.engine.circuits.Mem1b=src.engine.circuits.Mem1b-class.html,Class src.engine_test.Mem1b=src.engine_test.Mem1b-class.html"><a title="src.engine.circuits.Mem1b
-src.engine_test.Mem1b" class="py-name" href="#" onclick="return doclink('link-289', 'Mem1b', 'link-289');">Mem1b</a></tt><tt class="py-op">(</tt><tt class="py-string">'MEM'</tt><tt class="py-op">,</tt> <tt class="py-name">TC</tt><tt class="py-op">)</tt> </tt>
-<a name="L441"></a><tt class="py-lineno">441</tt>  <tt class="py-line">     </tt>
-<a name="L442"></a><tt class="py-lineno">442</tt>  <tt class="py-line">    <tt class="py-comment">#~ R4 = Register4b('                               R4', TC)</tt> </tt>
-<a name="L443"></a><tt class="py-lineno">443</tt>  <tt class="py-line">    <tt class="py-keyword">print</tt><tt class="py-op">(</tt><tt class="py-string">'==============================='</tt><tt class="py-op">)</tt> </tt>
-<a name="L444"></a><tt class="py-lineno">444</tt>  <tt class="py-line">    <tt class="py-comment">#~ R4.I0.set(True)</tt> </tt>
-<a name="L445"></a><tt class="py-lineno">445</tt>  <tt class="py-line">    <tt class="py-comment">#~ R4.I1.set(False)</tt> </tt>
-<a name="L446"></a><tt class="py-lineno">446</tt>  <tt class="py-line">    <tt class="py-comment">#~ R4.I2.set(True)</tt> </tt>
-<a name="L447"></a><tt class="py-lineno">447</tt>  <tt class="py-line">    <tt class="py-comment">#~ R4.I3.set(False)</tt> </tt>
-<a name="L448"></a><tt class="py-lineno">448</tt>  <tt class="py-line">    <tt class="py-comment">#~ print('===============================')</tt> </tt>
-<a name="L449"></a><tt class="py-lineno">449</tt>  <tt class="py-line">    <tt class="py-comment">#~ R4.CLK.set(True)</tt> </tt>
-<a name="L450"></a><tt class="py-lineno">450</tt>  <tt class="py-line">    <tt class="py-comment">#~ R4.CLK.set(False)</tt> </tt>
-<a name="L451"></a><tt class="py-lineno">451</tt>  <tt class="py-line">    <tt class="py-comment">#~ print('===============================')</tt> </tt>
-<a name="L452"></a><tt class="py-lineno">452</tt>  <tt class="py-line">     </tt>
-<a name="L453"></a><tt class="py-lineno">453</tt>  <tt class="py-line">    <tt class="py-comment">#~ JKFF = JKFlipFlop('JKFF', TC)</tt> </tt>
-<a name="L454"></a><tt class="py-lineno">454</tt>  <tt class="py-line">    <tt class="py-comment">#~ print('===============================')</tt> </tt>
-<a name="L455"></a><tt class="py-lineno">455</tt>  <tt class="py-line">    <tt class="py-comment">#~ JKFF.J.set(True)</tt> </tt>
-<a name="L456"></a><tt class="py-lineno">456</tt>  <tt class="py-line">    <tt class="py-comment">#~ JKFF.K.set(True)</tt> </tt>
-<a name="L457"></a><tt class="py-lineno">457</tt>  <tt class="py-line">    <tt class="py-comment">#~ print('===============================')</tt> </tt>
-<a name="L458"></a><tt class="py-lineno">458</tt>  <tt class="py-line">    <tt class="py-comment">#~ JKFF.CLK.set(True)</tt> </tt>
-<a name="L459"></a><tt class="py-lineno">459</tt>  <tt class="py-line">    <tt class="py-comment">#~ JKFF.CLK.set(False)</tt> </tt>
-<a name="L460"></a><tt class="py-lineno">460</tt>  <tt class="py-line">    <tt class="py-comment">#~ print('===============================')</tt> </tt>
-<a name="L461"></a><tt class="py-lineno">461</tt>  <tt class="py-line">    <tt class="py-comment">#~ JKFF.CLK.set(True)</tt> </tt>
-<a name="L462"></a><tt class="py-lineno">462</tt>  <tt class="py-line">    <tt class="py-comment">#~ JKFF.CLK.set(False)</tt> </tt>
-<a name="L463"></a><tt class="py-lineno">463</tt>  <tt class="py-line">    <tt class="py-comment">#~ print('===============================')</tt> </tt>
-<a name="L464"></a><tt class="py-lineno">464</tt>  <tt class="py-line">    <tt class="py-comment">#~ JKFF.CLK.set(True)</tt> </tt>
-<a name="L465"></a><tt class="py-lineno">465</tt>  <tt class="py-line">    <tt class="py-comment">#~ JKFF.CLK.set(False)</tt> </tt>
-<a name="L466"></a><tt class="py-lineno">466</tt>  <tt class="py-line">    <tt class="py-comment">#~ print('===============================')</tt> </tt>
-<a name="L467"></a><tt class="py-lineno">467</tt>  <tt class="py-line">    <tt class="py-comment">#~ JKFF.J.set(False)</tt> </tt>
-<a name="L468"></a><tt class="py-lineno">468</tt>  <tt class="py-line">    <tt class="py-comment">#~ print('===============================')</tt> </tt>
-<a name="L469"></a><tt class="py-lineno">469</tt>  <tt class="py-line">    <tt class="py-comment">#~ JKFF.CLK.set(True)</tt> </tt>
-<a name="L470"></a><tt class="py-lineno">470</tt>  <tt class="py-line">    <tt class="py-comment">#~ JKFF.CLK.set(False)</tt> </tt>
-<a name="L471"></a><tt class="py-lineno">471</tt>  <tt class="py-line">    <tt class="py-comment">#~ print('===============================')</tt> </tt>
-<a name="L472"></a><tt class="py-lineno">472</tt>  <tt class="py-line">    <tt class="py-comment">#~ JKFF.CLK.set(True)</tt> </tt>
-<a name="L473"></a><tt class="py-lineno">473</tt>  <tt class="py-line">    <tt class="py-comment">#~ JKFF.CLK.set(False)</tt> </tt>
-<a name="L474"></a><tt class="py-lineno">474</tt>  <tt class="py-line">    <tt class="py-comment">#~ print('===============================')</tt> </tt>
-<a name="L475"></a><tt class="py-lineno">475</tt>  <tt class="py-line">    <tt class="py-comment">#~ print('===============================')</tt> </tt>
-<a name="L476"></a><tt class="py-lineno">476</tt>  <tt class="py-line">    <tt class="py-comment">#~ JKFF.J.set(True)</tt> </tt>
-<a name="L477"></a><tt class="py-lineno">477</tt>  <tt class="py-line">    <tt class="py-comment">#~ JKFF.K.set(False)</tt> </tt>
+<a name="L440"></a><tt class="py-lineno">440</tt>  <tt class="py-line">    <tt class="py-name">CLK</tt> <tt class="py-op">=</tt> <tt id="link-289" class="py-name" targets="Class src.engine.clock.Clock=src.engine.clock.Clock-class.html"><a title="src.engine.clock.Clock" class="py-name" href="#" onclick="return doclink('link-289', 'Clock', 'link-289');">Clock</a></tt><tt class="py-op">(</tt><tt class="py-name">TC</tt><tt class="py-op">)</tt> </tt>
+<a name="L441"></a><tt class="py-lineno">441</tt>  <tt class="py-line">    <tt class="py-name">CLK</tt><tt class="py-op">.</tt><tt class="py-name">clkThread</tt><tt class="py-op">.</tt><tt id="link-290" class="py-name" targets="Method src.engine.clock.ClockThread.unpause()=src.engine.clock.ClockThread-class.html#unpause"><a title="src.engine.clock.ClockThread.unpause" class="py-name" href="#" onclick="return doclink('link-290', 'unpause', 'link-290');">unpause</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L442"></a><tt class="py-lineno">442</tt>  <tt class="py-line">    <tt class="py-name">time</tt><tt class="py-op">.</tt><tt class="py-name">sleep</tt><tt class="py-op">(</tt><tt class="py-number">1</tt><tt class="py-op">)</tt> </tt>
+<a name="L443"></a><tt class="py-lineno">443</tt>  <tt class="py-line">    <tt class="py-keyword">print</tt><tt class="py-op">(</tt><tt class="py-string">"clock: "</tt> <tt class="py-op">+</tt> <tt class="py-name">str</tt><tt class="py-op">(</tt><tt class="py-name">CLK</tt><tt class="py-op">.</tt><tt class="py-name">value</tt><tt class="py-op">)</tt><tt class="py-op">)</tt> </tt>
+<a name="L444"></a><tt class="py-lineno">444</tt>  <tt class="py-line">    <tt class="py-name">time</tt><tt class="py-op">.</tt><tt class="py-name">sleep</tt><tt class="py-op">(</tt><tt class="py-number">1</tt><tt class="py-op">)</tt> </tt>
+<a name="L445"></a><tt class="py-lineno">445</tt>  <tt class="py-line">    <tt class="py-keyword">print</tt><tt class="py-op">(</tt><tt class="py-string">"clock: "</tt> <tt class="py-op">+</tt> <tt class="py-name">str</tt><tt class="py-op">(</tt><tt class="py-name">CLK</tt><tt class="py-op">.</tt><tt class="py-name">value</tt><tt class="py-op">)</tt><tt class="py-op">)</tt> </tt>
+<a name="L446"></a><tt class="py-lineno">446</tt>  <tt class="py-line">    <tt class="py-name">time</tt><tt class="py-op">.</tt><tt class="py-name">sleep</tt><tt class="py-op">(</tt><tt class="py-number">1</tt><tt class="py-op">)</tt> </tt>
+<a name="L447"></a><tt class="py-lineno">447</tt>  <tt class="py-line">    <tt class="py-keyword">print</tt><tt class="py-op">(</tt><tt class="py-string">"clock: "</tt> <tt class="py-op">+</tt> <tt class="py-name">str</tt><tt class="py-op">(</tt><tt class="py-name">CLK</tt><tt class="py-op">.</tt><tt class="py-name">value</tt><tt class="py-op">)</tt><tt class="py-op">)</tt> </tt>
+<a name="L448"></a><tt class="py-lineno">448</tt>  <tt class="py-line">    <tt class="py-name">time</tt><tt class="py-op">.</tt><tt class="py-name">sleep</tt><tt class="py-op">(</tt><tt class="py-number">1</tt><tt class="py-op">)</tt> </tt>
+<a name="L449"></a><tt class="py-lineno">449</tt>  <tt class="py-line">    <tt class="py-keyword">print</tt><tt class="py-op">(</tt><tt class="py-string">"clock: "</tt> <tt class="py-op">+</tt> <tt class="py-name">str</tt><tt class="py-op">(</tt><tt class="py-name">CLK</tt><tt class="py-op">.</tt><tt class="py-name">value</tt><tt class="py-op">)</tt><tt class="py-op">)</tt> </tt>
+<a name="L450"></a><tt class="py-lineno">450</tt>  <tt class="py-line">    <tt class="py-name">CLK</tt><tt class="py-op">.</tt><tt class="py-name">clkThread</tt><tt class="py-op">.</tt><tt id="link-291" class="py-name" targets="Method src.engine.clock.ClockThread.stop()=src.engine.clock.ClockThread-class.html#stop"><a title="src.engine.clock.ClockThread.stop" class="py-name" href="#" onclick="return doclink('link-291', 'stop', 'link-291');">stop</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L451"></a><tt class="py-lineno">451</tt>  <tt class="py-line">     </tt>
+<a name="L452"></a><tt class="py-lineno">452</tt>  <tt class="py-line">    <tt class="py-comment">#~ R4 = Register4b('                               R4', TC)</tt> </tt>
+<a name="L453"></a><tt class="py-lineno">453</tt>  <tt class="py-line">    <tt class="py-keyword">print</tt><tt class="py-op">(</tt><tt class="py-string">'==============================='</tt><tt class="py-op">)</tt> </tt>
+<a name="L454"></a><tt class="py-lineno">454</tt>  <tt class="py-line">    <tt class="py-comment">#~ R4.I0.set(True)</tt> </tt>
+<a name="L455"></a><tt class="py-lineno">455</tt>  <tt class="py-line">    <tt class="py-comment">#~ R4.I1.set(False)</tt> </tt>
+<a name="L456"></a><tt class="py-lineno">456</tt>  <tt class="py-line">    <tt class="py-comment">#~ R4.I2.set(True)</tt> </tt>
+<a name="L457"></a><tt class="py-lineno">457</tt>  <tt class="py-line">    <tt class="py-comment">#~ R4.I3.set(False)</tt> </tt>
+<a name="L458"></a><tt class="py-lineno">458</tt>  <tt class="py-line">    <tt class="py-comment">#~ print('===============================')</tt> </tt>
+<a name="L459"></a><tt class="py-lineno">459</tt>  <tt class="py-line">    <tt class="py-comment">#~ R4.CLK.set(True)</tt> </tt>
+<a name="L460"></a><tt class="py-lineno">460</tt>  <tt class="py-line">    <tt class="py-comment">#~ R4.CLK.set(False)</tt> </tt>
+<a name="L461"></a><tt class="py-lineno">461</tt>  <tt class="py-line">    <tt class="py-comment">#~ print('===============================')</tt> </tt>
+<a name="L462"></a><tt class="py-lineno">462</tt>  <tt class="py-line">     </tt>
+<a name="L463"></a><tt class="py-lineno">463</tt>  <tt class="py-line">    <tt class="py-comment">#~ JKFF = JKFlipFlop('JKFF', TC)</tt> </tt>
+<a name="L464"></a><tt class="py-lineno">464</tt>  <tt class="py-line">    <tt class="py-comment">#~ print('===============================')</tt> </tt>
+<a name="L465"></a><tt class="py-lineno">465</tt>  <tt class="py-line">    <tt class="py-comment">#~ JKFF.J.set(True)</tt> </tt>
+<a name="L466"></a><tt class="py-lineno">466</tt>  <tt class="py-line">    <tt class="py-comment">#~ JKFF.K.set(True)</tt> </tt>
+<a name="L467"></a><tt class="py-lineno">467</tt>  <tt class="py-line">    <tt class="py-comment">#~ print('===============================')</tt> </tt>
+<a name="L468"></a><tt class="py-lineno">468</tt>  <tt class="py-line">    <tt class="py-comment">#~ JKFF.CLK.set(True)</tt> </tt>
+<a name="L469"></a><tt class="py-lineno">469</tt>  <tt class="py-line">    <tt class="py-comment">#~ JKFF.CLK.set(False)</tt> </tt>
+<a name="L470"></a><tt class="py-lineno">470</tt>  <tt class="py-line">    <tt class="py-comment">#~ print('===============================')</tt> </tt>
+<a name="L471"></a><tt class="py-lineno">471</tt>  <tt class="py-line">    <tt class="py-comment">#~ JKFF.CLK.set(True)</tt> </tt>
+<a name="L472"></a><tt class="py-lineno">472</tt>  <tt class="py-line">    <tt class="py-comment">#~ JKFF.CLK.set(False)</tt> </tt>
+<a name="L473"></a><tt class="py-lineno">473</tt>  <tt class="py-line">    <tt class="py-comment">#~ print('===============================')</tt> </tt>
+<a name="L474"></a><tt class="py-lineno">474</tt>  <tt class="py-line">    <tt class="py-comment">#~ JKFF.CLK.set(True)</tt> </tt>
+<a name="L475"></a><tt class="py-lineno">475</tt>  <tt class="py-line">    <tt class="py-comment">#~ JKFF.CLK.set(False)</tt> </tt>
+<a name="L476"></a><tt class="py-lineno">476</tt>  <tt class="py-line">    <tt class="py-comment">#~ print('===============================')</tt> </tt>
+<a name="L477"></a><tt class="py-lineno">477</tt>  <tt class="py-line">    <tt class="py-comment">#~ JKFF.J.set(False)</tt> </tt>
 <a name="L478"></a><tt class="py-lineno">478</tt>  <tt class="py-line">    <tt class="py-comment">#~ print('===============================')</tt> </tt>
 <a name="L479"></a><tt class="py-lineno">479</tt>  <tt class="py-line">    <tt class="py-comment">#~ JKFF.CLK.set(True)</tt> </tt>
 <a name="L480"></a><tt class="py-lineno">480</tt>  <tt class="py-line">    <tt class="py-comment">#~ JKFF.CLK.set(False)</tt> </tt>
 <a name="L481"></a><tt class="py-lineno">481</tt>  <tt class="py-line">    <tt class="py-comment">#~ print('===============================')</tt> </tt>
-<a name="L482"></a><tt class="py-lineno">482</tt>  <tt class="py-line"> </tt>
-<a name="L483"></a><tt class="py-lineno">483</tt>  <tt class="py-line">    <tt class="py-name">AND</tt> <tt class="py-op">=</tt> <tt id="link-290" class="py-name"><a title="src.engine.gates.AndGate" class="py-name" href="#" onclick="return doclink('link-290', 'AndGate', 'link-31');">AndGate</a></tt><tt class="py-op">(</tt><tt class="py-string">'AND'</tt><tt class="py-op">,</tt> <tt class="py-name">TC</tt><tt class="py-op">)</tt> </tt>
-<a name="L484"></a><tt class="py-lineno">484</tt>  <tt class="py-line">    <tt class="py-name">A</tt> <tt class="py-op">=</tt> <tt id="link-291" class="py-name"><a title="src.engine.simulator.Plug" class="py-name" href="#" onclick="return doclink('link-291', 'Plug', 'link-21');">Plug</a></tt><tt class="py-op">(</tt><tt class="py-name">True</tt><tt class="py-op">,</tt> <tt class="py-string">'A'</tt><tt class="py-op">,</tt> <tt class="py-name">TC</tt><tt class="py-op">)</tt> </tt>
-<a name="L485"></a><tt class="py-lineno">485</tt>  <tt class="py-line">    <tt class="py-name">A</tt><tt class="py-op">.</tt><tt id="link-292" class="py-name"><a title="src.engine.simulator.Plug.connect
-src.gui.graphicitem.WireItem.connect" class="py-name" href="#" onclick="return doclink('link-292', 'connect', 'link-33');">connect</a></tt><tt class="py-op">(</tt><tt class="py-name">AND</tt><tt class="py-op">.</tt><tt class="py-name">inputList</tt><tt class="py-op">[</tt><tt class="py-number">0</tt><tt class="py-op">]</tt><tt class="py-op">)</tt> </tt>
-<a name="L486"></a><tt class="py-lineno">486</tt>  <tt class="py-line">    <tt class="py-name">A</tt><tt class="py-op">.</tt><tt id="link-293" class="py-name"><a title="src.engine.simulator.Plug.connect
-src.gui.graphicitem.WireItem.connect" class="py-name" href="#" onclick="return doclink('link-293', 'connect', 'link-33');">connect</a></tt><tt class="py-op">(</tt><tt class="py-name">AND</tt><tt class="py-op">.</tt><tt class="py-name">inputList</tt><tt class="py-op">[</tt><tt class="py-number">1</tt><tt class="py-op">]</tt><tt class="py-op">)</tt> </tt>
-<a name="L487"></a><tt class="py-lineno">487</tt>  <tt class="py-line">    <tt class="py-name">A</tt><tt class="py-op">.</tt><tt id="link-294" class="py-name"><a title="src.engine.simulator.Plug.set" class="py-name" href="#" onclick="return doclink('link-294', 'set', 'link-95');">set</a></tt><tt class="py-op">(</tt><tt class="py-name">True</tt><tt class="py-op">)</tt> </tt>
-<a name="L488"></a><tt class="py-lineno">488</tt>  <tt class="py-line">     </tt>
-<a name="L489"></a><tt class="py-lineno">489</tt>  <tt class="py-line"> </tt>
-<a name="L490"></a><tt class="py-lineno">490</tt>  <tt class="py-line">    <tt class="py-comment">#~ C4 = Counter4b('                         C4', TC)</tt> </tt>
+<a name="L482"></a><tt class="py-lineno">482</tt>  <tt class="py-line">    <tt class="py-comment">#~ JKFF.CLK.set(True)</tt> </tt>
+<a name="L483"></a><tt class="py-lineno">483</tt>  <tt class="py-line">    <tt class="py-comment">#~ JKFF.CLK.set(False)</tt> </tt>
+<a name="L484"></a><tt class="py-lineno">484</tt>  <tt class="py-line">    <tt class="py-comment">#~ print('===============================')</tt> </tt>
+<a name="L485"></a><tt class="py-lineno">485</tt>  <tt class="py-line">    <tt class="py-comment">#~ print('===============================')</tt> </tt>
+<a name="L486"></a><tt class="py-lineno">486</tt>  <tt class="py-line">    <tt class="py-comment">#~ JKFF.J.set(True)</tt> </tt>
+<a name="L487"></a><tt class="py-lineno">487</tt>  <tt class="py-line">    <tt class="py-comment">#~ JKFF.K.set(False)</tt> </tt>
+<a name="L488"></a><tt class="py-lineno">488</tt>  <tt class="py-line">    <tt class="py-comment">#~ print('===============================')</tt> </tt>
+<a name="L489"></a><tt class="py-lineno">489</tt>  <tt class="py-line">    <tt class="py-comment">#~ JKFF.CLK.set(True)</tt> </tt>
+<a name="L490"></a><tt class="py-lineno">490</tt>  <tt class="py-line">    <tt class="py-comment">#~ JKFF.CLK.set(False)</tt> </tt>
 <a name="L491"></a><tt class="py-lineno">491</tt>  <tt class="py-line">    <tt class="py-comment">#~ print('===============================')</tt> </tt>
-<a name="L492"></a><tt class="py-lineno">492</tt>  <tt class="py-line">    <tt class="py-comment">#~ C4.A.set(True)</tt> </tt>
-<a name="L493"></a><tt class="py-lineno">493</tt>  <tt class="py-line">    <tt class="py-comment">#~ print('===============================')</tt> </tt>
-<a name="L494"></a><tt class="py-lineno">494</tt>  <tt class="py-line">    <tt class="py-comment">#~ C4.CLK.set(True)</tt> </tt>
-<a name="L495"></a><tt class="py-lineno">495</tt>  <tt class="py-line">    <tt class="py-comment">#~ C4.CLK.set(False)</tt> </tt>
-<a name="L496"></a><tt class="py-lineno">496</tt>  <tt class="py-line">    <tt class="py-comment">#~ print('===============================')</tt> </tt>
-<a name="L497"></a><tt class="py-lineno">497</tt>  <tt class="py-line">    <tt class="py-comment">#~ C4.CLK.set(True)</tt> </tt>
-<a name="L498"></a><tt class="py-lineno">498</tt>  <tt class="py-line">    <tt class="py-comment">#~ C4.CLK.set(False)</tt> </tt>
-<a name="L499"></a><tt class="py-lineno">499</tt>  <tt class="py-line">    <tt class="py-comment">#~ print('===============================')</tt> </tt>
-<a name="L500"></a><tt class="py-lineno">500</tt>  <tt class="py-line">    <tt class="py-comment">#~ C4.CLK.set(True)</tt> </tt>
-<a name="L501"></a><tt class="py-lineno">501</tt>  <tt class="py-line">    <tt class="py-comment">#~ C4.CLK.set(False)</tt> </tt>
-<a name="L502"></a><tt class="py-lineno">502</tt>  <tt class="py-line">     </tt>
-<a name="L503"></a><tt class="py-lineno">503</tt>  <tt class="py-line"> </tt>
-<a name="L504"></a><tt class="py-lineno">504</tt>  <tt class="py-line">    <tt class="py-comment">#~ ON = Plug(True, 'ON', TC)</tt> </tt>
-<a name="L505"></a><tt class="py-lineno">505</tt>  <tt class="py-line">    <tt class="py-comment">#~ OFF = Plug(True, 'OFF', TC)</tt> </tt>
-<a name="L506"></a><tt class="py-lineno">506</tt>  <tt class="py-line">    <tt class="py-comment">#~ NOT = NotGate('NOT', TC)</tt> </tt>
-<a name="L507"></a><tt class="py-lineno">507</tt>  <tt class="py-line">    <tt class="py-comment">#~ NAND = NandGate('NAND', TC)</tt> </tt>
-<a name="L508"></a><tt class="py-lineno">508</tt>  <tt class="py-line">    <tt class="py-comment">#~ OR = OrGate('OR', TC)</tt> </tt>
-<a name="L509"></a><tt class="py-lineno">509</tt>  <tt class="py-line">    <tt class="py-comment">#~ ON.connect(OR.inputList[0])</tt> </tt>
-<a name="L510"></a><tt class="py-lineno">510</tt>  <tt class="py-line">    <tt class="py-comment">#~ OFF.connect(NOT.inputList[0])</tt> </tt>
-<a name="L511"></a><tt class="py-lineno">511</tt>  <tt class="py-line">    <tt class="py-comment">#~ NAND.outputList[0].connect(OR.inputList[1])</tt> </tt>
-<a name="L512"></a><tt class="py-lineno">512</tt>  <tt class="py-line">    <tt class="py-comment">#~ OR.outputList[0].connect(NAND.inputList[1])</tt> </tt>
-<a name="L513"></a><tt class="py-lineno">513</tt>  <tt class="py-line">    <tt class="py-comment">#~ NOT.outputList[0].connect(NAND.inputList[0])</tt> </tt>
-<a name="L514"></a><tt class="py-lineno">514</tt>  <tt class="py-line">    <tt class="py-comment">#~ ON.set(True)</tt> </tt>
-<a name="L515"></a><tt class="py-lineno">515</tt>  <tt class="py-line">    <tt class="py-comment">#~ print_plug_info(OR.outputList[0])</tt> </tt>
-<a name="L516"></a><tt class="py-lineno">516</tt>  <tt class="py-line">    <tt class="py-comment">#~ print_plug_info(NAND.outputList[0])</tt> </tt>
-<a name="L517"></a><tt class="py-lineno">517</tt>  <tt class="py-line">    <tt class="py-comment">#~ ON.set(False)</tt> </tt>
-<a name="L518"></a><tt class="py-lineno">518</tt>  <tt class="py-line">    <tt class="py-comment">#~ print_plug_info(OR.outputList[0])</tt> </tt>
-<a name="L519"></a><tt class="py-lineno">519</tt>  <tt class="py-line">    <tt class="py-comment">#~ print_plug_info(NAND.outputList[0])</tt> </tt>
-<a name="L520"></a><tt class="py-lineno">520</tt>  <tt class="py-line">    <tt class="py-comment">#~ OFF.set(True)</tt> </tt>
-<a name="L521"></a><tt class="py-lineno">521</tt>  <tt class="py-line">    <tt class="py-comment">#~ print_plug_info(OR.outputList[0])</tt> </tt>
-<a name="L522"></a><tt class="py-lineno">522</tt>  <tt class="py-line">    <tt class="py-comment">#~ print_plug_info(NAND.outputList[0])</tt> </tt>
-<a name="L523"></a><tt class="py-lineno">523</tt>  <tt class="py-line"> </tt>
-<a name="L524"></a><tt class="py-lineno">524</tt>  <tt class="py-line">    <tt class="py-comment">#~ NAND = NandGate('NAND', TC)</tt> </tt>
-<a name="L525"></a><tt class="py-lineno">525</tt>  <tt class="py-line">    <tt class="py-comment">#~ NAND.inputList[0].set(True)</tt> </tt>
-<a name="L526"></a><tt class="py-lineno">526</tt>  <tt class="py-line">    <tt class="py-comment">#~ NAND.inputList[1].set(None)</tt> </tt>
-<a name="L527"></a><tt class="py-lineno">527</tt>  <tt class="py-line">    <tt class="py-comment">#~ print_plug_info(NAND.outputList[0])</tt> </tt>
-<a name="L528"></a><tt class="py-lineno">528</tt>  <tt class="py-line"> </tt>
-<a name="L529"></a><tt class="py-lineno">529</tt>  <tt class="py-line"> </tt>
-<a name="L530"></a><tt class="py-lineno">530</tt>  <tt class="py-line">    <tt class="py-comment">#~ A = Plug(True, 'A', TC)</tt> </tt>
-<a name="L531"></a><tt class="py-lineno">531</tt>  <tt class="py-line">    <tt class="py-comment">#~ O = Plug(False, 'O', TC)</tt> </tt>
-<a name="L532"></a><tt class="py-lineno">532</tt>  <tt class="py-line">    <tt class="py-comment">#~ NOT = NotGate('Not', TC)</tt> </tt>
-<a name="L533"></a><tt class="py-lineno">533</tt>  <tt class="py-line">    <tt class="py-comment">#~ A.connect(NOT.inputList[0])</tt> </tt>
-<a name="L534"></a><tt class="py-lineno">534</tt>  <tt class="py-line">    <tt class="py-comment">#~ NOT.outputList[0].connect(O)</tt> </tt>
-<a name="L535"></a><tt class="py-lineno">535</tt>  <tt class="py-line">    <tt class="py-comment">#~ A.set(True)</tt> </tt>
-<a name="L536"></a><tt class="py-lineno">536</tt>  <tt class="py-line">    <tt class="py-comment">#~ print_plug_info(A)</tt> </tt>
-<a name="L537"></a><tt class="py-lineno">537</tt>  <tt class="py-line">    <tt class="py-comment">#~ print_plug_info(O)</tt> </tt>
+<a name="L492"></a><tt class="py-lineno">492</tt>  <tt class="py-line"> </tt>
+<a name="L493"></a><tt class="py-lineno">493</tt>  <tt class="py-line">    <tt class="py-comment">#~ AND = AndGate('AND', TC)</tt> </tt>
+<a name="L494"></a><tt class="py-lineno">494</tt>  <tt class="py-line">    <tt class="py-comment">#~ A = Plug(True, 'A', TC)</tt> </tt>
+<a name="L495"></a><tt class="py-lineno">495</tt>  <tt class="py-line">    <tt class="py-comment">#~ A.connect(AND.inputList[0])</tt> </tt>
+<a name="L496"></a><tt class="py-lineno">496</tt>  <tt class="py-line">    <tt class="py-comment">#~ A.connect(AND.inputList[1])</tt> </tt>
+<a name="L497"></a><tt class="py-lineno">497</tt>  <tt class="py-line">    <tt class="py-comment">#~ A.set(True)</tt> </tt>
+<a name="L498"></a><tt class="py-lineno">498</tt>  <tt class="py-line">     </tt>
+<a name="L499"></a><tt class="py-lineno">499</tt>  <tt class="py-line"> </tt>
+<a name="L500"></a><tt class="py-lineno">500</tt>  <tt class="py-line">    <tt class="py-comment">#~ C4 = Counter4b('                         C4', TC)</tt> </tt>
+<a name="L501"></a><tt class="py-lineno">501</tt>  <tt class="py-line">    <tt class="py-comment">#~ print('===============================')</tt> </tt>
+<a name="L502"></a><tt class="py-lineno">502</tt>  <tt class="py-line">    <tt class="py-comment">#~ C4.A.set(True)</tt> </tt>
+<a name="L503"></a><tt class="py-lineno">503</tt>  <tt class="py-line">    <tt class="py-comment">#~ print('===============================')</tt> </tt>
+<a name="L504"></a><tt class="py-lineno">504</tt>  <tt class="py-line">    <tt class="py-comment">#~ C4.CLK.set(True)</tt> </tt>
+<a name="L505"></a><tt class="py-lineno">505</tt>  <tt class="py-line">    <tt class="py-comment">#~ C4.CLK.set(False)</tt> </tt>
+<a name="L506"></a><tt class="py-lineno">506</tt>  <tt class="py-line">    <tt class="py-comment">#~ print('===============================')</tt> </tt>
+<a name="L507"></a><tt class="py-lineno">507</tt>  <tt class="py-line">    <tt class="py-comment">#~ C4.CLK.set(True)</tt> </tt>
+<a name="L508"></a><tt class="py-lineno">508</tt>  <tt class="py-line">    <tt class="py-comment">#~ C4.CLK.set(False)</tt> </tt>
+<a name="L509"></a><tt class="py-lineno">509</tt>  <tt class="py-line">    <tt class="py-comment">#~ print('===============================')</tt> </tt>
+<a name="L510"></a><tt class="py-lineno">510</tt>  <tt class="py-line">    <tt class="py-comment">#~ C4.CLK.set(True)</tt> </tt>
+<a name="L511"></a><tt class="py-lineno">511</tt>  <tt class="py-line">    <tt class="py-comment">#~ C4.CLK.set(False)</tt> </tt>
+<a name="L512"></a><tt class="py-lineno">512</tt>  <tt class="py-line">     </tt>
+<a name="L513"></a><tt class="py-lineno">513</tt>  <tt class="py-line"> </tt>
+<a name="L514"></a><tt class="py-lineno">514</tt>  <tt class="py-line">    <tt class="py-comment">#~ ON = Plug(True, 'ON', TC)</tt> </tt>
+<a name="L515"></a><tt class="py-lineno">515</tt>  <tt class="py-line">    <tt class="py-comment">#~ OFF = Plug(True, 'OFF', TC)</tt> </tt>
+<a name="L516"></a><tt class="py-lineno">516</tt>  <tt class="py-line">    <tt class="py-comment">#~ NOT = NotGate('NOT', TC)</tt> </tt>
+<a name="L517"></a><tt class="py-lineno">517</tt>  <tt class="py-line">    <tt class="py-comment">#~ NAND = NandGate('NAND', TC)</tt> </tt>
+<a name="L518"></a><tt class="py-lineno">518</tt>  <tt class="py-line">    <tt class="py-comment">#~ OR = OrGate('OR', TC)</tt> </tt>
+<a name="L519"></a><tt class="py-lineno">519</tt>  <tt class="py-line">    <tt class="py-comment">#~ ON.connect(OR.inputList[0])</tt> </tt>
+<a name="L520"></a><tt class="py-lineno">520</tt>  <tt class="py-line">    <tt class="py-comment">#~ OFF.connect(NOT.inputList[0])</tt> </tt>
+<a name="L521"></a><tt class="py-lineno">521</tt>  <tt class="py-line">    <tt class="py-comment">#~ NAND.outputList[0].connect(OR.inputList[1])</tt> </tt>
+<a name="L522"></a><tt class="py-lineno">522</tt>  <tt class="py-line">    <tt class="py-comment">#~ OR.outputList[0].connect(NAND.inputList[1])</tt> </tt>
+<a name="L523"></a><tt class="py-lineno">523</tt>  <tt class="py-line">    <tt class="py-comment">#~ NOT.outputList[0].connect(NAND.inputList[0])</tt> </tt>
+<a name="L524"></a><tt class="py-lineno">524</tt>  <tt class="py-line">    <tt class="py-comment">#~ ON.set(True)</tt> </tt>
+<a name="L525"></a><tt class="py-lineno">525</tt>  <tt class="py-line">    <tt class="py-comment">#~ print_plug_info(OR.outputList[0])</tt> </tt>
+<a name="L526"></a><tt class="py-lineno">526</tt>  <tt class="py-line">    <tt class="py-comment">#~ print_plug_info(NAND.outputList[0])</tt> </tt>
+<a name="L527"></a><tt class="py-lineno">527</tt>  <tt class="py-line">    <tt class="py-comment">#~ ON.set(False)</tt> </tt>
+<a name="L528"></a><tt class="py-lineno">528</tt>  <tt class="py-line">    <tt class="py-comment">#~ print_plug_info(OR.outputList[0])</tt> </tt>
+<a name="L529"></a><tt class="py-lineno">529</tt>  <tt class="py-line">    <tt class="py-comment">#~ print_plug_info(NAND.outputList[0])</tt> </tt>
+<a name="L530"></a><tt class="py-lineno">530</tt>  <tt class="py-line">    <tt class="py-comment">#~ OFF.set(True)</tt> </tt>
+<a name="L531"></a><tt class="py-lineno">531</tt>  <tt class="py-line">    <tt class="py-comment">#~ print_plug_info(OR.outputList[0])</tt> </tt>
+<a name="L532"></a><tt class="py-lineno">532</tt>  <tt class="py-line">    <tt class="py-comment">#~ print_plug_info(NAND.outputList[0])</tt> </tt>
+<a name="L533"></a><tt class="py-lineno">533</tt>  <tt class="py-line"> </tt>
+<a name="L534"></a><tt class="py-lineno">534</tt>  <tt class="py-line">    <tt class="py-comment">#~ NAND = NandGate('NAND', TC)</tt> </tt>
+<a name="L535"></a><tt class="py-lineno">535</tt>  <tt class="py-line">    <tt class="py-comment">#~ NAND.inputList[0].set(True)</tt> </tt>
+<a name="L536"></a><tt class="py-lineno">536</tt>  <tt class="py-line">    <tt class="py-comment">#~ NAND.inputList[1].set(None)</tt> </tt>
+<a name="L537"></a><tt class="py-lineno">537</tt>  <tt class="py-line">    <tt class="py-comment">#~ print_plug_info(NAND.outputList[0])</tt> </tt>
 <a name="L538"></a><tt class="py-lineno">538</tt>  <tt class="py-line"> </tt>
 <a name="L539"></a><tt class="py-lineno">539</tt>  <tt class="py-line"> </tt>
-<a name="L540"></a><tt class="py-lineno">540</tt>  <tt class="py-line">    <tt class="py-comment">#~ MEM = Mem('MEM', TC)</tt> </tt>
-<a name="L541"></a><tt class="py-lineno">541</tt>  <tt class="py-line">    <tt class="py-comment">#~ MEM.OFF.set(0)</tt> </tt>
-<a name="L542"></a><tt class="py-lineno">542</tt>  <tt class="py-line">    <tt class="py-comment">#~ MEM.ON.set(1)</tt> </tt>
-<a name="L543"></a><tt class="py-lineno">543</tt>  <tt class="py-line">    <tt class="py-comment">#~ MEM.ON.set(0)</tt> </tt>
-<a name="L544"></a><tt class="py-lineno">544</tt>  <tt class="py-line">    <tt class="py-comment">#~ print_plug_info(MEM.OR.outputList[0])</tt> </tt>
-<a name="L545"></a><tt class="py-lineno">545</tt>  <tt class="py-line"> </tt>
-<a name="L546"></a><tt class="py-lineno">546</tt>  <tt class="py-line"> </tt>
-<a name="L547"></a><tt class="py-lineno">547</tt>  <tt class="py-line">    <tt class="py-comment">#~ DFF = DFlipFlop("DFF", TC)</tt> </tt>
-<a name="L548"></a><tt class="py-lineno">548</tt>  <tt class="py-line">    <tt class="py-comment">#~ DFF.D.set(1)</tt> </tt>
-<a name="L549"></a><tt class="py-lineno">549</tt>  <tt class="py-line">    <tt class="py-comment">#~ DFF.CLK.set(1)</tt> </tt>
-<a name="L550"></a><tt class="py-lineno">550</tt>  <tt class="py-line">    <tt class="py-comment">#~ DFF.CLK.set(0)</tt> </tt>
-<a name="L551"></a><tt class="py-lineno">551</tt>  <tt class="py-line">    <tt class="py-comment">#~ print_plug_info(DFF.Q)</tt> </tt>
-<a name="L552"></a><tt class="py-lineno">552</tt>  <tt class="py-line">    <tt class="py-comment">#~ DFF.D.set(0)</tt> </tt>
-<a name="L553"></a><tt class="py-lineno">553</tt>  <tt class="py-line">    <tt class="py-comment">#~ DFF.CLK.set(1)</tt> </tt>
-<a name="L554"></a><tt class="py-lineno">554</tt>  <tt class="py-line">    <tt class="py-comment">#~ DFF.CLK.set(0)</tt> </tt>
-<a name="L555"></a><tt class="py-lineno">555</tt>  <tt class="py-line">    <tt class="py-comment">#~ print_plug_info(DFF.Q)</tt> </tt>
+<a name="L540"></a><tt class="py-lineno">540</tt>  <tt class="py-line">    <tt class="py-comment">#~ A = Plug(True, 'A', TC)</tt> </tt>
+<a name="L541"></a><tt class="py-lineno">541</tt>  <tt class="py-line">    <tt class="py-comment">#~ O = Plug(False, 'O', TC)</tt> </tt>
+<a name="L542"></a><tt class="py-lineno">542</tt>  <tt class="py-line">    <tt class="py-comment">#~ NOT = NotGate('Not', TC)</tt> </tt>
+<a name="L543"></a><tt class="py-lineno">543</tt>  <tt class="py-line">    <tt class="py-comment">#~ A.connect(NOT.inputList[0])</tt> </tt>
+<a name="L544"></a><tt class="py-lineno">544</tt>  <tt class="py-line">    <tt class="py-comment">#~ NOT.outputList[0].connect(O)</tt> </tt>
+<a name="L545"></a><tt class="py-lineno">545</tt>  <tt class="py-line">    <tt class="py-comment">#~ A.set(True)</tt> </tt>
+<a name="L546"></a><tt class="py-lineno">546</tt>  <tt class="py-line">    <tt class="py-comment">#~ print_plug_info(A)</tt> </tt>
+<a name="L547"></a><tt class="py-lineno">547</tt>  <tt class="py-line">    <tt class="py-comment">#~ print_plug_info(O)</tt> </tt>
+<a name="L548"></a><tt class="py-lineno">548</tt>  <tt class="py-line"> </tt>
+<a name="L549"></a><tt class="py-lineno">549</tt>  <tt class="py-line"> </tt>
+<a name="L550"></a><tt class="py-lineno">550</tt>  <tt class="py-line">    <tt class="py-comment">#~ MEM = Mem('MEM', TC)</tt> </tt>
+<a name="L551"></a><tt class="py-lineno">551</tt>  <tt class="py-line">    <tt class="py-comment">#~ MEM.OFF.set(0)</tt> </tt>
+<a name="L552"></a><tt class="py-lineno">552</tt>  <tt class="py-line">    <tt class="py-comment">#~ MEM.ON.set(1)</tt> </tt>
+<a name="L553"></a><tt class="py-lineno">553</tt>  <tt class="py-line">    <tt class="py-comment">#~ MEM.ON.set(0)</tt> </tt>
+<a name="L554"></a><tt class="py-lineno">554</tt>  <tt class="py-line">    <tt class="py-comment">#~ print_plug_info(MEM.OR.outputList[0])</tt> </tt>
+<a name="L555"></a><tt class="py-lineno">555</tt>  <tt class="py-line"> </tt>
 <a name="L556"></a><tt class="py-lineno">556</tt>  <tt class="py-line"> </tt>
-<a name="L557"></a><tt class="py-lineno">557</tt>  <tt class="py-line"> </tt>
-<a name="L558"></a><tt class="py-lineno">558</tt>  <tt class="py-line">    <tt class="py-comment">#~ x = Div2("X", TC)</tt> </tt>
-<a name="L559"></a><tt class="py-lineno">559</tt>  <tt class="py-line">    <tt class="py-comment">#~ c = 0; x.C.set(c)</tt> </tt>
-<a name="L560"></a><tt class="py-lineno">560</tt>  <tt class="py-line">    <tt class="py-comment">#~ while 1 :</tt> </tt>
-<a name="L561"></a><tt class="py-lineno">561</tt>  <tt class="py-line">        <tt class="py-comment">#~ input("Clock is %d. Hit return to toggle clock" % c)</tt> </tt>
-<a name="L562"></a><tt class="py-lineno">562</tt>  <tt class="py-line">        <tt class="py-comment">#~ print(x.DFF.Q.value)</tt> </tt>
-<a name="L563"></a><tt class="py-lineno">563</tt>  <tt class="py-line">        <tt class="py-comment">#~ c = not c</tt> </tt>
-<a name="L564"></a><tt class="py-lineno">564</tt>  <tt class="py-line">        <tt class="py-comment">#~ x.C.set(c)</tt> </tt>
-<a name="L565"></a><tt class="py-lineno">565</tt>  <tt class="py-line"> </tt>
+<a name="L557"></a><tt class="py-lineno">557</tt>  <tt class="py-line">    <tt class="py-comment">#~ DFF = DFlipFlop("DFF", TC)</tt> </tt>
+<a name="L558"></a><tt class="py-lineno">558</tt>  <tt class="py-line">    <tt class="py-comment">#~ DFF.D.set(1)</tt> </tt>
+<a name="L559"></a><tt class="py-lineno">559</tt>  <tt class="py-line">    <tt class="py-comment">#~ DFF.CLK.set(1)</tt> </tt>
+<a name="L560"></a><tt class="py-lineno">560</tt>  <tt class="py-line">    <tt class="py-comment">#~ DFF.CLK.set(0)</tt> </tt>
+<a name="L561"></a><tt class="py-lineno">561</tt>  <tt class="py-line">    <tt class="py-comment">#~ print_plug_info(DFF.Q)</tt> </tt>
+<a name="L562"></a><tt class="py-lineno">562</tt>  <tt class="py-line">    <tt class="py-comment">#~ DFF.D.set(0)</tt> </tt>
+<a name="L563"></a><tt class="py-lineno">563</tt>  <tt class="py-line">    <tt class="py-comment">#~ DFF.CLK.set(1)</tt> </tt>
+<a name="L564"></a><tt class="py-lineno">564</tt>  <tt class="py-line">    <tt class="py-comment">#~ DFF.CLK.set(0)</tt> </tt>
+<a name="L565"></a><tt class="py-lineno">565</tt>  <tt class="py-line">    <tt class="py-comment">#~ print_plug_info(DFF.Q)</tt> </tt>
 <a name="L566"></a><tt class="py-lineno">566</tt>  <tt class="py-line"> </tt>
-<a name="L567"></a><tt class="py-lineno">567</tt>  <tt class="py-line">    <tt class="py-comment">#~ JKFF = JKFlipFlop('JKFF', TC)</tt> </tt>
-<a name="L568"></a><tt class="py-lineno">568</tt>  <tt class="py-line">    <tt class="py-comment">#~ JKFF.J.set(True)</tt> </tt>
-<a name="L569"></a><tt class="py-lineno">569</tt>  <tt class="py-line">    <tt class="py-comment">#~ JKFF.K.set(False)</tt> </tt>
-<a name="L570"></a><tt class="py-lineno">570</tt>  <tt class="py-line">    <tt class="py-comment">#~ JKFF.CLK.set(True)</tt> </tt>
-<a name="L571"></a><tt class="py-lineno">571</tt>  <tt class="py-line">    <tt class="py-comment">#~ JKFF.CLK.set(False)</tt> </tt>
-<a name="L572"></a><tt class="py-lineno">572</tt>  <tt class="py-line">    <tt class="py-comment">#~ print_plug_info(JKFF.Q)</tt> </tt>
-<a name="L573"></a><tt class="py-lineno">573</tt>  <tt class="py-line">    <tt class="py-comment">#~ print_plug_info(JKFF.NQ)</tt> </tt>
-<a name="L574"></a><tt class="py-lineno">574</tt>  <tt class="py-line">    <tt class="py-comment">#~ JKFF.K.set(True)</tt> </tt>
-<a name="L575"></a><tt class="py-lineno">575</tt>  <tt class="py-line">    <tt class="py-comment">#~ JKFF.CLK.set(True)</tt> </tt>
-<a name="L576"></a><tt class="py-lineno">576</tt>  <tt class="py-line">    <tt class="py-comment">#~ JKFF.CLK.set(False)</tt> </tt>
-<a name="L577"></a><tt class="py-lineno">577</tt>  <tt class="py-line">    <tt class="py-comment">#~ print_plug_info(JKFF.Q)</tt> </tt>
-<a name="L578"></a><tt class="py-lineno">578</tt>  <tt class="py-line">    <tt class="py-comment">#~ print_plug_info(JKFF.NQ)</tt> </tt>
-<a name="L579"></a><tt class="py-lineno">579</tt>  <tt class="py-line">    <tt class="py-comment">#~ JKFF.CLK.set(True)</tt> </tt>
-<a name="L580"></a><tt class="py-lineno">580</tt>  <tt class="py-line">    <tt class="py-comment">#~ JKFF.CLK.set(False)</tt> </tt>
-<a name="L581"></a><tt class="py-lineno">581</tt>  <tt class="py-line">    <tt class="py-comment">#~ print_plug_info(JKFF.Q)</tt> </tt>
-<a name="L582"></a><tt class="py-lineno">582</tt>  <tt class="py-line">    <tt class="py-comment">#~ print_plug_info(JKFF.NQ)</tt> </tt>
-<a name="L583"></a><tt class="py-lineno">583</tt>  <tt class="py-line">    <tt class="py-comment">#~ </tt> </tt>
-<a name="L584"></a><tt class="py-lineno">584</tt>  <tt class="py-line">    <tt class="py-comment">#~ C4B = Counter4b('C4B', TC)</tt> </tt>
-<a name="L585"></a><tt class="py-lineno">585</tt>  <tt class="py-line">    <tt class="py-comment">#~ </tt> </tt>
-<a name="L586"></a><tt class="py-lineno">586</tt>  <tt class="py-line">    <tt class="py-comment">#~ C4B.E.set(True)</tt> </tt>
-<a name="L587"></a><tt class="py-lineno">587</tt>  <tt class="py-line">    <tt class="py-comment">#~ c = 1</tt> </tt>
-<a name="L588"></a><tt class="py-lineno">588</tt>  <tt class="py-line">    <tt class="py-comment">#~ C4B.CLK.set(c)</tt> </tt>
-<a name="L589"></a><tt class="py-lineno">589</tt>  <tt class="py-line">    <tt class="py-comment">#~ while 1:</tt> </tt>
-<a name="L590"></a><tt class="py-lineno">590</tt>  <tt class="py-line">        <tt class="py-comment">#~ input("Clock is %d. Hit return to toggle clock" % c)</tt> </tt>
-<a name="L591"></a><tt class="py-lineno">591</tt>  <tt class="py-line">        <tt class="py-comment">#~ print('%i%i%i%i' % (int(C4B.S3.value), int(C4B.S2.value), int(C4B.S1.value), int(C4B.S0.value)))</tt> </tt>
-<a name="L592"></a><tt class="py-lineno">592</tt>  <tt class="py-line">        <tt class="py-comment">#~ c = not c</tt> </tt>
-<a name="L593"></a><tt class="py-lineno">593</tt>  <tt class="py-line">        <tt class="py-comment">#~ C4B.CLK.set(c)</tt> </tt>
-<a name="L594"></a><tt class="py-lineno">594</tt>  <tt class="py-line"> </tt><script type="text/javascript">
+<a name="L567"></a><tt class="py-lineno">567</tt>  <tt class="py-line"> </tt>
+<a name="L568"></a><tt class="py-lineno">568</tt>  <tt class="py-line">    <tt class="py-comment">#~ x = Div2("X", TC)</tt> </tt>
+<a name="L569"></a><tt class="py-lineno">569</tt>  <tt class="py-line">    <tt class="py-comment">#~ c = 0; x.C.set(c)</tt> </tt>
+<a name="L570"></a><tt class="py-lineno">570</tt>  <tt class="py-line">    <tt class="py-comment">#~ while 1 :</tt> </tt>
+<a name="L571"></a><tt class="py-lineno">571</tt>  <tt class="py-line">        <tt class="py-comment">#~ input("Clock is %d. Hit return to toggle clock" % c)</tt> </tt>
+<a name="L572"></a><tt class="py-lineno">572</tt>  <tt class="py-line">        <tt class="py-comment">#~ print(x.DFF.Q.value)</tt> </tt>
+<a name="L573"></a><tt class="py-lineno">573</tt>  <tt class="py-line">        <tt class="py-comment">#~ c = not c</tt> </tt>
+<a name="L574"></a><tt class="py-lineno">574</tt>  <tt class="py-line">        <tt class="py-comment">#~ x.C.set(c)</tt> </tt>
+<a name="L575"></a><tt class="py-lineno">575</tt>  <tt class="py-line"> </tt>
+<a name="L576"></a><tt class="py-lineno">576</tt>  <tt class="py-line"> </tt>
+<a name="L577"></a><tt class="py-lineno">577</tt>  <tt class="py-line">    <tt class="py-comment">#~ JKFF = JKFlipFlop('JKFF', TC)</tt> </tt>
+<a name="L578"></a><tt class="py-lineno">578</tt>  <tt class="py-line">    <tt class="py-comment">#~ JKFF.J.set(True)</tt> </tt>
+<a name="L579"></a><tt class="py-lineno">579</tt>  <tt class="py-line">    <tt class="py-comment">#~ JKFF.K.set(False)</tt> </tt>
+<a name="L580"></a><tt class="py-lineno">580</tt>  <tt class="py-line">    <tt class="py-comment">#~ JKFF.CLK.set(True)</tt> </tt>
+<a name="L581"></a><tt class="py-lineno">581</tt>  <tt class="py-line">    <tt class="py-comment">#~ JKFF.CLK.set(False)</tt> </tt>
+<a name="L582"></a><tt class="py-lineno">582</tt>  <tt class="py-line">    <tt class="py-comment">#~ print_plug_info(JKFF.Q)</tt> </tt>
+<a name="L583"></a><tt class="py-lineno">583</tt>  <tt class="py-line">    <tt class="py-comment">#~ print_plug_info(JKFF.NQ)</tt> </tt>
+<a name="L584"></a><tt class="py-lineno">584</tt>  <tt class="py-line">    <tt class="py-comment">#~ JKFF.K.set(True)</tt> </tt>
+<a name="L585"></a><tt class="py-lineno">585</tt>  <tt class="py-line">    <tt class="py-comment">#~ JKFF.CLK.set(True)</tt> </tt>
+<a name="L586"></a><tt class="py-lineno">586</tt>  <tt class="py-line">    <tt class="py-comment">#~ JKFF.CLK.set(False)</tt> </tt>
+<a name="L587"></a><tt class="py-lineno">587</tt>  <tt class="py-line">    <tt class="py-comment">#~ print_plug_info(JKFF.Q)</tt> </tt>
+<a name="L588"></a><tt class="py-lineno">588</tt>  <tt class="py-line">    <tt class="py-comment">#~ print_plug_info(JKFF.NQ)</tt> </tt>
+<a name="L589"></a><tt class="py-lineno">589</tt>  <tt class="py-line">    <tt class="py-comment">#~ JKFF.CLK.set(True)</tt> </tt>
+<a name="L590"></a><tt class="py-lineno">590</tt>  <tt class="py-line">    <tt class="py-comment">#~ JKFF.CLK.set(False)</tt> </tt>
+<a name="L591"></a><tt class="py-lineno">591</tt>  <tt class="py-line">    <tt class="py-comment">#~ print_plug_info(JKFF.Q)</tt> </tt>
+<a name="L592"></a><tt class="py-lineno">592</tt>  <tt class="py-line">    <tt class="py-comment">#~ print_plug_info(JKFF.NQ)</tt> </tt>
+<a name="L593"></a><tt class="py-lineno">593</tt>  <tt class="py-line">    <tt class="py-comment">#~ </tt> </tt>
+<a name="L594"></a><tt class="py-lineno">594</tt>  <tt class="py-line">    <tt class="py-comment">#~ C4B = Counter4b('C4B', TC)</tt> </tt>
+<a name="L595"></a><tt class="py-lineno">595</tt>  <tt class="py-line">    <tt class="py-comment">#~ </tt> </tt>
+<a name="L596"></a><tt class="py-lineno">596</tt>  <tt class="py-line">    <tt class="py-comment">#~ C4B.E.set(True)</tt> </tt>
+<a name="L597"></a><tt class="py-lineno">597</tt>  <tt class="py-line">    <tt class="py-comment">#~ c = 1</tt> </tt>
+<a name="L598"></a><tt class="py-lineno">598</tt>  <tt class="py-line">    <tt class="py-comment">#~ C4B.CLK.set(c)</tt> </tt>
+<a name="L599"></a><tt class="py-lineno">599</tt>  <tt class="py-line">    <tt class="py-comment">#~ while 1:</tt> </tt>
+<a name="L600"></a><tt class="py-lineno">600</tt>  <tt class="py-line">        <tt class="py-comment">#~ input("Clock is %d. Hit return to toggle clock" % c)</tt> </tt>
+<a name="L601"></a><tt class="py-lineno">601</tt>  <tt class="py-line">        <tt class="py-comment">#~ print('%i%i%i%i' % (int(C4B.S3.value), int(C4B.S2.value), int(C4B.S1.value), int(C4B.S0.value)))</tt> </tt>
+<a name="L602"></a><tt class="py-lineno">602</tt>  <tt class="py-line">        <tt class="py-comment">#~ c = not c</tt> </tt>
+<a name="L603"></a><tt class="py-lineno">603</tt>  <tt class="py-line">        <tt class="py-comment">#~ C4B.CLK.set(c)</tt> </tt>
+<a name="L604"></a><tt class="py-lineno">604</tt>  <tt class="py-line"> </tt><script type="text/javascript">
 <!--
 expandto(location.href);
 // -->
@@ -1388,7 +1395,7 @@ expandto(location.href);
 <table border="0" cellpadding="0" cellspacing="0" width="100%%">
   <tr>
     <td align="left" class="footer">
-    Generated by Epydoc 3.0.1 on Sun Sep 14 16:43:36 2014
+    Generated by Epydoc 3.0.1 on Sun Sep 14 16:50:02 2014
     </td>
     <td align="right" class="footer">
       <a target="mainFrame" href="http://epydoc.sourceforge.net"
