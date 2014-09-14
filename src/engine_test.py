@@ -437,7 +437,17 @@ if __name__ == '__main__':
     # circuit principal
     TC = Circuit("Main_Circuit", None)
     
-    MEM = Mem1b('MEM', TC)
+    CLK = Clock(TC)
+    CLK.clkThread.unpause()
+    time.sleep(1)
+    print("clock: " + str(CLK.value))
+    time.sleep(1)
+    print("clock: " + str(CLK.value))
+    time.sleep(1)
+    print("clock: " + str(CLK.value))
+    time.sleep(1)
+    print("clock: " + str(CLK.value))
+    CLK.clkThread.stop()
     
     #~ R4 = Register4b('                               R4', TC)
     print('===============================')
@@ -480,11 +490,11 @@ if __name__ == '__main__':
     #~ JKFF.CLK.set(False)
     #~ print('===============================')
 
-    AND = AndGate('AND', TC)
-    A = Plug(True, 'A', TC)
-    A.connect(AND.inputList[0])
-    A.connect(AND.inputList[1])
-    A.set(True)
+    #~ AND = AndGate('AND', TC)
+    #~ A = Plug(True, 'A', TC)
+    #~ A.connect(AND.inputList[0])
+    #~ A.connect(AND.inputList[1])
+    #~ A.set(True)
     
 
     #~ C4 = Counter4b('                         C4', TC)
