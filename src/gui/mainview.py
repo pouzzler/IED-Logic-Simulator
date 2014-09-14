@@ -37,6 +37,7 @@ class MainView(QGraphicsView):
         self.timer.timeout.connect(self.setItemsInGrid)
         self.copyBuffer = None
         self.bgClockThread = None
+        self.clock = None
         
     def batchRename(self):
         """Experimental function to rename multiple items at once."""
@@ -86,6 +87,8 @@ class MainView(QGraphicsView):
                 if item.data.isInput:
                     menu.addAction(
                         str(item.data.value), item.setAndUpdate)
+                if item.data == self.clock:
+                    print("tick")
             elif isinstance(item, WireItem):
                 pos = item.mapFromScene(self.mapToScene(e.pos()))
                 if item.handleAtPos(pos):
@@ -127,7 +130,8 @@ class MainView(QGraphicsView):
         elif name == self.str_O:
             item = PlugItem(Plug(False, None, self.mainCircuit))
         elif name == self.str_Clock:
-            item = PlugItem(Plug(True, None, self.mainCircuit))
+            self.clock = Plug(True, None, self.mainCircuit)
+            item = PlugItem(self.clock)
             self.bgClockThread = ClockThread(item.data)
             self.bgClockThread.set_extern(self.clockUpdate)
             self.bgClockThread.start()
