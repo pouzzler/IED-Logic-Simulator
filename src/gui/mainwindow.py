@@ -19,6 +19,7 @@ from .toolbox import ToolBox, ToolBoxDockWidget
 from .util import filePath
 from engine.gates import *
 from engine.simulator import fileHandler, formatter, log, Plug, stdoutHandler
+from engine.clock import ClockThread
 
 
 class MainWindow(QMainWindow):
@@ -175,6 +176,8 @@ class MainWindow(QMainWindow):
             'LogVerbosity', 'removing_circ')
         Circuit.detailedRemoveVerbose = self.config.getboolean(
             'LogVerbosity', 'detailed_rm')
+        ClockThread.spd = self.config.getfloat(
+            'Clock', 'speed')
         if self.config.getboolean('LogHandlers', 'gui'):
             log.addHandler(self.logDock.handler)
         else:
