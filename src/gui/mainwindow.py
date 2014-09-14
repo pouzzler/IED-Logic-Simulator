@@ -63,11 +63,7 @@ class MainWindow(QMainWindow):
         editMenu.addAction(self.str_menuClearCircuit, self.view.clearCircuit)
         editMenu.addAction("(Exp.) add IOs", self.view.fillIO)
         editMenu.addAction("(Exp.) batch rename", self.view.batchRename)
-
-        docksMenu = QMenu(self.str_menuDocks)
-        docksMenu.addAction(self.boxDock.toggleViewAction())
-        docksMenu.addAction(self.optionsDock.toggleViewAction())
-        docksMenu.addAction(self.logDock.toggleViewAction())
+        editMenu.addAction(self.logDock.toggleViewAction())
 
         langMenu = QMenu(self.str_menuLang)
         langMenu.addAction(self.str_langEng, lambda: self.setLang('en'))
@@ -78,7 +74,6 @@ class MainWindow(QMainWindow):
 
         self.menuBar().addMenu(fileMenu)
         self.menuBar().addMenu(editMenu)
-        self.menuBar().addMenu(docksMenu)
         self.menuBar().addMenu(langMenu)
         self.menuBar().addMenu(helpMenu)
         # WARNING logs will be shown in the MainView.
