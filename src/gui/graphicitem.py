@@ -14,6 +14,7 @@ class WireItem(QGraphicsPathItem):
     """Represents an electrical wire connecting two items."""
 
     radius = 5
+    """The radius of graphical handles."""
 
     def __init__(self, startIO, pts, endIO=None):
         super(WireItem, self).__init__()
@@ -25,11 +26,15 @@ class WireItem(QGraphicsPathItem):
             'startIO': startIO,
             'points': pts,
             'endIO': endIO}
-        # Wire handle hovering over a Plug, MainView.mouseMove will detect
-        # correctly the Plug, not the wire handle.
+        """The real info. The class WireItem is just a graphical container
+        around it. data is saved / loaded to / from file.
+        """
         self.setZValue(-1)
-        # Can the wire be modified (not complete)?
+        """Wire handle hovering over a Plug, MainView.mouseMove will detect
+        correctly the Plug, not the wire handle.
+        """
         self.complete = True if endIO else False
+        """Can the wire be modified (not complete)?"""
 
     def addPoint(self):
         """Duplicates the end point, for use as a moving point during moves."""
@@ -75,13 +80,13 @@ class WireItem(QGraphicsPathItem):
         self.setupPaint()
 
     def revert(self):
+        """Undo the last segment."""
         self.data['points'][-2] = self.data['points'][-3]
         self.data['points'] = self.data['points'][:-2]
         self.setupPaint()
 
     def setupPaint(self):
         """Draw the wire segments and handle."""
-
         if not self.data['startIO'] or not self.data['endIO']:
             self.setPen(QPen(QBrush(QColor(QColor('black'))), 2))
         elif self.data['startIO'].value:
@@ -112,12 +117,18 @@ class PlugItem(QGraphicsPathItem):
     """Graphical wrapper around the engine Plug class."""
 
     bodyW = 30
+    """The width of the body of plugs."""
     pinW = 10
+    """The width of the pin part of plugs."""
 
     def __init__(self, plug):
         super(PlugItem, self).__init__()
         self.data = plug
+        """The real info. The class PlugItem is just a graphical container
+        around it. data is saved / loaded to / from file.
+        """
         self.showName = False
+        """Is the name of the item shown on screen?"""
         self.setFlag(QGraphicsItem.ItemIsMovable)
         self.setFlag(QGraphicsItem.ItemIsSelectable)
         self.setFlag(QGraphicsItem.ItemSendsGeometryChanges)
@@ -162,6 +173,7 @@ class PlugItem(QGraphicsPathItem):
         return QGraphicsItem.itemChange(self, change, value)
 
     def setAndUpdate(self):
+        """Change the undelying plug's value, and force updates items."""
         self.data.set(not self.data.value)
         for i in self.scene().items():
             if isinstance(i, PlugItem) or isinstance(i, WireItem):
@@ -192,8 +204,8 @@ class PlugItem(QGraphicsPathItem):
         realY = min([i.y() for i in br])
         self.name.setPos(self.mapFromScene(
             realX, realY + (w if self.rotation() % 180 else h) + 1))
-        self.value.setText(str(int(self.data.value)) 
-            if self.data.value is not None else 'E')
+        self.value.setText(
+            str(int(self.data.value)) if self.data.value is not None else 'E')
         self.value.setPos(self.mapFromScene(realX + w / 3, realY + h / 3))
         self.value.setBrush(QColor('green' if self.data.value else 'red'))
         self.update()       # Force onscreen redraw after changes.
@@ -203,12 +215,13 @@ class CircuitItem(QGraphicsItem):
     """Graphical wrapper around the engine Circuit class."""
 
     textH = 12
-    #~ ioH = 15
-    #~ ioW = 20
-    #~ radius = 2.5
+    """Height of text."""
     ioH = 20
+    """Height between to I/O pins."""
     ioW = 15
+    """Length of I/O pins."""
     radius = 10
+    """Radius of I/O pin heads."""
 
     def __init__(self, circuit):
         super(CircuitItem, self).__init__()
@@ -217,12 +230,18 @@ class CircuitItem(QGraphicsItem):
         self.setFlag(QGraphicsItem.ItemSendsGeometryChanges)
         imgDir = filePath('icons/')
         self.data = circuit
+        """The real info. The class CircuitItem is just a graphical container
+        around it. data is saved / loaded to / from file.
+        """
         self.image = QImage(imgDir + circuit.__class__.__name__ + '.png')
+        """The graphical representation of our item on screen."""
         if not self.image:
             self.image = QImage(imgDir + 'Default.png')
             self.showCategory = True
-        self.showName = True        # Name and category text labels.
+        self.showName = True
+        """Is the item's name shown on screen?"""
         self.showCategory = False
+        """Is the item's category (circuit class) shown on screen?"""
         self.name = QGraphicsSimpleTextItem(self)
         # that won't rotate when the PlugItem is rotated by the user.
         self.name.setFlag(QGraphicsItem.ItemIgnoresTransformations)

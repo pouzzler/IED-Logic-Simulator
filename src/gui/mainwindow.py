@@ -38,8 +38,8 @@ class MainWindow(QMainWindow):
         self.setWindowTitle(self.str_mainWindowTitle)
         self.centerAndResize()
         # Initialize sub-widgets :
-        # A graphical view in which the user can draw circuits.
         self.view = MainView(self)
+        """A graphical view in which the user can draw circuits."""
         self.setCentralWidget(self.view)
         # Gates and circuits to be dragged in the main view.
         self.boxDock = ToolBoxDockWidget()

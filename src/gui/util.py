@@ -23,6 +23,7 @@ def closestGridPoint(p):
 
 
 def distance(a, b):
+    """Returns the distance between two points."""
     return sqrt((a.x() - b.x()) ** 2 + (a.y() - b.y()) ** 2)
 
 

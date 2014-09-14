@@ -13,7 +13,7 @@ from .selectionoptions import SelectionOptions
 from .toolbox import ToolBox
 from .util import closestGridPoint, distance, filePath, GRIDSIZE
 from engine.circuits import JKFlipFlop, RSFlipFlop
-from engine.clock import ClockThread
+from engine.clock import Clock, ClockThread
 from engine.simulator import Circuit, Plug
 import engine
 
@@ -32,13 +32,14 @@ class MainView(QGraphicsView):
         self.isDrawing = False          # user currently not drawing
         self.mainCircuit = Circuit("Main", None)
         self.timer = QTimer()
+        """A timer for forcing redraws."""
         self.timer.setInterval(200)
         self.timer.setSingleShot(True)
         self.timer.timeout.connect(self.setItemsInGrid)
         self.copyBuffer = None
-        self.bgClockThread = None
-        self.clock = None
-        
+        """A buffer for ctrl-c, ctrl-v copy operations."""
+        self.clockPlug = None
+
     def batchRename(self):
         """Experimental function to rename multiple items at once."""
         sel = self.scene().selectedItems()
@@ -72,6 +73,11 @@ class MainView(QGraphicsView):
             if isinstance(item, PlugItem) or isinstance(item, WireItem):
                 item.setupPaint()
 
+    def closeEvent(self, e):
+        """Overload in order to kill the clock thread."""
+        if self.bgClockThread is not None:
+            self.bgClockThread.exit()
+
     def contextMenuEvent(self, e):
         """Pops a contextual menu up on right-clicks"""
         item = self.itemAt(e.pos())
@@ -83,14 +89,18 @@ class MainView(QGraphicsView):
                 item = plug if plug else item
                 menu.addAction(self.str_setName, lambda: self.getNewName(item))
             elif isinstance(item, PlugItem):
+                if isinstance(item.data, Clock):
+                    thread = item.data.clkThread
+                    if thread.paused:
+                        menu.addAction(
+                            self.str_startClock, lambda: thread.unpause())
+                    else:
+                        menu.addAction(
+                            self.str_pauseClock, lambda: thread.pause())
                 menu.addAction(self.str_setName, lambda: self.getNewName(item))
-                if item.data.isInput and not item.data == self.clock:
+                if item.data.isInput:
                     menu.addAction(
                         str(item.data.value), item.setAndUpdate)
-                if item.data == self.clock:
-                    menu.addAction(
-                        self.str_startClock if self.bgClockThread.paused 
-                        else self.str_pauseClock, self.manageClock)
             elif isinstance(item, WireItem):
                 pos = item.mapFromScene(self.mapToScene(e.pos()))
                 if item.handleAtPos(pos):
@@ -132,12 +142,12 @@ class MainView(QGraphicsView):
         elif name == self.str_O:
             item = PlugItem(Plug(False, None, self.mainCircuit))
         elif name == self.str_Clock:
-            self.clock = Plug(True, None, self.mainCircuit)
-            item = PlugItem(self.clock)
-            self.bgClockThread = ClockThread(item.data)
-            self.bgClockThread.set_extern(self.clockUpdate)
-            self.bgClockThread.start()
-            self.bgClockThread.pause()
+            if not self.clockPlug:
+                self.clockPlug = Clock(self.mainCircuit)
+                self.clockPlug.clkThread.set_extern(self.clockUpdate)
+                item = PlugItem(self.clockPlug)
+            else:
+                self.write(self.str_onlyOneClock)
         elif model.item(0, 1).text() == 'user':
             c = Circuit(None, self.mainCircuit)
             f = open(filePath('user/') + name + '.crc', 'rb')
@@ -172,7 +182,9 @@ class MainView(QGraphicsView):
             self.timer.start()
 
     def fillIO(self):
-        """Add as many global I/Os as still needed by the main circuit."""
+        """Experimental function to add as many global I/Os as still needed
+        by the main circuit.
+        """
         for item in self.scene().items():
             if isinstance(item, CircuitItem):
                 pos = item.pos()
@@ -288,13 +300,7 @@ class MainView(QGraphicsView):
                 i.setupPaint()
         for item in selection:
             item.setupPaint()
-    
-    def manageClock(self):
-        if self.bgClockThread.paused:
-            self.bgClockThread.unpause()
-        else:
-            self.bgClockThread.pause()
-        
+
     def mouseMoveEvent(self, e):
         """Redraw CurrentWire; change cursor on mouseOver handles."""
         if self.isDrawing:

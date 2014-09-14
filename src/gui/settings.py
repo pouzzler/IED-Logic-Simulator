@@ -26,7 +26,9 @@ class SettingsDialog(QDialog):
         self.setWindowTitle(self.str_title)
         # Reference kept to set settings in MainWindow
         self.mainwindow = mainwindow
+        """A reference to the top window of the app."""
         self.config = config
+        """The settings of our app."""
         # Setting log handlers
         logHandlers = QGroupBox(self.str_logHandlers)
         logHandlersLayout = QVBoxLayout()
