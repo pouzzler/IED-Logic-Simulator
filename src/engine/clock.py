@@ -32,6 +32,7 @@ class ClockThread(Thread):
         self.alive = True          # the clock is running
         self.paused = False        # you can pause the clock
         self.spd = 1               # clock speed (sec)
+        self.externFun = None
 
     def run(self):
         """Simulate the job of the clock.
@@ -41,7 +42,12 @@ class ClockThread(Thread):
             while self.paused:
                 time.sleep(0.5)
             self.clock.set(not self.clock.value)
+            if self.externFun:
+                self.externFun()
             time.sleep(self.spd)
+
+    def set_extern(self, fun):
+        self.externFun = fun
 
     def pause(self):
         """Pause the clock."""
@@ -55,6 +61,6 @@ class ClockThread(Thread):
         """Stop the clock."""
         self.alive = False
 
-    def speed(self, sec):
+    def setSpeed(self, sec):
         """Set the clock speed (sec)."""
         self.spd = sec

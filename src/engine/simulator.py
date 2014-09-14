@@ -224,7 +224,7 @@ class Plug:
                 not self.isInput and
                 not plug.isInput and
                 self.parent() is plug.grandparent()):
-                    log.warning(self.str_POCO)
+                    log.warning(self.str_POCI)
         elif (    # * parent Output => parent Output
                 not self.isInput and
                 not plug.isInput and
@@ -346,10 +346,12 @@ class Plug:
             self.__nbEval += 1
         if Plug.setInputVerbose and self.isInput:
             log.info(
-                self.str_inputV % (self.owner.name, self.name, self.value,))
+                self.str_inputV % (self.owner.name, self.name,
+                str(self.value),))
         if Plug.setOutputVerbose and not self.isInput:
             log.info(
-                self.str_outputV % (self.owner.name, self.name, self.value,))
+                self.str_outputV % (self.owner.name, self.name,
+                str(self.value),))
         # gate input changed: set outputs values
         if self.isInput:
             self.owner.evalfun()
