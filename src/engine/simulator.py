@@ -123,156 +123,75 @@ class Plug:
             if Plug.addPlugVerbose:
                 log.info(self.str_outputAdded % (self.name, owner.name,))
 
-    def isValidConnection(self, plug):
-        """Check whether the connection left => right is valid or not"""
-        if (
-            # a connection is valid if it is from left to right:
-            (   # parent Input => child Input
-                self.isInput and
-                plug.isInput and
-                self.parent() is plug.grandparent()) or
-            (   # parent Input => parent Output
-                self.isInput and
-                not plug.isInput and
-                self.parent() is plug.parent()) or
-            (   # child Output => parent Output
-                not self.isInput and
-                not plug.isInput and
-                self.grandparent() is plug.parent()) or
-            (   # child Output => child Input
-                not self.isInput and
-                plug.isInput and
-                self.grandparent() is plug.grandparent())):
-                # connection has been successfuly established
-                if Plug.connectVerbose:
-                    log.info(
-                        self.str_connect
-                        % (self.owner.name, self.name, plug.owner.name,
-                            plug.name))
-                return True
-
-    def isValidReversedConnection(self, plug):
-        """Check whether the connection right => left is valid or not"""
-        # reversed VALID connections
-        if (
-            # if the user connect from right to left we just have to invert
-            # the conenction direction so these connections are also valid:
-            (   # child Input => parent Input
-                self.isInput and
-                plug.isInput and
-                self.grandparent() is plug.parent()) or
-            (   # parent Output => parent Input
-                not self.isInput and
-                plug.isInput and
-                self.parent() is plug.parent()) or
-            (   # parent Output => child Output
-                not self.isInput and
-                not plug.isInput and
-                self.parent() is plug.grandparent()) or
-            (   # child Input => child Output
-                self.isInput and
-                not plug.isInput and
-                self.grandparent() is plug.grandparent())):
-                # connection has been successfuly established
-                if Plug.connectVerbose:
-                    log.info(
-                        self.str_connect
-                        % (plug.owner.name, plug.name, self.owner.name,
-                            self.name))
-                return True
-
-    def isInvalidConnection(self, plug):
-        """Look for invalid connections and print a message accordingly."""
-        # INVALID connection:
-        #   * I/O => same I/O
-        if plug is self:
-            log.warning(self.str_connOnItself)
-        #   * destination plug already have a source
-        elif plug.sourcePlug:
-            log.warning(self.str_alreadyHaveSrc % (plug.owner.name, plug.name))
-        elif (    # * child Input => child Input
-                self.isInput and
-                plug.isInput and
-                self.grandparent() is plug.grandparent()):
-                    log.warning(self.str_CICI)
-        elif (    # * child Input => parent Output
-                self.isInput and
-                not plug.isInput and
-                self.grandparent() is plug.parent()):
-                    log.warning(self.str_CIPO)
-        elif (    # * child Output => child Output
-                not self.isInput and
-                not plug.isInput and
-                self.grandparent() is plug.grandparent()):
-                    log.warning(self.str_COCO)
-        elif (    # * child Output => parent Input
-                not self.isInput and
-                plug.isInput and
-                self.grandparent() is plug.parent()):
-                    log.warning(self.str_COPI)
-        elif (    # * parent Input => child Output
-                self.isInput and
-                not plug.isInput and
-                self.parent() is plug.grandparent()):
-                    log.warning(self.str_PICI)
-        elif (    # * parent Input => parent Input
-                self.isInput and
-                not plug.isInput and
-                self.parent() is plug.parent()):
-                    log.warning(self.str_PIPI)
-        elif (    # * parent Output => child Input
-                not self.isInput and
-                not plug.isInput and
-                self.parent() is plug.grandparent()):
-                    log.warning(self.str_POCI)
-        elif (    # * parent Output => parent Output
-                not self.isInput and
-                not plug.isInput and
-                self.parent() is plug.parent()):
-                    log.warning(self.str_POPO)
-        else:
+    def connect(self, other):
+        """Connects two plugs, or logs the reason why not."""
+        if self == other:
+            log.warning(self.str_connectOnItself)
             return False
-        return True
-
-    def parent(self):
-        """Return the parent of the plug."""
-        return self.owner
-
-    def grandparent(self):
-        """Return the grandparent of the plug."""
-        return self.parent().owner
-
-    def connect(self, plugList):
-        """Connects a Plug to a list of Plugs."""
-        if not isinstance(plugList, list):
-            plugList = [plugList]
-        for plug in plugList:
-            # connection already exists
-            if plug in self.destinationPlugs:
-                log.info(
-                    'connection between %s and %s already exists'
-                    % (self.name, plug.name))
-                continue
-            # INVALID connections:
-            if self.isInvalidConnection(plug):
-                return False
-            # VALID connections:
-            # right => left connection
-            if self.isValidReversedConnection(plug):
-                plug.destinationPlugs.append(self)
-                self.sourcePlug = plug
-                self.set(plug.value)
-            # left => right connection
-            elif self.isValidConnection(plug):
-                self.destinationPlugs.append(plug)
-                plug.sourcePlug = self
-                plug.set(self.value)
-            # should not happens
-            else:
-                log.warning('engine cannot handle this connection')
-                return False
-        return True
-
+        elif (  # same scope input and input
+                self.isInput and other.isInput
+                and self.owner.owner == other.owner.owner):
+            log.warning(self.str_connectInOnIn)
+            return False
+        elif (  # same scope output and output
+                not self.isInput and not other.isInput
+                and self.owner.owner == other.owner.owner):
+            log.warning(self.str_connectOutOnOut)
+            return False
+        elif (  # these two plus are already connected
+                other == self.sourcePlug or self == other.sourcePlug):
+            log.warning(self.str_connectAlreadyExists)
+            return False
+        elif (  # global input and local output
+                not self.isInput and other.isInput and
+                self.owner.owner == other.owner):
+            log.warning(self.str_connectGlobInLocOut)
+            return False
+        elif (  # global output and local input
+                self.isInput and not other.isInput and
+                self.owner.owner == other.owner):
+            log.warning(self.str_connectGlobOutLocIn)
+            return False
+        elif (  # global input and local output
+                not self.isInput and other.isInput and
+                self.owner == other.owner.owner):
+            log.warning(self.str_connectGlobInLocOut)
+            return False
+        elif (  # global output and local input
+                not self.isInput and other.isInput and
+                self.owner == other.owner.owner):
+            log.warning(self.str_connectGlobOutLocIn)
+            return False
+        else:
+            if ((   # origin is self
+                    self.owner.owner and not self.isInput) or
+                    (not self.owner.owner and self.isInput)):
+                if other.sourcePlug:    # but other is already connected
+                    log.warning(
+                        self.str_connectHasConnection
+                        % (other.owner.name, other.name,))
+                    return False
+                else:
+                    self.destinationPlugs.append(other)
+                    other.sourcePlug = self
+                    other.set(self.value)
+            else:   # origin is other
+                if self.sourcePlug:    # but self is already connected
+                    log.warning(
+                        self.str_connectHasConnection
+                        % (self.owner.name, self.name,))
+                    return False
+                else:
+                    other.destinationPlugs.append(self)
+                    self.sourcePlug = other
+                    self.set(other.value)
+            if Plug.connectVerbose:
+                log.warning(    # We want it to appear in MainView
+                    self.str_connect % (
+                        other.owner.name, other.name, self.owner.name,
+                        self.name,))
+            return True
+     
     def disconnect(self, other):
         """Disconnect two plugs."""
         # Invalid disconnection.
