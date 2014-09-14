@@ -186,7 +186,7 @@ class Plug:
         # INVALID connection:
         #   * I/O => same I/O
         if plug is self:
-            log.warning(str_connOnItself)
+            log.warning(self.str_connOnItself)
         #   * destination plug already have a source
         elif plug.sourcePlug:
             log.warning(self.str_alreadyHaveSrc % (plug.owner.name, plug.name))
