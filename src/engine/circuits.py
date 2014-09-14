@@ -17,6 +17,7 @@
 # TODO: add more circuits                                                     #
 ###############################################################################
 
+from .simulator import *
 
 class Mem1b(Circuit):
     def __init__(self, name, owner):

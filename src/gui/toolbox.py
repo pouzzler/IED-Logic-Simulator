@@ -7,7 +7,7 @@ from PySide.QtCore import QByteArray, QDir, QMimeData, Qt
 from PySide.QtGui import (
     QDockWidget, QDrag, QIcon, QTreeWidget, QTreeWidgetItem)
 from .util import filePath
-from engine import gates
+from engine import gates, circuits
 
 
 class ToolBox(QTreeWidget):
@@ -31,6 +31,10 @@ class ToolBox(QTreeWidget):
                     inspect.isclass(m) and m.__module__ == 'engine.gates')):
             item = QTreeWidgetItem(gatesheader, [name[:-4]])
             item.setIcon(0, QIcon(imgDir + name + '.png'))
+        item = QTreeWidgetItem(gatesheader, ['JKFlipFlop'])
+        item.setIcon(0, QIcon(imgDir + 'JKFlipFlop.png'))
+        item = QTreeWidgetItem(gatesheader, ['RSFlipFlop'])
+        item.setIcon(0, QIcon(imgDir + 'RSFlipFlop.png'))
         ioheader = QTreeWidgetItem(self, [self.str_IO])
         ioheader.setFlags(
             ~Qt.ItemFlag.ItemIsDragEnabled & ~Qt.ItemFlag.ItemIsSelectable)
