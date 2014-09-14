@@ -1,6 +1,27 @@
 #!/usr/bin/env python3
 # coding: utf-8
 
+
+###############################################################################
+#         ╔╦╗┌─┐┌─┐┬┌─┐  ╔═╗┬┬─┐┌─┐┬ ┬┬┌┬┐  ╔═╗┬┌┬┐┬ ┬┬  ┌─┐┌┬┐┌─┐┬─┐         #
+#         ║║║├─┤│ ┬││    ║  │├┬┘│  │ ││ │   ╚═╗│││││ ││  ├─┤ │ │ │├┬┘         #
+#         ╩ ╩┴ ┴└─┘┴└─┘  ╚═╝┴┴└─└─┘└─┘┴ ┴   ╚═╝┴┴ ┴└─┘┴─┘┴ ┴ ┴ └─┘┴└─         #
+# -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+- #
+#                                                                        2014 #
+#                                                           Sébastien MAGNIEN #
+#                                                            Mathieu FOURCROY #
+# --------------------------------------------------------------------------- #
+# Contain the engine. It's an event-driven, multi-delayed and three-valued    #
+# engine. It implement the Circuit class for the logic gates (gates.py) and   #
+# the Plug classe for Circuits I/O.                                           #
+# --------------------------------------------------------------------------- #
+# TODO: in set(), clock the unstable connection so that its value change from #
+#       True to False at regular time interval (use a global clock).          #
+###############################################################################
+
+
+import sys
+import time
 from copy import deepcopy
 import logging
 
@@ -15,6 +36,66 @@ formatter = logging.Formatter(
     '%(asctime)s %(levelname)s %(message)s', datefmt='%H:%M:%S')
 fileHandler.setFormatter(formatter)
 stdoutHandler.setFormatter(formatter)
+
+
+recursionNb_ = 0
+gateList_ = []
+exceed_ = False
+
+
+class Agenda:
+    """This class handle the propagation of the events. It contain a priority
+    queue of segments wich describe events (delay + operation). Th events
+    are added on the queue so that they're sort from the nearest to the
+    farthest. The agenda can then execute the scheduled events (outputs
+    changes) by propagating them.
+    """
+    def __init__(self):
+        self.currentTime = 0
+        self.timeSegments = []
+
+    def is_empty(self):
+        """Return True if there is no scheduled action."""
+        return False if self.timeSegments else True
+
+    def get_current_time(self):
+        """Return the current time of the agenda."""
+        return self.currentTime
+
+    def add_segment(self, time, action, name):
+        """Add a segment and sort the queue from nearest to farthest event."""
+        self.timeSegments.append((time, action, name))
+        self.timeSegments.sort(key=lambda item: item[0])
+
+    def propagate(self):
+        """Propagate the events of tge queue: pop closest event and execute it
+        then continue until no event remains on the queue.
+        """
+        if self.is_empty():
+            return 1
+        proc = self.pop_first_item()
+        try:
+            proc()
+        except RuntimeError:
+            return 0
+        return self.propagate()
+
+    def pop_first_item(self):
+        """Return the nearest event of the queue."""
+        segment = self.timeSegments[0]
+        self.currentTime = segment[0]
+        self.timeSegments = self.timeSegments[1:]
+        # here we can implement simu speed with segment[0] - self.currentTime
+        return segment[1]
+
+    def schedule(self, gate, proc):
+        """Add an event segment (execution time, function, function name) to
+        the events queue.
+        """
+        self.add_segment(
+            self.get_current_time() + gate.delay,
+            proc,
+            gate.__class__.__name__ + ' evalfun')
 
 
 class Plug:
@@ -42,74 +123,155 @@ class Plug:
             if Plug.addPlugVerbose:
                 log.info(self.str_outputAdded % (self.name, owner.name,))
 
-    def connect(self, other):
-        """Connects two plugs, or logs the reason why not."""
-        if self == other:
-            log.warning(self.str_connectOnItself)
-            return False
-        elif (  # same scope input and input
-                self.isInput and other.isInput
-                and self.owner.owner == other.owner.owner):
-            log.warning(self.str_connectInOnIn)
-            return False
-        elif (  # same scope output and output
-                not self.isInput and not other.isInput
-                and self.owner.owner == other.owner.owner):
-            log.warning(self.str_connectOutOnOut)
-            return False
-        elif (  # these two plus are already connected
-                other == self.sourcePlug or self == other.sourcePlug):
-            log.warning(self.str_connectAlreadyExists)
-            return False
-        elif (  # global input and local output
-                not self.isInput and other.isInput and
-                self.owner.owner == other.owner):
-            log.warning(self.str_connectGlobInLocOut)
-            return False
-        elif (  # global output and local input
-                self.isInput and not other.isInput and
-                self.owner.owner == other.owner):
-            log.warning(self.str_connectGlobOutLocIn)
-            return False
-        elif (  # global input and local output
-                not self.isInput and other.isInput and
-                self.owner == other.owner.owner):
-            log.warning(self.str_connectGlobInLocOut)
-            return False
-        elif (  # global output and local input
-                not self.isInput and other.isInput and
-                self.owner == other.owner.owner):
-            log.warning(self.str_connectGlobOutLocIn)
-            return False
+    def isValidConnection(self, plug):
+        """Check whether the connection left => right is valid or not"""
+        if (
+            # a connection is valid if it is from left to right:
+            (   # parent Input => child Input
+                self.isInput and
+                plug.isInput and
+                self.parent() is plug.grandparent()) or
+            (   # parent Input => parent Output
+                self.isInput and
+                not plug.isInput and
+                self.parent() is plug.parent()) or
+            (   # child Output => parent Output
+                not self.isInput and
+                not plug.isInput and
+                self.grandparent() is plug.parent()) or
+            (   # child Output => child Input
+                not self.isInput and
+                plug.isInput and
+                self.grandparent() is plug.grandparent())):
+                # connection has been successfuly established
+                if Plug.connectVerbose:
+                    log.info(
+                        self.str_connect
+                        % (self.owner.name, self.name, plug.owner.name,
+                            plug.name))
+                return True
+
+    def isValidReversedConnection(self, plug):
+        """Check whether the connection right => left is valid or not"""
+        # reversed VALID connections
+        if (
+            # if the user connect from right to left we just have to invert
+            # the conenction direction so these connections are also valid:
+            (   # child Input => parent Input
+                self.isInput and
+                plug.isInput and
+                self.grandparent() is plug.parent()) or
+            (   # parent Output => parent Input
+                not self.isInput and
+                plug.isInput and
+                self.parent() is plug.parent()) or
+            (   # parent Output => child Output
+                not self.isInput and
+                not plug.isInput and
+                self.parent() is plug.grandparent()) or
+            (   # child Input => child Output
+                self.isInput and
+                not plug.isInput and
+                self.grandparent() is plug.grandparent())):
+                # connection has been successfuly established
+                if Plug.connectVerbose:
+                    log.info(
+                        self.str_connect
+                        % (plug.owner.name, plug.name, self.owner.name,
+                            self.name))
+                return True
+
+    def isInvalidConnection(self, plug):
+        """Look for invalid connections and print a message accordingly."""
+        # INVALID connection:
+        #   * I/O => same I/O
+        if plug is self:
+            log.warning(str_connOnItself)
+        #   * destination plug already have a source
+        elif plug.sourcePlug:
+            log.warning(str_alreadyHaveSrc % (plug.owner.name, plug.name))
+        elif (    # * child Input => child Input
+                self.isInput and
+                plug.isInput and
+                self.grandparent() is plug.grandparent()):
+                    log.warning(self.str_CICI)
+        elif (    # * child Input => parent Output
+                self.isInput and
+                not plug.isInput and
+                self.grandparent() is plug.parent()):
+                    log.warning(self.str_CIPO)
+        elif (    # * child Output => child Output
+                not self.isInput and
+                not plug.isInput and
+                self.grandparent() is plug.grandparent()):
+                    log.warning(self.str_COCO)
+        elif (    # * child Output => parent Input
+                not self.isInput and
+                plug.isInput and
+                self.grandparent() is plug.parent()):
+                    log.warning(self.str_COPI)
+        elif (    # * parent Input => child Output
+                self.isInput and
+                not plug.isInput and
+                self.parent() is plug.grandparent()):
+                    log.warning(self.str_PICI)
+        elif (    # * parent Input => parent Input
+                self.isInput and
+                not plug.isInput and
+                self.parent() is plug.parent()):
+                    log.warning(self.str_PIPI)
+        elif (    # * parent Output => child Input
+                not self.isInput and
+                not plug.isInput and
+                self.parent() is plug.grandparent()):
+                    log.warning(self.str_POCO)
+        elif (    # * parent Output => parent Output
+                not self.isInput and
+                not plug.isInput and
+                self.parent() is plug.parent()):
+                    log.warning(self.str_POPO)
         else:
-            if ((   # origin is self
-                    self.owner.owner and not self.isInput) or
-                    (not self.owner.owner and self.isInput)):
-                if other.sourcePlug:    # but other is already connected
-                    log.warning(
-                        self.str_connectHasConnection
-                        % (other.owner.name, other.name,))
-                    return False
-                else:
-                    self.destinationPlugs.append(other)
-                    other.sourcePlug = self
-                    other.set(self.value)
-            else:   # origin is other
-                if self.sourcePlug:    # but self is already connected
-                    log.warning(
-                        self.str_connectHasConnection
-                        % (self.owner.name, self.name,))
-                    return False
-                else:
-                    other.destinationPlugs.append(self)
-                    self.sourcePlug = other
-                    self.set(other.value)
-            if Plug.connectVerbose:
-                log.warning(    # We want it to appear in MainView
-                    self.str_connect % (
-                        other.owner.name, other.name, self.owner.name,
-                        self.name,))
-            return True
+            return False
+        return True
+
+    def parent(self):
+        """Return the parent of the plug."""
+        return self.owner
+
+    def grandparent(self):
+        """Return the grandparent of the plug."""
+        return self.parent().owner
+
+    def connect(self, plugList):
+        """Connects a Plug to a list of Plugs."""
+        if not isinstance(plugList, list):
+            plugList = [plugList]
+        for plug in plugList:
+            # connection already exists
+            if plug in self.destinationPlugs:
+                log.info(
+                    'connection between %s and %s already exists'
+                    % (self.name, plug.name))
+                continue
+            # INVALID connections:
+            if self.isInvalidConnection(plug):
+                return False
+            # VALID connections:
+            # right => left connection
+            if self.isValidReversedConnection(plug):
+                plug.destinationPlugs.append(self)
+                self.sourcePlug = plug
+                self.set(plug.value)
+            # left => right connection
+            elif self.isValidConnection(plug):
+                self.destinationPlugs.append(plug)
+                plug.sourcePlug = self
+                plug.set(self.value)
+            # should not happens
+            else:
+                log.warning('engine cannot handle this connection')
+                return False
+        return True
 
     def disconnect(self, other):
         """Disconnect two plugs."""
@@ -140,41 +302,63 @@ class Plug:
             self.owner.inputList if self.isInput else self.owner.outputList)]
         if name and prefix:
             name = None
-            # problèmes de doublons si une des plugs s'appele déjà comme ça, je pense
         if name and name not in names:
             self.name = name
             return
         prefix = prefix if prefix else ('in' if self.isInput else 'out')
         while True:
-            name =  prefix + str(i)
+            name = prefix + str(i)
             if name not in names:
                 self.name = name
                 return
             i += 1
 
-    def set(self, value):
+    def set(self, value, forced=False):
+        """Try to set the value of a Plug. If the connection don't became
+        stable set the value to None.
+        """
+        global exceed_
+        exceed_ = False
+        self.do_set(value, forced)
+        if exceed_:
+            self.do_set(None)
+
+    def do_set(self, value, forced=False):
         """Sets the boolean value of a Plug."""
-        # No change, nothing to do.
-        if self.value == value and self.__nbEval != 0:
+        global recursionNb_
+        global gateList_
+        global exceed_
+        # no change, nothing to do.
+        if self.value == value and self.__nbEval != 0 and not forced:
+            return
+        # If you reach the recursion limit: stop, let set() set it to unstable
+        recursionNb_ += 1
+        if self.owner not in gateList_:
+            gateList_.append(self.owner)
+        if recursionNb_ > len(gateList_) * 10:
+            recursionNb_ = 0
+            gateList_ = []
+            exceed_ = True
             return
         # else set the new value and update the circuit accordingly
-        else:
-            self.value = bool(value)
+        self.value = value
+        if not forced:
             self.__nbEval += 1
         if Plug.setInputVerbose and self.isInput:
             log.info(
-                self.str_inputV
-                % (self.owner.name, self.name, int(self.value),))
+                self.str_inputV % (self.owner.name, self.name, self.value,))
         if Plug.setOutputVerbose and not self.isInput:
             log.info(
-                self.str_outputV
-                % (self.owner.name, self.name, int(self.value),))
-        # Gate input changed, set outputs values
+                self.str_outputV % (self.owner.name, self.name, self.value,))
+        # gate input changed: set outputs values
         if self.isInput:
             self.owner.evalfun()
-        # then, all plugs in the destination list are set to this value
+        agenda_.propagate()
+        # then, all plugs in the destination list are set to the same value
         for dest in self.destinationPlugs:
-            dest.set(value)
+            dest.do_set(value)
+        recursionNb_ -= 1
+        gateList_ = []
 
     def setName(self, name):
         """Set the name of the plug."""
@@ -214,7 +398,11 @@ class Circuit:
             if Circuit.addCircuitVerbose:
                 log.info(
                     self.str_circuitAdded
-                    % (self.class_name(), self.name, self.owner.name,))        
+                    % (self.class_name(), self.name, self.owner.name,))
+
+    def init_inputs(self):
+        for inp in self.inputList:
+            inp.set(False, True)
 
     def add(self, component):
         """Used when loading circuits, to add pre-existing components."""
@@ -318,7 +506,11 @@ class Circuit:
             log.error(self.str_unavailableName % (name,))
             return False
         else:
-            log.info(
-                self.str_newName % (self.owner.name, self.name, name,))
+            log.info(self.str_newName % (self.owner.name, self.name, name,))
             self.name = name
             return True
+
+###############################################################################
+###############################################################################
+# the main agenda use for the simulation, there should be only one agenda
+agenda_ = Agenda()

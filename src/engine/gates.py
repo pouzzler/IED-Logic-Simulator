@@ -1,99 +1,163 @@
 #!/usr/bin/env python3
 # coding: utf-8
 
-"""Builtin gates. Unlike user circuits, their evalfun() is implemented."""
+
+###############################################################################
+#         ╔╦╗┌─┐┌─┐┬┌─┐  ╔═╗┬┬─┐┌─┐┬ ┬┬┌┬┐  ╔═╗┬┌┬┐┬ ┬┬  ┌─┐┌┬┐┌─┐┬─┐         #
+#         ║║║├─┤│ ┬││    ║  │├┬┘│  │ ││ │   ╚═╗│││││ ││  ├─┤ │ │ │├┬┘         #
+#         ╩ ╩┴ ┴└─┘┴└─┘  ╚═╝┴┴└─└─┘└─┘┴ ┴   ╚═╝┴┴ ┴└─┘┴─┘┴ ┴ ┴ └─┘┴└─         #
+# -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+- #
+#                                                                        2014 #
+#                                                           Sébastien MAGNIEN #
+#                                                            Mathieu FOURCROY #
+# --------------------------------------------------------------------------- #
+# Builtin gates. Unlike user circuits, their evalfun() is implemented.        #
+# For scheduling: we compute the output value at present time and schedule    #
+# the change.                                                                 #
+# --------------------------------------------------------------------------- #
+# TODO: increase delay when more than two inputs                              #
+###############################################################################
+
 
 from .simulator import *
 
 
 class NotGate(Circuit):
     """One input only. Output == not Input."""
-    
+    delay = 2
+
     def __init__(self, name, owner, category=None):
         Circuit.__init__(self, name, owner)
         Plug(True, None, self)
         Plug(False, None, self)
+        self.init_inputs()
 
     def evalfun(self):
-        self.outputList[0].set(not self.inputList[0].value)
+        val = not self.inputList[0].value
+        if self.inputList[0].value is None:
+            val = None
+        agenda_.schedule(self, lambda: self.outputList[0].set(val))
 
 
 class AndGate(Circuit):
     """Any number of inputs. Output false unless every input true."""
-    
-    def __init__(self, name, owner, inputs=2):
-        Circuit.__init__(self, name, owner)
-        for i in range(inputs):
-            Plug(True, None, self)
-        Plug(False, None, self)
-
-    def evalfun(self):
-        self.outputList[0].set(all([inp.value for inp in self.inputList]))
-
-
-class OrGate(Circuit):
-    """Any number of inputs. Output true unless every input false."""
-    
-    def __init__(self, name, owner, inputs=2):
-        Circuit.__init__(self, name, owner)
-        for i in range(inputs):
-            Plug(True, None, self)
-        Plug(False, None, self)
-
-    def evalfun(self):
-        self.outputList[0].set(any([inp.value for inp in self.inputList]))
-
-
-class NorGate(Circuit):
-    """Any number of inputs. Output false unless every input false."""
+    delay = 3
 
     def __init__(self, name, owner, inputs=2):
         Circuit.__init__(self, name, owner)
         for i in range(inputs):
             Plug(True, None, self)
         Plug(False, None, self)
+        self.init_inputs()
 
     def evalfun(self):
-        self.outputList[0].set(not any([inp.value for inp in self.inputList]))
-
-
-class XorGate(Circuit):
-    def __init__(self, name, owner, inputs=2):
-        Circuit.__init__(self, name, owner)
-        for i in range(inputs):
-            Plug(True, None, self)
-        Plug(False, None, self)
-
-    def evalfun(self):
-        valuesList = [input.value for input in self.inputList]
-        self.outputList[0].set(valuesList.count(1) % 2)
-
-
-class XnorGate(Circuit):
-    def __init__(self, name, owner, inputs=2):
-        Circuit.__init__(self, name, owner)
-        for i in range(inputs):
-            Plug(True, None, self)
-        Plug(False, None, self)
-
-    def evalfun(self):
-        valuesList = [inp.value for inp in self.inputList]
-        self.outputList[0].set(all(valuesList) or not any(valuesList))
+        val = all([inp.value for inp in self.inputList])
+        for inp in self.inputList:
+            if inp.value is None and val:
+                val = None
+        agenda_.schedule(self, lambda: self.outputList[0].set(val))
 
 
 class NandGate(Circuit):
     """Any number of inputs. Output true unless every input true."""
-    
+    delay = 5
+
     def __init__(self, name, owner, inputs=2):
         Circuit.__init__(self, name, owner)
         for i in range(inputs):
             Plug(True, None, self)
         Plug(False, None, self)
+        self.init_inputs()
 
     def evalfun(self):
-        out = False
+        val = not all([inp.value for inp in self.inputList])
         for inp in self.inputList:
-            if inp.value is False:
-                out = True
-                break
-        self.outputList[0].set(out)
+            if inp.value is None:
+                for inp2 in self.inputList:
+                    if inp2.value is False:
+                        val = True
+                t = True
+                for inp2 in self.inputList:
+                    if inp2 is inp:
+                        pass
+                    elif inp2.value is not True:
+                        t = False
+                if t:
+                    val = None
+        agenda_.schedule(self, lambda: self.outputList[0].set(val))
+
+
+class OrGate(Circuit):
+    """Any number of inputs. Output true unless every input false."""
+    delay = 5
+
+    def __init__(self, name, owner, inputs=2):
+        Circuit.__init__(self, name, owner)
+        for i in range(inputs):
+            Plug(True, None, self)
+        Plug(False, None, self)
+        self.init_inputs()
+
+    def evalfun(self):
+        val = any([inp.value for inp in self.inputList])
+        for inp in self.inputList:
+            if inp.value is None and not val:
+                val = None
+        agenda_.schedule(self, lambda: self.outputList[0].set(val))
+
+
+class NorGate(Circuit):
+    """Any number of inputs. Output false unless every input false."""
+    delay = 7
+
+    def __init__(self, name, owner, inputs=2):
+        Circuit.__init__(self, name, owner)
+        for i in range(inputs):
+            Plug(True, None, self)
+        Plug(False, None, self)
+        self.init_inputs()
+
+    def evalfun(self):
+        val = not any([inp.value for inp in self.inputList])
+        for inp in self.inputList:
+            if inp.value is None and not val:
+                val = None
+        agenda_.schedule(self, lambda: self.outputList[0].set(val))
+
+
+class XorGate(Circuit):
+    delay = 15
+
+    def __init__(self, name, owner, inputs=2):
+        Circuit.__init__(self, name, owner)
+        for i in range(inputs):
+            Plug(True, None, self)
+        Plug(False, None, self)
+        self.init_inputs()
+
+    def evalfun(self):
+        valuesList = [input.value for input in self.inputList]
+        val = valuesList.count(True) % 2
+        for inp in self.inputList:
+            if inp is None:
+                val = None
+        agenda_.schedule(self, lambda: self.outputList[0].set(val))
+
+
+class XnorGate(Circuit):
+    delay = 15
+
+    def __init__(self, name, owner, inputs=2):
+        Circuit.__init__(self, name, owner)
+        for i in range(inputs):
+            Plug(True, None, self)
+        Plug(False, None, self)
+        self.init_inputs()
+
+    def evalfun(self):
+        valuesList = [inp.value for inp in self.inputList]
+        val = all(valuesList) or not any(valuesList)
+        for inp in self.inputList:
+            if inp is None and val:
+                val = None
+        agenda_.schedule(self, lambda: self.outputList[0].set(val))
