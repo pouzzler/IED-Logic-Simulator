@@ -107,12 +107,17 @@ class Plug:
     connectVerbose = True       # Log i/o.connect()?
 
     def __init__(self, isInput, name, owner):
+        """isInput is True if the Plug is an output."""
         self.isInput = isInput
+        """owner is the parent of the Plug, the circuit which contain it."""
         self.owner = owner
         self.generate_name(name)
+        """value is the signal value of the Plug: True, False or None."""
         self.value = False
         self.__nbEval = 0
+        """sourcePlug is the plug wich forward its value to this Plug."""
         self.sourcePlug = None
+        """destinationPlugs are the plugs which receive this Plug's value."""
         self.destinationPlugs = []
         if self.isInput:            # Add plug to owner.
             owner.inputList.append(self)
@@ -307,11 +312,16 @@ class Circuit:
     detailedRemoveVerbose = True  # ?
 
     def __init__(self, name, owner, category=None):
+        """owner is the parent of the Circuit, the Circuit containing it."""
         self.owner = owner
         self.name = self.generate_name() if name is None else name
-        self.category = category   # Used to identify user circuits.
+        """category is used to identify user Circuits."""
+        self.category = category
+        """inputList is the list of all primary inputs of the Circuit."""
         self.inputList = []
+        """outputList is the list of all primary outputs of the Circuit."""
         self.outputList = []
+        """circuitList is the list of all sub-Circuits of the Circuit."""
         self.circuitList = []
         log.info(self.str_circuitCreated % (self.class_name(), self.name,))
         if owner:
@@ -322,6 +332,7 @@ class Circuit:
                     % (self.class_name(), self.name, self.owner.name,))
 
     def init_inputs(self):
+        """Force set all Circuit inputs to False."""
         for inp in self.inputList:
             inp.set(False, True)
 

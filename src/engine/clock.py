@@ -24,6 +24,7 @@ import time
 
 
 class Clock(Plug):
+    """A clock-ready Plug."""
     def __init__(self, owner):
         Plug.__init__(self, True, None, owner)
         self.clkThread = ClockThread(self)
@@ -56,6 +57,7 @@ class ClockThread(Thread):
             time.sleep(self.spd)
 
     def set_extern(self, fun):
+        """Set an external function to be run at each clock tic."""
         self.externFun = fun
 
     def pause(self):

@@ -17,11 +17,13 @@
 # TODO: add more circuits                                                     #
 ###############################################################################
 
+
 from .simulator import *
+
 
 class Mem1b(Circuit):
     def __init__(self, name, owner):
-        Circuit.__init__ (self, name, owner)
+        Circuit.__init__(self, name, owner)
         # I/O
         self.ON = Plug(True, 'ON', self)
         self.OFF = Plug(True, 'OFF', self)
@@ -37,41 +39,41 @@ class Mem1b(Circuit):
         self.AND.outputList[0].connect(self.OR.inputList[1])
         self.OR.outputList[0].connect(self.AND.inputList[1])
         self.OR.outputList[0].connect(self.Q)
- 
- 
+
+
 class RSFlipFlop(Circuit):
     delay = 10
-   
+
     def __init__(self, name, owner, category=None):
-        Circuit.__init__ (self, name, owner)
+        Circuit.__init__(self, name, owner)
         self.R = Plug(True, 'R', self)
         self.S = Plug(True, 'S', self)
         self.Q = Plug(False, 'Q', self)
         self.NQ = Plug(False, 'NQ', self)
         self.init_inputs()
-   
+
     def evalfun(self):
         valQ = None
         valNQ = None
-        if self.S.value == False and self.R.value == True:
+        if self.S.value is False and self.R.value is True:
             valQ = True
             valNQ = not valQ
-        if self.S.value == True and self.R.value == False:
+        if self.S.value is True and self.R.value is False:
             valQ = False
             valNQ = not valQ
-        if self.S.value == False and self.R.value == False:
+        if self.S.value is False and self.R.value is False:
             valQ = None
             valNQ = None
-        if self.S.value == True and self.R.value == True:
+        if self.S.value is True and self.R.value is True:
             valQ = self.Q.value
             valNQ = self.NQ.value
         agenda_.schedule(self, lambda: self.Q.set(valQ))
         agenda_.schedule(self, lambda: self.NQ.set(valNQ))
- 
- 
+
+
 class DFlipFlop(Circuit):
     def __init__(self, name, owner, category=None):
-        Circuit.__init__ (self, name, owner)
+        Circuit.__init__(self, name, owner)
         # I/O
         self.D = Plug(True, 'D', self)
         self.CLK = Plug(True, 'CLK', self)
@@ -93,13 +95,13 @@ class DFlipFlop(Circuit):
         self.NAND1.outputList[0].connect(self.RSFF.R)
         self.RSFF.Q.connect(self.Q)
         self.RSFF.NQ.connect(self.NQ)
- 
- 
+
+
 class JKFlipFlop(Circuit):
     delay = 42
-   
+
     def __init__(self, name, owner, category=None):
-        Circuit.__init__ (self, name, owner)
+        Circuit.__init__(self, name, owner)
         self.J = Plug(True, 'J', self)
         self.K = Plug(True, 'K', self)
         self.CLK = Plug(True, 'CLK', self)
@@ -107,7 +109,7 @@ class JKFlipFlop(Circuit):
         self.NQ = Plug(False, 'NQ', self)
         self.prevClock = False
         self.init_inputs()
- 
+
     def evalfun(self):
         valQ = self.Q.value
         valNQ = not valQ
@@ -128,11 +130,11 @@ class JKFlipFlop(Circuit):
         self.prevClock = self.CLK.value
         agenda_.schedule(self, lambda: self.Q.set(valQ))
         agenda_.schedule(self, lambda: self.NQ.set(valNQ))
- 
- 
+
+
 class Counter4b(Circuit):
     def __init__(self, name, owner, category=None):
-        Circuit.__init__ (self, name, owner)
+        Circuit.__init__(self, name, owner)
         # I/O
         self.A = Plug(True, 'A', self)
         self.CLK = Plug(True, 'CLK', self)
@@ -170,11 +172,11 @@ class Counter4b(Circuit):
         self.AND0.outputList[0].connect(self.JKFF2.K)
         self.AND1.outputList[0].connect(self.JKFF3.J)
         self.AND1.outputList[0].connect(self.JKFF3.K)
- 
- 
+
+
 class Register4b(Circuit):
     def __init__(self, name, owner, category=None):
-        Circuit.__init__ (self, name, owner)
+        Circuit.__init__(self, name, owner)
         # I/O
         self.I0 = Plug(True, 'I0', self)
         self.I1 = Plug(True, 'I1', self)
