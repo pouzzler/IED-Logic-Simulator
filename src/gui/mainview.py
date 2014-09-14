@@ -35,10 +35,8 @@ class MainView(QGraphicsView):
         self.timer.setInterval(200)
         self.timer.setSingleShot(True)
         self.timer.timeout.connect(self.setItemsInGrid)
-        self.clockTimer = QTimer()
-        self.clockTimer.setInterval(1000)
-        self.clockTimer.timeout.connect(self.clockUpdate)
         self.copyBuffer = None
+        self.bgClockThread = None
         
     def batchRename(self):
         """Experimental function to rename multiple items at once."""
@@ -63,6 +61,8 @@ class MainView(QGraphicsView):
             # https://bugreports.qt-project.org/browse/PYSIDE-252
             if not isinstance(i, QGraphicsSimpleTextItem):
                 self.scene().removeItem(i)
+        if self.bgClockThread:
+            self.bgClockThread.stop()
         self.mainCircuit.clear()
 
     def clockUpdate(self):
@@ -106,9 +106,9 @@ class MainView(QGraphicsView):
             item = PlugItem(Plug(False, None, self.mainCircuit))
         elif name == self.str_Clock:
             item = PlugItem(Plug(True, None, self.mainCircuit))
-            bgClockThread = ClockThread(item.data)
-            bgClockThread.start()
-            self.clockTimer.start()
+            self.bgClockThread = ClockThread(item.data)
+            self.bgClockThread.set_extern(self.clockUpdate)
+            self.bgClockThread.start()
         elif model.item(0, 1).text() == 'user':
             c = Circuit(None, self.mainCircuit)
             f = open(filePath('user/') + name + '.crc', 'rb')

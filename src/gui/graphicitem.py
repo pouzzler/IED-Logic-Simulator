@@ -192,7 +192,8 @@ class PlugItem(QGraphicsPathItem):
         realY = min([i.y() for i in br])
         self.name.setPos(self.mapFromScene(
             realX, realY + (w if self.rotation() % 180 else h) + 1))
-        self.value.setText(str(int(self.data.value)))
+        self.value.setText(str(int(self.data.value)) 
+            if self.data.value is not None else 'E')
         self.value.setPos(self.mapFromScene(realX + w / 3, realY + h / 3))
         self.value.setBrush(QColor('green' if self.data.value else 'red'))
         self.update()       # Force onscreen redraw after changes.
